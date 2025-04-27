@@ -18,3 +18,4 @@ Route::get('/', function () {
 });
 
 // Halo ini test branch -sy
+// test 2 di main
