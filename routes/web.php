@@ -17,7 +17,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// halo ini funi
+// halo halo 
 
 // Halo ini test branch -sy
 // test 2 di main
