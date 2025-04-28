@@ -17,6 +17,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Halo syafiq!
 // halo halo 
 
 // Halo ini test branch -sy
