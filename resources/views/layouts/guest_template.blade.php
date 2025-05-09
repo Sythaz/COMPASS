@@ -8,13 +8,13 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     {{-- <title>{{ $title }}</title> --}}
     <title>Nama Halaman (Nanti ganti)</title>
-
     <!-- Favicon icon -->
+
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('theme/images/favicon.png') }}">
 
     <!-- Font Awesome CDN (Icon) -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <!-- Custom Stylesheet -->
     <link href="{{ asset('theme/css/style.css') }}" rel="stylesheet">
 
@@ -26,52 +26,7 @@
 </head>
 
 <body>
-
-    <!-- Preloader start -->
-    <div id="preloader">
-        <div class="loader">
-            <svg class="circular" viewBox="25 25 50 50">
-                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="3"
-                    stroke-miterlimit="10" />
-            </svg>
-        </div>
-    </div>
-    <!-- Preloader end -->
-
-    <!-- Main wrapper start -->
-    <div id="main-wrapper">
-        <!-- Nav header start -->
-        @include('layouts.identity')
-        <!-- Nav header end -->
-
-        <!-- Header start -->
-        @include('layouts.header')
-        <!-- Header end -->
-
-        <!-- Sidebar start -->
-        @include('layouts.sidebar')
-        <!-- Sidebar end -->
-
-        <!-- Content body start -->
-        <div class="content-body">
-
-            <!-- Breadcrumb start -->
-            @include('layouts.breadcrumb')
-            <!-- Breadcrumb end -->
-
-            <div class="container-fluid">
-                <!-- Content start -->
-
-                {{-- <div class="row"> --}}
-                @yield('content')
-                {{-- </div> --}}
-
-                <!-- Content end -->
-            </div>
-        </div>
-        <!-- Content body end -->
-    </div>
-    <!-- Main wrapper end -->
+    @yield('content')
 
     <!-- Scripts -->
     <script src="{{ asset('theme/plugins/common/common.min.js') }}"></script>
@@ -85,6 +40,9 @@
     <script src="{{ asset('theme/plugins/jquery/jquery.min.js') }}"></script>
     <!-- jquery-validation -->
     <script src="{{ asset('theme/plugins/jquery-validation/jquery.validate.min.js') }}"></script>
+
+    <!-- Custom form validation -->
+    <script src="{{ asset('js-custom/form-validation.js') }}"></script>
 
     <script src="./js/dashboard/dashboard-1.js"></script>
     @stack('js')
