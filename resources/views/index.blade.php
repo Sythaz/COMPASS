@@ -1,5 +1,7 @@
 @extends('layouts.template')
 
+@section('title', 'Dashboard | SIPRESMA')
+
 @section('content')
     <div class="container-fluid">
         {{-- <h1>Home</h1> --}}
