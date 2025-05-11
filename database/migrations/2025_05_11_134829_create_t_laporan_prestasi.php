@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id('laporan_id');
             $table->unsignedBigInteger('prestasi_id')->index();
             $table->unsignedBigInteger('mahasiswa_id')->index();
-            $table->timestamps('tanggal_laporan');
+            $table->timestamp('tanggal_laporan');
+            $table->timestamps();
 
             $table->foreign('prestasi_id')->references('prestasi_id')->on('t_prestasi');
             $table->foreign('mahasiswa_id')->references('mahasiswa_id')->on('t_mahasiswa');
