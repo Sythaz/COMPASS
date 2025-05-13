@@ -1,5 +1,7 @@
 @extends('layouts.guest_template')
 
+@section('title', 'Login')
+
 @section('content')
     <div class="container-login d-flex justify-content-center py-5">
         <div class="col-lg-10 col-md-10 col-sm-12">
