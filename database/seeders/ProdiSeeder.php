@@ -21,7 +21,7 @@ class ProdiSeeder extends Seeder
             [
                 'prodi_id'   => 2,
                 'nama_prodi' => "D-IV Sistem Informasi Bisnis",
-            ],
+            ]
         ];
         DB::table('t_prodi')->insert($data);
     }
