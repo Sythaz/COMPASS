@@ -16,18 +16,20 @@ class PeriodeSeeder extends Seeder
         $data = [
             [
                 'periode_id'       => 1,
-                'tahun_periode'    => "2024/2025",
-                'semester_periode' => "Ganjil",
+                'semester_periode'    => "2024/2025 Ganjil",
             ],
             [
                 'periode_id'       => 2,
-                'tahun_periode'    => "2024/2025",
-                'semester_periode' => "Genap",
+                'semester_periode'    => "2024/2025 Genap",
             ],
             [
                 'periode_id'       => 3,
-                'tahun_periode'    => "2025/2026",
-                'semester_periode' => "Ganjil",
+                'semester_periode'    => "2025/2026 Ganjil",
+            ],
+            
+            [
+                'periode_id'       => 4,
+                'semester_periode'    => "2025/2026 Genap",
             ],
         ];
         DB::table('t_periode')->insert($data);

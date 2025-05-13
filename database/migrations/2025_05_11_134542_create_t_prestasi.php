@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('lomba_id')->index();
             $table->unsignedBigInteger('dosen_id')->index();
             $table->unsignedBigInteger('kategori_id')->index();
+            $table->unsignedBigInteger('periode_id')->index();
             $table->date('tanggal_prestasi');
             $table->string('juara_prestasi',255);
             $table->enum('jenis_prestasi', ['Individu','Tim']);
@@ -29,6 +30,7 @@ return new class extends Migration
             $table->foreign('lomba_id')->references('lomba_id')->on('t_lomba');
             $table->foreign('dosen_id')->references('dosen_id')->on('t_dosen');
             $table->foreign('kategori_id')->references('kategori_id')->on('t_kategori');
+            $table->foreign('periode_id')->references('periode_id')->on('t_periode');
         });
     }
 

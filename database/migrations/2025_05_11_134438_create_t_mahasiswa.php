@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->index();
             $table->unsignedBigInteger('prodi_id')->index();
             $table->unsignedBigInteger('periode_id')->index();
+            $table->unsignedBigInteger('level_minbak_id')->index();
             $table->bigInteger('nim_mahasiswa')->unique();
             $table->string('nama_mahasiswa',255);
             $table->string('img_mahasiswa')->nullable();
@@ -24,6 +25,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('user_id')->on('t_users');
             $table->foreign('prodi_id')->references('prodi_id')->on('t_prodi');
             $table->foreign('periode_id')->references('periode_id')->on('t_periode');
+            $table->foreign('level_minbak_id')->references('level_minbak_id')->on('t_level_minat_bakat');
         });
     }
 
