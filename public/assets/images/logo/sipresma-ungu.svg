@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1161.83 582.99">
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1922.04 582.99">
   <defs>
     <style>
       .cls-1 {
         font-family: AvenirLTStd-Black, 'Avenir LT Std';
-        font-size: 160px;
+        font-size: 300px;
         font-weight: 800;
         letter-spacing: 0em;
       }
@@ -42,7 +42,7 @@
         <path class="cls-4" d="M131.68,361.87c-3.31,22.36-8.83,45.14-14.32,64.57-5.4,18.86-10.53,34.2-14.13,44.52-11.85,6.11-30,14.06-53.37,18.92-14.05,2.92-27.88,5.8-29.49,2.2-3.32-7.43,53.52-24.43,87.21-77,17.54-27.38,22.06-53.86,24.1-53.23Z"/>
         <path class="cls-3" d="M363.17,56.08c-31.84-3.61-39.13-.08-56.08,27.12,3.61-31.84.08-39.13-27.12-56.08,31.84,3.61,39.13.08,56.08-27.12-3.61,31.84-.08,39.13,27.12,56.08Z"/>
       </g>
-      <text class="cls-1" transform="translate(350.17 344.48)"><tspan x="0" y="0">SIPRESMA</tspan></text>
+      <text class="cls-1" transform="translate(400.17 385.08)"><tspan x="0" y="0">SIPRESMA</tspan></text>
     </g>
   </g>
 </svg>
