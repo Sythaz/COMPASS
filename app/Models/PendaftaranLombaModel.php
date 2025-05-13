@@ -10,7 +10,7 @@ class PendaftaranLombaModel extends Model
 {
     use HasFactory;
 
-    protected $table = 't_pendaftaran'; 
+    protected $table = 't_pendaftaran_lomba'; 
     protected $primaryKey = 'pendaftaran_id';  
 
     protected $fillable = [
