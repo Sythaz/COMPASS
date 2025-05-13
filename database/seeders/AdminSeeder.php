@@ -21,6 +21,14 @@ class AdminSeeder extends Seeder
                 'nama_admin' => 'Sri Whariyanti, S.Pd',
                 'img_admin'  => 'Foto_profil.png'
             ],
+            [
+                'admin_id'      => 2,
+                'user_id'       => 4,
+                'nip_admin'     => 121314151617181910,
+                'nama_admin'    => 'Lailatul Qodriyah, S.Sos',
+                'img_admin'     => 'Lailatul.png'
+
+            ]
         ];
         DB::table('t_admin')->insert($data);
     }

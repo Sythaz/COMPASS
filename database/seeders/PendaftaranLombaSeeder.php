@@ -19,6 +19,26 @@ class PendaftaranLombaSeeder extends Seeder
                 'pendaftaran_id' => 1,
                 'mahasiswa_id' => 1,
                 'lomba_id' => 1
+            ],
+            [
+                'pendaftaran_id' => 2,
+                'mahasiswa_id' => 2,
+                'lomba_id' => 2
+            ],
+            [
+                'pendaftaran_id' => 3,
+                'mahasiswa_id' => 3,
+                'lomba_id' => 3
+            ],
+            [
+                'pendaftaran_id' => 4,
+                'mahasiswa_id' => 4,
+                'lomba_id' => 2
+            ],
+            [
+                'pendaftaran_id' => 5,
+                'mahasiswa_id' => 5,
+                'lomba_id' => 1
             ]
         ];
         DB::table('t_pendaftaran_lomba')->insert($data);

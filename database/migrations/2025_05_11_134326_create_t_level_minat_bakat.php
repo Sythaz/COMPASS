@@ -23,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('t_minat_bakat');
+        Schema::dropIfExists('t_level_minat_bakat');
     }
 };

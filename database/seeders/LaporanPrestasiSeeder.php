@@ -20,6 +20,12 @@ class LaporanPrestasiSeeder extends Seeder
                 'prestasi_id' => 1,
                 'mahasiswa_id' => 1,
                 'tanggal_laporan' => '2025-02-15'
+            ],
+            [
+                'laporan_id' => 2,
+                'prestasi_id' => 3,
+                'mahasiswa_id' => 2,
+                'tanggal_laporan' => '2025-03-03'
             ]
             ];
         DB::table('t_laporan_prestasi')->insert($data);    
