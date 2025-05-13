@@ -17,6 +17,7 @@ class MahasiswaModel extends Model
         'user_id',
         'prodi_id',
         'periode_id',
+        'level_minbak_id',
         'nim_mahasiswa', 
         'nama_mahasiswa',
         'img_mahasiswa',
@@ -32,5 +33,9 @@ class MahasiswaModel extends Model
 
     public function periode(): BelongsTo {
         return $this->belongsTo(PeriodeModel::class, 'periode_id','periode_id');
+    }
+
+    public function level_minat_bakat(): BelongsTo {
+        return $this->belongsTo(LevelMinatBakatModel::class, 'level_minbak_id','level_minbak_id');
     }
 }

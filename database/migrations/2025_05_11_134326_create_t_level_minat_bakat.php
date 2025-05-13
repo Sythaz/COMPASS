@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('t_periode', function (Blueprint $table) {
-            $table->id('periode_id');
-            $table->string('semester_periode',255);
-            $table->timestamps();
+        Schema::create('t_level_minat_bakat', function (Blueprint $table) {
+            $table->id('level_minbak_id');
+            $table->string('level_minbak');
+            $table->timestamps(); 
         });
     }
 
@@ -23,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('t_periode');
+        Schema::dropIfExists('t_minat_bakat');
     }
 };

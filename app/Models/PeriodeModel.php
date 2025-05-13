@@ -13,7 +13,6 @@ class PeriodeModel extends Model
     protected $primaryKey = 'periode_id';  
 
     protected $fillable = [
-        'tahun_periode',
         'semester_periode',
     ];
 }
