@@ -99,6 +99,6 @@ class DashboardController extends Controller
             ];
         }
 
-        return view('index', compact('breadcrumb', 'persentaseMhsIkutLomba', 'totalLombaAktif', 'jmlPartisipasiSemingguTerakhir', 'topMahasiswa', 'lombaSedangAktif', 'chartPieData'));
+        return view('admin.index', compact('breadcrumb', 'persentaseMhsIkutLomba', 'totalLombaAktif', 'jmlPartisipasiSemingguTerakhir', 'topMahasiswa', 'lombaSedangAktif', 'chartPieData'));
     }
 }
