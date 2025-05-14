@@ -2,28 +2,23 @@
 
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\KelolaMahasiswaController;
+use App\Http\Controllers\Admin\KelolaDosenController;
+use App\Http\Controllers\Admin\KelolaAdminController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
+// Tampilan awal sementara
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-Route::get('/', [DashboardController::class, 'index']);
+//KELOLA USER (ADMIN)
+Route::group(['prefix' => 'admin/kelola-pengguna'], function () {
+    // Rute untuk CRUD Mahasiswa
+    Route::resource('mahasiswa', KelolaMahasiswaController::class);
+    // Rute untuk CRUD Dosen
+    Route::resource('dosen', KelolaDosenController::class);
+    // Rute untuk CRUD Admin
+    Route::resource('admin', KelolaAdminController::class);
+});
 
 Route::get('/login', function () {
     return view('auth.login');
 });
-
-// Halo syafiq!
-// halo halo fff
-
-// Halo ini test branch -sy
-// test 2 di main
-// test 3 branch
-// Test 4 di main

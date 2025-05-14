@@ -9,10 +9,11 @@
             </li>
             <li>
                 <!-- Jika aktif tambahkan class "active" -->
-                {{-- <a class="has-arrow {{ $activeMenu == 'dashboard' ? 'active' : '' }}" href="javascript:void()" aria-expanded="false"> --}}
-                <a href="javascript:void()" aria-expanded="false">
-                    <i class="icon-speedometer menu-icon"></i><span class="nav-text">Dashboard</span>
-                </a>
+                {{-- <a class="has-arrow {{ $activeMenu == 'dashboard' ? 'active' : '' }}" href="javascript:void()"
+                    aria-expanded="false"> --}}
+                    <a href="{{ route('dashboard') }}" aria-expanded="false">
+                        <i class="icon-speedometer menu-icon"></i><span class="nav-text">Dashboard</span>
+                    </a>
             </li>
 
             <!-- Akses Menu untuk Admin -->
@@ -23,9 +24,9 @@
                     <i class="fas fa-user-cog"></i><span class="nav-text">Kelola Pengguna</span>
                 </a>
                 <ul aria-expanded="false">
-                    <li><a href="javascript:void()">Mahasiswa</a></li>
-                    <li><a href="javascript:void()">Dosen</a></li>
-                    <li><a href="javascript:void()">Admin</a></li>
+                    <li><a href="{{ route('mahasiswa.index') }}">Mahasiswa</a></li>
+                    <li><a href="{{ route('dosen.index') }}">Dosen</a></li>
+                    <li><a href="{{ route('admin.index') }}">Admin</a></li>
                 </ul>
             </li>
             <li>
@@ -65,7 +66,7 @@
 
             {{-- <!-- Akses Menu untuk Dosen -->
             @elseif(Auth::user()->role == 'Dosen')
-                <!-- Akses Menu untuk Mahasiswa -->
+            <!-- Akses Menu untuk Mahasiswa -->
             @elseif(Auth::user()->role == 'Mahasiswa')
             @endif --}}
     </div>
