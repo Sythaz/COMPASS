@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('level_minbak_id')->index();
             $table->bigInteger('nim_mahasiswa')->unique();
             $table->string('nama_mahasiswa',255);
+            $table->string('angkatan')->index();
             $table->string('img_mahasiswa')->nullable();
             $table->timestamps();
 
