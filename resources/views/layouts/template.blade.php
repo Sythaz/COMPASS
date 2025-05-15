@@ -7,13 +7,13 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'SIPRESMA')</title>
+    <title>@yield('title', 'COMPASS')</title>
 
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/images/logo/logo-sipresma-putih.svg') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/images/logo/compass-ungu.svg') }}">
 
     <!-- Font Awesome CDN (Icon) -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Custom Stylesheet -->
     <link href="{{ asset('theme/css/style.css') }}" rel="stylesheet">
@@ -26,7 +26,6 @@
 </head>
 
 <body>
-
     <!-- Preloader start -->
     <div id="preloader">
         <div class="loader">
