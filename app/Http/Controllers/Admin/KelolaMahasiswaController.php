@@ -10,9 +10,9 @@ class KelolaMahasiswaController extends Controller
     public function index()
     {
         $breadcrumb = (object) [
-            'list' => ['?', '?']
+            'list' => ['Kelola Pengguna', 'Kelola Mahasiswa']
         ];
 
-        return view('admin.kelola-pengguna.mahasiswa.index', compact('breadcrumb'));
+        return view('admin.kelola-pengguna.kelola-mahasiswa.index', compact('breadcrumb'));
     }
 }

@@ -24,9 +24,9 @@
                     <i class="fas fa-user-cog"></i><span class="nav-text">Kelola Pengguna</span>
                 </a>
                 <ul aria-expanded="false">
-                    <li><a href="{{ route('mahasiswa.index') }}">Mahasiswa</a></li>
-                    <li><a href="{{ route('dosen.index') }}">Dosen</a></li>
                     <li><a href="{{ route('admin.index') }}">Admin</a></li>
+                    <li><a href="{{ route('dosen.index') }}">Dosen</a></li>
+                    <li><a href="{{ route('mahasiswa.index') }}">Mahasiswa</a></li>
                 </ul>
             </li>
             <li>
