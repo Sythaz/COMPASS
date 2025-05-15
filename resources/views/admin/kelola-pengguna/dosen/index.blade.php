@@ -1,6 +1,6 @@
 @extends('layouts.template')
 
-@section('title', 'Kelola Dosen | SIPRESMA')
+@section('title', 'Kelola Dosen | COMPASS')
 
 @section('page-title', 'Kelola Admin')
 

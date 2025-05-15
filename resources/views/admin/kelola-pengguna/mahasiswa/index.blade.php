@@ -1,6 +1,6 @@
 @extends('layouts.template')
 
-@section('title', 'Kelola Mahasiswa | SIPRESMA')
+@section('title', 'Kelola Mahasiswa | COMPASS')
 
 @section('page-title', 'Kelola Admin')
 

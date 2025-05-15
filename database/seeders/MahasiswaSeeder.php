@@ -22,6 +22,7 @@ class MahasiswaSeeder extends Seeder
                 'level_minbak_id'   => 3,
                 'nim_mahasiswa'     => 2341720146,
                 'nama_mahasiswa'    => 'Keisya Nisrina Aulia',
+                'angkatan'          => '2023',
                 'img_mahasiswa'     => 'Foto Keisya.JPEG'
             ],
             [
@@ -32,6 +33,7 @@ class MahasiswaSeeder extends Seeder
                 'level_minbak_id'   => 3,
                 'nim_mahasiswa'     => 2341720046,
                 'nama_mahasiswa'    => 'Adinda Mirza Devani',
+                'angkatan'          => '2023',
                 'img_mahasiswa'     => 'Foto adinda.JPEG'
             ],
             [
@@ -42,6 +44,7 @@ class MahasiswaSeeder extends Seeder
                 'level_minbak_id'   => 4,
                 'nim_mahasiswa'     => 2341720102,
                 'nama_mahasiswa'    => 'Muhammad Syafiq Aldiansyah',
+                'angkatan'          => '2023',
                 'img_mahasiswa'     => 'Foto Syafiq.JPEG'
             ],
             [
@@ -52,6 +55,7 @@ class MahasiswaSeeder extends Seeder
                 'level_minbak_id'   => 3,
                 'nim_mahasiswa'     => 2341720219,
                 'nama_mahasiswa'    => 'Satrio Wisnu Adi Pratama',
+                'angkatan'          => '2023',
                 'img_mahasiswa'     => 'Foto Satrio.JPEG'
             ],
             [
@@ -62,6 +66,7 @@ class MahasiswaSeeder extends Seeder
                 'level_minbak_id'   => 3,
                 'nim_mahasiswa'     => 2341720107,
                 'nama_mahasiswa'    => 'Adnan Arju Maulana Pasha',
+                'angkatan'          => '2023',
                 'img_mahasiswa'     => 'Foto Pasha.JPEG'
             ]
         ];
