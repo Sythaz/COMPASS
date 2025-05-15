@@ -21,22 +21,27 @@ Route::get('/mahasiswa', [DashboardMahasiswaController::class, 'index']);
 
 // KELOLA USER (ADMIN)
 Route::prefix('admin/kelola-pengguna')->group(function () {
-    // Halaman utama list admin
-    Route::get('admin', [KelolaAdminController::class, 'index'])->name('admin.index');
-    // DataTables AJAX list admin
-    Route::get('admin/list', [KelolaAdminController::class, 'list'])->name('admin.list');
-    // AJAX modal actions
-    Route::get('admin/create', [KelolaAdminController::class, 'create'])->name('admin.create');
-    Route::get('admin/{id}/show_ajax', [KelolaAdminController::class, 'showAjax']);
-    Route::get('admin/{id}/edit_ajax', [KelolaAdminController::class, 'editAjax']);
-    Route::get('admin/{id}/delete_ajax', [KelolaAdminController::class, 'deleteAjax']);
-    // Store, update, delete admin
-    Route::post('admin/store', [KelolaAdminController::class, 'store'])->name('admin.store');
-    Route::put('admin/{id}', [KelolaAdminController::class, 'update'])->name('admin.update');
-    Route::delete('admin/{id}', [KelolaAdminController::class, 'destroy'])->name('admin.destroy');
+    // Rute Kelola Admin
+    Route::get('admin', [KelolaAdminController::class, 'index'])->name('admin.index');             // Halaman utama list Admin           
+    Route::get('admin/list', [KelolaAdminController::class, 'list'])->name('admin.list');          // DataTable list Admin  
+    Route::get('admin/create', [KelolaAdminController::class, 'create'])->name('admin.create');    // Modal actions Create
+    Route::get('admin/{id}/show_ajax', [KelolaAdminController::class, 'showAjax']);                      // Show modal actions
+    Route::get('admin/{id}/edit_ajax', [KelolaAdminController::class, 'editAjax']);                      // Edit modal actions
+    Route::get('admin/{id}/delete_ajax', [KelolaAdminController::class, 'deleteAjax']);                  // Delete modal actions
+    Route::post('admin/store', [KelolaAdminController::class, 'store'])->name('admin.store');      // Store 
+    Route::put('admin/{id}', [KelolaAdminController::class, 'update'])->name('admin.update');      // update
+    Route::delete('admin/{id}', [KelolaAdminController::class, 'destroy'])->name('admin.destroy'); //delete
+    // Rute Kelola Dosen
+    Route::get('dosen', [KelolaDosenController::class, 'index'])->name('dosen.index');             // Halaman utama list Dosen
+    Route::get('dosen/list', [KelolaDosenController::class, 'list'])->name('dosen.list');          // DataTable list Dosen
+    Route::get('dosen/create', [KelolaDosenController::class, 'create'])->name('dosen.create');    // Modal actions Create
+    Route::get('dosen/{id}/show_ajax', [KelolaDosenController::class, 'showAjax']);                      // Show modal actions
+    Route::get('dosen/{id}/edit_ajax', [KelolaDosenController::class, 'editAjax']);                      // Edit modal actions
+    Route::get('dosen/{id}/delete_ajax', [KelolaDosenController::class, 'deleteAjax']);                  // Delete modal actions
+    Route::post('dosen/store', [KelolaDosenController::class, 'store'])->name('dosen.store');      // Store
+    Route::put('dosen/{id}', [KelolaDosenController::class, 'update'])->name('dosen.update');      // update
+    Route::delete('dosen/{id}', [KelolaDosenController::class, 'destroy'])->name('dosen.destroy'); //delete
 
-    // Rute resource untuk dosen dan mahasiswa
-    Route::resource('dosen', KelolaDosenController::class);
     Route::resource('mahasiswa', KelolaMahasiswaController::class);
 });
 
