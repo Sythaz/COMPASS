@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\LombaModel;
 use App\Models\MahasiswaModel;
 use App\Models\PendaftaranLombaModel;
@@ -40,7 +41,6 @@ class DashboardController extends Controller
                     ->translatedFormat('d F Y');
                 return $lomba;
             });
-
 
         // Menghitung jumlah mahasiswa berpartisipasi dalam lomba seminggu terakhir
         $semingguTerakhir = Carbon::now()->subWeek();

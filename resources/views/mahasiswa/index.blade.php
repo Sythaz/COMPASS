@@ -11,36 +11,36 @@
         <div class="col-lg-4 col-sm-6">
             <div class="card gradient-1">
                 <div class="card-body">
-                    <h3 class="card-title text-white">Partisipasi Mahasiswa</h3>
+                    <h3 class="card-title text-white">Partisipasi Lomba</h3>
                     <div class="d-inline-block mt-auto">
-                        <h1 class="text-white my-3">{{ $persentaseMhsIkutLomba }}%</h1>
+                        <h1 class="text-white my-3">1</h1>
                     </div>
-                    <span class="float-right display-5 opacity-5"><i class="fa fa-users"></i></span>
-                    <p class="text-white mb-0">Pernah mengikuti lomba</p>
+                    <span class="float-right display-5 opacity-5"><i class="fas fa-chart-line"></i></span>
+                    <p class="text-white mb-0">Lomba yang telah diikuti</p>
                 </div>
             </div>
         </div>
         <div class="col-lg-4 col-sm-6">
             <div class="card gradient-1">
                 <div class="card-body">
-                    <h3 class="card-title text-white">Lomba Aktif</h3>
+                    <h3 class="card-title text-white">Lomba Tersedia</h3>
                     <div class="d-inline-block">
-                        <h1 class="text-white my-3">{{ $totalLombaAktif }}</h1>
+                        <h1 class="text-white my-3">5</h1>
                     </div>
                     <span class="float-right display-5 opacity-5"><i class="fas fa-flag-checkered"></i></span>
-                    <p class="text-white mb-0">Sedang berlangsung</p>
+                    <p class="text-white mb-0">Lomba yang dapat diikuti</p>
                 </div>
             </div>
         </div>
         <div class="col-lg-4 col-sm-6">
             <div class="card gradient-1">
                 <div class="card-body">
-                    <h3 class="card-title text-white">Partisipasi Seminggu Terakhir</h3>
+                    <h3 class="card-title text-white">Ranking</h3>
                     <div class="d-inline-block">
-                        <h1 class="text-white my-3">{{ $jmlPartisipasiSemingguTerakhir }}</h1>
+                        <h1 class="text-white my-3">#5</h1>
                     </div>
-                    <span class="float-right display-5 opacity-5"><i class="fa fa-calendar-alt"></i></span>
-                    <p class="text-white mb-0">Mahasiswa mengikuti lomba</p>
+                    <span class="float-right display-5 opacity-5"><i class="fas fa-medal"></i></span>
+                    <p class="text-white mb-0">Teraktif semester ini</p>
                 </div>
             </div>
         </div>
@@ -76,17 +76,17 @@
         <div class="col-lg-6">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Jadwal Batas Lomba Yang Tersedia</h4>
+                    <h4 class="card-title">Jadwal Batas Lomba Peminatan Yang Tersedia</h4>
                     <div class="table-responsive">
                         <table class="table header-border table-hover verticle-middle">
                             <tbody>
-                                @foreach ($lombaSedangAktif as $index => $upcomingLomba)
-                                    <tr>
-                                        <td class="pl-0 col-8 font-weight-bold">{{ $upcomingLomba->nama_lomba }}</td>
-                                        <td class="text-center col">{{ $upcomingLomba->akhir_registrasi_lomba }}</td>
-                                        <th class="text-center col"><i class="fa fa-solid fa-angle-right fa-2x"></i></th>
-                                    </tr>
-                                @endforeach
+                                {{-- @foreach ($lombaSedangAktif as $index => $upcomingLomba) --}}
+                                <tr>
+                                    <td class="pl-0 col-8 font-weight-bold">IO CHALLENGE</td>
+                                    <td class="text-center col">30 June 2025	</td>
+                                    <th class="text-center col"><i class="fa fa-solid fa-angle-right fa-2x"></i></th>
+                                </tr>
+                                {{-- @endforeach --}}
                             </tbody>
                         </table>
                     </div>
@@ -98,18 +98,8 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Dominasi Bidang Prestasi Mahasiswa</h4>
-                    <div id="flotPie" class="flot-chart"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Perkembangan Prestasi per Semester</h4>
-                    <div id="flotLine" class="flot-chart"></div>
+                    <h4 class="card-title">Perbandingan Prestasi Mahasiswa Antar Angkatan</h4>
+                    <div id="morris-bar-chart"></div>
                 </div>
             </div>
         </div>
@@ -120,34 +110,46 @@
 @endpush
 
 @push('js')
-    <!--  flot-chart js -->
-    <script src="{{ asset('theme/plugins/flot/js/jquery.flot.min.js') }}"></script>
-    <script src="{{ asset('theme/plugins/flot/js/jquery.flot.pie.js') }}"></script>
-    <script src="{{ asset('theme/plugins/flot/js/jquery.flot.init.js') }}"></script>
+    <!--  Morris bar chart js -->
+    <script src="{{ asset('theme/plugins/raphael/raphael.min.js') }}"></script>
+    <script src="{{ asset('theme/plugins/morris/morris.min.js') }}"></script>
+    <script src="{{ asset('theme/js/plugins-init/morris-init.js') }}"></script>
 
     <!-- Memanggil Chart Script -->
-    <script src="{{ asset('js-custom/charts/admin/pie-chart.js') }}"></script>
-    <script src="{{ asset('js-custom/charts/admin/line-chart.js') }}"></script>
+    <script src="{{ asset('js-custom/charts/mahasiswa/bar-chart.js') }}"></script>
 
-    <!-- Menginisialisasi Chart yang dipanggil dari script diatas -->
+    <!-- Data didefinisikan di view -->
     <script>
-        $(function() {
-            // Data untuk pie chart dari server
-            const pieData = {!! json_encode($chartPieData) !!};
+        $(document).ready(function() {
+            // Data dari server
+            const BarData = [{
+                    y: 'Angkatan 2024',
+                    a: 10
+                },
+                {
+                    y: 'Angkatan 2023',
+                    a: 20
+                },
+                {
+                    y: 'Angkatan 2022',
+                    a: 15
+                },
+                {
+                    y: 'Angkatan 2021',
+                    a: 25
+                }
+            ];
 
-            // Inisialisasi pie chart
-            PieChart.init(pieData, 'flotPie');
-
-            // Data untuk line chart
-            const lineConfig = {
-                labels: ['Ganjil 2022', 'Genap 2022', 'Ganjil 2023', 'Genap 2023', 'Ganjil 2024', 'Genap 2024'],
-                values: [17, 13, 19, 11, 15, 7],
-                label: "Jumlah Prestasi",
-                color: "#7571F9"
-            };
-
-            // Inisialisasi line chart
-            LineChart.init(lineConfig, 'flotLine');
+            // Inisialisasi chart pertama
+            if (typeof MorrisBarChart !== 'undefined') {
+                MorrisBarChart.init('morris-bar-chart', BarData, {
+                    ykeys: ['a'],
+                    labels: ['Jumlah Prestasi'],
+                    barColors: ['#7571F9'],
+                });
+            } else {
+                console.error("Bar Chart belum termuat.");
+            }
         });
     </script>
 @endpush
