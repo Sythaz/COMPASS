@@ -1,0 +1,17 @@
+/* Border radius untuk input search */
+.dataTables_filter input {
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+}
+
+/* Border radius untuk dropdown show entries */
+.dataTables_length select {
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+}
+
+/* Hindari transformasi yang memicu zoom visual */
+.dataTables_paginate a {
+    transform: none !important;
+    transition: none !important;
+}

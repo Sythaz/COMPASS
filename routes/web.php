@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\KelolaMahasiswaController;
 use App\Http\Controllers\Admin\KelolaDosenController;
 use App\Http\Controllers\Admin\KelolaAdminController;
 use App\Http\Controllers\Admin\DashboardController as DashboardAdminController;
+use App\Http\Controllers\Admin\KategoriKeahlianController;
 use App\Http\Controllers\Dosen\DashboardController as DashboardDosenController;
 use App\Http\Controllers\Mahasiswa\DashboardController as DashboardMahasiswaController;
 
@@ -53,3 +54,6 @@ Route::prefix('admin/kelola-pengguna')->group(function () {
     Route::delete('mahasiswa/{id}', [KelolaMahasiswaController::class, 'destroy'])->name('mahasiswa.destroy'); // Delete
 });
 
+Route::prefix('admin/master-data')->group(function () {
+    Route::get('kategori-keahlian', [KategoriKeahlianController::class, 'index'])->name('kategori-keahlian.index');
+});

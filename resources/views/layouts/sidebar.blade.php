@@ -36,9 +36,9 @@
                 <ul aria-expanded="false">
                     <li><a href="javascript:void()">Program Studi</a></li>
                     <li><a href="javascript:void()">Periode Semester</a></li>
-                    <li><a href="javascript:void()">Kategori Lomba</a></li>
+                    <li><a href="{{ route('kategori-keahlian.index') }}">Kategori & Keahlian</a></li>
                     <li><a href="javascript:void()">Tingkat Lomba</a></li>
-                    <li><a href="javascript:void()">Bidang Keahlian</a></li>
+                    {{-- <li><a href="javascript:void()">Bidang Keahlian</a></li> --}}
                     <li><a href="javascript:void()">Kriteria Penilaian</a></li>
                 </ul>
             </li>
