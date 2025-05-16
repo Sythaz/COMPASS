@@ -41,7 +41,15 @@ Route::prefix('admin/kelola-pengguna')->group(function () {
     Route::post('dosen/store', [KelolaDosenController::class, 'store'])->name('dosen.store');      // Store
     Route::put('dosen/{id}', [KelolaDosenController::class, 'update'])->name('dosen.update');      // update
     Route::delete('dosen/{id}', [KelolaDosenController::class, 'destroy'])->name('dosen.destroy'); //delete
-
-    Route::resource('mahasiswa', KelolaMahasiswaController::class);
+    // Rute Kelola Mahasiswa
+    Route::get('mahasiswa', [KelolaMahasiswaController::class, 'index'])->name('mahasiswa.index');             // Halaman utama list Mahasiswa
+    Route::get('mahasiswa/list', [KelolaMahasiswaController::class, 'list'])->name('mahasiswa.list');          // DataTable list Mahasiswa
+    Route::get('mahasiswa/create', [KelolaMahasiswaController::class, 'create'])->name('mahasiswa.create');    // Modal actions Create
+    Route::get('mahasiswa/{id}/show_ajax', [KelolaMahasiswaController::class, 'showAjax']);                          // Show modal actions
+    Route::get('mahasiswa/{id}/edit_ajax', [KelolaMahasiswaController::class, 'editAjax']);                          // Edit modal actions
+    Route::get('mahasiswa/{id}/delete_ajax', [KelolaMahasiswaController::class, 'deleteAjax']);                      // Delete modal actions
+    Route::post('mahasiswa/store', [KelolaMahasiswaController::class, 'store'])->name('mahasiswa.store');      // Store
+    Route::put('mahasiswa/{id}', [KelolaMahasiswaController::class, 'update'])->name('mahasiswa.update');      // Update
+    Route::delete('mahasiswa/{id}', [KelolaMahasiswaController::class, 'destroy'])->name('mahasiswa.destroy'); // Delete
 });
 
