@@ -23,6 +23,10 @@
             <label for="password" class="form-label">Password <small>(kosongkan jika tidak ingin diubah)</small></label>
             <input type="password" class="form-control" name="password" placeholder="Password baru">
         </div>
+        {{-- <div class="mb-3">
+            <label for="password" class="form-label">Phrase <small>(kosongkan jika tidak ingin diubah)</small></label>
+            <input type="password" class="form-control" name="password" placeholder="Password baru">
+        </div> --}}
         <div class="mb-3">
             <input type="hidden" name="role" value="admin">
         </div>

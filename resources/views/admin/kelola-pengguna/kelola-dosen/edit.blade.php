@@ -14,6 +14,17 @@
             <label for="nama_dosen" class="form-label">Nama</label>
             <input type="text" class="form-control" name="nama_dosen" value="{{ $dosen->nama_dosen }}" required>
         </div>
+        <div class="form-group">
+            <label for="kategori_id">Pilih Kategori</label>
+            <select name="kategori_id" id="kategori_id" class="form-control" required>
+                <option value="">-- Pilih Kategori --</option>
+                @foreach($kategori as $k)
+                    <option value="{{ $k->kategori_id }}" {{ (old('kategori_id', $dosen->kategori_id ?? '') == $k->kategori_id) ? 'selected' : '' }}>
+                        {{ $k->nama_kategori }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
 
         <div class="mb-3">
             <label for="username" class="form-label">Username</label>
@@ -28,18 +39,16 @@
             <input type="password" class="form-control" name="password" placeholder="Password baru">
         </div>
 
+        {{-- <div class="mb-3">
+            <label for="password" class="form-label">
+                Phrase <small>(kosongkan jika tidak ingin diubah)</small>
+            </label>
+            <input type="password" class="form-control" name="password" placeholder="Password baru">
+        </div> --}}
+
         <div class="mb-3">
             <input type="hidden" name="role" value="dosen">
         </div>
-
-        <select name="kategori_id" required>
-            <option value="">-- Pilih Kategori --</option>
-            @foreach($kategori as $k)
-                <option value="{{ $k->kategori_id }}" {{ (old('kategori_id', $dosen->kategori_id ?? '') == $k->kategori_id) ? 'selected' : '' }}>
-                    {{ $k->nama_kategori }}
-                </option>
-            @endforeach
-        </select>
     </div>
     <div class="modal-footer">
         <button type="submit" class="btn btn-primary">Simpan</button>

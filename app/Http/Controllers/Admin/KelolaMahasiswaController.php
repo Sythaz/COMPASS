@@ -24,11 +24,10 @@ class KelolaMahasiswaController extends Controller
         return view('admin.kelola-pengguna.kelola-mahasiswa.index', compact('breadcrumb'));
     }
 
-    // List data Mahasiswa dengan relasi users, prodi, periode, dan level_minat_bakat
     public function list(Request $request)
     {
         $data = MahasiswaModel::with(['users', 'prodi', 'periode', 'level_minat_bakat'])
-            ->select('mahasiswa_id', 'user_id', 'prodi_id', 'periode_id', 'level_minbak_id', 'nim_mahasiswa', 'nama_mahasiswa')
+            ->select('mahasiswa_id', 'user_id', 'prodi_id', 'periode_id', 'level_minbak_id', 'nim_mahasiswa', 'nama_mahasiswa', 'angkatan')
             ->get();
 
         return DataTables::of($data)
@@ -38,6 +37,7 @@ class KelolaMahasiswaController extends Controller
             ->addColumn('prodi', fn($row) => $row->prodi->nama_prodi ?? '-')
             ->addColumn('periode', fn($row) => $row->periode->semester_periode ?? '-')
             ->addColumn('level_minat_bakat', fn($row) => $row->level_minat_bakat->level_minbak ?? '-')
+            ->addColumn('angkatan', fn($row) => $row->angkatan ?? '-')
             ->addColumn('aksi', function ($row) {
                 $btn = '<button onclick="modalAction(\'' . url('admin/kelola-pengguna/mahasiswa/' . $row->mahasiswa_id . '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('admin/kelola-pengguna/mahasiswa/' . $row->mahasiswa_id . '/edit_ajax') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
@@ -48,7 +48,6 @@ class KelolaMahasiswaController extends Controller
             ->make(true);
     }
 
-    // Form Create
     public function create()
     {
         $list_prodi = ProdiModel::all();
@@ -58,14 +57,12 @@ class KelolaMahasiswaController extends Controller
         return view('admin.kelola-pengguna.kelola-mahasiswa.create', compact('list_prodi', 'list_periode', 'list_level'));
     }
 
-    // Modal actions Show
     public function showAjax($id)
     {
         $mahasiswa = MahasiswaModel::with(['users', 'prodi', 'periode', 'level_minat_bakat'])->findOrFail($id);
         return view('admin.kelola-pengguna.kelola-mahasiswa.show', compact('mahasiswa'));
     }
 
-    // Modal actions Edit
     public function editAjax($id)
     {
         $mahasiswa = MahasiswaModel::with(['users', 'prodi', 'periode', 'level_minat_bakat'])->findOrFail($id);
@@ -75,14 +72,13 @@ class KelolaMahasiswaController extends Controller
 
         return view('admin.kelola-pengguna.kelola-mahasiswa.edit', compact('mahasiswa', 'list_prodi', 'list_periode', 'list_level'));
     }
-    // Modal actions Delete
+
     public function deleteAjax($id)
     {
         $mahasiswa = MahasiswaModel::findOrFail($id);
         return view('admin.kelola-pengguna.kelola-mahasiswa.delete', compact('mahasiswa'));
     }
 
-    // Store new Mahasiswa
     public function store(Request $request)
     {
         $request->validate([
@@ -91,6 +87,7 @@ class KelolaMahasiswaController extends Controller
             'prodi_id' => 'required|exists:t_prodi,prodi_id',
             'periode_id' => 'required|exists:t_periode,periode_id',
             'level_minbak_id' => 'required|exists:t_level_minat_bakat,level_minbak_id',
+            'angkatan' => 'nullable|integer',
             'username' => 'required|unique:t_users,username',
             'password' => 'required|min:6',
             'role' => 'required',
@@ -101,6 +98,7 @@ class KelolaMahasiswaController extends Controller
                 'username' => $request->username,
                 'password' => Hash::make($request->password),
                 'role' => $request->role,
+                'phrase' => 'default phrase',  // <-- Set default phrase disini
             ]);
 
             MahasiswaModel::create([
@@ -111,6 +109,7 @@ class KelolaMahasiswaController extends Controller
                 'nim_mahasiswa' => $request->nim_mahasiswa,
                 'nama_mahasiswa' => $request->nama_mahasiswa,
                 'img_mahasiswa' => null,
+                'angkatan' => $request->angkatan ?? '2025', // default 2025 kalau null
             ]);
         });
 
@@ -120,7 +119,6 @@ class KelolaMahasiswaController extends Controller
         ]);
     }
 
-    // Update data Mahasiswa
     public function update(Request $request, $id)
     {
         $mahasiswa = MahasiswaModel::findOrFail($id);
@@ -132,6 +130,7 @@ class KelolaMahasiswaController extends Controller
             'prodi_id' => 'required|exists:t_prodi,prodi_id',
             'periode_id' => 'required|exists:t_periode,periode_id',
             'level_minbak_id' => 'required|exists:t_level_minat_bakat,level_minbak_id',
+            // 'angkatan' => 'required|integer',
             'username' => 'required|unique:t_users,username,' . $user->user_id . ',user_id',
             'role' => 'required',
             'password' => 'nullable|min:6',
@@ -143,6 +142,9 @@ class KelolaMahasiswaController extends Controller
                 $user->password = Hash::make($request->password);
             }
             $user->role = $request->role;
+            if (!$user->phrase) {
+                $user->phrase = 'default phrase'; // pastikan phrase tetap ada
+            }
             $user->save();
 
             $mahasiswa->prodi_id = $request->prodi_id;
@@ -150,6 +152,7 @@ class KelolaMahasiswaController extends Controller
             $mahasiswa->level_minbak_id = $request->level_minbak_id;
             $mahasiswa->nim_mahasiswa = $request->nim_mahasiswa;
             $mahasiswa->nama_mahasiswa = $request->nama_mahasiswa;
+            $mahasiswa->angkatan = '2025';
             $mahasiswa->save();
         });
 
@@ -159,18 +162,19 @@ class KelolaMahasiswaController extends Controller
         ]);
     }
 
-    // Delete Mahasiswa
     public function destroy($id)
     {
         $mahasiswa = MahasiswaModel::findOrFail($id);
-        DB::transaction(function () use ($mahasiswa) {
+        $user = $mahasiswa->users;
+
+        DB::transaction(function () use ($mahasiswa, $user) {
             $mahasiswa->delete();
-            $mahasiswa->users()->delete();
+            $user->delete();
         });
 
         return response()->json([
             'success' => true,
-            'message' => 'Data Mahasiswa Berhasil Dihapus'
+            'message' => 'Data Mahasiswa berhasil dihapus'
         ]);
     }
 }

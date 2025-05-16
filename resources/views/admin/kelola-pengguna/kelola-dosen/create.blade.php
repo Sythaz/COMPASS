@@ -30,6 +30,10 @@
             <input type="password" name="password" id="password" class="form-control" required minlength="6">
         </div>
         <div class="mb-3">
+            <label for="password" class="form-label">Phrase</label>
+            <input type="password" name="password" id="password" class="form-control" required minlength="6">
+        </div>
+        <div class="mb-3">
             <input type="hidden" name="role" value="dosen">
         </div>
     </div>

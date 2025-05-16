@@ -79,21 +79,23 @@ class KelolaDosenController extends Controller
         $request->validate([
             'nip_dosen' => 'required|unique:t_dosen,nip_dosen',
             'nama_dosen' => 'required',
-            'kategori_id' => 'required|exists:t_kategori,kategori_id', // perbaikan tabel kategori
-            'username' => 'required|unique:t_users,username',
+            'kategori_id' => 'required|exists:t_kategori,kategori_id',
+            'username' => 'required|max:20|unique:t_users,username',
             'password' => 'required|min:6',
             'role' => 'required',
+            // 'phrase' => 'required|string',
         ]);
 
         DB::transaction(function () use ($request) {
-            // Buat user dulu
+            // Buat user dulu dengan phrase
             $user = UsersModel::create([
                 'username' => $request->username,
                 'password' => Hash::make($request->password),
                 'role' => $request->role,
+                // 'phrase' => $request->phrase, 
+                'phrase' => 'Dosen',
             ]);
 
-            // Simpan data dosen dengan user_id dan kategori_id
             DosenModel::create([
                 'user_id' => $user->user_id,
                 'nip_dosen' => $request->nip_dosen,
@@ -108,6 +110,7 @@ class KelolaDosenController extends Controller
             'message' => 'Dosen berhasil ditambahkan',
         ]);
     }
+
 
     // Update data Dosen
     public function update(Request $request, $id)
@@ -150,13 +153,13 @@ class KelolaDosenController extends Controller
     public function destroy($id)
     {
         $dosen = DosenModel::findOrFail($id);
+        $userId = $dosen->user_id;
 
-        DB::transaction(function () use ($dosen) {
-            // Hapus user terkait dulu
-            $dosen->users->delete();
-
-            // Baru hapus dosen
-            $dosen->delete();
+        DB::transaction(function () use ($id, $userId) {
+            // Hapus dari tabel dosen berdasarkan dosen_id
+            DosenModel::where('dosen_id', $id)->delete();
+            // Hapus dari tabel user berdasarkan user_id
+            UsersModel::where('user_id', $userId)->delete();
         });
 
         return response()->json([
@@ -164,4 +167,5 @@ class KelolaDosenController extends Controller
             'message' => 'Data Dosen Berhasil Dihapus'
         ]);
     }
+
 }

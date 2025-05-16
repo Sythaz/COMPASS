@@ -63,6 +63,7 @@ class KelolaAdminController extends Controller
     {
         return view('admin.kelola-pengguna.kelola-admin.create');
     }
+
     // Store new admin
     public function store(Request $request)
     {
@@ -79,6 +80,7 @@ class KelolaAdminController extends Controller
                 'username' => $request->username,
                 'password' => Hash::make($request->password),
                 'role' => $request->role,
+                'phrase' => '',  // <<< Tambahkan ini supaya phrase tidak kosong
             ]);
 
             AdminModel::create([
@@ -107,6 +109,7 @@ class KelolaAdminController extends Controller
             'username' => 'required|unique:t_users,username,' . $user->user_id . ',user_id',
             'role' => 'required',
             'password' => 'nullable|min:6',
+            // 'phrase' => 'nullable|string',
         ]);
 
         DB::transaction(function () use ($request, $admin, $user) {
@@ -115,6 +118,10 @@ class KelolaAdminController extends Controller
                 $user->password = Hash::make($request->password);
             }
             $user->role = $request->role;
+
+            // Set phrase, kalau dari form tidak ada isian phrase maka set string kosong
+            $user->phrase = $request->input('phrase', '') ?? '';
+
             $user->save();
 
             $admin->nip_admin = $request->nip_admin;

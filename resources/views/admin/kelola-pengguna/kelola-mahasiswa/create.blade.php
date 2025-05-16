@@ -2,59 +2,61 @@
     <div class="modal-body">
         <div class="mb-3">
             <label for="nim_mahasiswa" class="form-label">NIM</label>
-            <input type="text" name="nim_mahasiswa" id="nim_mahasiswa" class="form-control" required value="{{ old('nim_mahasiswa') }}">
+            <input type="text" name="nim_mahasiswa" id="nim_mahasiswa" class="form-control" required
+                value="{{ old('nim_mahasiswa') }}">
         </div>
         <div class="mb-3">
             <label for="nama_mahasiswa" class="form-label">Nama Mahasiswa</label>
-            <input type="text" name="nama_mahasiswa" id="nama_mahasiswa" class="form-control" required value="{{ old('nama_mahasiswa') }}">
+            <input type="text" name="nama_mahasiswa" id="nama_mahasiswa" class="form-control" required
+                value="{{ old('nama_mahasiswa') }}">
         </div>
-        <div class="mb-3">
-            <label for="prodi_id" class="form-label">Program Studi</label>
-            <select name="prodi_id" id="prodi_id" class="form-select" required>
-                <option value="" disabled {{ old('prodi_id') ? '' : 'selected' }}>-- Pilih Program Studi --</option>
+        <div class="form-group">
+            <label for="prodi_id">Program Studi</label>
+            <select name="prodi_id" id="prodi_id" class="form-control" required>
+                <option value="">-- Pilih Program Studi --</option>
                 @foreach ($list_prodi as $prodi)
-                    <option value="{{ $prodi->prodi_id }}" {{ old('prodi_id') == $prodi->prodi_id ? 'selected' : '' }}>
+                    <option value="{{ $prodi->prodi_id }}" {{ old('prodi_id', $mahasiswa->prodi_id ?? '') == $prodi->prodi_id ? 'selected' : '' }}>
                         {{ $prodi->nama_prodi }}
                     </option>
                 @endforeach
             </select>
         </div>
-        <div class="mb-3">
-            <label for="periode_id" class="form-label">Periode</label>
-            <select name="periode_id" id="periode_id" class="form-select" required>
-                <option value="" disabled {{ old('periode_id') ? '' : 'selected' }}>-- Pilih Periode --</option>
+
+        <div class="form-group">
+            <label for="periode_id">Periode</label>
+            <select name="periode_id" id="periode_id" class="form-control" required>
+                <option value="">-- Pilih Periode --</option>
                 @foreach ($list_periode as $periode)
-                    <option value="{{ $periode->periode_id }}" {{ old('periode_id') == $periode->periode_id ? 'selected' : '' }}>
+                    <option value="{{ $periode->periode_id }}" {{ old('periode_id', $mahasiswa->periode_id ?? '') == $periode->periode_id ? 'selected' : '' }}>
                         {{ $periode->semester_periode }}
                     </option>
                 @endforeach
             </select>
         </div>
-        <div class="mb-3">
-            <label for="level_minbak_id" class="form-label">Level Minat Bakat</label>
-            <select name="level_minbak_id" id="level_minbak_id" class="form-select" required>
-                <option value="" disabled {{ old('level_minbak_id') ? '' : 'selected' }}>-- Pilih Level Minat Bakat --</option>
+
+        <div class="form-group">
+            <label for="level_minbak_id">Level Minat Bakat</label>
+            <select name="level_minbak_id" id="level_minbak_id" class="form-control" required>
+                <option value="">-- Pilih Level Minat Bakat --</option>
                 @foreach ($list_level as $level)
-                    <option value="{{ $level->level_minbak_id }}" {{ old('level_minbak_id') == $level->level_minbak_id ? 'selected' : '' }}>
+                    <option value="{{ $level->level_minbak_id }}" {{ old('level_minbak_id', $mahasiswa->level_minbak_id ?? '') == $level->level_minbak_id ? 'selected' : '' }}>
                         {{ $level->level_minbak }}
                     </option>
                 @endforeach
             </select>
         </div>
+        
         <div class="mb-3">
             <label for="username" class="form-label">Username</label>
-            <input type="text" name="username" id="username" class="form-control" required value="{{ old('username') }}">
+            <input type="text" name="username" id="username" class="form-control" required
+                value="{{ old('username') }}">
         </div>
         <div class="mb-3">
             <label for="password" class="form-label">Password</label>
             <input type="password" name="password" id="password" class="form-control" required minlength="6">
         </div>
         <div class="mb-3">
-            <label for="role" class="form-label">Role</label>
-            <select name="role" id="role" class="form-select" required>
-                <option value="" disabled {{ old('role') ? '' : 'selected' }}>-- Pilih Role --</option>
-                <option value="mahasiswa" {{ old('role') == 'mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
-            </select>
+            <input type="hidden" name="role" value="mahasiswa">
         </div>
     </div>
     <div class="modal-footer">
@@ -96,7 +98,7 @@
                         Swal.fire('Error', msg, 'error');
                     }
                 });
-                return false; 
+                return false;
             }
         });
     });
