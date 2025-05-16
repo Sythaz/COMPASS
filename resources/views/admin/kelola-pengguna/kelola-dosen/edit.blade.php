@@ -17,7 +17,8 @@
 
         <div class="mb-3">
             <label for="username" class="form-label">Username</label>
-            <input type="text" class="form-control" name="username" value="{{ $dosen->user->username ?? '' }}" required>
+            <input type="text" class="form-control" name="username" value="{{ $dosen->users->username ?? '' }}"
+                required>
         </div>
 
         <div class="mb-3">
@@ -28,18 +29,17 @@
         </div>
 
         <div class="mb-3">
-            <label for="role" class="form-label">Role</label>
-            <select name="role" class="form-select" required>
-                <option value="dosen" {{ ($dosen->user->role ?? '') == 'dosen' ? 'selected' : '' }}>Dosen</option>
-                <option value="admin" {{ ($dosen->user->role ?? '') == 'admin' ? 'selected' : '' }}>Admin</option>
-                <!-- Tambahkan role lain jika ada -->
-            </select>
+            <input type="hidden" name="role" value="dosen">
         </div>
 
-        <div class="mb-3">
-            <label for="bidang_dosen" class="form-label">Bidang</label>
-            <input type="text" class="form-control" name="bidang_dosen" value="{{ $dosen->bidang_dosen ?? '' }}">
-        </div>
+        <select name="kategori_id" required>
+            <option value="">-- Pilih Kategori --</option>
+            @foreach($kategori as $k)
+                <option value="{{ $k->kategori_id }}" {{ (old('kategori_id', $dosen->kategori_id ?? '') == $k->kategori_id) ? 'selected' : '' }}>
+                    {{ $k->nama_kategori }}
+                </option>
+            @endforeach
+        </select>
     </div>
     <div class="modal-footer">
         <button type="submit" class="btn btn-primary">Simpan</button>

@@ -21,13 +21,7 @@
             <input type="password" name="password" id="password" class="form-control" required minlength="6">
         </div>
         <div class="mb-3">
-            <label for="role" class="form-label">Role</label>
-            <select name="role" id="role" class="form-select" required>
-                <option value="" disabled selected>-- Pilih Role --</option>
-                <option value="admin">Admin</option>
-                {{-- <option value="superadmin">Super Admin</option> --}}
-                <!-- Tambah role lain sesuai kebutuhan -->
-            </select>
+            <input type="hidden" name="role" value="admin">
         </div>
     </div>
     <div class="modal-footer">

@@ -24,11 +24,7 @@
             <input type="password" class="form-control" name="password" placeholder="Password baru">
         </div>
         <div class="mb-3">
-            <label for="role" class="form-label">Role</label>
-            <select name="role" class="form-select" required>
-                <option value="admin" {{ ($admin->users->role ?? '') == 'admin' ? 'selected' : '' }}>Admin</option>
-                <!-- Tambahkan role lain sesuai kebutuhan -->
-            </select>
+            <input type="hidden" name="role" value="admin">
         </div>
     </div>
     <div class="modal-footer">

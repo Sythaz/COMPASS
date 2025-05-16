@@ -28,7 +28,7 @@
         </dd>
 
         <dt class="col-sm-4 fw-semibold text-secondary">Bidang</dt>
-        <dd class="col-sm-8">{{ $dosen->bidang_dosen ?? '-' }}</dd>
+        <dd class="col-sm-8">{{ $dosen->kategori->nama_kategori ?? '-' }}</dd>
     </dl>
 </div>
 

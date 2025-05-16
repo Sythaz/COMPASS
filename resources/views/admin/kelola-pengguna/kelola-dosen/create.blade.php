@@ -8,10 +8,19 @@
             <label for="nama_dosen" class="form-label">Nama</label>
             <input type="text" name="nama_dosen" id="nama_dosen" class="form-control" required>
         </div>
-        <div class="mb-3">
-            <label for="bidang_dosen" class="form-label">Bidang Dosen</label>
-            <input type="text" name="bidang_dosen" id="bidang_dosen" class="form-control" required>
+
+        <div class="form-group">
+            <label for="kategori_id">Pilih Kategori</label>
+            <select name="kategori_id" id="kategori_id" class="form-control" required>
+                <option value="">-- Pilih Kategori --</option>
+                @foreach($kategori as $k)
+                    <option value="{{ $k->kategori_id }}" {{ (old('kategori_id', $dosen->kategori_id ?? '') == $k->kategori_id) ? 'selected' : '' }}>
+                        {{ $k->nama_kategori }}
+                    </option>
+                @endforeach
+            </select>
         </div>
+
         <div class="mb-3">
             <label for="username" class="form-label">Username</label>
             <input type="text" name="username" id="username" class="form-control" required>
@@ -21,12 +30,7 @@
             <input type="password" name="password" id="password" class="form-control" required minlength="6">
         </div>
         <div class="mb-3">
-            <label for="role" class="form-label">Role</label>
-            <select name="role" id="role" class="form-select" required>
-                <option value="" disabled selected>-- Pilih Role --</option>
-                <option value="dosen">Dosen</option>
-                {{-- Tambah role lain sesuai kebutuhan --}}
-            </select>
+            <input type="hidden" name="role" value="dosen">
         </div>
     </div>
     <div class="modal-footer">
