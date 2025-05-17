@@ -21,12 +21,13 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,             // 6
             MahasiswaSeeder::class,         // 7
             DosenSeeder::class,             // 8
-            LombaSeeder::class,             // 9
-            PrestasiSeeder::class,          // 10
-            RekomendasiLombaSeeder::class,  // 11
-            PendaftaranLombaSeeder::class,  // 12
-            RekomPesertaLombaSeeder::class, // 13
-            LaporanPrestasiSeeder::class    // 14
+            TingkatLombaSeeder::class,      // 9 
+            LombaSeeder::class,             // 10
+            PrestasiSeeder::class,          // 11
+            RekomendasiLombaSeeder::class,  // 12
+            PendaftaranLombaSeeder::class,  // 13
+            RekomPesertaLombaSeeder::class, // 14
+            LaporanPrestasiSeeder::class    // 15
         ]);
     }
 }
