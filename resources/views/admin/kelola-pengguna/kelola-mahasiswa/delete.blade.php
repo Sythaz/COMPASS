@@ -1,33 +1,50 @@
-<form id="form-delete-mahasiswa" method="POST" action="{{ url('admin/kelola-pengguna/mahasiswa/' . $mahasiswa->mahasiswa_id) }}">
+<form id="form-delete-mahasiswa" method="POST"
+    action="{{ url('admin/kelola-pengguna/mahasiswa/' . $mahasiswa->mahasiswa_id) }}">
     @csrf
     @method('DELETE')
 
-    <div class="modal-header bg-danger text-white">
-        <h5 class="modal-title d-flex align-items-center gap-2">
-            <i class="fas fa-trash-alt"></i> Konfirmasi Hapus
+    <div class="modal-header bg-primary rounded">
+        <h5 class="modal-title text-white">
+            <i class="fas fa-trash-alt mr-2"></i>Hapus Mahasiswa
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
 
     <div class="modal-body">
-        <p class="fs-5">
-            Apakah Anda yakin ingin menghapus mahasiswa
-            <strong>{{ $mahasiswa->nama_mahasiswa }}</strong> (<code>{{ $mahasiswa->nim_mahasiswa }}</code>)?
-        </p>
+        <div class="alert alert-danger d-flex align-items-center gap-2">
+            <i class="fas fa-exclamation-triangle fa-lg"></i>
+            <strong class="alert-heading h5 mb-0">
+                Apakah Anda yakin ingin menghapus data ini?
+            </strong>
+        </div>
+        <table class="table table-bordered mt-3 mb-0">
+            <tr>
+                <th style="width: 30%">Nama Mahasiswa</th>
+                <td class="text-start">{{ $mahasiswa->nama_mahasiswa }}</td>
+            </tr>
+            <tr>
+                <th>NIM</th>
+                <td class="text-start"><code>{{ $mahasiswa->nim_mahasiswa }}</code></td>
+            </tr>
+            <tr>
+                <th>Username</th>
+                <td class="text-start">{{ $mahasiswa->users->username ?? '-' }}</td>
+            </tr>
+        </table>
     </div>
 
     <div class="modal-footer">
         <button type="submit" class="btn btn-danger d-flex align-items-center gap-2">
-            <i class="fas fa-trash"></i> Hapus
+            <i class="fas fa-trash-alt mr-2"></i>Hapus
         </button>
         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-            <i class="fas fa-times"></i> Batal
+            <i class="fas fa-times mr-2"></i>Batal
         </button>
     </div>
 </form>
 
 <script>
-    $(document).off('submit', '#form-delete-mahasiswa');  
+    $(document).off('submit', '#form-delete-mahasiswa'); // Hapus event handler lama (jika ada)
     $(document).on('submit', '#form-delete-mahasiswa', function (e) {
         e.preventDefault();
         let form = $(this);
@@ -40,8 +57,15 @@
             success: function (response) {
                 if (response.success) {
                     Swal.fire('Berhasil', response.message, 'success').then(() => {
-                        $('#ajaxModal').modal('hide');  
-                        $('#tabel-mahasiswa').DataTable().ajax.reload(null, false); 
+                        // Tutup modal, pastikan id modal benar
+                        var modalEl = document.querySelector('.modal.show');
+                        if (modalEl) {
+                            let modalInstance = bootstrap.Modal.getInstance(modalEl);
+                            if (modalInstance) modalInstance.hide();
+                        }
+
+                        // Reload tabel DataTables (ganti sesuai id tabel mahasiswa)
+                        $('#tabel-mahasiswa').DataTable().ajax.reload(null, false);
                     });
                 } else {
                     Swal.fire('Error', 'Hapus gagal.', 'error');

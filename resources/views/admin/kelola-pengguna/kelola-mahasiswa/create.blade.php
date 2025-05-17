@@ -1,105 +1,159 @@
-<form id="formTambahMahasiswa">
-    <div class="modal-body">
-        <div class="mb-3">
-            <label for="nim_mahasiswa" class="form-label">NIM</label>
-            <input type="text" name="nim_mahasiswa" id="nim_mahasiswa" class="form-control" required
-                value="{{ old('nim_mahasiswa') }}">
-        </div>
-        <div class="mb-3">
-            <label for="nama_mahasiswa" class="form-label">Nama Mahasiswa</label>
-            <input type="text" name="nama_mahasiswa" id="nama_mahasiswa" class="form-control" required
-                value="{{ old('nama_mahasiswa') }}">
-        </div>
-        <div class="form-group">
-            <label for="prodi_id">Program Studi</label>
-            <select name="prodi_id" id="prodi_id" class="form-control" required>
-                <option value="">-- Pilih Program Studi --</option>
-                @foreach ($list_prodi as $prodi)
-                    <option value="{{ $prodi->prodi_id }}" {{ old('prodi_id', $mahasiswa->prodi_id ?? '') == $prodi->prodi_id ? 'selected' : '' }}>
-                        {{ $prodi->nama_prodi }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="periode_id">Periode</label>
-            <select name="periode_id" id="periode_id" class="form-control" required>
-                <option value="">-- Pilih Periode --</option>
-                @foreach ($list_periode as $periode)
-                    <option value="{{ $periode->periode_id }}" {{ old('periode_id', $mahasiswa->periode_id ?? '') == $periode->periode_id ? 'selected' : '' }}>
-                        {{ $periode->semester_periode }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="level_minbak_id">Level Minat Bakat</label>
-            <select name="level_minbak_id" id="level_minbak_id" class="form-control" required>
-                <option value="">-- Pilih Level Minat Bakat --</option>
-                @foreach ($list_level as $level)
-                    <option value="{{ $level->level_minbak_id }}" {{ old('level_minbak_id', $mahasiswa->level_minbak_id ?? '') == $level->level_minbak_id ? 'selected' : '' }}>
-                        {{ $level->level_minbak }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-        
-        <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input type="text" name="username" id="username" class="form-control" required
-                value="{{ old('username') }}">
-        </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" name="password" id="password" class="form-control" required minlength="6">
-        </div>
-        <div class="mb-3">
-            <input type="hidden" name="role" value="mahasiswa">
-        </div>
+<form id="formTambahMahasiswa" method="POST" action="{{ url('admin/kelola-pengguna/mahasiswa/store') }}">
+    @csrf
+    <div class="modal-header bg-primary rounded">
+        <h5 class="modal-title text-white"><i class="fas fa-plus mr-2"></i>Tambah Mahasiswa</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
     </div>
+
+    <div class="modal-body">
+
+        <div class="form-group">
+            <label for="nim_mahasiswa" class="col-form-label">NIM <span class="text-danger">*</span></label>
+            <div class="custom-validation">
+                <input type="text" name="nim_mahasiswa" id="nim_mahasiswa" class="form-control" required
+                    value="{{ old('nim_mahasiswa') }}">
+                <span class="error-text text-danger" id="error-nim_mahasiswa"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="nama_mahasiswa" class="col-form-label">Nama Mahasiswa <span class="text-danger">*</span></label>
+            <div class="custom-validation">
+                <input type="text" name="nama_mahasiswa" id="nama_mahasiswa" class="form-control" required
+                    value="{{ old('nama_mahasiswa') }}">
+                <span class="error-text text-danger" id="error-nama_mahasiswa"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="prodi_id" class="col-form-label">Program Studi <span class="text-danger">*</span></label>
+            <div class="custom-validation">
+                <select name="prodi_id" id="prodi_id" class="form-control" required>
+                    <option value="">-- Pilih Program Studi --</option>
+                    @foreach ($list_prodi as $prodi)
+                        <option value="{{ $prodi->prodi_id }}" {{ old('prodi_id', $mahasiswa->prodi_id ?? '') == $prodi->prodi_id ? 'selected' : '' }}>
+                            {{ $prodi->nama_prodi }}
+                        </option>
+                    @endforeach
+                </select>
+                <span class="error-text text-danger" id="error-prodi_id"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="periode_id" class="col-form-label">Periode <span class="text-danger">*</span></label>
+            <div class="custom-validation">
+                <select name="periode_id" id="periode_id" class="form-control" required>
+                    <option value="">-- Pilih Periode --</option>
+                    @foreach ($list_periode as $periode)
+                        <option value="{{ $periode->periode_id }}" {{ old('periode_id', $mahasiswa->periode_id ?? '') == $periode->periode_id ? 'selected' : '' }}>
+                            {{ $periode->semester_periode }}
+                        </option>
+                    @endforeach
+                </select>
+                <span class="error-text text-danger" id="error-periode_id"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="level_minbak_id" class="col-form-label">Level Minat Bakat <span
+                    class="text-danger">*</span></label>
+            <div class="custom-validation">
+                <select name="level_minbak_id" id="level_minbak_id" class="form-control" required>
+                    <option value="">-- Pilih Level Minat Bakat --</option>
+                    @foreach ($list_level as $level)
+                        <option value="{{ $level->level_minbak_id }}" {{ old('level_minbak_id', $mahasiswa->level_minbak_id ?? '') == $level->level_minbak_id ? 'selected' : '' }}>
+                            {{ $level->level_minbak }}
+                        </option>
+                    @endforeach
+                </select>
+                <span class="error-text text-danger" id="error-level_minbak_id"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="username" class="col-form-label">Username <span class="text-danger">*</span></label>
+            <div class="custom-validation">
+                <input type="text" name="username" id="username" class="form-control" required
+                    value="{{ old('username') }}">
+                <span class="error-text text-danger" id="error-username"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="password" class="col-form-label">Password <span class="text-danger">*</span></label>
+            <div class="custom-validation">
+                <input type="password" name="password" id="password" class="form-control" required minlength="6">
+                <span class="error-text text-danger" id="error-password"></span>
+            </div>
+        </div>
+
+        <input type="hidden" name="role" value="mahasiswa">
+    </div>
+
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-        <button type="submit" class="btn btn-primary">Simpan</button>
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk mr-2"></i>Simpan</button>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            <i class="fa-solid fa-xmark mr-2"></i>Batal
+        </button>
     </div>
 </form>
 
+<script src="{{ asset('js-custom/form-validation.js') }}"></script>
+
 <script>
-    $(document).ready(function () {
-        $('#formTambahMahasiswa').validate({
-            submitHandler: function (form) {
-                $.ajax({
-                    url: "{{ url('admin/kelola-pengguna/mahasiswa/store') }}",
-                    method: "POST",
-                    data: $(form).serialize(),
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            $('#ajaxModal').modal('hide');
-                            Swal.fire('Berhasil', response.message, 'success');
-                            $('#tabel-mahasiswa').DataTable().ajax.reload();
-                        } else {
-                            Swal.fire('Error', 'Terjadi kesalahan saat menyimpan data.', 'error');
-                        }
-                    },
-                    error: function (xhr) {
-                        let errors = xhr.responseJSON?.errors;
-                        let msg = '';
-                        if (errors) {
-                            $.each(errors, function (key, val) {
-                                msg += val[0] + '<br>';
-                            });
-                        } else {
-                            msg = 'Terjadi kesalahan.';
-                        }
-                        Swal.fire('Error', msg, 'error');
-                    }
-                });
-                return false;
+    customFormValidation(
+        "#formTambahMahasiswa",
+        {
+            nim_mahasiswa: { required: true },
+            nama_mahasiswa: { required: true },
+            prodi_id: { required: true },
+            periode_id: { required: true },
+            level_minbak_id: { required: true },
+            username: { required: true },
+            password: { required: true, minlength: 6 },
+        },
+        {
+            nim_mahasiswa: { required: "NIM wajib diisi" },
+            nama_mahasiswa: { required: "Nama wajib diisi" },
+            prodi_id: { required: "Program Studi wajib dipilih" },
+            periode_id: { required: "Periode wajib dipilih" },
+            level_minbak_id: { required: "Level Minat Bakat wajib dipilih" },
+            username: { required: "Username wajib diisi" },
+            password: {
+                required: "Password wajib diisi",
+                minlength: "Password minimal 6 karakter"
             }
-        });
-    });
+        },
+        function (response, form) {
+            if (response.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: response.message,
+                }).then(function () {
+                    getModalInstance().hide();
+                    $('#tabel-mahasiswa').DataTable().ajax.reload();
+                });
+            } else {
+                $('.error-text').text('');
+                $.each(response.msgField, function (prefix, val) {
+                    $('#error-' + prefix).text(val[0]);
+                });
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Terjadi Kesalahan',
+                    text: response.message
+                });
+            }
+        }
+    );
+
+    function getModalInstance() {
+        const modalEl = document.getElementById('myModal');
+        return bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+    }
 </script>

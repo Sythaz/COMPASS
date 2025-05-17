@@ -2,26 +2,26 @@
     action="{{ url('admin/kelola-pengguna/mahasiswa/' . $mahasiswa->mahasiswa_id) }}">
     @csrf
     @method('PUT')
-    <div class="modal-header">
-        <h5 class="modal-title">Edit Mahasiswa</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <div class="modal-header bg-primary rounded">
+        <h5 class="modal-title text-white"><i class="fas fa-edit me-2"></i>Edit Mahasiswa</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
 
     <div class="modal-body">
-        <div class="mb-3">
-            <label for="nim_mahasiswa" class="form-label">NIM</label>
-            <input type="text" class="form-control" name="nim_mahasiswa" value="{{ $mahasiswa->nim_mahasiswa }}"
-                required>
+        <div class="form-group mb-3">
+            <label for="nim_mahasiswa" class="col-form-label">NIM <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" name="nim_mahasiswa" id="nim_mahasiswa"
+                value="{{ $mahasiswa->nim_mahasiswa }}" required>
         </div>
 
-        <div class="mb-3">
-            <label for="nama_mahasiswa" class="form-label">Nama</label>
-            <input type="text" class="form-control" name="nama_mahasiswa" value="{{ $mahasiswa->nama_mahasiswa }}"
-                required>
+        <div class="form-group mb-3">
+            <label for="nama_mahasiswa" class="col-form-label">Nama <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" name="nama_mahasiswa" id="nama_mahasiswa"
+                value="{{ $mahasiswa->nama_mahasiswa }}" required>
         </div>
 
-        <div class="form-group">
-            <label for="prodi_id">Program Studi</label>
+        <div class="form-group mb-3">
+            <label for="prodi_id" class="col-form-label">Program Studi <span class="text-danger">*</span></label>
             <select name="prodi_id" id="prodi_id" class="form-control" required>
                 <option value="">-- Pilih Program Studi --</option>
                 @foreach ($list_prodi as $prodi)
@@ -32,8 +32,8 @@
             </select>
         </div>
 
-        <div class="form-group">
-            <label for="periode_id">Periode</label>
+        <div class="form-group mb-3">
+            <label for="periode_id" class="col-form-label">Periode <span class="text-danger">*</span></label>
             <select name="periode_id" id="periode_id" class="form-control" required>
                 <option value="">-- Pilih Periode --</option>
                 @foreach ($list_periode as $periode)
@@ -44,8 +44,9 @@
             </select>
         </div>
 
-        <div class="form-group">
-            <label for="level_minbak_id">Level Minat Bakat</label>
+        <div class="form-group mb-3">
+            <label for="level_minbak_id" class="col-form-label">Level Minat Bakat <span
+                    class="text-danger">*</span></label>
             <select name="level_minbak_id" id="level_minbak_id" class="form-control" required>
                 <option value="">-- Pilih Level Minat Bakat --</option>
                 @foreach ($list_level as $level)
@@ -56,34 +57,30 @@
             </select>
         </div>
 
-        <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input type="text" class="form-control" name="username" value="{{ $mahasiswa->users->username ?? '' }}"
-                required>
+        <div class="form-group mb-3">
+            <label for="username" class="col-form-label">Username <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" name="username" id="username"
+                value="{{ $mahasiswa->users->username ?? '' }}" required>
         </div>
 
-        <div class="mb-3">
-            <label for="password" class="form-label">
+        <div class="form-group mb-3">
+            <label for="password" class="col-form-label">
                 Password <small>(kosongkan jika tidak ingin diubah)</small>
             </label>
-            <input type="password" class="form-control" name="password" placeholder="Password baru">
+            <input type="password" class="form-control" name="password" id="password" placeholder="Password baru">
         </div>
 
-        {{-- <div class="mb-3">
-            <label for="password" class="form-label">
-                Password <small>(kosongkan jika tidak ingin diubah)</small>
-            </label>
-            <input type="password" class="form-control" name="password" placeholder="Password baru">
-        </div> --}}
+        <input type="hidden" name="role" value="mahasiswa">
+    </div>
 
-        <div class="mb-3">
-            <input type="hidden" name="role" value="mahasiswa">
-        </div>
-
-        <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Simpan</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-        </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-floppy-disk me-2"></i>Simpan
+        </button>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            <i class="fas fa-times me-2"></i>Batal
+        </button>
+    </div>
 </form>
 
 <script>
@@ -101,7 +98,11 @@
             success: function (response) {
                 if (response.success) {
                     Swal.fire('Berhasil', response.message, 'success').then(() => {
-                        $('#ajaxModal').modal('hide');
+                        let modalEl = document.querySelector('.modal.show');
+                        if (modalEl) {
+                            let modal = bootstrap.Modal.getInstance(modalEl);
+                            if (modal) modal.hide();
+                        }
                         $('#tabel-mahasiswa').DataTable().ajax.reload(null, false);
                     });
                 } else {
