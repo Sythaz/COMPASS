@@ -187,7 +187,7 @@ class DosenSeeder extends Seeder
         foreach ($nips as $index => $nip) {
             $data[] = [
                 'user_id' => $index + 3, // Dosen mulai dari user_id 3
-                'kategori_id' => rand(1, 18),
+                'kategori_id' => rand(1, 18), // Kategori dosen random
                 'nip_dosen' => $nip,
                 'nama_dosen' => $names[$index] ?? 'Nama Tidak Diketahui', // antisipasi jika $names tidak lengkap
                 'img_dosen' => 'profil-default.png',

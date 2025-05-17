@@ -546,7 +546,7 @@ class MahasiswaSeeder extends Seeder
                 'user_id' => $index + 83, // 2 Admin + 81 Dosen = 83, jadi mulai dari 84
                 'prodi_id' => 1,
                 'periode_id' => 1,
-                'level_minbak_id' => 3,
+                'level_minbak_id' => rand(1, 4), // Random level minat bakat
                 'nim_mahasiswa' => $nim,
                 'nama_mahasiswa' => $names[$index] ?? 'Nama Tidak Diketahui',
                 'angkatan' => '2023', // Bisa juga ambil dari substr($nim, 0, 4)

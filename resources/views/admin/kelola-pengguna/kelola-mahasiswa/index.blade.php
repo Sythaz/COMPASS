@@ -112,7 +112,7 @@
                     { data: 'prodi', name: 'prodi.prodi_nama' },
                     { data: 'periode', name: 'periode.periode_nama' },
                     { data: 'level_minat_bakat', name: 'level_minat_bakat.level_minbak_nama' },
-                    { data: 'aksi', name: 'aksi', orderable: false, searchable: false, className: 'text-center', width: '150px' },
+                    { data: 'aksi', name: 'aksi', orderable: false, searchable: false, className: 'text-center', width: '160px' },
                 ],
                 drawCallback: function () {
                     $(".dataTables_wrapper").css({ margin: "0", padding: "0" });
