@@ -34,8 +34,8 @@
                     <i class="fas fa-database"></i><span class="nav-text">Master Data</span>
                 </a>
                 <ul aria-expanded="false">
-                    <li><a href="javascript:void()">Program Studi</a></li>
-                    <li><a href="javascript:void()">Periode Semester</a></li>
+                    <li><a href="{{ route('program-studi.index') }}">Program Studi</a></li>
+                    <li><a href="{{ route('periode-semester.index') }}">Periode Semester</a></li>
                     <li><a href="{{ route('kategori-keahlian.index') }}">Kategori & Keahlian</a></li>
                     <li><a href="javascript:void()">Tingkat Lomba</a></li>
                     {{-- <li><a href="javascript:void()">Bidang Keahlian</a></li> --}}

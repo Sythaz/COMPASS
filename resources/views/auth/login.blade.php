@@ -78,82 +78,58 @@
 
 @push('js')
     <!-- Memanggil Fungsi Form Validation Custom -->
+    <script src="{{ asset('js-custom/form-validation.js') }}"></script>
+
+    <!-- Memanggil Custom Validation untuk form login -->
     <script>
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-        $(document).ready(function() {
-            $("#form-login").validate({
-                rules: {
-                    identifier: {
-                        required: true,
-                        digits: true,
-                        minlength: 4,
-                        maxlength: 20
-                    },
-                    password: {
-                        required: true,
-                        minlength: 6,
-                        maxlength: 20
-                    }
+        customFormValidation(
+            "#form-login", {
+                identifier: {
+                    required: true,
+                    digits: true,
+                    minlength: 4,
+                    maxlength: 20
                 },
-                messages: {
-                    identifier: {
-                        required: "NIM atau NIP wajib diisi",
-                        digits: "Hanya boleh angka",
-                        minlength: "Minimal 4 karakter",
-                        maxlength: "Maksimal 20 karakter"
-                    },
-                    password: {
-                        required: "Kata sandi wajib diisi",
-                        minlength: "Minimal 6 karakter",
-                        maxlength: "Maksimal 20 karakter"
-                    }
-                },
-                submitHandler: function(form) { // ketika valid, maka bagian yg akan dijalankan
-                    $.ajax({
-                        url: form.action,
-                        type: form.method,
-                        data: $(form).serialize(),
-                        success: function(response) {
-                            if (response.status) { // jika sukses
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Berhasil',
-                                    text: response.message,
-                                }).then(function() {
-                                    window.location = response.redirect;
-                                });
-                            } else { // jika error
-                                $('.error-text').text('');
-                                $.each(response.msgField, function(prefix, val) {
-                                    $('#error-' + prefix).text(val[0]);
-                                });
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Terjadi Kesalahan',
-                                    text: response.message
-                                });
-                            }
-                        }
-                    });
-                    return false;
-                },
-                errorElement: 'span',
-                errorPlacement: function(error, element) {
-                    error.addClass('invalid-feedback');
-                    element.closest('.custom-validation').append(error);
-                },
-                highlight: function(element, errorClass, validClass) {
-                    $(element).addClass('is-invalid');
-                },
-                unhighlight: function(element, errorClass, validClass) {
-                    $(element).removeClass('is-invalid');
+                password: {
+                    required: true,
+                    minlength: 6,
+                    maxlength: 20
                 }
-            });
-        });
+            }, {
+                identifier: {
+                    required: "NIM atau NIP wajib diisi",
+                    digits: "Hanya boleh angka",
+                    minlength: "Minimal 4 karakter",
+                    maxlength: "Maksimal 20 karakter"
+                },
+                password: {
+                    required: "Kata sandi wajib diisi",
+                    minlength: "Minimal 6 karakter",
+                    maxlength: "Maksimal 20 karakter"
+                }
+            },
+            function(response, form) {
+                if (response.status) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: response.message,
+                    }).then(function() {
+                        window.location = response.redirect;
+                    });
+                } else {
+                    $('.error-text').text('');
+                    $.each(response.msgField, function(prefix, val) {
+                        $('#error-' + prefix).text(val[0]);
+                    });
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Terjadi Kesalahan',
+                        text: response.message
+                    });
+                }
+            }
+        );
     </script>
 
     <!-- Password icon toggle -->
