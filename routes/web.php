@@ -7,6 +7,8 @@ use App\Http\Controllers\Admin\KelolaDosenController;
 use App\Http\Controllers\Admin\KelolaAdminController;
 use App\Http\Controllers\Admin\DashboardController as DashboardAdminController;
 use App\Http\Controllers\Admin\KategoriKeahlianController;
+use App\Http\Controllers\Admin\PeriodeSemesterController;
+use App\Http\Controllers\Admin\ProgramStudiController;
 use App\Http\Controllers\Dosen\DashboardController as DashboardDosenController;
 use App\Http\Controllers\Mahasiswa\DashboardController as DashboardMahasiswaController;
 
@@ -55,5 +57,36 @@ Route::prefix('admin/kelola-pengguna')->group(function () {
 });
 
 Route::prefix('admin/master-data')->group(function () {
-    Route::get('kategori-keahlian', [KategoriKeahlianController::class, 'index'])->name('kategori-keahlian.index');
+    // Rute Kategori Keahlian
+    Route::get('/kategori-keahlian', [KategoriKeahlianController::class, 'index'])->name('kategori-keahlian.index');
+    Route::post('/kategori-keahlian/list', [KategoriKeahlianController::class, 'list'])->name('kategori-keahlian.list');
+    Route::get('/kategori-keahlian/create', [KategoriKeahlianController::class, 'create'])->name('kategori-keahlian.create');
+    Route::get('/kategori-keahlian/{id}/show_ajax', [KategoriKeahlianController::class,'showAjax']);
+    Route::get('/kategori-keahlian/{id}/edit_ajax', [KategoriKeahlianController::class, 'editAjax']);
+    Route::get('/kategori-keahlian/{id}/delete_ajax', [KategoriKeahlianController::class, 'deleteAjax']);
+    Route::post('/kategori-keahlian/store', [KategoriKeahlianController::class,'store'])->name('kategori-keahlian.store');
+    Route::put('/kategori-keahlian/{id}', [KategoriKeahlianController::class, 'update'])->name('kategori-keahlian.update');
+    Route::delete('/kategori-keahlian/{id}', [KategoriKeahlianController::class, 'destroy'])->name('kategori-keahlian.destroy');
+
+    // Rute Periode Semester
+    Route::get('periode-semester', [PeriodeSemesterController::class, 'index'])->name('periode-semester.index');
+    Route::post('periode-semester/list', [PeriodeSemesterController::class, 'list'])->name('periode-semester.list');
+    Route::get('periode-semester/create', [PeriodeSemesterController::class, 'create'])->name('periode-semester.create');
+    Route::get('periode-semester/{id}/show_ajax', [PeriodeSemesterController::class,'showAjax']);
+    Route::get('periode-semester/{id}/edit_ajax', [PeriodeSemesterController::class, 'editAjax']);
+    Route::get('periode-semester/{id}/delete_ajax', [PeriodeSemesterController::class, 'deleteAjax']);
+    Route::post('periode-semester/store', [PeriodeSemesterController::class,'store'])->name('periode-semester.store');
+    Route::put('periode-semester/{id}', [PeriodeSemesterController::class, 'update'])->name('periode-semester.update');
+    Route::delete('periode-semester/{id}', [PeriodeSemesterController::class, 'destroy'])->name('periode-semester.destroy');
+
+    // Rute Program Studi
+    Route::get('program-studi', [ProgramStudiController::class, 'index'])->name('program-studi.index');
+    Route::post('program-studi/list', [ProgramStudiController::class, 'list'])->name('program-studi.list');
+    Route::get('program-studi/create', [ProgramStudiController::class, 'create'])->name('program-studi.create');
+    Route::get('program-studi/{id}/show_ajax', [ProgramStudiController::class,'showAjax']);
+    Route::get('program-studi/{id}/edit_ajax', [ProgramStudiController::class, 'editAjax']);
+    Route::get('program-studi/{id}/delete_ajax', [ProgramStudiController::class, 'deleteAjax']);
+    Route::post('program-studi/store', [ProgramStudiController::class,'store'])->name('program-studi.store');
+    Route::put('program-studi/{id}', [ProgramStudiController::class, 'update'])->name('program-studi.update');
+    Route::delete('program-studi/{id}', [ProgramStudiController::class, 'destroy'])->name('program-studi.destroy');
 });

@@ -14,7 +14,7 @@
 
     <!-- Font Awesome CDN (Icon) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <!-- Custom Stylesheet -->
     <link href="{{ asset('theme/css/style.css') }}" rel="stylesheet">
 
@@ -82,10 +82,13 @@
 
     <!-- jQuery -->
     <script src="{{ asset('theme/plugins/jquery/jquery.min.js') }}"></script>
+    
     <!-- jquery-validation -->
     <script src="{{ asset('theme/plugins/jquery-validation/jquery.validate.min.js') }}"></script>
 
-    <script src="./js/dashboard/dashboard-1.js"></script>
+    <!-- Bootstrap JS Bundle (modal show hide butuh ini)-->
+    <script src="{{ asset('theme/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
     @stack('js')
 </body>
 
