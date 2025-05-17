@@ -1,42 +1,51 @@
 <form id="form-edit-dosen" method="POST" action="{{ url('admin/kelola-pengguna/dosen/' . $dosen->dosen_id) }}">
     @csrf
     @method('PUT')
-    <div class="modal-header">
-        <h5 class="modal-title">Edit Dosen</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <div class="modal-header bg-primary rounded">
+        <h5 class="modal-title text-white"><i class="fas fa-edit mr-2"></i>Edit Dosen</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
     </div>
     <div class="modal-body">
-        <div class="mb-3">
-            <label for="nip_dosen" class="form-label">NIP</label>
-            <input type="text" class="form-control" name="nip_dosen" value="{{ $dosen->nip_dosen }}" required>
-        </div>
-        <div class="mb-3">
-            <label for="nama_dosen" class="form-label">Nama</label>
-            <input type="text" class="form-control" name="nama_dosen" value="{{ $dosen->nama_dosen }}" required>
+        <div class="form-group">
+            <label for="nip_dosen" class="col-form-label">NIP <span class="text-danger">*</span></label>
+            <div class="custom-validation">
+                <input type="text" class="form-control" name="nip_dosen" value="{{ $dosen->nip_dosen }}" required>
+            </div>
         </div>
         <div class="form-group">
-            <label for="kategori_id">Pilih Kategori</label>
-            <select name="kategori_id" id="kategori_id" class="form-control" required>
-                <option value="">-- Pilih Kategori --</option>
-                @foreach($kategori as $k)
-                    <option value="{{ $k->kategori_id }}" {{ (old('kategori_id', $dosen->kategori_id ?? '') == $k->kategori_id) ? 'selected' : '' }}>
-                        {{ $k->nama_kategori }}
-                    </option>
-                @endforeach
-            </select>
+            <label for="nama_dosen" class="col-form-label">Nama <span class="text-danger">*</span></label>
+            <div class="custom-validation">
+                <input type="text" class="form-control" name="nama_dosen" value="{{ $dosen->nama_dosen }}" required>
+            </div>
         </div>
-
-        <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input type="text" class="form-control" name="username" value="{{ $dosen->users->username ?? '' }}"
-                required>
+        <div class="form-group">
+            <label for="kategori_id" class="col-form-label">Pilih Kategori <span class="text-danger">*</span></label>
+            <div class="custom-validation">
+                <select name="kategori_id" id="kategori_id" class="form-control" required>
+                    <option value="">-- Pilih Kategori --</option>
+                    @foreach($kategori as $k)
+                        <option value="{{ $k->kategori_id }}" {{ (old('kategori_id', $dosen->kategori_id ?? '') == $k->kategori_id) ? 'selected' : '' }}>
+                            {{ $k->nama_kategori }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
         </div>
-
-        <div class="mb-3">
-            <label for="password" class="form-label">
-                Password <small>(kosongkan jika tidak ingin diubah)</small>
-            </label>
-            <input type="password" class="form-control" name="password" placeholder="Password baru">
+        <div class="form-group">
+            <label for="username" class="col-form-label">Username <span class="text-danger">*</span></label>
+            <div class="custom-validation">
+                <input type="text" class="form-control" name="username" value="{{ $dosen->users->username ?? '' }}"
+                    required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="password" class="col-form-label">Password <small>(kosongkan jika tidak ingin
+                    diubah)</small></label>
+            <div class="custom-validation">
+                <input type="password" class="form-control" name="password" placeholder="Password baru">
+            </div>
         </div>
 
         {{-- <div class="mb-3">
@@ -46,13 +55,15 @@
             <input type="password" class="form-control" name="password" placeholder="Password baru">
         </div> --}}
 
-        <div class="mb-3">
-            <input type="hidden" name="role" value="dosen">
-        </div>
+        <input type="hidden" name="role" value="dosen">
     </div>
     <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Simpan</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-floppy-disk mr-2"></i>Simpan
+        </button>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            <i class="fa-solid fa-xmark mr-2"></i>Batal
+        </button>
     </div>
 </form>
 
@@ -71,7 +82,11 @@
             success: function (response) {
                 if (response.success) {
                     Swal.fire('Berhasil', response.message, 'success').then(() => {
-                        $('#ajaxModal').modal('hide');
+                        let modalEl = document.querySelector('.modal.show');
+                        if (modalEl) {
+                            let modal = bootstrap.Modal.getInstance(modalEl);
+                            if (modal) modal.hide();
+                        }
                         $('#tabel-dosen').DataTable().ajax.reload(null, false);
                     });
                 } else {

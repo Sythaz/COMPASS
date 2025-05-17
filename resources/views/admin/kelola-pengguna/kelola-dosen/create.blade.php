@@ -1,84 +1,122 @@
-<form id="formTambahDosen">
+<form id="formTambahDosen" method="POST" action="{{ url('admin/kelola-pengguna/dosen/store') }}">
+    @csrf
+    <div class="modal-header bg-primary rounded">
+        <h5 class="modal-title text-white"><i class="fas fa-plus mr-2"></i>Tambah Dosen</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
     <div class="modal-body">
-        <div class="mb-3">
-            <label for="nip_dosen" class="form-label">NIP</label>
-            <input type="text" name="nip_dosen" id="nip_dosen" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label for="nama_dosen" class="form-label">Nama</label>
-            <input type="text" name="nama_dosen" id="nama_dosen" class="form-control" required>
+        <div class="form-group">
+            <label for="nip_dosen" class="col-form-label">NIP <span class="text-danger">*</span></label>
+            <div class="custom-validation">
+                <input type="text" name="nip_dosen" id="nip_dosen" class="form-control" required>
+                <span class="error-text text-danger" id="error-nip_dosen"></span>
+            </div>
         </div>
 
         <div class="form-group">
-            <label for="kategori_id">Pilih Kategori</label>
-            <select name="kategori_id" id="kategori_id" class="form-control" required>
-                <option value="">-- Pilih Kategori --</option>
-                @foreach($kategori as $k)
-                    <option value="{{ $k->kategori_id }}" {{ (old('kategori_id', $dosen->kategori_id ?? '') == $k->kategori_id) ? 'selected' : '' }}>
-                        {{ $k->nama_kategori }}
-                    </option>
-                @endforeach
-            </select>
+            <label for="nama_dosen" class="col-form-label">Nama <span class="text-danger">*</span></label>
+            <div class="custom-validation">
+                <input type="text" name="nama_dosen" id="nama_dosen" class="form-control" required>
+                <span class="error-text text-danger" id="error-nama_dosen"></span>
+            </div>
         </div>
 
-        <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input type="text" name="username" id="username" class="form-control" required>
+        <div class="form-group">
+            <label for="kategori_id" class="col-form-label">Pilih Kategori <span class="text-danger">*</span></label>
+            <div class="custom-validation">
+                <select name="kategori_id" id="kategori_id" class="form-control" required>
+                    <option value="">-- Pilih Kategori --</option>
+                    @foreach($kategori as $k)
+                        <option value="{{ $k->kategori_id }}" {{ (old('kategori_id', $dosen->kategori_id ?? '') == $k->kategori_id) ? 'selected' : '' }}>
+                            {{ $k->nama_kategori }}
+                        </option>
+                    @endforeach
+                </select>
+                <span class="error-text text-danger" id="error-kategori_id"></span>
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" name="password" id="password" class="form-control" required minlength="6">
+
+        <div class="form-group">
+            <label for="username" class="col-form-label">Username <span class="text-danger">*</span></label>
+            <div class="custom-validation">
+                <input type="text" name="username" id="username" class="form-control" required>
+                <span class="error-text text-danger" id="error-username"></span>
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">Phrase</label>
-            <input type="password" name="password" id="password" class="form-control" required minlength="6">
+
+        <div class="form-group">
+            <label for="password" class="col-form-label">Password <span class="text-danger">*</span></label>
+            <div class="custom-validation">
+                <input type="password" name="password" id="password" class="form-control" required minlength="6">
+                <span class="error-text text-danger" id="error-password"></span>
+            </div>
         </div>
-        <div class="mb-3">
-            <input type="hidden" name="role" value="dosen">
-        </div>
+
+        <input type="hidden" name="role" value="dosen">
     </div>
+
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-        <button type="submit" class="btn btn-primary">Simpan</button>
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk mr-2"></i>Simpan</button>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            <i class="fa-solid fa-xmark mr-2"></i>Batal
+        </button>
     </div>
 </form>
 
+<!-- Pastikan js-custom/form-validation.js sudah dimuat -->
+<script src="{{ asset('js-custom/form-validation.js') }}"></script>
 
 <script>
-    $(document).ready(function () {
-        $('#formTambahDosen').validate({
-            submitHandler: function (form) {
-                $.ajax({
-                    url: "{{ url('admin/kelola-pengguna/dosen/store') }}",
-                    method: "POST",
-                    data: $(form).serialize(),
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            $('#ajaxModal').modal('hide');
-                            Swal.fire('Berhasil', response.message, 'success');
-                            $('#tabel-dosen').DataTable().ajax.reload();
-                        } else {
-                            Swal.fire('Error', 'Terjadi kesalahan saat menyimpan data.', 'error');
-                        }
-                    },
-                    error: function (xhr) {
-                        let errors = xhr.responseJSON?.errors;
-                        let msg = '';
-                        if (errors) {
-                            $.each(errors, function (key, val) {
-                                msg += val[0] + '<br>';
-                            });
-                        } else {
-                            msg = 'Terjadi kesalahan.';
-                        }
-                        Swal.fire('Error', msg, 'error');
-                    }
-                });
-                return false; // mencegah form submit normal
+    // Fungsi validasi dan submit form
+    customFormValidation(
+        "#formTambahDosen",
+        {
+            nip_dosen: { required: true },
+            nama_dosen: { required: true },
+            kategori_id: { required: true },
+            username: { required: true },
+            password: { required: true, minlength: 6 },
+        },
+        {
+            nip_dosen: { required: "NIP wajib diisi" },
+            nama_dosen: { required: "Nama wajib diisi" },
+            kategori_id: { required: "Kategori wajib dipilih" },
+            username: { required: "Username wajib diisi" },
+            password: {
+                required: "Password wajib diisi",
+                minlength: "Password minimal 6 karakter"
             }
-        });
-    });
+        },
+        function (response, form) {
+            if (response.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: response.message,
+                }).then(function () {
+                    getModalInstance().hide();
+                    $('#tabel-dosen').DataTable().ajax.reload();
+                });
+            } else {
+                $('.error-text').text('');
+                $.each(response.msgField, function (prefix, val) {
+                    $('#error-' + prefix).text(val[0]);
+                });
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Terjadi Kesalahan',
+                    text: response.message
+                });
+            }
+        }
+    );
+
+    function getModalInstance() {
+        const modalEl = document.getElementById('myModal');
+        return bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+    }
 </script>
