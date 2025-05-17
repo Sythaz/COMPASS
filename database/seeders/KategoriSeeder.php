@@ -15,76 +15,94 @@ class KategoriSeeder extends Seeder
     {
         $data = [
             [
-                'kategori_id'   => 1,
-                'nama_kategori' => "Seni",
+                'kategori_id'       => 1,
+                'nama_kategori'     => 'Seni',
+                'status_kategori'   => 'Aktif'
             ],
             [
-                'kategori_id'   => 2,
-                'nama_kategori' => "Olahraga",
+                'kategori_id'       => 2,
+                'nama_kategori'     => 'Olahraga',
+                'status_kategori'   => 'Aktif'
             ],
             [
-                'kategori_id'   => 3,
-                'nama_kategori' => "Bahasa",
+                'kategori_id'       => 3,
+                'nama_kategori'     => 'Bahasa',
+                'status_kategori'   => 'Aktif'
             ],
             [
                 'kategori_id'   => 4,
-                'nama_kategori' => "Algoritma & Logika",
+                'nama_kategori' => 'Algoritma & Logika',
+                'status_kategori'   => 'Aktif'
             ],
             [
                 'kategori_id'   => 5,
-                'nama_kategori' => "Web Development",
+                'nama_kategori' => 'Web Development',
+                'status_kategori'   => 'Aktif'
             ],
             [
                 'kategori_id'   => 6,
-                'nama_kategori' => "Mobile App Development",
+                'nama_kategori' => 'Mobile App Development',
+                'status_kategori'   => 'Aktif'
             ],
             [
                 'kategori_id'   => 7,
-                'nama_kategori' => "Game Development",
+                'nama_kategori' => 'Game Development',
+                'status_kategori'   => 'Aktif'
             ],
             [
                 'kategori_id'   => 8,
-                'nama_kategori' => "Software Development",
+                'nama_kategori' => 'Software Development',
+                'status_kategori'   => 'Aktif'
             ],
             [
                 'kategori_id'   => 9,
-                'nama_kategori' => "UI/UX Design",
+                'nama_kategori' => 'UI/UX Design',
+                'status_kategori'   => 'Aktif'
             ],
             [
                 'kategori_id'   => 10,
-                'nama_kategori' => "AI & Mechine Learning",
+                'nama_kategori' => 'AI & Mechine Learning',
+                'status_kategori'   => 'Aktif'
             ],
             [
                 'kategori_id'   => 11,
-                'nama_kategori' => "Cybersecurity",
+                'nama_kategori' => 'Cybersecurity',
+                'status_kategori'   => 'Aktif'
             ],
             [
                 'kategori_id'   => 12,
-                'nama_kategori' => "Networking & Cloud",
+                'nama_kategori' => 'Networking & Cloud',
+                'status_kategori'   => 'Aktif'
             ],
             [
                 'kategori_id'   => 13,
-                'nama_kategori' => "Data Analytics",
+                'nama_kategori' => 'Data Analytics',
+                'status_kategori'   => 'Aktif'
             ],
             [
                 'kategori_id'   => 14,
-                'nama_kategori' => "Data Science",
+                'nama_kategori' => 'Data Science',
+                'status_kategori'   => 'Aktif'
             ],
             [
                 'kategori_id'   => 15,
-                'nama_kategori' => "Internet of Things",
+                'nama_kategori' => 'Internet of Things',
+                'status_kategori'   => 'Aktif'
             ],
             [
                 'kategori_id'   => 16,
-                'nama_kategori' => "Essay",
+                'nama_kategori' => 'Essay',
+                'status_kategori'   => 'Aktif'
             ],
             [
                 'kategori_id'   => 17,
-                'nama_kategori' => "Business",
+                'nama_kategori' => 'Business',
+                'status_kategori'   => 'Aktif'
             ],
             [
                 'kategori_id'   => 18,
-                'nama_kategori' => "Lainnya",
+                'nama_kategori' => 'Lainnya',
+                'status_kategori'   => 'Aktif'
             ],
         ];
         DB::table('t_kategori')->insert($data);

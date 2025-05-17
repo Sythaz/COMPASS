@@ -15,12 +15,14 @@ class ProdiSeeder extends Seeder
     {
         $data = [
             [
-                'prodi_id'   => 1,
-                'nama_prodi' => "D-IV Teknik Informatika",
+                'prodi_id'      => 1,
+                'nama_prodi'    => "D-IV Teknik Informatika",
+                'status_prodi'  => 'Aktif'
             ],
             [
-                'prodi_id'   => 2,
-                'nama_prodi' => "D-IV Sistem Informasi Bisnis",
+                'prodi_id'      => 2,
+                'nama_prodi'    => "D-IV Sistem Informasi Bisnis",
+                'status_prodi'  => 'Aktif'
             ]
         ];
         DB::table('t_prodi')->insert($data);
