@@ -1,36 +1,35 @@
-<div class="modal-header bg-primary text-white">
-    <h5 class="modal-title">
-        <i class="fas fa-user-shield me-2"></i>Detail Admin
+<!-- Modal Header -->
+<div class="modal-header bg-primary rounded">
+    <h5 class="modal-title text-white">Detail Admin
     </h5>
     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 
+<!-- Modal Body -->
 <div class="modal-body">
-    <dl class="row">
-        <dt class="col-sm-4 fw-semibold text-secondary">NIP</dt>
-        <dd class="col-sm-8">{{ $admin->nip_admin }}</dd>
-
-        <dt class="col-sm-4 fw-semibold text-secondary">Nama</dt>
-        <dd class="col-sm-8">{{ $admin->nama_admin }}</dd>
-
-        <dt class="col-sm-4 fw-semibold text-secondary">Username</dt>
-        <dd class="col-sm-8">{{ $admin->users->username ?? '-' }}</dd>
-
-        <dt class="col-sm-4 fw-semibold text-secondary">Role</dt>
-        <dd class="col-sm-8">
-            @if(isset($admin->users->role))
-                <span class="badge bg-info text-dark text-uppercase">
-                    {{ $admin->users->role }}
-                </span>
-            @else
-                <span class="text-muted">-</span>
-            @endif
-        </dd>
-    </dl>
+    <table class="table table-bordered">
+        <tr>
+            <th style="width: 30%">NIP</th>
+            <td class="text-start">{{ $admin->nip_admin }}</td>
+        </tr>
+        <tr>
+            <th>Nama</th>
+            <td class="text-start">{{ $admin->nama_admin }}</td>
+        </tr>
+        <tr>
+            <th>Username</th>
+            <td class="text-start">{{ $admin->users->username ?? '-' }}</td>
+        </tr>
+        <tr>
+            <th>Role</th>
+            <td class="text-start"> {{ $admin->users->role }}</td>
+        </tr>
+    </table>
 </div>
 
+<!-- Modal Footer -->
 <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-        <i class=""></i>Tutup
+    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+        <i class="fas fa-times"></i> Tutup
     </button>
 </div>

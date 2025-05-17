@@ -1,39 +1,52 @@
 <form id="form-edit-admin" method="POST" action="{{ url('admin/kelola-pengguna/admin/' . $admin->admin_id) }}">
     @csrf
     @method('PUT')
-    <div class="modal-header">
-        <h5 class="modal-title">Edit Admin</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <div class="modal-header bg-primary rounded">
+        <h5 class="modal-title text-white"><i class="fas fa-edit mr-2"></i>Edit Admin</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
     </div>
     <div class="modal-body">
-        <div class="mb-3">
-            <label for="nip_admin" class="form-label">NIP</label>
-            <input type="text" class="form-control" name="nip_admin" value="{{ $admin->nip_admin }}" required>
+        <div class="form-group">
+            <label for="nip_admin" class="col-form-label">NIP <span class="text-danger">*</span></label>
+            <div class="custom-validation">
+                <input type="text" class="form-control" name="nip_admin" value="{{ $admin->nip_admin }}" required>
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="nama_admin" class="form-label">Nama</label>
-            <input type="text" class="form-control" name="nama_admin" value="{{ $admin->nama_admin }}" required>
+        <div class="form-group">
+            <label for="nama_admin" class="col-form-label">Nama <span class="text-danger">*</span></label>
+            <div class="custom-validation">
+                <input type="text" class="form-control" name="nama_admin" value="{{ $admin->nama_admin }}" required>
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input type="text" class="form-control" name="username" value="{{ $admin->users->username ?? '' }}"
-                required>
+        <div class="form-group">
+            <label for="username" class="col-form-label">Username <span class="text-danger">*</span></label>
+            <div class="custom-validation">
+                <input type="text" class="form-control" name="username" value="{{ $admin->users->username ?? '' }}"
+                    required>
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">Password <small>(kosongkan jika tidak ingin diubah)</small></label>
-            <input type="password" class="form-control" name="password" placeholder="Password baru">
+        <div class="form-group">
+            <label for="password" class="col-form-label">Password <small>(kosongkan jika tidak ingin
+                    diubah)</small></label>
+            <div class="custom-validation">
+                <input type="password" class="form-control" name="password" placeholder="Password baru">
+            </div>
         </div>
         {{-- <div class="mb-3">
             <label for="password" class="form-label">Phrase <small>(kosongkan jika tidak ingin diubah)</small></label>
             <input type="password" class="form-control" name="password" placeholder="Password baru">
         </div> --}}
-        <div class="mb-3">
-            <input type="hidden" name="role" value="admin">
-        </div>
+        <input type="hidden" name="role" value="admin">
     </div>
     <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Simpan</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-floppy-disk mr-2"></i>Simpan
+        </button>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            <i class="fa-solid fa-xmark mr-2"></i>Batal
+        </button>
     </div>
 </form>
 
@@ -52,10 +65,11 @@
             success: function (response) {
                 if (response.success) {
                     Swal.fire('Berhasil', response.message, 'success').then(() => {
-                        // tutup modal
-                        $('#ajaxModal').modal('hide');
-                        // reload tabel DataTables
-                        $('#tabel-admin').DataTable().ajax.reload(null, false);
+                        let modalEl = document.querySelector('.modal.show');
+                        if (modalEl) {
+                            let modal = bootstrap.Modal.getInstance(modalEl);
+                            if (modal) modal.hide();
+                        }
                     });
                 } else {
                     Swal.fire('Error', 'Update gagal.', 'error');
