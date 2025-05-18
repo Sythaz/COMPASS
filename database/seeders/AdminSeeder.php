@@ -6,30 +6,44 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
 class AdminSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        $data = [
-            [
-                'admin_id'   => 1,
-                'user_id'    => 1,
-                'nip_admin'  => 1234567891011121314,
-                'nama_admin' => 'Sri Whariyanti, S.Pd',
-                'img_admin'  => 'Foto_profil.png'
-            ],
-            [
-                'admin_id'      => 2,
-                'user_id'       => 4,
-                'nip_admin'     => 121314151617181910,
-                'nama_admin'    => 'Lailatul Qodriyah, S.Sos',
-                'img_admin'     => 'Lailatul.png'
+        // Ambil user dengan user_id 1 dan 2
+        $user1 = DB::table('t_users')->where('user_id', 1)->first();
+        $user2 = DB::table('t_users')->where('user_id', 2)->first();
 
-            ]
-        ];
-        DB::table('t_admin')->insert($data);
+        $data = [];
+
+        if ($user1) {
+            $data[] = [
+                'admin_id' => 1,
+                'user_id' => $user1->user_id,
+                'nip_admin' => $user1->username, // ambil dari kolom username
+                'nama_admin' => 'Sri Whariyanti, S.Pd',
+                'img_admin' => 'profil-default.png'
+            ];
+        }
+
+        if ($user2) {
+            $data[] = [
+                'admin_id' => 2,
+                'user_id' => $user2->user_id,
+                'nip_admin' => $user2->username, // ambil dari kolom username
+                'nama_admin' => 'Lailatul Qodriyah, S.Sos',
+                'img_admin' => 'profil-default.png'
+            ];
+        }
+
+        // Insert data ke tabel t_admin
+        if (!empty($data)) {
+            DB::table('t_admin')->insert($data);
+        }
     }
 }

@@ -543,7 +543,7 @@ class MahasiswaSeeder extends Seeder
         foreach ($nims as $index => $nim) {
             $data[] = [
                 // Tidak perlu 'mahasiswa_id' jika pakai auto increment
-                'user_id' => $index + 83, // 2 Admin + 81 Dosen = 83, jadi mulai dari 84
+                'user_id' => $index + 85, // 2 Admin + 82 Dosen = 84, jadi mulai dari 85
                 'prodi_id' => 1,
                 'periode_id' => 1,
                 'level_minbak_id' => rand(1, 4), // Random level minat bakat

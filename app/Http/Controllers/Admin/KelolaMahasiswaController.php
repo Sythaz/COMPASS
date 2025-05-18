@@ -32,7 +32,7 @@ class KelolaMahasiswaController extends Controller
 
         return DataTables::of($data)
             ->addIndexColumn()
-            ->addColumn('username', fn($row) => $row->users->username ?? '-')
+            ->addColumn('username', fn($row) => $row->users ? ' ' . $row->users->username : '-')
             ->addColumn('role', fn($row) => $row->users->role ?? '-')
             ->addColumn('prodi', fn($row) => $row->prodi->nama_prodi ?? '-')
             ->addColumn('periode', fn($row) => $row->periode->semester_periode ?? '-')

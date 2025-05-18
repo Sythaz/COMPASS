@@ -28,7 +28,7 @@ class KelolaAdminController extends Controller
 
         return DataTables::of($data)
             ->addIndexColumn()
-            ->addColumn('username', fn($row) => $row->users->username ?? '-')
+            ->addColumn('username', fn($row) => $row->users ? ' ' . $row->users->username : '-')
             ->addColumn('role', fn($row) => $row->users->role ?? '-')
             ->addColumn('aksi', function ($row) {
                 $btn = '<button onclick="modalAction(\'' . url('admin/kelola-pengguna/admin/' . $row->admin_id . '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button> ';

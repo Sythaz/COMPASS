@@ -84,7 +84,7 @@
     <div class="modal-footer">
         <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk mr-2"></i>Simpan</button>
         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-            <i class="fas fa-times me-2"></i>Batal
+            <i class="fa-solid fa-xmark mr-2"></i>Batal
         </button>
     </div>
 </form>

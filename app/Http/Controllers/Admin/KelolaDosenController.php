@@ -31,7 +31,7 @@ class KelolaDosenController extends Controller
 
         return DataTables::of($data)
             ->addIndexColumn()
-            ->addColumn('username', fn($row) => $row->users->username ?? '-')
+            ->addColumn('username', fn($row) => $row->users ? ' ' . $row->users->username : '-')
             ->addColumn('role', fn($row) => $row->users->role ?? '-')
             ->addColumn('kategori', fn($row) => $row->kategori->nama_kategori ?? '-') // Perbaikan nama kolom kategori
             ->addColumn('aksi', function ($row) {

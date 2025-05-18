@@ -10,6 +10,8 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $dosenUsernames = [
+            '1234567891011121314',
+            '1213141516171819105',
             '198010102005011001',
             '198805042015041001',
             '198211302014041001',
