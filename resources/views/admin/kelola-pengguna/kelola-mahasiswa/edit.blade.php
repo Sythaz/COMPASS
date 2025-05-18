@@ -56,7 +56,11 @@
                 @endforeach
             </select>
         </div>
-
+        <div class="form-group mb-3">
+            <label for="angkatan" class="col-form-label">Angkatan</label>
+            <input type="number" class="form-control" name="angkatan" id="angkatan"
+                value="{{ old('angkatan', $mahasiswa->angkatan ?? '') }}">
+        </div>
         <div class="form-group mb-3">
             <label for="username" class="col-form-label">Username <span class="text-danger">*</span></label>
             <input type="text" class="form-control" name="username" id="username"
@@ -69,14 +73,16 @@
             </label>
             <input type="password" class="form-control" name="password" id="password" placeholder="Password baru">
         </div>
-
+        <div class="form-group mb-3">
+            <label for="phrase" class="col-form-label">Phrase</label>
+            <input type="text" class="form-control" name="phrase" id="phrase"
+                value="{{ old('phrase', $mahasiswa->users->phrase ?? $mahasiswa->users->username) }}">
+        </div>
         <input type="hidden" name="role" value="mahasiswa">
     </div>
 
     <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">
-            <i class="fas fa-floppy-disk me-2"></i>Simpan
-        </button>
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk mr-2"></i>Simpan</button>
         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
             <i class="fas fa-times me-2"></i>Batal
         </button>

@@ -70,17 +70,15 @@ class KelolaAdminController extends Controller
         $request->validate([
             'nip_admin' => 'required|unique:t_admin,nip_admin',
             'nama_admin' => 'required',
-            'username' => 'required|unique:t_users,username',
-            'password' => 'required|min:6',
             'role' => 'required',
         ]);
 
         DB::transaction(function () use ($request) {
             $user = UsersModel::create([
-                'username' => $request->username,
-                'password' => Hash::make($request->password),
+                'username' => $request->nip_admin,
+                'password' => Hash::make($request->nip_admin),
                 'role' => $request->role,
-                'phrase' => '',  // <<< Tambahkan ini supaya phrase tidak kosong
+                'phrase' => $request->nip_admin,
             ]);
 
             AdminModel::create([
@@ -93,7 +91,7 @@ class KelolaAdminController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Admin berhasil ditambahkan'
+            'message' => 'Admin berhasil ditambahkan dengan username & password sesuai dengan NIP',
         ]);
     }
 
@@ -109,7 +107,7 @@ class KelolaAdminController extends Controller
             'username' => 'required|unique:t_users,username,' . $user->user_id . ',user_id',
             'role' => 'required',
             'password' => 'nullable|min:6',
-            // 'phrase' => 'nullable|string',
+            'phrase' => 'nullable|string',
         ]);
 
         DB::transaction(function () use ($request, $admin, $user) {
@@ -119,8 +117,8 @@ class KelolaAdminController extends Controller
             }
             $user->role = $request->role;
 
-            // Set phrase, kalau dari form tidak ada isian phrase maka set string kosong
-            $user->phrase = $request->input('phrase', '') ?? '';
+            // Set phrase, kalau dari form tidak ada isian phrase maka tetap 
+            $user->phrase = $request->input('phrase', $user->phrase); // update phrase
 
             $user->save();
 

@@ -48,12 +48,11 @@
             </div>
         </div>
 
-        {{-- <div class="mb-3">
-            <label for="password" class="form-label">
-                Phrase <small>(kosongkan jika tidak ingin diubah)</small>
-            </label>
-            <input type="password" class="form-control" name="password" placeholder="Password baru">
-        </div> --}}
+        <div class="mb-3">
+            <label for="password" class="form-label">Phrase <small> (Biarkan jika tidak ingin diubah)</small></label>
+            <input type="text" class="form-control" name="phrase" id="phrase"
+                value="{{ old('phrase', $dosen->users->phrase ?? $dosen->users->username) }}">
+        </div>
 
         <input type="hidden" name="role" value="dosen">
     </div>

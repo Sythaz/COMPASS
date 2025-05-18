@@ -101,7 +101,8 @@ class UserSeeder extends Seeder
             $data[] = [
                 'user_id' => $index + 1,
                 'username' => $username,
-                'password' => 'Admin' . ($index + 1),
+                // 'password' => 'Admin' . ($index + 1),
+                'password' => $username,
                 'phrase' => $username,
                 'role' => 'Admin',
             ];
@@ -112,7 +113,8 @@ class UserSeeder extends Seeder
             $data[] = [
                 'user_id' => count($data) + 1,
                 'username' => $username,
-                'password' => 'Dosen' . ($i + 3),
+                // 'password' => 'Dosen' . ($i + 3),
+                'password' => $username,
                 'phrase' => $username,
                 'role' => 'Dosen',
             ];
@@ -385,7 +387,8 @@ class UserSeeder extends Seeder
             $data[] = [
                 'user_id' => count($data) + 1,
                 'username' => $username,
-                'password' => 'Mahasiswa' . ($i + 1),
+                // 'password' => 'Mahasiswa' . ($i + 1),
+                'password' => $username,
                 'phrase' => $username,
                 'role' => 'Mahasiswa',
             ];

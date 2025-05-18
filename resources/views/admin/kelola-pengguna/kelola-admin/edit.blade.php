@@ -28,16 +28,17 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="password" class="col-form-label">Password <small>(kosongkan jika tidak ingin
+            <label for="password" class="col-form-label">Password <small> (kosongkan jika tidak ingin
                     diubah)</small></label>
             <div class="custom-validation">
                 <input type="password" class="form-control" name="password" placeholder="Password baru">
             </div>
         </div>
-        {{-- <div class="mb-3">
-            <label for="password" class="form-label">Phrase <small>(kosongkan jika tidak ingin diubah)</small></label>
-            <input type="password" class="form-control" name="password" placeholder="Password baru">
-        </div> --}}
+        <div class="mb-3">
+            <label for="password" class="form-label">Phrase <small> (Biarkan jika tidak ingin diubah)</small></label>
+            <input type="text" class="form-control" name="phrase" id="phrase"
+                value="{{ old('phrase', $admin->users->phrase ?? $admin->users->username) }}">
+        </div>
         <input type="hidden" name="role" value="admin">
     </div>
     <div class="modal-footer">

@@ -24,21 +24,21 @@
             </div>
         </div>
 
-        <div class="form-group">
+        {{-- <div class="form-group">
             <label for="username" class="col-form-label">Username <span class="text-danger">*</span></label>
             <div class="custom-validation">
                 <input type="text" class="form-control" name="username" required>
                 <span class="error-text text-danger" id="error-username"></span>
             </div>
-        </div>
+        </div> --}}
 
-        <div class="form-group">
+        {{-- <div class="form-group">
             <label for="password" class="col-form-label">Password <span class="text-danger">*</span></label>
             <div class="custom-validation">
                 <input type="password" class="form-control" name="password" required minlength="6">
                 <span class="error-text text-danger" id="error-password"></span>
             </div>
-        </div>
+        </div> --}}
 
         <input type="hidden" name="role" value="admin">
     </div>
@@ -67,8 +67,8 @@
         {
             nip_admin: { required: true },
             nama_admin: { required: true },
-            username: { required: true },
-            password: { required: true, minlength: 6 },
+            // username: { required: true },
+            // password: { required: true, minlength: 6 },
         },
         {
             nip_admin: { required: "NIP wajib diisi" },

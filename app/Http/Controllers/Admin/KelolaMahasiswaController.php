@@ -88,17 +88,23 @@ class KelolaMahasiswaController extends Controller
             'periode_id' => 'required|exists:t_periode,periode_id',
             'level_minbak_id' => 'required|exists:t_level_minat_bakat,level_minbak_id',
             'angkatan' => 'nullable|integer',
-            'username' => 'required|unique:t_users,username',
-            'password' => 'required|min:6',
             'role' => 'required',
         ]);
 
+        // Validasi username yang akan sama nim belum dipakai
+        if (UsersModel::where('username', $request->nim_mahasiswa)->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Username (NIM Mahasiswa) sudah digunakan di sistem.'
+            ], 422);
+        }
+
         DB::transaction(function () use ($request) {
             $user = UsersModel::create([
-                'username' => $request->username,
-                'password' => Hash::make($request->password),
+                'username' => $request->nim_mahasiswa,
+                'password' => Hash::make($request->nim_mahasiswa), // password sama dengan nim_mahasiswa (di-hash)
                 'role' => $request->role,
-                'phrase' => 'default phrase',  // <-- Set default phrase disini
+                'phrase' => $request->nim_mahasiswa,
             ]);
 
             MahasiswaModel::create([
@@ -109,13 +115,13 @@ class KelolaMahasiswaController extends Controller
                 'nim_mahasiswa' => $request->nim_mahasiswa,
                 'nama_mahasiswa' => $request->nama_mahasiswa,
                 'img_mahasiswa' => null,
-                'angkatan' => $request->angkatan ?? '2025', // default 2025 kalau null
+                'angkatan' => $request->angkatan ?? 2025,
             ]);
         });
 
         return response()->json([
             'success' => true,
-            'message' => 'Mahasiswa berhasil ditambahkan'
+            'message' => 'Mahasiswa berhasil ditambahkan dengan username & password sesuai dengan NIM.'
         ]);
     }
 
@@ -130,29 +136,36 @@ class KelolaMahasiswaController extends Controller
             'prodi_id' => 'required|exists:t_prodi,prodi_id',
             'periode_id' => 'required|exists:t_periode,periode_id',
             'level_minbak_id' => 'required|exists:t_level_minat_bakat,level_minbak_id',
-            // 'angkatan' => 'required|integer',
             'username' => 'required|unique:t_users,username,' . $user->user_id . ',user_id',
             'role' => 'required',
             'password' => 'nullable|min:6',
+            'angkatan' => 'nullable|integer',
+            'phrase' => 'nullable|string',
         ]);
 
         DB::transaction(function () use ($request, $mahasiswa, $user) {
+            // Update data user
             $user->username = $request->username;
             if ($request->filled('password')) {
                 $user->password = Hash::make($request->password);
             }
             $user->role = $request->role;
-            if (!$user->phrase) {
-                $user->phrase = 'default phrase'; // pastikan phrase tetap ada
-            }
+
+            // Jika phrase tidak dikirimkan, tetap gunakan phrase sebelumnya
+            $user->phrase = $request->input('phrase', $user->phrase); // update phrase
+
             $user->save();
 
+            // Update data mahasiswa
             $mahasiswa->prodi_id = $request->prodi_id;
             $mahasiswa->periode_id = $request->periode_id;
             $mahasiswa->level_minbak_id = $request->level_minbak_id;
             $mahasiswa->nim_mahasiswa = $request->nim_mahasiswa;
             $mahasiswa->nama_mahasiswa = $request->nama_mahasiswa;
-            $mahasiswa->angkatan = '2025';
+
+            // Jika angkatan kosong, isi dengan 2025
+            $mahasiswa->angkatan = $request->angkatan ?? 2025;
+
             $mahasiswa->save();
         });
 

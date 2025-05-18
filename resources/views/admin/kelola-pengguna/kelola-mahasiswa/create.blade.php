@@ -73,6 +73,8 @@
             </div>
         </div>
 
+        {{-- Komentar input username karena otomatis di backend --}}
+        {{--
         <div class="form-group">
             <label for="username" class="col-form-label">Username <span class="text-danger">*</span></label>
             <div class="custom-validation">
@@ -81,7 +83,10 @@
                 <span class="error-text text-danger" id="error-username"></span>
             </div>
         </div>
+        --}}
 
+        {{-- Komentar input password karena otomatis di backend --}}
+        {{--
         <div class="form-group">
             <label for="password" class="col-form-label">Password <span class="text-danger">*</span></label>
             <div class="custom-validation">
@@ -89,6 +94,7 @@
                 <span class="error-text text-danger" id="error-password"></span>
             </div>
         </div>
+        --}}
 
         <input type="hidden" name="role" value="mahasiswa">
     </div>
@@ -112,8 +118,7 @@
             prodi_id: { required: true },
             periode_id: { required: true },
             level_minbak_id: { required: true },
-            username: { required: true },
-            password: { required: true, minlength: 6 },
+            // username dan password dihilangkan validasinya
         },
         {
             nim_mahasiswa: { required: "NIM wajib diisi" },
@@ -121,11 +126,7 @@
             prodi_id: { required: "Program Studi wajib dipilih" },
             periode_id: { required: "Periode wajib dipilih" },
             level_minbak_id: { required: "Level Minat Bakat wajib dipilih" },
-            username: { required: "Username wajib diisi" },
-            password: {
-                required: "Password wajib diisi",
-                minlength: "Password minimal 6 karakter"
-            }
+            // pesan error username dan password dihapus
         },
         function (response, form) {
             if (response.success) {

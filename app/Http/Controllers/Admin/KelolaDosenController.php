@@ -80,20 +80,15 @@ class KelolaDosenController extends Controller
             'nip_dosen' => 'required|unique:t_dosen,nip_dosen',
             'nama_dosen' => 'required',
             'kategori_id' => 'required|exists:t_kategori,kategori_id',
-            'username' => 'required|max:20|unique:t_users,username',
-            'password' => 'required|min:6',
             'role' => 'required',
-            // 'phrase' => 'required|string',
         ]);
 
         DB::transaction(function () use ($request) {
-            // Buat user dulu dengan phrase
             $user = UsersModel::create([
-                'username' => $request->username,
-                'password' => Hash::make($request->password),
+                'username' => $request->nip_dosen,
+                'password' => Hash::make($request->nip_dosen),
                 'role' => $request->role,
-                // 'phrase' => $request->phrase, 
-                'phrase' => 'Dosen',
+                'phrase' => $request->nip_dosen,
             ]);
 
             DosenModel::create([
@@ -107,10 +102,9 @@ class KelolaDosenController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Dosen berhasil ditambahkan',
+            'message' => 'Dosen berhasil ditambahkan dengan username & password sesuai dengan NIP',
         ]);
     }
-
 
     // Update data Dosen
     public function update(Request $request, $id)
@@ -125,6 +119,7 @@ class KelolaDosenController extends Controller
             'username' => 'required|unique:t_users,username,' . $user->user_id . ',user_id',
             'role' => 'required',
             'password' => 'nullable|min:6',
+            'phrase' => 'nullable',
         ]);
 
         DB::transaction(function () use ($request, $dosen, $user) {
@@ -134,6 +129,7 @@ class KelolaDosenController extends Controller
                 $user->password = Hash::make($request->password);
             }
             $user->role = $request->role;
+            $user->phrase = $request->input('phrase', $user->phrase); // update phrase
             $user->save();
 
             // Update dosen, termasuk kategori_id
