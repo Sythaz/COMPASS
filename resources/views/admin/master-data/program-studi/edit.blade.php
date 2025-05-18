@@ -13,14 +13,25 @@
                     style="color: red;">*</span></label>
             <div class="custom-validation">
                 <input type="text" class="form-control" name="nama_prodi"
-                    value="{{ $prodi->nama_prodi }}" required>
+                    value="{{ old('nama_prodi', $prodi->nama_prodi) }}" required>
+            </div>
+            <label for="status_prodi" class="col-form-label">Status Program Studi <span class="text-danger"
+                    style="color: red;">*</span></label>
+            <div class="custom-validation">
+                <select name="status_prodi" id="status_prodi" class="form-control" required>
+                    <option value="Aktif" {{ old('status_prodi', $prodi->status_prodi) == 'Aktif' ? 'selected' : '' }}>
+                        Aktif</option>
+                    <option value="Nonaktif"
+                        {{ old('status_prodi', $prodi->status_prodi) == 'Nonaktif' ? 'selected' : '' }}>
+                        Nonaktif</option>
+                </select>
             </div>
         </div>
     </div>
     <div class="modal-footer">
         <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk mr-2"></i>Simpan</button>
-        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal"><i
-                class="fa-solid fa-xmark mr-2"></i>Batal</button>
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+            <i class="fa-solid fa-xmark mr-2"></i>Batal</button>
     </div>
 </form>
 
@@ -37,10 +48,16 @@
             nama_prodi: {
                 required: true,
             },
+            status_prodi: {
+                required: true, 
+            }
         }, {
             // Pesan validasi untuk setiap field saat tidak valid
             nama_prodi: {
                 required: "Nama program studi wajib diisi",
+            },
+            status_prodi: {
+                required: "Status program studi wajib diisi",
             }
         },
 
@@ -72,4 +89,3 @@
         }
     );
 </script>
-

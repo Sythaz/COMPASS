@@ -1,5 +1,3 @@
-// reusable-form.js
-
 /**
  * Inisialisasi validasi form secara reusable
  * @param {string} formId - ID dari form (misalnya '#form-login')

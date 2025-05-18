@@ -1,19 +1,17 @@
-<form id="form-edit" method="POST" action="{{ url('admin/master-data/periode-semester/' . $periode->periode_id) }}">
+<form id="form-create" method="POST" action="{{ url('admin/master-data/tingkat-lomba/store') }}">
     @csrf
-    @method('PUT')
     <div class="modal-header bg-primary rounded">
-        <h5 class="modal-title text-white"><i class="fas fa-edit mr-2"></i>Edit Periode</h5>
+        <h5 class="modal-title text-white"><i class="fas fa-plus mr-2"></i>Tambah Tingkat Lomba</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
     <div class="modal-body">
         <div class="form-group">
-            <label for="semester_periode" class="col-form-label">Periode Semester <span class="text-danger"
+            <label for="nama_tingkat" class="col-form-label">Tingkat Lomba <span class="text-danger"
                     style="color: red;">*</span></label>
             <div class="custom-validation">
-                <input type="text" class="form-control" name="semester_periode"
-                    value="{{ $periode->semester_periode }}" required>
+                <input type="text" class="form-control" name="nama_tingkat" required>
             </div>
         </div>
     </div>
@@ -32,15 +30,15 @@
     customFormValidation(
         // Validasi form
         // ID form untuk validasi
-        "#form-edit", {
-            // Field yang akan di validasi (name)
-            semester_periode: {
+        "#form-create", {
+            // Field yang akan di validasi
+            nama_tingkat: {
                 required: true,
             },
         }, {
             // Pesan validasi untuk setiap field saat tidak valid
-            semester_periode: {
-                required: "Semester periode wajib diisi",
+            nama_tingkat: {
+                required: "Tingkat lomba wajib diisi",
             }
         },
 
@@ -55,7 +53,7 @@
                     $('#myModal').modal('hide');
 
                     // Reload tabel DataTables (Sesuaikan dengan ID tabel DataTables di Index)
-                    $('#tabel-periode-semester').DataTable().ajax.reload();
+                    $('#tabel-tingkat-lomba').DataTable().ajax.reload();
                 });
 
             } else {
@@ -72,3 +70,4 @@
         }
     );
 </script>
+

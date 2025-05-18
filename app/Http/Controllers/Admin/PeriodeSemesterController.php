@@ -61,18 +61,26 @@ class PeriodeSemesterController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'semester_periode' => 'required|unique:t_periode,semester_periode',
-        ]);
+        try {
+            $request->validate([
+                'semester_periode' => 'required|unique:t_periode,semester_periode',
+            ]);
 
-        PeriodeModel::create([
-            'semester_periode' => $request->semester_periode,
-        ]);
+            PeriodeModel::create([
+                'semester_periode' => $request->semester_periode,
+            ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Periode Semester berhasil ditambahkan'
-        ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil ditambahkan'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat menambahkan data',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function update(Request $request, $id)
@@ -93,7 +101,6 @@ class PeriodeSemesterController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Data berhasil diperbarui.',
-                'redirect' => url('admin/master-data/periode-semester'),
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -105,12 +112,19 @@ class PeriodeSemesterController extends Controller
 
     public function destroy($id)
     {
-        $periode = PeriodeModel::findOrFail($id);
-        $periode->delete();
+        try {
+            $periode = PeriodeModel::findOrFail($id);
+            $periode->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Periode Semester berhasil dihapus'
-        ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil dihapus'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus data: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 }

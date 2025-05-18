@@ -8,7 +8,7 @@
     </div>
     <div class="modal-body">
         <div class="form-group">
-            <label for="semester_periode" class="col-form-label">Semester Periode <span class="text-danger"
+            <label for="semester_periode" class="col-form-label">Periode Semester <span class="text-danger"
                     style="color: red;">*</span></label>
             <div class="custom-validation">
                 <input type="text" class="form-control" name="semester_periode" required>
