@@ -21,7 +21,7 @@ class ProgramStudiController extends Controller
     public function list(Request $request)
     {
         // Mengambil data dari database
-        $dataProgramStudi = ProdiModel::select(['prodi_id', 'nama_prodi'])->get();
+        $dataProgramStudi = ProdiModel::select(['prodi_id', 'nama_prodi', 'status_prodi'])->get();
 
         return DataTables::of($dataProgramStudi)
             ->addIndexColumn()
@@ -68,11 +68,12 @@ class ProgramStudiController extends Controller
 
         ProdiModel::create([
             'nama_prodi' => $request->nama_prodi,
+            'status_prodi' => 'Aktif',
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Program Studi berhasil ditambahkan'
+            'message' => 'Data berhasil ditambahkan'
         ]);
     }
 
@@ -82,6 +83,7 @@ class ProgramStudiController extends Controller
             // Memeriksa apakah data sudah digunakan oleh data lain
             // kecuali data yang sedang diedit
             'nama_prodi' => 'required|unique:t_prodi,nama_prodi,' . $id . ',prodi_id',
+            'status_prodi' => 'required|in:Aktif,Nonaktif',
         ]);
 
         try {
@@ -89,12 +91,12 @@ class ProgramStudiController extends Controller
             $prodi = ProdiModel::findOrFail($id);
             $prodi->update([
                 'nama_prodi' => $request->nama_prodi,
+               'status_prodi' => $request->status_prodi,
             ]);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Data berhasil diperbarui.',
-                'redirect' => url('admin/master-data/program-studi'),
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -106,13 +108,29 @@ class ProgramStudiController extends Controller
 
     public function destroy($id)
     {
-        $prodi = ProdiModel::findOrFail($id);
-        $prodi->delete();
+        try {
+            $prodi = ProdiModel::findOrFail($id);
+            if ($prodi->status_prodi === 'Nonaktif') {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Data sudah tidak aktif sebelumnya.',
+                ]);
+            }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Program Studi berhasil dihapus'
-        ]);
+            $prodi->update([
+                'status_prodi' => $prodi->status_prodi = 'Nonaktif',
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil dihapus.',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus data: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 }
 

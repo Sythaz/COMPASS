@@ -12,8 +12,16 @@
             <label for="nama_kategori" class="col-form-label">Nama Kategori <span class="text-danger"
                     style="color: red;">*</span></label>
             <div class="custom-validation">
-                <input type="text" class="form-control" name="nama_kategori" value="{{ $kategori->nama_kategori }}"
+                <input type="text" class="form-control" name="nama_kategori" value="{{ old('nama_kategori', $kategori->nama_kategori) }}"
                     required>
+            </div>
+            <label for="status_kategori" class="col-form-label">Status Kategori <span class="text-danger"
+                    style="color: red;">*</span></label>
+            <div class="custom-validation">
+                <select name="status_kategori" id="status_kategori" class="form-control" required>
+                    <option value="Aktif" {{ old('status_kategori', $kategori->status_kategori) == 'Aktif' ? 'selected' : '' }}>Aktif</option>
+                    <option value="Nonaktif" {{ old('status_kategori', $kategori->status_kategori) == 'Nonaktif' ? 'selected' : '' }}>Nonaktif</option>
+                </select>
             </div>
         </div>
     </div>
@@ -37,10 +45,16 @@
             nama_kategori: {
                 required: true,
             },
+            status_kategori: {
+                required: true, 
+            }
         }, {
             // Pesan validasi untuk setiap field saat tidak valid
             nama_kategori: {
                 required: "Nama kategori wajib diisi",
+            },
+            status_kategori: {
+                required: "Status kategori wajib diisi",
             }
         },
 

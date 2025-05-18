@@ -1,7 +1,7 @@
-<form id="form-delete" method="POST" action="{{ url('admin/master-data/program-studi/' . $prodi->prodi_id) }}">
+<form id="form-delete" method="POST"
+    action="{{ url('admin/master-data/program-studi/' . $prodi->prodi_id) . '/delete' }}">
     @csrf
-    @method('DELETE')
-
+    @method('PUT')
     <div class="modal-header bg-primary rounded">
         <h5 class="modal-title text-white"><i class="fas fa-trash-alt mr-2"></i>Hapus Program Studi</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -35,11 +35,12 @@
         e.preventDefault();
         let form = $(this);
         let url = form.attr('action');
+        let data = form.serialize();
 
         $.ajax({
             url: url,
-            type: 'DELETE',
-            data: form.serialize(),
+            type: 'PUT',
+            data: data,
             success: function(response) {
                 if (response.success) {
                     Swal.fire('Berhasil', response.message, 'success').then(() => {

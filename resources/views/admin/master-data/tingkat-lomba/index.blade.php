@@ -1,10 +1,10 @@
 @extends('layouts.template')
 
-@section('title', 'Kelola Kategori & Keahlian | COMPASS')
+@section('title', 'Kelola Tingkat Lomba | COMPASS')
 
-@section('page-title', 'Kelola Kategori & Keahlian')
+@section('page-title', 'Kelola Tingkat Lomba')
 
-@section('page-description', 'Halaman untuk mengelola kategori lomba atau bidang keahlian dosen!')
+@section('page-description', 'Halaman untuk mengelola tingkat lomba!')
 
 @section('content')
     <div class="row">
@@ -13,7 +13,7 @@
                 <div class="card-body">
                     <div class="row mb-2">
                         <div class="col-6">
-                            <a onclick="modalAction('{{ url('/admin/master-data/kategori-keahlian/create') }}')"
+                            <a onclick="modalAction('{{ url('/admin/master-data/tingkat-lomba/create') }}')"
                                 class="btn btn-primary text-white">
                                 <i class="fa-solid fa-plus"></i>
                                 <strong>Tambah Data</strong>
@@ -36,12 +36,11 @@
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <table class="w-100 table table-striped table-bordered custom-datatable"
-                            id="tabel-kategori-keahlian">
+                        <table class="w-100 table table-striped table-bordered custom-datatable" id="tabel-tingkat-lomba">
                             <thead>
                                 <tr>
                                     <th style="width: 1px; white-space: nowrap;">No</th>
-                                    <th>Nama Kategori</th>
+                                    <th>Nama Tingkat Lomba</th>
                                     <th>Status</th>
                                     <th class="text-center" style="width: 1px; white-space: nowrap;">Aksi</th>
                                 </tr>
@@ -77,7 +76,7 @@
     <script src="{{ asset('theme/plugins/tables/js/datatable/dataTables.bootstrap4.min.js') }}"></script>
 
     <script>
-        var idDataTables = '#tabel-kategori-keahlian';
+        var idDataTables = '#tabel-tingkat-lomba';
 
         $(document).ready(function() {
             // Dropdown tidak bisa di buka langsung sehingga perlu dipanggil
@@ -103,7 +102,7 @@
                 serverSide: true,
                 autoWidth: true,
                 ajax: {
-                    url: "{{ route('kategori-keahlian.list') }}",
+                    url: "{{ route('tingkat-lomba.list') }}",
                     type: "POST",
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -113,15 +112,14 @@
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
                         searchable: false,
-
                     },
                     {
-                        data: 'nama_kategori',
-                        name: 'nama_kategori'
+                        data: 'nama_tingkat',
+                        name: 'nama_tingkat',
                     },
                     {
-                        data: 'status_kategori',
-                        name: 'status_kategori',
+                        data: 'status_tingkat_lomba',
+                        name: 'status_tingkat_lomba',
                     },
                     {
                         data: 'aksi',
@@ -187,3 +185,4 @@
         })
     </script>
 @endpush
+

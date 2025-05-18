@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ProdiModel extends Model
+class TingkatLombaModel extends Model
 {
     use HasFactory;
 
-    protected $table = 't_prodi'; 
-    protected $primaryKey = 'prodi_id';  
+    protected $table = 't_tingkat_lomba';
+    protected $primaryKey = 'tingkat_lomba_id';
 
     protected $fillable = [
-        'nama_prodi',
-        'status_prodi'
+        'nama_tingkat',
+        'status_tingkat_lomba',
     ];
 }

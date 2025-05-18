@@ -1,5 +1,5 @@
 <div class="modal-header bg-primary rounded">
-    <h5 class="modal-title text-white">Detail Program Studi</h5>
+    <h5 class="modal-title text-white">Detail Tingkat Lomba</h5>
     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
@@ -7,12 +7,12 @@
 <div class="modal-body">
     <table class="table table-bordered">
         <tr>
-            <th style="width: 30%">Program Studi: </th>
-            <td class="text-start">{{ $prodi->nama_prodi }}</td>
+            <th style="width: 30%">Tingkat Lomba: </th>
+            <td class="text-start">{{ $tingkatLomba->nama_tingkat }}</td>
         </tr>
         <tr>
             <th style="width: 30%">Status: </th>
-            <td class="text-start">{{ $prodi->status_prodi }}</td>
+            <td class="text-start">{{ $tingkatLomba->status_tingkat_lomba }}</td>
         </tr>
     </table>
 </div>
@@ -21,3 +21,4 @@
         <i class="fas fa-times"></i> Tutup
     </button>
 </div>
+

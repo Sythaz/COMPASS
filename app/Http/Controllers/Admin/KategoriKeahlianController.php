@@ -22,7 +22,7 @@ class KategoriKeahlianController extends Controller
     public function list(Request $request)
     {
         // Mengambil data kategori keahlian dari database
-        $dataKategoriKeahlian = KategoriModel::select(['kategori_id', 'nama_kategori'])->get();
+        $dataKategoriKeahlian = KategoriModel::select(['kategori_id', 'nama_kategori', 'status_kategori'])->get();
 
         return DataTables::of($dataKategoriKeahlian)
             ->addIndexColumn()
@@ -63,18 +63,26 @@ class KategoriKeahlianController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nama_kategori' => 'required|unique:t_kategori,nama_kategori',
-        ]);
+        try {
+            $request->validate([
+                'nama_kategori' => 'required|unique:t_kategori,nama_kategori',
+            ]);
 
-        KategoriModel::create([
-            'nama_kategori' => $request->nama_kategori,
-        ]);
+            KategoriModel::create([
+                'nama_kategori' => $request->nama_kategori,
+                'status_kategori' => 'Aktif',
+            ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Kategori Keahlian berhasil ditambahkan'
-        ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil ditambahkan'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menambahkan data: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function update(Request $request, $id)
@@ -83,6 +91,7 @@ class KategoriKeahlianController extends Controller
             // Memeriksa apakah data sudah digunakan oleh data lain
             // kecuali data yang sedang diedit
             'nama_kategori' => 'required|unique:t_kategori,nama_kategori,' . $id . ',kategori_id',
+            'status_kategori' => 'required|in:Aktif,Nonaktif',
         ]);
 
         try {
@@ -90,12 +99,12 @@ class KategoriKeahlianController extends Controller
             $kategori = KategoriModel::findOrFail($id);
             $kategori->update([
                 'nama_kategori' => $request->nama_kategori,
+                'status_kategori' => $request->status_kategori,
             ]);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Data berhasil diperbarui.',
-                'redirect' => url('admin/master-data/kategori-keahlian'),
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -107,12 +116,28 @@ class KategoriKeahlianController extends Controller
 
     public function destroy($id)
     {
-        $kategori = KategoriModel::findOrFail($id);
-        $kategori->delete();
+        try {
+            $kategori = KategoriModel::findOrFail($id);
+            if ($kategori->status_kategori === 'Nonaktif') {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Data sudah tidak aktif sebelumnya.',
+                ]);
+            }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Kategori Keahlian berhasil dihapus'
-        ]);
+            $kategori->update([
+                'status_kategori' => $kategori->status_kategori = 'Nonaktif',
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil dihapus.',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus data: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 }

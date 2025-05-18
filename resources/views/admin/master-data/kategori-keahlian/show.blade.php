@@ -10,6 +10,10 @@
             <th style="width: 30%">Nama Kategori: </th>
             <td class="text-start">{{ $kategori->nama_kategori }}</td>
         </tr>
+        <tr>
+            <th style="width: 30%">Status: </th>
+            <td class="text-start">{{ $kategori->status_kategori }}</td>
+        </tr>
     </table>
 </div>
 <div class="modal-footer">

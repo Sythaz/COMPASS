@@ -118,14 +118,8 @@
                         name: 'nama_prodi',
                     },
                     {
-                        data: 'status',
-                        name: 'status',
-                        orderable: false,
-
-                        // Data Dummy karena belum terisi
-                        render: function(data, type, row) {
-                            return data ? data : 'Aktif';
-                        }
+                        data: 'status_prodi',
+                        name: 'status_prodi',
                     },
                     {
                         data: 'aksi',
@@ -191,3 +185,4 @@
         })
     </script>
 @endpush
+
