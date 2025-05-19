@@ -85,7 +85,7 @@ class KelolaAdminController extends Controller
                 'user_id' => $user->user_id,
                 'nip_admin' => $request->nip_admin,
                 'nama_admin' => $request->nama_admin,
-                'img_admin' => null,
+                'img_admin' => 'profil-default.jpg',
             ]);
         });
 

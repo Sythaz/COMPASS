@@ -96,7 +96,7 @@ class KelolaDosenController extends Controller
                 'nip_dosen' => $request->nip_dosen,
                 'nama_dosen' => $request->nama_dosen,
                 'kategori_id' => $request->kategori_id,
-                'img_dosen' => null,
+                'img_dosen' => 'profil-default.jpg',
             ]);
         });
 

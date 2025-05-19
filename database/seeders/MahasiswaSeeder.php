@@ -550,7 +550,7 @@ class MahasiswaSeeder extends Seeder
                 'nim_mahasiswa' => $nim,
                 'nama_mahasiswa' => $names[$index] ?? 'Nama Tidak Diketahui',
                 'angkatan' => '2023', // Bisa juga ambil dari substr($nim, 0, 4)
-                'img_mahasiswa' => null,
+                'img_mahasiswa' => 'profil-default.png',
             ];
         }
 

@@ -114,7 +114,7 @@ class KelolaMahasiswaController extends Controller
                 'level_minbak_id' => $request->level_minbak_id,
                 'nim_mahasiswa' => $request->nim_mahasiswa,
                 'nama_mahasiswa' => $request->nama_mahasiswa,
-                'img_mahasiswa' => null,
+                'img_mahasiswa' => 'profil-default.jpg',
                 'angkatan' => $request->angkatan ?? 2025,
             ]);
         });

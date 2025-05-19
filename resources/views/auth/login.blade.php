@@ -23,17 +23,17 @@
                             <p style="font-size: small; color: grey;">Merupakan sebuah sistem berbasis web yang
                                 digunakan untuk mengelola data prestasi mahasiswa dan rekomendasi peserta lomba.</p>
                         </div>
-                        <form class="mb-3 mt-md-3" action="/login" method="POST" id="form-login">
+
+                        <form action="{{ route('login') }}" method="POST" id="form-login" class="mb-3 mt-md-3">
                             @csrf
                             <div class="mb-3">
-                                <label class="form-label" style="font-size: small"> ID Anggota <span class="text-danger"
-                                        style="color: red;">*</span></label>
+                                <label class="form-label" style="font-size: small">Username <span
+                                        class="text-danger">*</span></label>
                                 <div class="custom-validation">
-                                    <input type="text" class="form-control rounded" style="font-size: small"
-                                        id="identifier" name="identifier" placeholder="Masukkan NIM/Akun Portal Polinema"
-                                        value="{{ old('identifier') }}" required>
+                                    <input type="text" class="form-control rounded" style="font-size: small" id="username"
+                                        name="username" placeholder="Masukkan Username" value="{{ old('username') }}"
+                                        required>
                                 </div>
-                                {{-- <small id="error-identifier" class="error-text text-danger"></small> --}}
                             </div>
 
                             <div class="mb-1 position-relative">
@@ -48,11 +48,9 @@
                                             <i class="icon fa-solid fa-eye-slash" style="width: 1.25rem"></i>
                                         </span>
                                     </div>
-                                    {{-- <small id="error-password" class="error-text text-danger"></small> --}}
                                 </div>
                             </div>
 
-                            {{-- Lupa password --}}
                             <div class="mb-3">
                                 <a href="" class="text-primary">Lupa password?</a>
                             </div>
@@ -61,6 +59,8 @@
                                 <button type="submit" class="btn btn-primary btn-block">Login</button>
                             </div>
                         </form>
+
+
                     </div>
                     <div class="col-lg-6 col-md-6 d-none d-md-flex">
                         <img src="{{ asset('assets/images/image-side-login.png') }}" class="img-fluid h-100"
@@ -84,42 +84,42 @@
     <script>
         customFormValidation(
             "#form-login", {
-                identifier: {
-                    required: true,
-                    digits: true,
-                    minlength: 4,
-                    maxlength: 20
-                },
-                password: {
-                    required: true,
-                    minlength: 6,
-                    maxlength: 20
-                }
-            }, {
-                identifier: {
-                    required: "NIM atau NIP wajib diisi",
-                    digits: "Hanya boleh angka",
-                    minlength: "Minimal 4 karakter",
-                    maxlength: "Maksimal 20 karakter"
-                },
-                password: {
-                    required: "Kata sandi wajib diisi",
-                    minlength: "Minimal 6 karakter",
-                    maxlength: "Maksimal 20 karakter"
-                }
+            identifier: {
+                required: true,
+                digits: true,
+                minlength: 4,
+                maxlength: 20
             },
-            function(response, form) {
+            password: {
+                required: true,
+                minlength: 6,
+                maxlength: 20
+            }
+        }, {
+            identifier: {
+                required: "NIM atau NIP wajib diisi",
+                digits: "Hanya boleh angka",
+                minlength: "Minimal 4 karakter",
+                maxlength: "Maksimal 20 karakter"
+            },
+            password: {
+                required: "Kata sandi wajib diisi",
+                minlength: "Minimal 6 karakter",
+                maxlength: "Maksimal 20 karakter"
+            }
+        },
+            function (response, form) {
                 if (response.status) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Berhasil',
                         text: response.message,
-                    }).then(function() {
+                    }).then(function () {
                         window.location = response.redirect;
                     });
                 } else {
                     $('.error-text').text('');
-                    $.each(response.msgField, function(prefix, val) {
+                    $.each(response.msgField, function (prefix, val) {
                         $('#error-' + prefix).text(val[0]);
                     });
                     Swal.fire({
@@ -134,7 +134,7 @@
 
     <!-- Password icon toggle -->
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             const toggler = document.querySelector('.pass-toggle');
             const password = document.querySelector('.fakepassword');
             const icon = document.querySelector('.icon');

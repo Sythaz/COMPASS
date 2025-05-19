@@ -11,9 +11,24 @@
                 <!-- Jika aktif tambahkan class "active" -->
                 {{-- <a class="has-arrow {{ $activeMenu == 'dashboard' ? 'active' : '' }}" href="javascript:void()"
                     aria-expanded="false"> --}}
-                    <a href="{{ route('dashboard') }}" aria-expanded="false">
-                        <i class="icon-speedometer menu-icon"></i><span class="nav-text">Dashboard</span>
-                    </a>
+                    @php
+                        $user = auth()->user();
+                    @endphp
+
+                    @if ($user->hasRole('Admin'))
+                        <a href="{{ route('admin.dashboard') }}">
+                            <i class="icon-speedometer menu-icon"></i><span class="nav-text">Dashboard</span>
+                        </a>
+                    @elseif ($user->hasRole('Dosen'))
+                        <a href="{{ route('dosen.dashboard') }}">
+                            <i class="icon-speedometer menu-icon"></i><span class="nav-text">Dashboard</span>
+                        </a>
+                    @elseif ($user->hasRole('Mahasiswa'))
+                        <a href="{{ route('mahasiswa.dashboard') }}">
+                            <i class="icon-speedometer menu-icon"></i><span class="nav-text">Dashboard</span>
+                        </a>
+                    @endif
+
             </li>
 
             <!-- Akses Menu untuk Admin -->
@@ -62,6 +77,12 @@
                 </ul>
             </li>
 
+            <li class="nav-item">
+                <a href="{{ url('/logout') }}">
+                    <i class="nav-icon fas fa-arrow-right-from-bracket"></i>
+                    <p>Logout</p>
+                </a>
+            </li>
             {{-- <!-- Akses Menu untuk Dosen -->
             @elseif(Auth::user()->role == 'Dosen')
             <!-- Akses Menu untuk Mahasiswa -->
