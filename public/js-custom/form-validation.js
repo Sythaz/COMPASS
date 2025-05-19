@@ -19,10 +19,14 @@ function customFormValidation(formId, rules, messages, successCallback) {
             rules: rules,
             messages: messages,
             submitHandler: function (form) {
+              var formData = new FormData(form);
                 $.ajax({
                     url: form.action,
                     type: form.method,
-                    data: $(form).serialize(),
+                    // data: $(form).serialize(),
+                    data: formData,
+                    contentType: false,
+                    processData: false,
                     success: function (response) {
                         if (typeof successCallback === "function") {
                             successCallback(response, form);

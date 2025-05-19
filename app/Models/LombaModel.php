@@ -14,18 +14,24 @@ class LombaModel extends Model
     protected $primaryKey = 'lomba_id';  
 
     protected $fillable = [
-        'kategori_id', 
-        'nama_lomba', 
-        'tingkat_kompetisi_lomba',
+        'kategori_id',
+        'tingkat_lomba_id',
+        'nama_lomba',
         'deskripsi_lomba',
         'penyelenggara_lomba',
         'awal_registrasi_lomba',
         'akhir_registrasi_lomba',
         'link_pendaftaran_lomba',
         'img_lomba',
+        'status_verifikasi',
+        'status_lomba',
     ];
 
     public function kategori(): BelongsTo {
         return $this->belongsTo(KategoriModel::class, 'kategori_id','kategori_id');
+    }
+
+    public function tingkat_lomba(): BelongsTo {
+        return $this->belongsTo(TingkatLombaModel::class, 'tingkat_lomba_id','tingkat_lomba_id');
     }
 }

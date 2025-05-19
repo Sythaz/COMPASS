@@ -1,0 +1,96 @@
+<div class="modal-header bg-primary rounded">
+    <h5 class="modal-title text-white">Detail Lomba</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <table class="table table-bordered">
+        <tr>
+            <th style="width: 30%">Nama Lomba: </th>
+            <td class="text-start">{{ $kelolaLomba->nama_lomba }}</td>
+        </tr>
+        <tr>
+            <th style="width: 30%">Deskripsi: </th>
+            <td class="text-start">{{ $kelolaLomba->deskripsi_lomba }}</td>
+        </tr>
+        <tr>
+            <th style="width: 30%">Kategori: </th>
+            <td class="text-start">{{ $kelolaLomba->kategori->nama_kategori }}</td>
+        </tr>
+        <tr>
+            <th style="width: 30%">Tingkat: </th>
+            <td class="text-start">{{ $kelolaLomba->tingkat_lomba->nama_tingkat }}</td>
+        </tr>
+        <tr>
+            <th style="width: 30%">Penyelenggara: </th>
+            <td class="text-start">{{ $kelolaLomba->penyelenggara_lomba }}</td>
+        </tr>
+        <tr>
+            <th style="width: 30%">Awal Registrasi: </th>
+            <td class="text-start">{{ $kelolaLomba->awal_registrasi_lomba }}</td>
+        </tr>
+        <tr>
+            <th style="width: 30%">Akhir Registrasi: </th>
+            <td class="text-start">{{ $kelolaLomba->akhir_registrasi_lomba }}</td>
+        </tr>
+        <tr>
+            <th style="width: 30%">Link Pendaftaran Lomba: </th>
+            <td class="text-start">
+                <a class="alert-primary" href="{{ $kelolaLomba->link_pendaftaran_lomba }}"
+                    target="_blank">{{ $kelolaLomba->link_pendaftaran_lomba }}</a>
+            </td>
+        </tr>
+        <tr>
+            <th style="width: 30%">Status: </th>
+            <td class="text-start">
+                <span
+                    class="label
+                    @if ($kelolaLomba->status_verifikasi == 'Terverifikasi') label-success
+                    @elseif ($kelolaLomba->status_verifikasi == 'Menunggu')
+                        label-warning
+                    @else
+                        label-danger @endif">
+                    {{ $kelolaLomba->status_verifikasi }}
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <th style="width: 30%">Gambar Lomba:</th>
+            <td class="text-start">
+                <a href="{{ asset('storage/img/lomba/' . $kelolaLomba->img_lomba) }}" data-lightbox="lomba"
+                    data-title="Gambar Lomba">
+                    <img class="img-thumbnail" src="{{ asset('storage/img/lomba/' . $kelolaLomba->img_lomba) }}" width="100"
+                        alt="Gambar Lomba" style="cursor: zoom-in;">
+                </a>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+        <i class="fas fa-times"></i> Tutup
+    </button>
+</div>
+
+<style>
+ .lightbox .lb-data {
+        top: 0;
+        bottom: auto;
+        background: rgba(0, 0, 0, 0.7);
+    }
+    .lightbox .lb-data .lb-caption {
+        color: #fff;
+        padding: 10px;
+        font-size: 16px;
+        text-align: center;
+    }
+    .lightbox .lb-close {
+        top: 10px;
+        right: 10px;
+    }
+</style>
+
+{{-- Library Lightbox untuk membesarkan gambar --}}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>
