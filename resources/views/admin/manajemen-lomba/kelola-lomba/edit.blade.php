@@ -105,14 +105,18 @@
                 </select>
             </div>
 
-            {{-- Gambar Lomba --}}
+            {{-- Gambar Poster Lomba --}}
             <label for="img_lomba" class="col-form-label mt-2">Gambar Poster Lomba </label>
             <div class="custom-validation">
-                <a href="{{ asset('storage/img/lomba/' . $kelolaLomba->img_lomba) }}" data-lightbox="lomba"
-                    data-title="Gambar Lomba">
-                    <img src="{{ asset('storage/img/lomba/' . $kelolaLomba->img_lomba) }}" width="100"
-                        class="d-block mx-auto img-thumbnail" alt="Gambar Lomba" style="cursor: zoom-in;" />
-                </a>
+                @if (!is_null($kelolaLomba->img_lomba) && file_exists(public_path('storage/img/lomba/' . $kelolaLomba->img_lomba)))
+                    <a href="{{ asset('storage/img/lomba/' . $kelolaLomba->img_lomba) }}" data-lightbox="lomba"
+                        data-title="Gambar Poster Lomba">
+                        <img src="{{ asset('storage/img/lomba/' . $kelolaLomba->img_lomba) }}" width="100"
+                            class="d-block mx-auto img-thumbnail" alt="Gambar Poster Lomba" style="cursor: zoom-in;" />
+                    </a>
+                @else
+                    <p class="text-center text-muted">Gambar tidak ada atau belum di upload</p>
+                @endif
                 <div class="input-group mt-1">
                     <div class="custom-file">
                         <input type="file" class="custom-file-input" name="img_lomba" accept=".png, .jpg, .jpeg"
@@ -157,6 +161,16 @@
         return endDate >= startDate;
     }, "Tanggal akhir harus lebih besar atau sama dengan tanggal awal.");
 
+    // Validasi Ukuran File maks 2MB
+    $.validator.addMethod("maxFileSize", function(value, element, param) {
+        if (!element.files || element.files.length === 0) {
+            return true;
+        }
+
+        var fileSize = element.files[0].size;
+        return fileSize <= 2 * 1024 * 1024;
+    }, "Ukuran file maksimal 2MB");
+
     customFormValidation(
         // Validasi form
         // ID form untuk validasi
@@ -194,6 +208,7 @@
             img_lomba: {
                 // Menggunakan custom validasi untuk gambar
                 validImageExtension: true,
+                maxFileSize: 2048 // 2MB
             }
         }, {
             // Pesan validasi untuk setiap field saat tidak valid
@@ -228,6 +243,7 @@
             },
             img_lomba: {
                 extension: 'Ekstensi file harus .png, .jpg, .jpeg',
+                maxFileSize: 'Ukuran file maksimal 2MB'
             }
         },
 

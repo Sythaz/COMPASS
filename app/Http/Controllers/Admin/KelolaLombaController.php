@@ -109,52 +109,43 @@ class KelolaLombaController extends Controller
     public function store(Request $request)
     {
         // Validasi data yang dikirimkan
+        $validator = Validator::make($request->all(), [
+            'nama_lomba' => 'required',
+            'deskripsi_lomba' => 'required',
+            'kategori_id' => 'required|exists:t_kategori,kategori_id',
+            'tingkat_lomba_id' => 'required|exists:t_tingkat_lomba,tingkat_lomba_id',
+            'penyelenggara_lomba' => 'required',
+            'awal_registrasi_lomba' => 'required|date',
+            'akhir_registrasi_lomba' => 'required|date|after_or_equal:awal_registrasi_lomba',
+            'link_pendaftaran_lomba' => 'required|url',
+            'img_lomba' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'status_verifikasi' => 'required|in:Terverifikasi,Menunggu,Ditolak',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi data gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
         try {
-            $validator = Validator::make($request->all(), [
-                'nama_lomba' => 'required',
-                'deskripsi_lomba' => 'required',
-                'kategori_id' => 'required|exists:t_kategori,kategori_id',
-                'tingkat_lomba_id' => 'required|exists:t_tingkat_lomba,tingkat_lomba_id',
-                'penyelenggara_lomba' => 'required',
-                'awal_registrasi_lomba' => 'required|date',
-                'akhir_registrasi_lomba' => 'required|date|after_or_equal:awal_registrasi_lomba',
-                'link_pendaftaran_lomba' => 'required|url',
-                'img_lomba' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                'status_verifikasi' => 'required|in:Terverifikasi,Menunggu,Ditolak',
-            ]);
+            $data = $request->except('img_lomba');
 
-            if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Validation failed',
-                    'errors' => $validator->errors()
-                ], 422);
-            }
+            // Simpan data ke database terlebih dahulu
+            $lomba = LombaModel::create($data);
 
-            // Ambil data yang dikirimkan
-            $data = $request->only([
-                'kategori_id',
-                'tingkat_lomba_id',
-                'nama_lomba',
-                'deskripsi_lomba',
-                'penyelenggara_lomba',
-                'awal_registrasi_lomba',
-                'akhir_registrasi_lomba',
-                'link_pendaftaran_lomba',
-                'status_verifikasi',
-            ]);
-
-
-            // Simpan data ke database
-            LombaModel::create($data);
-
-            // Jika ada gambar yang dikirimkan, simpan gambar ke folder img/lomba
+            // Jika ada gambar, upload ke storage
             if ($request->hasFile('img_lomba')) {
-                $imgName = $request->file('img_lomba')->getClientOriginalName();
-                $request->file('img_lomba')->move(public_path('img/lomba'), $imgName);
-                $data['img_lomba'] = $imgName;
+                $file = $request->file('img_lomba');
+                $filename = $lomba->lomba_id . '_' . time() . '.' . $file->getClientOriginalExtension();
+                $path = $file->storeAs('public/img/lomba', $filename); // Simpan ke storage
+
+                // Update kolom img_lomba di database
+                $lomba->update(['img_lomba' => $filename]);
             }
-            
+
             return response()->json([
                 'success' => true,
                 'message' => 'Data berhasil ditambahkan'
@@ -165,7 +156,6 @@ class KelolaLombaController extends Controller
                 'message' => 'Terjadi kesalahan. ' . $e->getMessage()
             ]);
         }
-
     }
 
     public function update(Request $request, $id)
@@ -180,42 +170,27 @@ class KelolaLombaController extends Controller
             'awal_registrasi_lomba' => 'required|date',
             'akhir_registrasi_lomba' => 'required|date|after_or_equal:awal_registrasi_lomba',
             'link_pendaftaran_lomba' => 'required|url',
-            'img_lomba' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'img_lomba' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'status_verifikasi' => 'required|in:Terverifikasi,Menunggu,Ditolak',
         ]);
 
         try {
-            // Temukan data LombaModel berdasarkan ID
-            $kelolaLomba = LombaModel::findOrFail($id);
+            $data = $request->except('img_lomba');
 
-            // Periksa apakah ada gambar yang diunggah
+            // Simpan data ke database terlebih dahulu
+            $lomba = LombaModel::create($data);
+
+            // Jika ada gambar, upload ke storage
             if ($request->hasFile('img_lomba')) {
                 $file = $request->file('img_lomba');
-                // Buat nama gambar yang unik
-                $filename = $kelolaLomba->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+                // Simpan gambar ke storage dengan nama unik
+                $filename = $lomba->lomba_id . '_' . time() . '.' . $file->getClientOriginalExtension();
+                // Simpan gambar ke storage (perlu "php artisan storage:link" ya)
                 $path = $file->storeAs('public/img/lomba', $filename);
 
-                // Hapus gambar lama jika ada
-                if ($kelolaLomba->img_lomba && Storage::exists('public/img/lomba/' . $kelolaLomba->img_lomba)) {
-                    Storage::delete('public/img/lomba/' . $kelolaLomba->img_lomba);
-                }
-
-                // Simpan nama gambar yang baru ke database
-                $kelolaLomba->img_lomba = $filename;
+                // Update kolom img_lomba di database
+                $lomba->update(['img_lomba' => $filename]);
             }
-
-            // Perbarui data LombaModel dengan data yang baru
-            $kelolaLomba->update([
-                'kategori_id' => $request->kategori_id,
-                'tingkat_lomba_id' => $request->tingkat_lomba_id,
-                'nama_lomba' => $request->nama_lomba,
-                'deskripsi_lomba' => $request->deskripsi_lomba,
-                'penyelenggara_lomba' => $request->penyelenggara_lomba,
-                'awal_registrasi_lomba' => $request->awal_registrasi_lomba,
-                'akhir_registrasi_lomba' => $request->akhir_registrasi_lomba,
-                'link_pendaftaran_lomba' => $request->link_pendaftaran_lomba,
-                'status_verifikasi' => $request->status_verifikasi,
-            ]);
 
             return response()->json([
                 'success' => true,
