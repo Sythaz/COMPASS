@@ -57,8 +57,7 @@
                     <i class="fa-solid fa-trophy"></i><span class="nav-text">Manajemen Lomba</span>
                 </a>
                 <ul aria-expanded="false">
-                    <li><a href="javascript:void()">Kelola Lomba</a></li>
-                    <li><a href="javascript:void()">Verifikasi Lomba</a></li>
+                    <li><a href="{{ route('kelola-lomba.index') }}">Kelola Lomba</a></li>
                     <li><a href="javascript:void()">Rekomendasi Lomba</a></li>
                 </ul>
             </li>

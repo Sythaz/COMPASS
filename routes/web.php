@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\KelolaDosenController;
 use App\Http\Controllers\Admin\KelolaAdminController;
 use App\Http\Controllers\Admin\DashboardController as DashboardAdminController;
 use App\Http\Controllers\Admin\KategoriKeahlianController;
+use App\Http\Controllers\Admin\KelolaLombaController;
 use App\Http\Controllers\Admin\PeriodeSemesterController;
 use App\Http\Controllers\Admin\ProgramStudiController;
 use App\Http\Controllers\Admin\TingkatLombaController;
@@ -59,15 +60,15 @@ Route::prefix('admin/kelola-pengguna')->group(function () {
 
 Route::prefix('admin/master-data')->group(function () {
     // Rute Kategori Keahlian
-    Route::get('/kategori-keahlian', [KategoriKeahlianController::class, 'index'])->name('kategori-keahlian.index');
-    Route::post('/kategori-keahlian/list', [KategoriKeahlianController::class, 'list'])->name('kategori-keahlian.list');
-    Route::get('/kategori-keahlian/create', [KategoriKeahlianController::class, 'create'])->name('kategori-keahlian.create');
-    Route::get('/kategori-keahlian/{id}/show_ajax', [KategoriKeahlianController::class, 'showAjax']);
-    Route::get('/kategori-keahlian/{id}/edit_ajax', [KategoriKeahlianController::class, 'editAjax']);
-    Route::get('/kategori-keahlian/{id}/delete_ajax', [KategoriKeahlianController::class, 'deleteAjax']);
-    Route::post('/kategori-keahlian/store', [KategoriKeahlianController::class, 'store'])->name('kategori-keahlian.store');
-    Route::put('/kategori-keahlian/{id}', [KategoriKeahlianController::class, 'update'])->name('kategori-keahlian.update');
-    Route::put('/kategori-keahlian/{id}/delete', [KategoriKeahlianController::class, 'destroy'])->name('kategori-keahlian.destroy'); // Seharusnya ::delete namun karena menggunakan status maka diganti menjadi ::put
+    Route::get('kategori-keahlian', [KategoriKeahlianController::class, 'index'])->name('kategori-keahlian.index');
+    Route::post('kategori-keahlian/list', [KategoriKeahlianController::class, 'list'])->name('kategori-keahlian.list');
+    Route::get('kategori-keahlian/create', [KategoriKeahlianController::class, 'create'])->name('kategori-keahlian.create');
+    Route::get('kategori-keahlian/{id}/show_ajax', [KategoriKeahlianController::class, 'showAjax']);
+    Route::get('kategori-keahlian/{id}/edit_ajax', [KategoriKeahlianController::class, 'editAjax']);
+    Route::get('kategori-keahlian/{id}/delete_ajax', [KategoriKeahlianController::class, 'deleteAjax']);
+    Route::post('kategori-keahlian/store', [KategoriKeahlianController::class, 'store'])->name('kategori-keahlian.store');
+    Route::put('kategori-keahlian/{id}', [KategoriKeahlianController::class, 'update'])->name('kategori-keahlian.update');
+    Route::put('kategori-keahlian/{id}/delete', [KategoriKeahlianController::class, 'destroy'])->name('kategori-keahlian.destroy'); // Seharusnya ::delete namun karena menggunakan status maka diganti menjadi ::put
 
     // Rute Periode Semester
     Route::get('periode-semester', [PeriodeSemesterController::class, 'index'])->name('periode-semester.index');
@@ -101,4 +102,17 @@ Route::prefix('admin/master-data')->group(function () {
     Route::post('tingkat-lomba/store', [TingkatLombaController::class, 'store'])->name('tingkat-lomba.store');
     Route::put('tingkat-lomba/{id}', [TingkatLombaController::class, 'update'])->name('tingkat-lomba.update');
     Route::put('tingkat-lomba/{id}/delete', [TingkatLombaController::class, 'destroy'])->name('tingkat-lomba.destroy'); // Seharusnya ::delete namun karena menggunakan status maka diganti menjadi ::put
+});
+
+Route::prefix('admin/manajemen-lomba')->group(function () {
+    // Rute Kelola Lomba
+    Route::get('kelola-lomba', [KelolaLombaController::class, 'index'])->name('kelola-lomba.index');
+    Route::post('kelola-lomba/list', [KelolaLombaController::class, 'list'])->name('kelola-lomba.list');
+    Route::get('kelola-lomba/create', [KelolaLombaController::class, 'create'])->name('kelola-lomba.create');
+    Route::get('kelola-lomba/{id}/show_ajax', [KelolaLombaController::class, 'showAjax']);
+    Route::get('kelola-lomba/{id}/edit_ajax', [KelolaLombaController::class, 'editAjax']);
+    Route::get('kelola-lomba/{id}/delete_ajax', [KelolaLombaController::class, 'deleteAjax']);
+    Route::post('kelola-lomba/store', [KelolaLombaController::class, 'store'])->name('kelola-lomba.store');
+    Route::put('kelola-lomba/{id}', [KelolaLombaController::class, 'update'])->name('kelola-lomba.update');
+    Route::delete('kelola-lomba/{id}', [KelolaLombaController::class, 'destroy'])->name('kelola-lomba.destroy'); // Seharusnya ::delete namun karena menggunakan status maka diganti menjadi ::put
 });

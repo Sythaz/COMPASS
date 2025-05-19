@@ -17,7 +17,7 @@ class LombaSeeder extends Seeder
         $data = [
             [
                 'lomba_id'               => 1,
-                'kategori_id'            => 5, 
+                'kategori_id'            => 5,
                 'nama_lomba'             => 'Lomba Web Development Nasional',
                 'tingkat_lomba_id'       => 5,
                 'deskripsi_lomba'        => 'Kompetisi pengembangan website tingkat nasional untuk mahasiswa.',
@@ -26,11 +26,12 @@ class LombaSeeder extends Seeder
                 'akhir_registrasi_lomba' => Carbon::parse('2025-06-30'),
                 'link_pendaftaran_lomba' => 'https://contoh-lomba.com/daftar',
                 'img_lomba'              => 'webdev2025.png',
-                'status_lomba'           => 'Terverifikasi'
+                'status_verifikasi'      => 'Terverifikasi',
+                'status_lomba'           => 'Aktif'
             ],
             [
                 'lomba_id'               => 2,
-                'kategori_id'            => 15, 
+                'kategori_id'            => 15,
                 'nama_lomba'             => 'IOT CHALLENGE',
                 'tingkat_lomba_id'       => 5,
                 'deskripsi_lomba'        => 'Smart Solution IoT Competition',
@@ -39,11 +40,12 @@ class LombaSeeder extends Seeder
                 'akhir_registrasi_lomba' => Carbon::parse('2025-06-30'),
                 'link_pendaftaran_lomba' => 'https://contoh-lomba.com/daftar',
                 'img_lomba'              => 'IoTChallenge2025.png',
-                'status_lomba'           => 'Terverifikasi'
+                'status_verifikasi'      => 'Terverifikasi',
+                'status_lomba'           => 'Aktif'
             ],
             [
                 'lomba_id'               => 3,
-                'kategori_id'            => 11, 
+                'kategori_id'            => 11,
                 'nama_lomba'             => 'WS ASEAN 2025',
                 'tingkat_lomba_id'       => 5,
                 'deskripsi_lomba'        => 'WS ASEAN 2025 di bidang Cyber Security untuk Pelajar dan Mahasiswa.',
@@ -52,7 +54,8 @@ class LombaSeeder extends Seeder
                 'akhir_registrasi_lomba' => Carbon::parse('2025-06-30'),
                 'link_pendaftaran_lomba' => 'https://contoh-lomba.com/daftar',
                 'img_lomba'              => 'WSASEAN2025.png',
-                'status_lomba'           => 'Terverifikasi'
+                'status_verifikasi'      => 'Terverifikasi',
+                'status_lomba'           => 'Aktif'
             ]
         ];
         DB::table('t_lomba')->insert($data);

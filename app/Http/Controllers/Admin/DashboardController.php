@@ -24,7 +24,7 @@ class DashboardController extends Controller
 
         $persentaseMhsIkutLomba = 0;
         if ($totalMhs > 0) {
-            $persentaseMhsIkutLomba = $totalMhsIkutLomba / $totalMhs * 100;
+            $persentaseMhsIkutLomba = floor($totalMhsIkutLomba / $totalMhs * 100);
         }
 
         // Menghitung lomba yang sedang aktif pendaftaran
