@@ -94,7 +94,7 @@
             </div>
 
             {{-- Gambar Lomba --}}
-            <label for="img_lomba" class="col-form-label mt-2">Gambar Poster Lomba </label>
+            <label for="img_lomba" class="col-form-label mt-2">Gambar Poster Lomba <small>(Maksimal 2MB)</small> </label>
             <div class="custom-validation">
                 <div class="input-group mt-1">
                     <div class="custom-file">

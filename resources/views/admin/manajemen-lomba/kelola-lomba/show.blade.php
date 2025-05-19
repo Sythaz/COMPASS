@@ -56,13 +56,17 @@
             </td>
         </tr>
         <tr>
-            <th style="width: 30%">Gambar Lomba:</th>
+            <th style="width: 30%">Gambar Poster Lomba:</th>
             <td class="text-start">
-                <a href="{{ asset('storage/img/lomba/' . $kelolaLomba->img_lomba) }}" data-lightbox="lomba"
-                    data-title="Gambar Lomba">
-                    <img class="img-thumbnail" src="{{ asset('storage/img/lomba/' . $kelolaLomba->img_lomba) }}" width="100"
-                        alt="Gambar Lomba" style="cursor: zoom-in;">
-                </a>
+                @if (!is_null($kelolaLomba->img_lomba) && file_exists(public_path('storage/img/lomba/' . $kelolaLomba->img_lomba)))
+                    <a href="{{ asset('storage/img/lomba/' . $kelolaLomba->img_lomba) }}" data-lightbox="lomba"
+                        data-title="Gambar Poster Lomba">
+                        <img src="{{ asset('storage/img/lomba/' . $kelolaLomba->img_lomba) }}" width="100"
+                            class="d-block mx-auto img-thumbnail" alt="Gambar Poster Lomba" style="cursor: zoom-in;" />
+                    </a>
+                @else
+                    <p class="text-center text-muted">Gambar tidak ada atau belum di upload</p>
+                @endif
             </td>
         </tr>
     </table>
