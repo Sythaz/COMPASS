@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
@@ -98,13 +99,11 @@ class UserSeeder extends Seeder
 
         $data = [];
 
-        // Admins (index 0 and 1)
         foreach (array_slice($dosenUsernames, 0, 2) as $index => $username) {
             $data[] = [
                 'user_id' => $index + 1,
                 'username' => $username,
-                // 'password' => 'Admin' . ($index + 1),
-                'password' => $username,
+                'password' => Hash::make($username), // hash password
                 'phrase' => $username,
                 'role' => 'Admin',
             ];
@@ -115,8 +114,7 @@ class UserSeeder extends Seeder
             $data[] = [
                 'user_id' => count($data) + 1,
                 'username' => $username,
-                // 'password' => 'Dosen' . ($i + 3),
-                'password' => $username,
+                'password' => Hash::make($username), // hash password
                 'phrase' => $username,
                 'role' => 'Dosen',
             ];
@@ -385,12 +383,12 @@ class UserSeeder extends Seeder
             2341720259,
         ];
 
+        // Mahasiswa
         foreach ($mahasiswaUsernames as $i => $username) {
             $data[] = [
                 'user_id' => count($data) + 1,
                 'username' => $username,
-                // 'password' => 'Mahasiswa' . ($i + 1),
-                'password' => $username,
+                'password' => Hash::make($username), // hash password
                 'phrase' => $username,
                 'role' => 'Mahasiswa',
             ];
