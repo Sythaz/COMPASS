@@ -540,24 +540,41 @@ class MahasiswaSeeder extends Seeder
 
         $data = [];
 
+        // Langkah 1: Insert tanpa email, no_hp, alamat
         foreach ($nims as $index => $nim) {
-            $data[] = [
-                // Tidak perlu 'mahasiswa_id' jika pakai auto increment
-                'user_id' => $index + 85, // 2 Admin + 82 Dosen = 84, jadi mulai dari 85
+            DB::table('t_mahasiswa')->insert([
+                'user_id' => $index + 85, // Sesuai logika kamu sebelumnya
                 'prodi_id' => 1,
                 'periode_id' => 1,
-                'level_minbak_id' => rand(1, 4), // Random level minat bakat
+                'level_minbak_id' => rand(1, 4),
                 'nim_mahasiswa' => $nim,
                 'nama_mahasiswa' => $names[$index] ?? 'Nama Tidak Diketahui',
-                'angkatan' => '2023', // Bisa juga ambil dari substr($nim, 0, 4)
+                'angkatan' => '2023',
                 'img_mahasiswa' => 'profil-default.png',
-                'email' => 'mahasiswa' . ($index + 85) . '@example.com',
-                'no_hp' => 'Belum diisi!',
-                'alamat' => 'Belum diisi!',
-            ];
+                'email' => null,
+                'no_hp' => null,
+                'alamat' => null,
+            ]);
         }
 
-        DB::table('t_mahasiswa')->insert($data);
+        // Langkah 2: Ambil semua mahasiswa berdasarkan angkatan dan prodi (atau bisa juga berdasarkan NIM)
+        $mahasiswa = DB::table('t_mahasiswa')
+            ->where('angkatan', '2023')
+            ->where('prodi_id', 1)
+            ->get();
+
+        // Langkah 3: Update berdasarkan mahasiswa_id
+        $jalan = ['Mawar', 'Melati', 'Kenanga', 'Flamboyan', 'Cendana', 'Delima', 'Kamboja', 'Bungur', 'Bougenville', 'Teratai'];
+
+        foreach ($mahasiswa as $mhs) {
+            DB::table('t_mahasiswa')
+                ->where('mahasiswa_id', $mhs->mahasiswa_id)
+                ->update([
+                    'email' => 'mahasiswa' . $mhs->mahasiswa_id . '@example.com',
+                    'no_hp' => '08' . str_pad(rand(0, 999999999), 9, '0', STR_PAD_LEFT),
+                    'alamat' => 'Jl. ' . $jalan[array_rand($jalan)] . ' No. ' . rand(1, 50),
+                ]);
+        }
     }
 
 }

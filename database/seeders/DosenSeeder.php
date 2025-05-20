@@ -183,21 +183,34 @@ class DosenSeeder extends Seeder
         ];
 
         $data = [];
+        $jalan = ['Mawar', 'Melati', 'Kenanga', 'Flamboyan', 'Cendana', 'Delima', 'Kamboja', 'Bougenville', 'Teratai', 'Anggrek'];
 
         foreach ($nips as $index => $nip) {
             $data[] = [
-                'user_id' => $index + 3, // Dosen mulai dari user_id 3
-                'kategori_id' => rand(1, 18), // Kategori dosen random
+                'user_id' => $index + 3, // 1 Admin + 1 Mahasiswa, maka dosen mulai dari user_id 3
+                'kategori_id' => rand(1, 18),
                 'nip_dosen' => $nip,
-                'nama_dosen' => $names[$index] ?? 'Nama Tidak Diketahui', // antisipasi jika $names tidak lengkap
+                'nama_dosen' => $names[$index] ?? 'Nama Tidak Diketahui',
                 'img_dosen' => 'profil-default.png',
-                'email' => 'dosen' . ($index + 3) . '@example.com',
-                'no_hp' => 'Belum diisi!',
-                'alamat' => 'Belum diisi!',
+                'email' => null,
+                'no_hp' => null,
+                'alamat' => null,
             ];
         }
 
         DB::table('t_dosen')->insert($data);
+
+        // Langkah 2
+        $dosen = DB::table('t_dosen')->get(); // Ambil semua dosen yang sudah di-insert
+        foreach ($dosen as $d) {
+            DB::table('t_dosen')
+                ->where('dosen_id', $d->dosen_id)
+                ->update([
+                    'email' => 'dosen' . $d->dosen_id . '@example.com',
+                    'no_hp' => '08' . str_pad(rand(0, 999999999), 9, '0', STR_PAD_LEFT),
+                    'alamat' => 'Jl. ' . $jalan[array_rand($jalan)] . ' No. ' . rand(1, 100),
+                ]);
+        }
     }
 
 }
