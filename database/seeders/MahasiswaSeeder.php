@@ -551,6 +551,9 @@ class MahasiswaSeeder extends Seeder
                 'nama_mahasiswa' => $names[$index] ?? 'Nama Tidak Diketahui',
                 'angkatan' => '2023', // Bisa juga ambil dari substr($nim, 0, 4)
                 'img_mahasiswa' => 'profil-default.png',
+                'email' => 'mahasiswa' . ($index + 85) . '@example.com',
+                'no_hp' => 'Belum diisi!',
+                'alamat' => 'Belum diisi!',
             ];
         }
 

@@ -22,6 +22,9 @@ class MahasiswaModel extends Model
         'nama_mahasiswa',
         'img_mahasiswa',
         'angkatan',
+        'alamat',
+        'email',
+        'no_hp',
     ];
 
     public function users(): BelongsTo

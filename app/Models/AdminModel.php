@@ -10,18 +10,22 @@ class AdminModel extends Model
 {
     use HasFactory;
 
-    protected $table = 't_admin'; 
-    protected $primaryKey = 'admin_id';  
+    protected $table = 't_admin';
+    protected $primaryKey = 'admin_id';
 
     protected $fillable = [
-        'user_id', 
-        'nip_admin', 
+        'user_id',
+        'nip_admin',
         'nama_admin',
         'img_admin',
+        'alamat',
+        'email',
+        'no_hp',
     ];
 
-    public function users(): BelongsTo {
-        return $this->belongsTo(UsersModel::class, 'user_id','user_id');
+    public function users(): BelongsTo
+    {
+        return $this->belongsTo(UsersModel::class, 'user_id', 'user_id');
     }
 
 }

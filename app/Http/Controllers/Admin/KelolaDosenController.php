@@ -81,6 +81,9 @@ class KelolaDosenController extends Controller
             'nama_dosen' => 'required',
             'kategori_id' => 'required|exists:t_kategori,kategori_id',
             'role' => 'required',
+            'email' => 'nullable|email|unique:t_dosen,email',
+            'no_hp' => 'nullable|unique:t_dosen,no_hp',
+            'alamat' => 'nullable|string|max:255',
         ]);
 
         DB::transaction(function () use ($request) {
@@ -97,6 +100,9 @@ class KelolaDosenController extends Controller
                 'nama_dosen' => $request->nama_dosen,
                 'kategori_id' => $request->kategori_id,
                 'img_dosen' => 'profil-default.jpg',
+                'email' => $request->email ?: 'Belum diisi!',
+                'no_hp' => $request->no_hp ?: 'Belum diisi!',
+                'alamat' => $request->alamat ?: 'Belum diisi!',
             ]);
         });
 
@@ -120,6 +126,9 @@ class KelolaDosenController extends Controller
             'role' => 'required',
             'password' => 'nullable|min:6',
             'phrase' => 'nullable',
+            'alamat' => 'nullable|string|max:255',
+            'email' => 'nullable|email|unique:t_dosen,email,' . $dosen->dosen_id . ',dosen_id',
+            'no_hp' => 'nullable|unique:t_dosen,no_hp,' . $dosen->dosen_id . ',dosen_id',
         ]);
 
         DB::transaction(function () use ($request, $dosen, $user) {
@@ -136,6 +145,10 @@ class KelolaDosenController extends Controller
             $dosen->nip_dosen = $request->nip_dosen;
             $dosen->nama_dosen = $request->nama_dosen;
             $dosen->kategori_id = $request->kategori_id;
+            $dosen->alamat = $request->alamat;
+            $dosen->email = $request->email;
+            $dosen->no_hp = $request->no_hp;
+
             $dosen->save();
         });
 

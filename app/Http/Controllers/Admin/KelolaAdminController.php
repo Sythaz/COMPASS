@@ -71,6 +71,9 @@ class KelolaAdminController extends Controller
             'nip_admin' => 'required|unique:t_admin,nip_admin',
             'nama_admin' => 'required',
             'role' => 'required',
+            'email' => 'nullable|email|unique:t_admin,email',
+            'no_hp' => 'nullable|unique:t_admin,no_hp',
+            'alamat' => 'nullable|string|max:255',
         ]);
 
         DB::transaction(function () use ($request) {
@@ -86,6 +89,9 @@ class KelolaAdminController extends Controller
                 'nip_admin' => $request->nip_admin,
                 'nama_admin' => $request->nama_admin,
                 'img_admin' => 'profil-default.jpg',
+                'email' => $request->email ?: 'Belum diisi!',
+                'no_hp' => $request->no_hp ?: 'Belum diisi!',
+                'alamat' => $request->alamat ?: 'Belum diisi!',
             ]);
         });
 
@@ -104,6 +110,9 @@ class KelolaAdminController extends Controller
         $request->validate([
             'nip_admin' => 'required|unique:t_admin,nip_admin,' . $admin->admin_id . ',admin_id',
             'nama_admin' => 'required',
+            'alamat' => 'nullable|string|max:255',
+            'email' => 'nullable|email|unique:t_admin,email,' . $admin->admin_id . ',admin_id',
+            'no_hp' => 'nullable|unique:t_admin,no_hp,' . $admin->admin_id . ',admin_id',
             'username' => 'required|unique:t_users,username,' . $user->user_id . ',user_id',
             'role' => 'required',
             'password' => 'nullable|min:6',
@@ -117,13 +126,17 @@ class KelolaAdminController extends Controller
             }
             $user->role = $request->role;
 
-            // Set phrase, kalau dari form tidak ada isian phrase maka tetap 
-            $user->phrase = $request->input('phrase', $user->phrase); // update phrase
+            // Update phrase, jika tidak ada input phrase gunakan yang lama
+            $user->phrase = $request->input('phrase', $user->phrase);
 
             $user->save();
 
             $admin->nip_admin = $request->nip_admin;
             $admin->nama_admin = $request->nama_admin;
+            $admin->alamat = $request->alamat;
+            $admin->email = $request->email;
+            $admin->no_hp = $request->no_hp;
+
             $admin->save();
         });
 

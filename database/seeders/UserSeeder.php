@@ -11,8 +11,8 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $dosenUsernames = [
-            '1234567891011121314',
-            '1213141516171819105',
+            '123456789101112134',
+            '121314151617181915',
             '198010102005011001',
             '198805042015041001',
             '198211302014041001',
@@ -381,19 +381,32 @@ class UserSeeder extends Seeder
             2341720241,
             2341720189,
             2341720259,
+            123456789101112136,
+            121314151617181917,
+            123456789101112138,
         ];
 
-        // Mahasiswa
-        foreach ($mahasiswaUsernames as $i => $username) {
+        // Mahasiswa + 3 Admin
+        $total = count($mahasiswaUsernames);
+        foreach ($mahasiswaUsernames as $index => $username) {
+            // Cek apakah data ini termasuk 3 terakhir
+            if ($index >= $total - 3) {
+                // 3 terakhir jadi Admin
+                $role = 'Admin';
+            } else {
+                $role = 'Mahasiswa';
+            }
+
             $data[] = [
-                'user_id' => count($data) + 1,
+                'user_id' => $index + 85, // user_id berurutan mulai 1
                 'username' => $username,
-                'password' => Hash::make($username), // hash password
+                'password' => Hash::make($username),
                 'phrase' => $username,
-                'role' => 'Mahasiswa',
+                'role' => $role,
             ];
         }
 
         DB::table('t_users')->insert($data);
     }
+
 }

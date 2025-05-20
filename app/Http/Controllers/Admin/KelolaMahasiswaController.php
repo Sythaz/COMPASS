@@ -89,6 +89,9 @@ class KelolaMahasiswaController extends Controller
             'level_minbak_id' => 'required|exists:t_level_minat_bakat,level_minbak_id',
             'angkatan' => 'nullable|integer',
             'role' => 'required',
+            'email' => 'nullable|email|unique:t_dosen,email',
+            'no_hp' => 'nullable|unique:t_dosen,no_hp',
+            'alamat' => 'nullable|string|max:255',
         ]);
 
         // Validasi username yang akan sama nim belum dipakai
@@ -116,6 +119,9 @@ class KelolaMahasiswaController extends Controller
                 'nama_mahasiswa' => $request->nama_mahasiswa,
                 'img_mahasiswa' => 'profil-default.jpg',
                 'angkatan' => $request->angkatan ?? 2025,
+                'email' => $request->email ?: 'Belum diisi!',
+                'no_hp' => $request->no_hp ?: 'Belum diisi!',
+                'alamat' => $request->alamat ?: 'Belum diisi!',
             ]);
         });
 
@@ -137,6 +143,9 @@ class KelolaMahasiswaController extends Controller
             'periode_id' => 'required|exists:t_periode,periode_id',
             'level_minbak_id' => 'required|exists:t_level_minat_bakat,level_minbak_id',
             'username' => 'required|unique:t_users,username,' . $user->user_id . ',user_id',
+            'alamat' => 'nullable|string|max:255',
+            'email' => 'nullable|email|unique:t_mahasiswa,email,' . $mahasiswa->mahasiswa_id . ',mahasiswa_id',
+            'no_hp' => 'nullable|unique:t_mahasiswa,no_hp,' . $mahasiswa->mahasiswa_id . ',mahasiswa_id',
             'role' => 'required',
             'password' => 'nullable|min:6',
             'angkatan' => 'nullable|integer',
@@ -162,6 +171,9 @@ class KelolaMahasiswaController extends Controller
             $mahasiswa->level_minbak_id = $request->level_minbak_id;
             $mahasiswa->nim_mahasiswa = $request->nim_mahasiswa;
             $mahasiswa->nama_mahasiswa = $request->nama_mahasiswa;
+            $mahasiswa->alamat = $request->alamat;
+            $mahasiswa->email = $request->email;
+            $mahasiswa->no_hp = $request->no_hp;
 
             // Jika angkatan kosong, isi dengan 2025
             $mahasiswa->angkatan = $request->angkatan ?? 2025;

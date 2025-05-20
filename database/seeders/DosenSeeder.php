@@ -191,6 +191,9 @@ class DosenSeeder extends Seeder
                 'nip_dosen' => $nip,
                 'nama_dosen' => $names[$index] ?? 'Nama Tidak Diketahui', // antisipasi jika $names tidak lengkap
                 'img_dosen' => 'profil-default.png',
+                'email' => 'dosen' . ($index + 3) . '@example.com',
+                'no_hp' => 'Belum diisi!',
+                'alamat' => 'Belum diisi!',
             ];
         }
 

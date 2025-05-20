@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -16,8 +15,11 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->index();
             $table->unsignedBigInteger('kategori_id')->index();
             $table->bigInteger('nip_dosen')->unique();
-            $table->string('nama_dosen',255);
+            $table->string('nama_dosen', 255);
             $table->string('img_dosen')->nullable();
+            $table->string('alamat')->nullable();
+            $table->string('email')->nullable();
+            $table->string('no_hp')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('user_id')->on('t_users');

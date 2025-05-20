@@ -19,6 +19,9 @@ class DosenModel extends Model
         'nip_dosen',
         'nama_dosen',
         'img_dosen',
+        'alamat',
+        'email',
+        'no_hp',
     ];
 
     public function users(): BelongsTo
