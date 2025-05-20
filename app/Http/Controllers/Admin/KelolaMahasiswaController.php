@@ -12,6 +12,8 @@ use App\Models\ProdiModel;
 use App\Models\LevelMinatBakatModel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class KelolaMahasiswaController extends Controller
 {
@@ -201,5 +203,61 @@ class KelolaMahasiswaController extends Controller
             'success' => true,
             'message' => 'Data Mahasiswa berhasil dihapus'
         ]);
+    }
+
+    // Export data mahasiswa ke Excel
+    public function export_excel()
+    {
+        // ambil data mahasiswa dengan relasi prodi
+        $mahasiswa = MahasiswaModel::with('prodi')
+            ->select('mahasiswa_id', 'prodi_id', 'nim_mahasiswa', 'nama_mahasiswa')
+            ->get();
+
+        // inisialisasi spreadsheet
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // header kolom
+        $sheet->setCellValue('A1', 'No');
+        $sheet->setCellValue('B1', 'NIM');
+        $sheet->setCellValue('C1', 'Nama');
+        $sheet->setCellValue('D1', 'Program Studi');
+
+        $sheet->getStyle('A1:D1')->getFont()->setBold(true); // bold header
+
+        // isi data
+        $no = 1;
+        $baris = 2;
+        foreach ($mahasiswa as $row) {
+            $sheet->setCellValue('A' . $baris, $no);
+            $sheet->setCellValueExplicit('B' . $baris, $row->nim_mahasiswa, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('C' . $baris, $row->nama_mahasiswa);
+            $sheet->setCellValue('D' . $baris, $row->prodi->nama_prodi ?? '-');
+
+            $baris++;
+            $no++;
+        }
+
+        // set kolom auto size
+        foreach (range('A', 'D') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+
+        $sheet->setTitle('Data Mahasiswa');
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $filename = 'Data Mahasiswa ' . date('Y-m-d H:i:s') . '.xlsx';
+
+        // header download
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Cache-Control: cache, must-revalidate');
+        header('Pragma: public');
+
+        $writer->save('php://output');
+        exit;
     }
 }

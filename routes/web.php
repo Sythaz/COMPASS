@@ -90,6 +90,7 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::post('mahasiswa/store', [KelolaMahasiswaController::class, 'store'])->name('mahasiswa.store');      // Store
             Route::put('mahasiswa/{id}', [KelolaMahasiswaController::class, 'update'])->name('mahasiswa.update');      // Update
             Route::delete('mahasiswa/{id}', [KelolaMahasiswaController::class, 'destroy'])->name('mahasiswa.destroy'); // Delete
+            Route::get('mahasiswa/export_excel', [KelolaMahasiswaController::class, 'export_excel'])->name('mahasiswa.export_excel');  // ajax export excel
         });
 
         // MASTER DATA
