@@ -16,6 +16,7 @@ class PendaftaranLombaModel extends Model
     protected $fillable = [
         'mahasiswa_id', 
         'lomba_id',
+        'bukti_pendaftaran'
     ];
 
     public function mahasiswa(): BelongsTo {
