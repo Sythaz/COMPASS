@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class KelolaMahasiswaController extends Controller
 {
@@ -260,4 +261,25 @@ class KelolaMahasiswaController extends Controller
         $writer->save('php://output');
         exit;
     }
+
+    public function export_pdf(Request $request)
+    {
+        $mahasiswa = MahasiswaModel::select('nama_mahasiswa', 'nim_mahasiswa')
+            ->orderBy('nama_mahasiswa')
+            ->get();
+
+        // Jika menggunakan Kebab case (kelola-mahasiswa) harus load satu-satu ya!
+        $viewPath = resource_path('views/admin/kelola-pengguna/kelola-mahasiswa/export_pdf.blade.php');
+        // Fungsi render() mengubah view menjadi HTML string
+        $html = view()->file($viewPath, ['mahasiswa' => $mahasiswa])->render();
+        // Memuat HTML string $html ke PDF generator (misal dompdf atau barryvdh/laravel-dompdf)
+        $pdf = Pdf::loadHTML($html);
+
+        $pdf->setPaper('a4', 'portrait');
+        $pdf->setOption('isRemoteEnabled', true);
+
+        return $pdf->stream('Data Mahasiswa ' . date('Y-m-d H:i:s') . '.pdf');
+    }
+
+
 }

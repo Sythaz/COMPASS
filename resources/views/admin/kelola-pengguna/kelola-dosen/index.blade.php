@@ -23,14 +23,18 @@
                         </div>
                         <div class="col-6 text-right">
                             <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false">
+                                <button type="button" class="btn btn-outline-primary dropdown-toggle"
+                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="fa-solid fa-file-export"></i>
                                     <strong>Menu Ekspor</strong>
                                 </button>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#">Ekspor Data ke XLSX</a>
-                                    <a class="dropdown-item" href="#">Ekspor Data ke PDF</a>
+                                    {{-- {{ route('dosen.export_excel') }} --}}
+                                    <a class="dropdown-item" href="#">Ekspor Data ke
+                                        XLSX</a>
+                                    {{-- {{ route('dosen.export_pdf') }} --}}
+                                    <a class="dropdown-item" href="#">Ekspor Data ke
+                                        PDF</a>
                                 </div>
                             </div>
                         </div>
