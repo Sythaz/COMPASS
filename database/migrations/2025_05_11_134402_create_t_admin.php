@@ -19,6 +19,8 @@ return new class extends Migration {
             $table->string('alamat')->nullable();
             $table->string('email')->nullable();
             $table->string('no_hp')->nullable();
+            $table->string('kelamin')->nullable();
+            $table->enum('status', ['Aktif', 'Nonaktif'])->default('Aktif');
             $table->timestamps();
 
             $table->foreign('user_id')->references('user_id')->on('t_users');

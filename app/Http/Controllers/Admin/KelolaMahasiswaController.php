@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Hash;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class KelolaMahasiswaController extends Controller
 {
@@ -281,5 +283,144 @@ class KelolaMahasiswaController extends Controller
         return $pdf->stream('Data Mahasiswa ' . date('Y-m-d H:i:s') . '.pdf');
     }
 
+    public function importForm()
+    {
+        return view('admin.kelola-pengguna.kelola-mahasiswa.import');
+    }
+
+
+    public function import(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            // Validasi file
+            $rules = [
+                'file_mahasiswa' => ['required', 'mimes:xlsx', 'max:1024'], // max 1MB
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi Gagal',
+                    'msgField' => $validator->errors()
+                ]);
+            }
+
+            $file = $request->file('file_mahasiswa');
+            $reader = IOFactory::createReader('Xlsx');
+            $reader->setReadDataOnly(true);
+
+            try {
+                $spreadsheet = $reader->load($file->getRealPath());
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Gagal membaca file Excel: ' . $e->getMessage()
+                ]);
+            }
+
+            $sheet = $spreadsheet->getActiveSheet();
+            $data = $sheet->toArray(null, false, true, true);
+
+            $jumlahBerhasil = 0;
+            $skipped = 0;
+
+            if (count($data) > 1) {
+                foreach ($data as $baris => $value) {
+                    if ($baris == 1) {
+                        // Skip header
+                        continue;
+                    }
+
+                    $nim = trim($value['A']);
+                    $nama = trim($value['B']);
+                    $nama_prodi = trim($value['C']);
+                    $email = trim($value['D']);
+                    $no_hp = trim($value['E']);
+                    $alamat = trim($value['F']);
+
+                    // Validasi data penting
+                    if (empty($nim) || empty($nama) || empty($nama_prodi)) {
+                        Log::warning("Baris $baris dilewati: Data penting kosong (NIM/Nama/Prodi)");
+                        $skipped++;
+                        continue;
+                    }
+
+                    // Cari prodi_id dari nama_prodi (case-insensitive)
+                    $prodi = ProdiModel::whereRaw('LOWER(nama_prodi) = ?', [strtolower($nama_prodi)])->first();
+                    if (!$prodi) {
+                        Log::warning("Baris $baris dilewati: Prodi '$nama_prodi' tidak ditemukan");
+                        $skipped++;
+                        continue;
+                    }
+
+                    // Cek jika user dengan username (NIM) sudah ada
+                    $existingUser = UsersModel::where('username', $nim)->first();
+                    if ($existingUser) {
+                        Log::info("Baris $baris dilewati: User dengan NIM '$nim' sudah ada");
+                        $skipped++;
+                        continue;
+                    }
+
+                    try {
+                        // Buat user baru
+                        $user = UsersModel::create([
+                            'username' => $nim,
+                            'password' => Hash::make($nim),
+                            'role' => 'Mahasiswa',
+                            'phrase' => $nim,
+                        ]);
+
+                        // Buat data mahasiswa
+                        MahasiswaModel::create([
+                            'user_id' => $user->user_id,
+                            'prodi_id' => $prodi->prodi_id,
+                            'periode_id' => 1,
+                            'level_minbak_id' => 1,
+                            'nim_mahasiswa' => $nim,
+                            'nama_mahasiswa' => strtoupper($nama),  // Mengubah menjadi kapital semua
+                            'email' => $email,
+                            'no_hp' => $no_hp,
+                            'alamat' => $alamat,
+                            'img_mahasiswa' => 'profil-default.jpg',
+                            'angkatan' => 2023,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+
+                        $jumlahBerhasil++;
+                    } catch (\Exception $e) {
+                        Log::error("Baris $baris gagal disimpan: " . $e->getMessage());
+                        $skipped++;
+                        continue;
+                    }
+                }
+
+                if ($jumlahBerhasil > 0) {
+                    $message = "$jumlahBerhasil data mahasiswa berhasil diimport";
+                    if ($skipped > 0) {
+                        $message .= ", $skipped data dilewati karena duplikat atau data tidak valid.";
+                    }
+
+                    return response()->json([
+                        'status' => true,
+                        'message' => $message
+                    ]);
+                } else {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Tidak ada data baru yang berhasil diimport'
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'status' => false,
+                'message' => 'File Excel kosong atau format tidak sesuai'
+            ]);
+        }
+
+        return redirect('/');
+    }
 
 }

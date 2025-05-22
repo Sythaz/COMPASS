@@ -16,7 +16,8 @@
                                 <i class="fa-solid fa-plus"></i>
                                 <strong>Tambah Data</strong>
                             </a>
-                            <a href="javascript:void(0)" class="ml-2 btn btn-primary">
+                            <a onclick="modalAction('{{ route('mahasiswa.import.form') }}')"
+                                class="ml-2 btn btn-primary text-white">
                                 <i class="fa-solid fa-file-import"></i>
                                 <strong> Impor Data</strong>
                             </a>

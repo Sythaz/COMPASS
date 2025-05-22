@@ -39,6 +39,14 @@ class AdminSeeder extends Seeder
             5 => 'Chester Bennington, S.Th',
         ];
 
+        $kelamin = [
+            'P',
+            'P',
+            'P',
+            'L',
+            'L',
+        ];
+
         $data = [];
 
         foreach ($users->values() as $index => $user) {
@@ -62,6 +70,7 @@ class AdminSeeder extends Seeder
                 'email' => $adminData->email ?? 'admin' . $adminId . '@example.com',
                 'no_hp' => $adminData->no_hp ?? '0812345678' . $adminId,
                 'alamat' => $adminData->alamat ?? 'Jl. Buah Batu, No. 123',
+                'kelamin' => $kelamin[$index],
             ];
         }
 
