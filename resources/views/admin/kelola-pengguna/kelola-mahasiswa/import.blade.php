@@ -34,44 +34,72 @@
     </div>
 </form>
 
+<!-- Spinner Loading -->
+<div id="loading-spinner" style="display:none; position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%); z-index: 1055;">
+    <img src="{{ asset('assets/images/loading/load.gif') }}" alt="Loading..." style="width: 80px; height: 80px;">
+</div>
+
 <script src="{{ asset('js-custom/form-validation.js') }}"></script>
 
 <script>
-    customFormValidation(
-        "#import-mahasiswa",
-        {
-            file_mahasiswa: { required: true }
-        },
-        {
-            file_mahasiswa: { required: "File mahasiswa wajib dipilih" }
-        },
-        function (response, form) {
-            if (response.status) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil',
-                    text: response.message,
-                }).then(function () {
-                    getModalInstance().hide();
-                    $('#tabel-mahasiswa').DataTable().ajax.reload();
-                });
-            } else {
-                $('.error-text').text('');
-                $.each(response.msgField, function (prefix, val) {
-                    $('#error-' + prefix).text(val[0]);
-                });
+    function beforeSubmit() {
+        $('#loading-spinner').show();
+    }
 
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Terjadi Kesalahan',
-                    text: response.message
-                });
-            }
-        }
-    );
+    function afterSubmit() {
+        $('#loading-spinner').hide();
+    }
 
     function getModalInstance() {
         const modalEl = document.getElementById('myModal');
         return bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
     }
+
+    $(document).ready(function () {
+        customFormValidation(
+            "#import-mahasiswa",
+            {
+                file_mahasiswa: { required: true }
+            },
+            {
+                file_mahasiswa: { required: "File mahasiswa wajib dipilih" }
+            },
+            function (response, form) {
+                afterSubmit();
+
+                if (response.status) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: response.message,
+                    }).then(function () {
+                        getModalInstance().hide();
+                        $('#tabel-mahasiswa').DataTable().ajax.reload();
+                    });
+                } else {
+                    $('.error-text').text('');
+                    if (response.msgField) {
+                        $.each(response.msgField, function (prefix, val) {
+                            $('#error-' + prefix).text(val[0]);
+                        });
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Terjadi Kesalahan',
+                        text: response.message
+                    });
+                }
+            },
+            function () {
+                beforeSubmit();
+            }
+        );
+
+        // Fallback: pastikan loading muncul saat form disubmit manual
+        $('#import-mahasiswa').on('submit', function () {
+            beforeSubmit();
+        });
+    });
 </script>

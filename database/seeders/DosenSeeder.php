@@ -12,91 +12,6 @@ class DosenSeeder extends Seeder
      */
     public function run(): void
     {
-        $nips = [
-            198010102005011001,
-            198805042015041001,
-            198211302014041001,
-            197704242008121001,
-            198305212006041003,
-            197710302005012001,
-            199107042019031021,
-            200482071,
-            198902102019031020,
-            170361025,
-            198107052005011002,
-            198901232019032016,
-            198712142019032012,
-            199112302019031016,
-            198108102005012002,
-            198708242019031010,
-            197903132008121002,
-            190881249,
-            199405212022032000,
-            197606252005012001,
-            199006192019031017,
-            198108092010121002,
-            196201051990031002,
-            197202022005011002,
-            199412172019032020,
-            196211281988111001,
-            198311092014042001,
-            198806102019031018,
-            199206062019031017,
-            198410092015041001,
-            198807112015042005,
-            195912081985031004,
-            198610022019032011,
-            197605152009122001,
-            199401312022032007,
-            197201232008011006,
-            199305052019031018,
-            198910072020121003,
-            198004142023212020,
-            199204122019031013,
-            195911101986032000,
-            199110142019032020,
-            198406102008121004,
-            197305102008011010,
-            198902012019031009,
-            199003202019031016,
-            199003052019031013,
-            199002062019032013,
-            198704242019032017,
-            198805072019032012,
-            198902102019031019,
-            199111282019031013,
-            199205172019031020,
-            180461018,
-            198806072019032016,
-            198911082019031020,
-            198611032014041001,
-            198701082019031004,
-            195906201994031001,
-            198910042019032023,
-            198603182012121001,
-            199004102019092001,
-            190861226,
-            198903192019032013,
-            197111101999031002,
-            198910262023211020,
-            198909012019031010,
-            198507222014041001,
-            198908132019031017,
-            198005142005022001,
-            197803272003122002,
-            198609232015041001,
-            199105052019031029,
-            198901092020122005,
-            199308112019032025,
-            199106212019032020,
-            198103182010122002,
-            199208292019032023,
-            198101052005011005,
-            198906212019031013,
-            198007162010121002,
-            199005112019091000,
-        ];
-
         $names = [
             "Prof. Dr. Eng. Rosa Andrie Asmara, S.T., M.T.",
             "Pramana Yoga Saputra, S.Kom., M.MT.",
@@ -267,27 +182,36 @@ class DosenSeeder extends Seeder
             'L'
         ];
 
-        $data = [];
         $jalan = ['Mawar', 'Melati', 'Kenanga', 'Flamboyan', 'Cendana', 'Delima', 'Kamboja', 'Bougenville', 'Teratai', 'Anggrek'];
 
-        foreach ($nips as $index => $nip) {
+        // Ambil user dari index ke-5 ke atas (mulai user ke-6)
+        $users = DB::table('t_users')
+            ->orderBy('user_id')
+            ->skip(5) // Lewati 5 user pertama (index 0–4)
+            ->take(count($names)) // Pastikan jumlah sesuai dengan array nama
+            ->get()
+            ->values(); // Reset index
+
+        $data = [];
+
+        foreach ($users as $index => $user) {
             $data[] = [
-                'user_id' => $index + 3, // 1 Admin + 1 Mahasiswa, maka dosen mulai dari user_id 3
+                'user_id' => $user->user_id,
                 'kategori_id' => rand(1, 18),
-                'nip_dosen' => $nip,
+                'nip_dosen' => $user->username, // Ganti nips
                 'nama_dosen' => $names[$index] ?? 'Nama Tidak Diketahui',
                 'img_dosen' => 'profil-default.png',
                 'email' => null,
                 'no_hp' => null,
                 'alamat' => null,
-                'kelamin' => $kelamin[$index] ?? 'Kelamin Tidak Dikethaui',
+                'kelamin' => $kelamin[$index] ?? 'Kelamin Tidak Diketahui',
             ];
         }
 
         DB::table('t_dosen')->insert($data);
 
-        // Langkah 2
-        $dosen = DB::table('t_dosen')->get(); // Ambil semua dosen yang sudah di-insert
+        // Langkah 2: Update email, no_hp, alamat
+        $dosen = DB::table('t_dosen')->get();
         foreach ($dosen as $d) {
             DB::table('t_dosen')
                 ->where('dosen_id', $d->dosen_id)
@@ -298,5 +222,6 @@ class DosenSeeder extends Seeder
                 ]);
         }
     }
-
 }
+
+

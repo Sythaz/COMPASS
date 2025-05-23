@@ -334,12 +334,19 @@ class KelolaMahasiswaController extends Controller
                         continue;
                     }
 
+                    // Format data
                     $nim = trim($value['A']);
                     $nama = trim($value['B']);
                     $nama_prodi = trim($value['C']);
                     $email = trim($value['D']);
                     $no_hp = trim($value['E']);
                     $alamat = trim($value['F']);
+                    $kelamin = trim($value['G']);
+
+                    // Jika kelamin bukan 'L' atau 'P', beri nilai default
+                    if ($kelamin !== 'L' && $kelamin !== 'P') {
+                        $kelamin = 'Belum diisi';
+                    }
 
                     // Validasi data penting
                     if (empty($nim) || empty($nama) || empty($nama_prodi)) {
@@ -377,15 +384,17 @@ class KelolaMahasiswaController extends Controller
                         MahasiswaModel::create([
                             'user_id' => $user->user_id,
                             'prodi_id' => $prodi->prodi_id,
-                            'periode_id' => 1,
-                            'level_minbak_id' => 1,
+                            'periode_id' => 1, // Nilai default
+                            'level_minbak_id' => 1, // Nilai default
                             'nim_mahasiswa' => $nim,
-                            'nama_mahasiswa' => strtoupper($nama),  // Mengubah menjadi kapital semua
+                            'nama_mahasiswa' => strtoupper($nama),  // Ubah ke kapital semua
+                            'kelamin' => $kelamin,
                             'email' => $email,
                             'no_hp' => $no_hp,
                             'alamat' => $alamat,
                             'img_mahasiswa' => 'profil-default.jpg',
-                            'angkatan' => 2023,
+                            'angkatan' => 2023, // Default ubah di edit
+                            'status' => 'Aktif',
                             'created_at' => now(),
                             'updated_at' => now(),
                         ]);

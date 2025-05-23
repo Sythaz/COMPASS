@@ -8,29 +8,17 @@ class AdminSeeder extends Seeder
 {
     public function run(): void
     {
-        // Ambil user dengan user_id 1,2 dan 344-346
-        $usersPart1 = DB::table('t_users')
-            ->whereIn('user_id', [1, 2])
+        // Ambil 5 user pertama berdasarkan urutan user_id
+        $users = DB::table('t_users')
             ->orderBy('user_id')
-            ->get();
-
-        $usersPart2 = DB::table('t_users')
-            ->whereBetween('user_id', [344, 346])
-            ->orderBy('user_id')
-            ->get();
-
-        // Gabungkan semua user
-        $users = $usersPart1->concat($usersPart2);
-
-        // Ambil admin yang sudah ada untuk user_id yg sama
-        $existingAdmins = DB::table('t_admin')
-            ->whereIn('user_id', $users->pluck('user_id'))
+            ->limit(5)
             ->get()
-            ->keyBy('user_id');
+            ->values(); // Reset index agar mulai dari 0
 
-        // Map admin_id untuk 5 data (1 sampai 5)
+        // Mapping admin_id 1–5
         $adminIds = [1, 2, 3, 4, 5];
 
+        // Nama admin sesuai ID
         $nama_admin_map = [
             1 => 'Sri Whariyanti, S.Pd',
             2 => 'Lailatul Qodriyah, S.Sos',
@@ -39,25 +27,22 @@ class AdminSeeder extends Seeder
             5 => 'Chester Bennington, S.Th',
         ];
 
-        $kelamin = [
-            'P',
-            'P',
-            'P',
-            'L',
-            'L',
-        ];
+        // Jenis kelamin sesuai urutan admin
+        $kelamin = ['P', 'P', 'P', 'L', 'L'];
+
+        // Ambil data admin lama untuk user_id yang sama (jika ada)
+        $existingAdmins = DB::table('t_admin')
+            ->whereIn('user_id', $users->pluck('user_id'))
+            ->get()
+            ->keyBy('user_id');
 
         $data = [];
+        $jalan = ['Mawar', 'Melati', 'Kenanga', 'Flamboyan', 'Cendana', 'Delima'];
 
-        foreach ($users->values() as $index => $user) {
+        foreach ($users as $index => $user) {
             $userId = $user->user_id;
-            $adminId = $adminIds[$index];  // Admin_id urut 1..5
-
+            $adminId = $adminIds[$index];
             $nip = $user->username;
-            // Safety check kalau mau trim nip, misal seperti yang sebelumnya
-            if (in_array($userId, [344, 345, 346]) && strlen($nip) > 344) {
-                $nip = substr($nip, 344);
-            }
 
             $adminData = $existingAdmins->get($userId);
 
@@ -69,16 +54,17 @@ class AdminSeeder extends Seeder
                 'img_admin' => 'profil-default.png',
                 'email' => $adminData->email ?? 'admin' . $adminId . '@example.com',
                 'no_hp' => $adminData->no_hp ?? '0812345678' . $adminId,
-                'alamat' => $adminData->alamat ?? 'Jl. Buah Batu, No. 123',
+                'alamat' => 'Jl. ' . $jalan[array_rand($jalan)] . ' No. ' . rand(1, 10),
                 'kelamin' => $kelamin[$index],
             ];
         }
 
+        // Simpan ke tabel t_admin dengan upsert
         if (!empty($data)) {
             DB::table('t_admin')->upsert(
                 $data,
-                ['admin_id'], // key unik di t_admin untuk update/insert
-                ['nip_admin', 'nama_admin', 'img_admin', 'email', 'no_hp', 'alamat']
+                ['admin_id'], // Key unik untuk upsert
+                ['nip_admin', 'nama_admin', 'img_admin', 'email', 'no_hp', 'alamat', 'kelamin']
             );
         }
     }

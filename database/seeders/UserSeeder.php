@@ -10,9 +10,14 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        $dosenUsernames = [
+        $userNames = [
+            // Admin
             '123456789101112134',
             '121314151617181915',
+            "123456789101112136",
+            "121314151617181917",
+            "123456789101112138",
+            // Dosen
             '198010102005011001',
             '198805042015041001',
             '198211302014041001',
@@ -95,33 +100,6 @@ class UserSeeder extends Seeder
             '198906212019031013',
             '198007162010121002',
             '199005112019091000',
-        ];
-
-        $data = [];
-
-        foreach (array_slice($dosenUsernames, 0, 2) as $index => $username) {
-            $data[] = [
-                'user_id' => $index + 1,
-                'username' => $username,
-                'password' => Hash::make($username), // hash password
-                'phrase' => $username,
-                'role' => 'Admin',
-            ];
-        }
-
-        // Dosen (starting from index 2)
-        foreach (array_slice($dosenUsernames, 2) as $i => $username) {
-            $data[] = [
-                'user_id' => count($data) + 1,
-                'username' => $username,
-                'password' => Hash::make($username), // hash password
-                'phrase' => $username,
-                'role' => 'Dosen',
-            ];
-        }
-
-        // Tambahkan Mahasiswa
-        $mahasiswaUsernames = [
             // Mahasiswa
             "2341720172",
             "2341720182",
@@ -383,25 +361,23 @@ class UserSeeder extends Seeder
             "2341720241",
             "2341720189",
             "2341720259",
-            // Admin
-            "123456789101112136",
-            "121314151617181917",
-            "123456789101112138",
+
         ];
 
-        // Mahasiswa + 3 Admin
-        $total = count($mahasiswaUsernames);
-        foreach ($mahasiswaUsernames as $index => $username) {
-            // Cek apakah data ini termasuk 3 terakhir
-            if ($index >= $total - 3) {
-                // 3 terakhir jadi Admin
+        $data = [];
+        $totalUsernames = count($userNames);
+
+        foreach ($userNames as $index => $username) {
+            if ($index < 5) { // 1-5 admin
                 $role = 'Admin';
-            } else {
+            } elseif ($index < 87) { // 5 admin + 82 dosen = 87
+                $role = 'Dosen';
+            } else { // sisanya mahasiswa
                 $role = 'Mahasiswa';
             }
 
             $data[] = [
-                'user_id' => $index + 85, // user_id berurutan mulai 1
+                'user_id' => $index + 1,
                 'username' => $username,
                 'password' => Hash::make($username),
                 'phrase' => $username,

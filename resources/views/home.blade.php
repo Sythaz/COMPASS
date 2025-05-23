@@ -167,11 +167,10 @@
                         link="https://github.com/Sythaz/" />
 
                     {{-- Card 2 --}}
-                    <x-card-home nama="M. Syafiq Aldiansyah" nim="2341720102" role="Frontend"
+                    <x-card-home nama="Satrio Wisnu Adi Pratama" nim="2341720219" role="Frontend"
                         deskripsi="Mahasiswa Politeknik Negeri Malang"
-                        quote="Membangun aplikasi berkualitas dengan antarmuka yang elegan dan performa tinggi."
-                        foto="https://cdn1-production-images-kly.akamaized.net/E2MB-7EF-q6nqQNMNfyMbgxjRJc=/1200x1200/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/3220607/original/002220400_1598510794-9b3ee95069a9d94d80dfcdba43.jpg"
-                        link="https://github.com/Sythaz/" />
+                        quote="Terbang seperti Cadillac, Menusuk seperti Bimmer."
+                        foto="{{ asset('assets/images/card-img/satt.jpg') }}" link="https://github.com/flywithsaturn" />
 
                     {{-- Card 3 --}}
                     <x-card-home nama="M. Syafiq Aldiansyah" nim="2341720102" role="Frontend"
@@ -421,16 +420,16 @@
 
     <!-- GSAP Animation Script dan Navbar Script -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            $(document).ready(function() {
-                $('.navbar-toggler').on('click', function() {
+        document.addEventListener('DOMContentLoaded', function () {
+            $(document).ready(function () {
+                $('.navbar-toggler').on('click', function () {
                     $('.navbar-collapse-custom').collapse('toggle');
                 });
-                $('.navbar-nav a').on('click', function() {
+                $('.navbar-nav a').on('click', function () {
                     $('.navbar-collapse-custom').collapse('hide');
                 });
 
-                $('.dropdown-toggle-custom').on('click', function() {
+                $('.dropdown-toggle-custom').on('click', function () {
                     $('.dropdown-menu').collapse('toggle');
                 });
 
@@ -539,7 +538,7 @@
             });
 
             // Navbar scroll effect
-            window.addEventListener('scroll', function() {
+            window.addEventListener('scroll', function () {
                 const navbar = document.querySelector('.navbar-landing');
                 if (window.scrollY > 50) {
                     navbar.classList.add('navbar-scrolled');
@@ -557,7 +556,7 @@
             });
 
             // Tombol scroll keatas
-            document.querySelector('.scrollToTop').addEventListener('click', function() {
+            document.querySelector('.scrollToTop').addEventListener('click', function () {
                 window.scrollTo({
                     top: 0,
                     behavior: 'smooth'
@@ -566,8 +565,8 @@
 
             // Smooth scroll saat klik link
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    anchor.addEventListener('click', function(e) {
+                anchor.addEventListener('click', function (e) {
+                    anchor.addEventListener('click', function (e) {
                         e.preventDefault();
                         const targetId = this.getAttribute('href');
                         if (targetId === '#') return;
@@ -583,11 +582,11 @@
             });
 
             // Tambahan
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
                 const navbar = document.querySelector('.navbar-landing');
 
                 // Navbar scroll effect
-                window.addEventListener('scroll', function() {
+                window.addEventListener('scroll', function () {
                     if (window.scrollY > 50) {
                         navbar.classList.add('navbar-scrolled');
                     } else {
