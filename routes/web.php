@@ -13,9 +13,13 @@ use App\Http\Controllers\Admin\DashboardController as DashboardAdminController;
 use App\Http\Controllers\Dosen\DashboardController as DashboardDosenController;
 use App\Http\Controllers\Mahasiswa\DashboardController as DashboardMahasiswaController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\HomeController;
+use Illuminate\Support\Facades\Auth;
 
 // Validasi global parameter {id} agar hanya angka
 Route::pattern('id', '[0-9]+');
+
+Route::get('home', [HomeController::class, 'index'])->name('home');
 
 // Cek Sesuai role
 Route::get('/', function () {
@@ -156,7 +160,6 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::put('kelola-lomba/{id}', [KelolaLombaController::class, 'update'])->name('kelola-lomba.update');
             Route::delete('kelola-lomba/{id}', [KelolaLombaController::class, 'destroy'])->name('kelola-lomba.destroy'); // Seharusnya ::delete namun karena menggunakan status maka diganti menjadi ::put
         });
-
     });
 
     // Dashboard dosen, hanya untuk role dosen

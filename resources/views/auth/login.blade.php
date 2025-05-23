@@ -14,7 +14,7 @@
                                 <img src="{{ asset('assets/images/polinema-bg.png') }}" class="img-fluid" width="60px"
                                     alt="Logo-Polinema">
                                 <p class="my-2 mx-3">x</p>
-                                <img src="{{ asset('assets/images/logo/compass-full-ungu.svg') }}" class="img-fluid"
+                                <img src="{{ asset('assets/images/logo/compass-full-ungu.png') }}" class="img-fluid"
                                     width="110px" alt="Logo-COMPASS">
                             </div>
                             <p class="mb-1">Selamat Datang!</p>
