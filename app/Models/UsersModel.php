@@ -28,6 +28,24 @@ class UsersModel extends Authenticatable
     ];
 
     /**
+     * Mendapatkan nama pengguna
+     */
+    public function getName(): string
+    {
+        // ambil data nama_admin dari database t_admin model AdminModel
+        $admin = AdminModel::find($this->user_id);
+
+        return $admin->nama_admin;
+    }
+
+    public function getProfile(): string
+    {
+        // ambil data img_admin dari database t_admin model AdminModel
+        $admin = AdminModel::find($this->user_id);
+        return $admin->img_admin;
+    }
+
+    /**
      * Mendapatkan nama role pengguna
      */
     public function getRoleName(): string
