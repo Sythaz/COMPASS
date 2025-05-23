@@ -19,6 +19,8 @@ class DosenModel extends Model
         'nip_dosen',
         'nama_dosen',
         'img_dosen',
+        'kelamin',
+        'status',
         'alamat',
         'email',
         'no_hp',

@@ -7,24 +7,29 @@
         <h5 class="modal-title text-white">
             <i class="fas fa-trash-alt mr-2"></i>Hapus Mahasiswa
         </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
 
     <div class="modal-body">
-        <div class="alert alert-danger d-flex align-items-center gap-2">
-            <i class="fas fa-exclamation-triangle fa-lg"></i>
-            <strong class="alert-heading h5 mb-0">
-                Apakah Anda yakin ingin menghapus data ini?
-            </strong>
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle fa-lg mr-2"></i>
+            <strong class="alert-heading h4">Apakah anda yakin untuk menghapus data ini?</strong>
+            <hr class="my-2">
+            Data User akan tetap tersimpan di database, hanya statusnya yang akan diubah dari "Aktif" menjadi
+            "Nonaktif".
         </div>
+
         <table class="table table-bordered mt-3 mb-0">
-            <tr>
-                <th style="width: 30%">Nama Mahasiswa</th>
-                <td class="text-start">{{ $mahasiswa->nama_mahasiswa }}</td>
-            </tr>
             <tr>
                 <th>NIM</th>
                 <td class="text-start"><code>{{ $mahasiswa->nim_mahasiswa }}</code></td>
+            </tr>
+            <tr>
+                <th>Nama Mahasiswa</th>
+                <td class="text-start">{{ $mahasiswa->nama_mahasiswa }}</td>
+            </tr>
+            <tr>
+                <th>Program Studi</th>
+                <td class="text-start">{{ $mahasiswa->prodi->nama_prodi }}</td>
             </tr>
             <tr>
                 <th>Username</th>

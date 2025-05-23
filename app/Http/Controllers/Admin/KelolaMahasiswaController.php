@@ -86,6 +86,7 @@ class KelolaMahasiswaController extends Controller
 
     public function store(Request $request)
     {
+
         $request->validate([
             'nim_mahasiswa' => 'required|unique:t_mahasiswa,nim_mahasiswa',
             'nama_mahasiswa' => 'required',
@@ -97,6 +98,7 @@ class KelolaMahasiswaController extends Controller
             'email' => 'nullable|email|unique:t_dosen,email',
             'no_hp' => 'nullable|unique:t_dosen,no_hp',
             'alamat' => 'nullable|string|max:255',
+            'kelamin' => 'required|in:L,P',
         ]);
 
         // Validasi username yang akan sama nim belum dipakai
@@ -121,9 +123,10 @@ class KelolaMahasiswaController extends Controller
                 'periode_id' => $request->periode_id,
                 'level_minbak_id' => $request->level_minbak_id,
                 'nim_mahasiswa' => $request->nim_mahasiswa,
-                'nama_mahasiswa' => $request->nama_mahasiswa,
+                'nama_mahasiswa' => strtoupper($request->nama_mahasiswa),
                 'img_mahasiswa' => 'profil-default.jpg',
                 'angkatan' => $request->angkatan ?? 2025,
+                'kelamin' => $request->kelamin,
                 'email' => $request->email ?: 'Belum diisi!',
                 'no_hp' => $request->no_hp ?: 'Belum diisi!',
                 'alamat' => $request->alamat ?: 'Belum diisi!',
@@ -147,6 +150,7 @@ class KelolaMahasiswaController extends Controller
             'prodi_id' => 'required|exists:t_prodi,prodi_id',
             'periode_id' => 'required|exists:t_periode,periode_id',
             'level_minbak_id' => 'required|exists:t_level_minat_bakat,level_minbak_id',
+            'status' => 'required|in:aktif,nonaktif',
             'username' => 'required|unique:t_users,username,' . $user->user_id . ',user_id',
             'alamat' => 'nullable|string|max:255',
             'email' => 'nullable|email|unique:t_mahasiswa,email,' . $mahasiswa->mahasiswa_id . ',mahasiswa_id',
@@ -158,30 +162,28 @@ class KelolaMahasiswaController extends Controller
         ]);
 
         DB::transaction(function () use ($request, $mahasiswa, $user) {
-            // Update data user
+            // Update user
             $user->username = $request->username;
             if ($request->filled('password')) {
                 $user->password = Hash::make($request->password);
             }
             $user->role = $request->role;
-
-            // Jika phrase tidak dikirimkan, tetap gunakan phrase sebelumnya
-            $user->phrase = $request->input('phrase', $user->phrase); // update phrase
-
+            $user->phrase = $request->input('phrase', $user->phrase);
             $user->save();
 
-            // Update data mahasiswa
+            // Update mahasiswa
             $mahasiswa->prodi_id = $request->prodi_id;
             $mahasiswa->periode_id = $request->periode_id;
             $mahasiswa->level_minbak_id = $request->level_minbak_id;
+            $mahasiswa->status = $request->status;
             $mahasiswa->nim_mahasiswa = $request->nim_mahasiswa;
             $mahasiswa->nama_mahasiswa = $request->nama_mahasiswa;
-            $mahasiswa->alamat = $request->alamat;
-            $mahasiswa->email = $request->email;
-            $mahasiswa->no_hp = $request->no_hp;
 
-            // Jika angkatan kosong, isi dengan 2025
-            $mahasiswa->angkatan = $request->angkatan ?? 2025;
+            $mahasiswa->alamat = $request->has('alamat') ? $request->alamat : $mahasiswa->alamat;
+            $mahasiswa->email = $request->has('email') ? $request->email : $mahasiswa->email;
+            $mahasiswa->no_hp = $request->has('no_hp') ? $request->no_hp : $mahasiswa->no_hp;
+
+            $mahasiswa->angkatan = $request->angkatan ?? $mahasiswa->angkatan ?? 2025;
 
             $mahasiswa->save();
         });

@@ -18,6 +18,8 @@ class AdminModel extends Model
         'nip_admin',
         'nama_admin',
         'img_admin',
+        'kelamin',
+        'status',
         'alamat',
         'email',
         'no_hp',

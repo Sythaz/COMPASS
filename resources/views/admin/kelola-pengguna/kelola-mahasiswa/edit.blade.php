@@ -8,6 +8,7 @@
     </div>
 
     <div class="modal-body">
+
         <div class="form-group mb-3">
             <label for="nim_mahasiswa" class="col-form-label">NIM <span class="text-danger">*</span></label>
             <input type="text" class="form-control" name="nim_mahasiswa" id="nim_mahasiswa"
@@ -18,6 +19,20 @@
             <label for="nama_mahasiswa" class="col-form-label">Nama <span class="text-danger">*</span></label>
             <input type="text" class="form-control" name="nama_mahasiswa" id="nama_mahasiswa"
                 value="{{ $mahasiswa->nama_mahasiswa }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="kelamin" class="col-form-label">Jenis Kelamin <span class="text-danger">*</span></label>
+            <div class="custom-validation">
+                <select name="kelamin" id="kelamin" class="form-control" required>
+                    <option value="">-- Pilih Jenis Kelamin --</option>
+                    <option value="L" {{ old('kelamin', $mahasiswa->kelamin ?? '') == 'L' ? 'selected' : '' }}>Laki-laki
+                    </option>
+                    <option value="P" {{ old('kelamin', $mahasiswa->kelamin ?? '') == 'P' ? 'selected' : '' }}>Perempuan
+                    </option>
+                </select>
+                <span class="error-text text-danger" id="error-kelamin"></span>
+            </div>
         </div>
 
         <div class="form-group mb-3">
@@ -45,6 +60,36 @@
         </div>
 
         <div class="form-group mb-3">
+            <label for="angkatan" class="col-form-label">Angkatan</label>
+            <input type="number" class="form-control" name="angkatan" id="angkatan"
+                value="{{ old('angkatan', $mahasiswa->angkatan ?? '') }}">
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="email" class="col-form-label">Email
+                <small class="text-muted">(boleh dikosongkan)</small>
+            </label>
+            <input type="email" class="form-control" name="email" id="email"
+                value="{{ old('email', $mahasiswa->email) }}" placeholder="contoh: email@example.com">
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="alamat" class="col-form-label">Alamat
+                <small class="text-muted">(boleh dikosongkan)</small>
+            </label>
+            <input type="text" class="form-control" name="alamat" id="alamat"
+                value="{{ old('alamat', $mahasiswa->alamat) }}" placeholder="Alamat tempat tinggal">
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="no_hp" class="col-form-label">No Handphone
+                <small class="text-muted">(boleh dikosongkan)</small>
+            </label>
+            <input type="text" class="form-control" name="no_hp" id="no_hp"
+                value="{{ old('no_hp', $mahasiswa->no_hp) }}" placeholder="08xxxxxxxxxx">
+        </div>
+
+        <div class="form-group mb-3">
             <label for="level_minbak_id" class="col-form-label">Level Minat Bakat <span
                     class="text-danger">*</span></label>
             <select name="level_minbak_id" id="level_minbak_id" class="form-control" required>
@@ -56,11 +101,7 @@
                 @endforeach
             </select>
         </div>
-        <div class="form-group mb-3">
-            <label for="angkatan" class="col-form-label">Angkatan</label>
-            <input type="number" class="form-control" name="angkatan" id="angkatan"
-                value="{{ old('angkatan', $mahasiswa->angkatan ?? '') }}">
-        </div>
+
         <div class="form-group mb-3">
             <label for="username" class="col-form-label">Username <span class="text-danger">*</span></label>
             <input type="text" class="form-control" name="username" id="username"
@@ -73,12 +114,27 @@
             </label>
             <input type="password" class="form-control" name="password" id="password" placeholder="Password baru">
         </div>
+
         <div class="form-group mb-3">
-            <label for="phrase" class="col-form-label">Phrase</label>
+            <label for="phrase" class="col-form-label">Phrase
+                <small>(kosongkan jika tidak ingin diubah)</small></label>
             <input type="text" class="form-control" name="phrase" id="phrase"
                 value="{{ old('phrase', $mahasiswa->users->phrase ?? $mahasiswa->users->username) }}">
         </div>
+
+        <div class="form-group mb-3">
+            <label for="status" class="col-form-label">Status <span class="text-danger">*</span></label>
+            <select name="status" id="status" class="form-control" required>
+                <option value="">-- Pilih Status --</option>
+                <option value="aktif" {{ old('status', $mahasiswa->status ?? '') == 'aktif' ? 'selected' : '' }}>Aktif
+                </option>
+                <option value="nonaktif" {{ old('status', $mahasiswa->status ?? '') == 'nonaktif' ? 'selected' : '' }}>
+                    Nonaktif</option>
+            </select>
+        </div>
+
         <input type="hidden" name="role" value="mahasiswa">
+
     </div>
 
     <div class="modal-footer">

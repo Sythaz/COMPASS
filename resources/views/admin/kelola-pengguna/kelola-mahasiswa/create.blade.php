@@ -9,6 +9,7 @@
 
     <div class="modal-body">
 
+        {{-- Nim Mahasiswa --}}
         <div class="form-group">
             <label for="nim_mahasiswa" class="col-form-label">NIM <span class="text-danger">*</span></label>
             <div class="custom-validation">
@@ -18,6 +19,7 @@
             </div>
         </div>
 
+        {{-- Nama Mahasiswa --}}
         <div class="form-group">
             <label for="nama_mahasiswa" class="col-form-label">Nama Mahasiswa <span class="text-danger">*</span></label>
             <div class="custom-validation">
@@ -27,6 +29,55 @@
             </div>
         </div>
 
+        {{-- Jenis Kelamin Mahasiswa --}}
+        <div class="form-group">
+            <label for="kelamin" class="col-form-label">Jenis Kelamin <span class="text-danger">*</span></label>
+            <div class="custom-validation">
+                <select name="kelamin" id="kelamin" class="form-control" required>
+                    <option value="">-- Pilih Jenis Kelamin --</option>
+                    <option value="L" {{ old('kelamin', $mahasiswa->kelamin ?? '') == 'L' ? 'selected' : '' }}>Laki-laki
+                    </option>
+                    <option value="P" {{ old('kelamin', $mahasiswa->kelamin ?? '') == 'P' ? 'selected' : '' }}>Perempuan
+                    </option>
+                </select>
+                <span class="error-text text-danger" id="error-kelamin"></span>
+            </div>
+        </div>
+
+        {{-- Email Mahasiswa (Boleh dikosongi) --}}
+        <div class="form-group">
+            <label for="email" class="col-form-label">Email <small class="text-muted">(Boleh
+                    dikosongkan)</small></label>
+            <div class="custom-validation">
+                <input type="email" name="email" id="email" class="form-control"
+                    placeholder="Contoh: user@example.com (boleh dikosongkan)" value="{{ old('email') }}">
+                <span class="error-text text-danger" id="error-email"></span>
+            </div>
+        </div>
+
+        {{-- No. Handphone Mahasiswa (Boleh dikosongi) --}}
+        <div class="form-group">
+            <label for="no_hp" class="col-form-label">No. Handphone <small class="text-muted">(Boleh
+                    dikosongkan)</small></label>
+            <div class="custom-validation">
+                <input type="text" name="no_hp" id="no_hp" class="form-control"
+                    placeholder="Contoh: 08123456789 (boleh dikosongkan)" value="{{ old('no_hp') }}">
+                <span class="error-text text-danger" id="error-no_hp"></span>
+            </div>
+        </div>
+
+        {{-- Alamat Mahasiswa (Boleh dikosongi) --}}
+        <div class="form-group">
+            <label for="alamat" class="col-form-label">Alamat <small class="text-muted">(Boleh
+                    dikosongkan)</small></label>
+            <div class="custom-validation">
+                <textarea name="alamat" id="alamat" class="form-control" rows="2"
+                    placeholder="Contoh: Jl. Contoh No. 1 (boleh dikosongkan)">{{ old('alamat') }}</textarea>
+                <span class="error-text text-danger" id="error-alamat"></span>
+            </div>
+        </div>
+
+        {{-- Program Studi --}}
         <div class="form-group">
             <label for="prodi_id" class="col-form-label">Program Studi <span class="text-danger">*</span></label>
             <div class="custom-validation">
@@ -42,6 +93,7 @@
             </div>
         </div>
 
+        {{-- Periode --}}
         <div class="form-group">
             <label for="periode_id" class="col-form-label">Periode <span class="text-danger">*</span></label>
             <div class="custom-validation">
@@ -57,6 +109,7 @@
             </div>
         </div>
 
+        {{-- Level Minat Bakat --}}
         <div class="form-group">
             <label for="level_minbak_id" class="col-form-label">Level Minat Bakat <span
                     class="text-danger">*</span></label>
@@ -126,6 +179,7 @@
             prodi_id: { required: "Program Studi wajib dipilih" },
             periode_id: { required: "Periode wajib dipilih" },
             level_minbak_id: { required: "Level Minat Bakat wajib dipilih" },
+            kelamin: { required: "Jenis Kelamin wajib dipilih" },
             // pesan error username dan password dihapus
         },
         function (response, form) {

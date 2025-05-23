@@ -22,6 +22,8 @@ class MahasiswaModel extends Model
         'nama_mahasiswa',
         'img_mahasiswa',
         'angkatan',
+        'kelamin',
+        'status',
         'alamat',
         'email',
         'no_hp',
