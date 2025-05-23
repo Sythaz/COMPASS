@@ -3,7 +3,7 @@
         <ul class="metismenu" id="menu">
             <li class="nav-label">Menu Utama</li>
             <li>
-                <a href="javascript:void()" aria-expanded="false">
+                <a href="{{ route('home') }}" aria-expanded="false">
                     <i class="fas fa-home"></i><span class="nav-text">Home</span>
                 </a>
             </li>
