@@ -63,7 +63,7 @@
                     <i class="fas fa-list-alt"></i><span class="nav-text">Manajemen Prestasi</span>
                 </a>
                 <ul aria-expanded="false">
-                    <li><a href="javascript:void()">Kelola Prestasi</a></li>
+                    <li><a href="{{ route('kelola-prestasi.index') }}">Kelola Prestasi</a></li>
                     <li><a href="javascript:void()">Verifikasi Prestasi</a></li>
                 </ul>
             </li>

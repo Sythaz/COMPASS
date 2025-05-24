@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\LombaModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\KategoriLombaModel;
 use App\Models\KategoriModel;
 use App\Models\TingkatLombaModel;
 use Illuminate\Support\Facades\Storage;
@@ -31,7 +32,6 @@ class KelolaLombaController extends Controller
             ->select([
                 'lomba_id',
                 'nama_lomba',
-                'kategori_id',
                 'tingkat_lomba_id',
                 'awal_registrasi_lomba',
                 'akhir_registrasi_lomba',
@@ -43,7 +43,7 @@ class KelolaLombaController extends Controller
         return DataTables::of($dataKelolaLomba)
             ->addIndexColumn()
             ->addColumn('kategori', function ($row) {
-                return $row->kategori->nama_kategori ?? '-';
+                return $row->kategori->pluck('nama_kategori')->join(', ') ?: 'Tidak Diketahui';
             })
             ->addColumn('tingkat_lomba', function ($row) {
                 return $row->tingkat_lomba->nama_tingkat ?? '-';
@@ -112,7 +112,7 @@ class KelolaLombaController extends Controller
         $validator = Validator::make($request->all(), [
             'nama_lomba' => 'required',
             'deskripsi_lomba' => 'required',
-            'kategori_id' => 'required|exists:t_kategori,kategori_id',
+            'kategori_id' => 'required|array|exists:t_kategori,kategori_id',
             'tingkat_lomba_id' => 'required|exists:t_tingkat_lomba,tingkat_lomba_id',
             'penyelenggara_lomba' => 'required',
             'awal_registrasi_lomba' => 'required|date',
@@ -131,10 +131,18 @@ class KelolaLombaController extends Controller
         }
 
         try {
-            $data = $request->except('img_lomba');
+            $data = $request->except('img_lomba', 'kategori_id');
 
             // Simpan data ke database terlebih dahulu
             $lomba = LombaModel::create($data);
+
+            // Buat kategori lomba baru
+            foreach ($request->kategori_id as $kategoriId) {
+                KategoriLombaModel::create([
+                    'lomba_id' => $lomba->lomba_id,
+                    'kategori_id' => $kategoriId,
+                ]);
+            }
 
             // Jika ada gambar, upload ke storage
             if ($request->hasFile('img_lomba')) {
@@ -164,7 +172,7 @@ class KelolaLombaController extends Controller
         $request->validate([
             'nama_lomba' => 'required',
             'deskripsi_lomba' => 'required',
-            'kategori_id' => 'required|exists:t_kategori,kategori_id',
+            'kategori_id' => 'required|array|exists:t_kategori,kategori_id',
             'tingkat_lomba_id' => 'required|exists:t_tingkat_lomba,tingkat_lomba_id',
             'penyelenggara_lomba' => 'required',
             'awal_registrasi_lomba' => 'required|date',
@@ -175,10 +183,22 @@ class KelolaLombaController extends Controller
         ]);
 
         try {
-            $data = $request->except('img_lomba');
+            $data = $request->except('img_lomba', 'kategori_id');
 
-            // Simpan data ke database terlebih dahulu
-            $lomba = LombaModel::create($data);
+            // Temukan lomba berdasarkan ID dan perbarui data
+            $lomba = LombaModel::findOrFail($id);
+            $lomba->update($data);
+
+            // Hapus kategori lomba lama
+            KategoriLombaModel::where('lomba_id', $id)->delete();
+
+            // Buat kategori lomba baru
+            foreach ($request->kategori_id as $kategoriId) {
+                KategoriLombaModel::create([
+                    'lomba_id' => $id,
+                    'kategori_id' => $kategoriId,
+                ]);
+            }
 
             // Jika ada gambar, upload ke storage
             if ($request->hasFile('img_lomba')) {

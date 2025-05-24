@@ -1,10 +1,10 @@
 @extends('layouts.template')
 
-@section('title', 'Kelola Program Studi | COMPASS')
+@section('title', 'Kelola Prestasi | COMPASS')
 
-@section('page-title', 'Kelola Program Studi')
+@section('page-title', 'Kelola Prestasi')
 
-@section('page-description', 'Halaman untuk mengelola program studi!')
+@section('page-description', 'Halaman untuk mengelola prestasi!')
 
 @section('content')
     <div class="row">
@@ -13,7 +13,7 @@
                 <div class="card-body">
                     <div class="row mb-2">
                         <div class="col-6">
-                            <a onclick="modalAction('{{ url('/admin/master-data/program-studi/create') }}')"
+                            <a onclick="modalAction('{{ url('/admin/manajemen-prestasi/kelola-prestasi/create') }}')"
                                 class="btn btn-primary text-white">
                                 <i class="fa-solid fa-plus"></i>
                                 <strong>Tambah Data</strong>
@@ -36,11 +36,19 @@
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <table class="w-100 table table-striped table-bordered custom-datatable" id="tabel-program-studi">
+                        <table class="w-100 table table-striped table-bordered custom-datatable" id="tabel-kelola-prestasi">
                             <thead>
                                 <tr>
                                     <th style="width: 1px; white-space: nowrap;">No</th>
-                                    <th>Nama Program Studi</th>
+                                    <th>NIM</th>
+                                    <th>Nama Mahasiswa</th>
+                                    <th>Nama Lomba</th>
+                                    <th>Kategori</th>
+                                    <th>Jenis</th>
+                                    <th>Dosen Pembimbing</th>
+                                    <th>Periode</th>
+                                    <th>Tanggal</th>
+                                    <th>Juara</th>
                                     <th>Status</th>
                                     <th class="text-center" style="width: 1px; white-space: nowrap;">Aksi</th>
                                 </tr>
@@ -68,6 +76,11 @@
     <link href="{{ asset('theme/plugins/tables/css/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     {{-- Custom Pagination DataTables CSS --}}
     <link href="{{ asset('css-custom/pagination-datatables.css') }}" rel="stylesheet">
+
+    <!-- CSS Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-theme@0.1.0-beta.10/dist/select2-bootstrap.min.css"
+        rel="stylesheet" />
 @endpush
 
 @push('js')
@@ -75,8 +88,11 @@
     <script src="{{ asset('theme/plugins/tables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('theme/plugins/tables/js/datatable/dataTables.bootstrap4.min.js') }}"></script>
 
+    <!-- JS Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script>
-        var idDataTables = '#tabel-program-studi';
+        var idDataTables = '#tabel-kelola-prestasi';
 
         $(document).ready(function() {
             // Dropdown tidak bisa di buka langsung sehingga perlu dipanggil
@@ -102,7 +118,7 @@
                 serverSide: true,
                 autoWidth: true,
                 ajax: {
-                    url: "{{ route('program-studi.list') }}",
+                    url: "{{ route('kelola-prestasi.list') }}",
                     type: "POST",
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -114,12 +130,45 @@
                         searchable: false,
                     },
                     {
-                        data: 'nama_prodi',
-                        name: 'nama_prodi',
+                        data: 'mahasiswa.nim_mahasiswa',
+                        name: 'mahasiswa.nim_mahasiswa',
                     },
                     {
-                        data: 'status_prodi',
-                        name: 'status_prodi',
+                        data: 'mahasiswa.nama_mahasiswa',
+                        name: 'mahasiswa.nama_mahasiswa',
+                    },
+                    {
+                        data: 'lomba.nama_lomba',
+                        name: 'lomba.nama_lomba',
+                    },
+                    {
+                        data: 'kategori.nama_kategori',
+                        name: 'kategori.nama_kategori',
+                    },
+                    {
+                        data: 'jenis_prestasi',
+                        name: 'jenis_prestasi',
+                    },
+                    {
+                        data: 'dosen.nama_dosen',
+                        name: 'dosen.nama_dosen',
+                    },
+                    {
+                        data: 'periode.semester_periode',
+                        name: 'periode.semester_periode',
+                    },
+                    {
+                        data: 'tanggal_prestasi',
+                        name: 'tanggal_prestasi',
+                    },
+                    {
+                        data: 'juara_prestasi',
+                        name: 'juara_prestasi',
+                    },
+                    {
+                        data: 'status_verifikasi',
+                        name: 'status_verifikasi',
+                        orderable: false,
                     },
                     {
                         data: 'aksi',
@@ -168,7 +217,14 @@
                         border: "1px solid #ced4da",
                     });
                     $(idDataTables + '_wrapper .table-bordered').css({
-                        "border-radius": "5px",
+                        "border-top-left-radius": "5px",
+                        "border-top-right-radius": "5px",
+                    });
+                    $(idDataTables + '_wrapper .dataTables_scrollBody table').css({
+                        "border-top-left-radius": "0px",
+                        "border-top-right-radius": "0px",
+                        "border-bottom-left-radius": "5px",
+                        "border-bottom-right-radius": "5px",
                     });
                 }
             });

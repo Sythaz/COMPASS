@@ -125,6 +125,13 @@
                         searchable: false,
                     }
                 ],
+                scrollX: true,
+                layout: {
+                    topStart: null,
+                    topEnd: null,
+                    bottomStart: null,
+                    bottomEnd: null
+                },
 
                 // Styling untuk pagination (Jangan diubah)
                 drawCallback: function() {
