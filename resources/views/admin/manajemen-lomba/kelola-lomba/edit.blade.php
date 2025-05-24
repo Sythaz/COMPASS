@@ -29,11 +29,11 @@
             <label for="kategori_id" class="col-form-label mt-2">Kategori Lomba <span class="text-danger"
                     style="color: red;">*</span></label>
             <div class="custom-validation">
-                <select name="kategori_id" id="kategori_id" class="form-control" required>
-                    <option value="">-- Pilih Kategori --</option>
+                <select name="kategori_id[]" id="kategori_id" class="form-control multiselect-dropdown-kategori"
+                    multiple="multiple" required>
                     @foreach ($daftarKategori as $kategori)
                         <option value="{{ $kategori->kategori_id }}"
-                            {{ old('kategori_id', $kelolaLomba->kategori_id ?? '') == $kategori->kategori_id ? 'selected' : '' }}>
+                            {{ in_array($kategori->kategori_id, old('kategori_id', $kelolaLomba->kategori->pluck('kategori_id')->toArray() ?? [])) ? 'selected' : '' }}>
                             {{ $kategori->nama_kategori }}
                         </option>
                     @endforeach
@@ -112,7 +112,8 @@
                     <a href="{{ asset('storage/img/lomba/' . $kelolaLomba->img_lomba) }}" data-lightbox="lomba"
                         data-title="Gambar Poster Lomba">
                         <img src="{{ asset('storage/img/lomba/' . $kelolaLomba->img_lomba) }}" width="100"
-                            class="d-block mx-auto img-thumbnail" alt="Gambar Poster Lomba" style="cursor: zoom-in;" />
+                            class="d-block mx-auto img-thumbnail" alt="Gambar Poster Lomba"
+                            style="cursor: zoom-in;" />
                     </a>
                 @else
                     <p class="text-center text-muted">Gambar tidak ada atau belum di upload</p>
@@ -138,6 +139,52 @@
 
 <!-- Memanggil Fungsi Form Validation Custom -->
 <script src="{{ asset('js-custom/form-validation.js') }}"></script>
+
+<!-- Script Select2 (Dropdown Multiselect/Search) -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<style>
+    .select2-container .select2-selection--multiple {
+        min-height: 45px;
+        border-radius: 0;
+        border: 1px solid #ced4da !important;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        color: #7571F9;
+        background-color: white !important;
+        outline: 2px solid #7571F9 !important;
+        border: none;
+        border-radius: 4px;
+        margin-top: 10px;
+        margin-left: 12px
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+        color: white;
+        background-color: #7571F9;
+    }
+
+    .select2-container .select2-search--inline .select2-search__field {
+        margin-top: 12px;
+        margin-left: 12px;
+    }
+
+    .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+        background-color: #7571F9;
+    }
+</style>
+
+<script>
+    // Memanggil Select2 multiselect
+    $(document).ready(function() {
+        $('.multiselect-dropdown-kategori').select2({
+            width: '100%',
+            placeholder: 'Belum ada kategori terpilih',
+        });
+    });
+</script>
 
 {{-- Memanggil Custom validation untuk Form --}}
 <script>

@@ -16,7 +16,7 @@
         </tr>
         <tr>
             <th style="width: 30%">Kategori: </th>
-            <td class="text-start">{{ $kelolaLomba->kategori->nama_kategori }}</td>
+            <td class="text-start">{{ $kelolaLomba->kategori->pluck('nama_kategori')->join(', ') ?: 'Tidak Diketahui' }}</td>
         </tr>
         <tr>
             <th style="width: 30%">Tingkat: </th>

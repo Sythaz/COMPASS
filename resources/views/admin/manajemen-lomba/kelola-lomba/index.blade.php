@@ -79,6 +79,9 @@
     <script src="{{ asset('theme/plugins/tables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('theme/plugins/tables/js/datatable/dataTables.bootstrap4.min.js') }}"></script>
 
+    <!-- Script Select2 Dropdown -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script>
         var idDataTables = '#tabel-kelola-lomba';
 
@@ -149,6 +152,13 @@
                         searchable: false,
                     }
                 ],
+                scrollX: true,
+                layout: {
+                    topStart: null,
+                    topEnd: null,
+                    bottomStart: null,
+                    bottomEnd: null
+                },
 
                 // Styling untuk pagination (Jangan diubah)
                 drawCallback: function() {
@@ -182,7 +192,14 @@
                         border: "1px solid #ced4da",
                     });
                     $(idDataTables + '_wrapper .table-bordered').css({
-                        "border-radius": "5px",
+                        "border-top-left-radius": "5px",
+                        "border-top-right-radius": "5px",
+                    });
+                    $(idDataTables + '_wrapper .dataTables_scrollBody table').css({
+                        "border-top-left-radius": "0px",
+                        "border-top-right-radius": "0px",
+                        "border-bottom-left-radius": "5px",
+                        "border-bottom-right-radius": "5px",
                     });
                 }
             });
