@@ -18,12 +18,15 @@ class PrestasiModel extends Model
         'lomba_id', 
         'dosen_id', 
         'kategori_id', 
+        'periode_id',
         'tanggal_prestasi', 
         'juara_prestasi',
         'jenis_prestasi',
         'img_kegiatan',
         'bukti_prestasi',
         'surat_tugas_prestasi',
+        'status_prestasi',
+        'status_verifikasi'
     ];
 
     public function mahasiswa(): BelongsTo {
@@ -40,5 +43,9 @@ class PrestasiModel extends Model
 
     public function kategori(): BelongsTo {
         return $this->belongsTo(KategoriModel::class, 'kategori_id','kategori_id');
+    }
+
+    public function periode(): BelongsTo {
+        return $this->belongsTo(PeriodeModel::class, 'periode_id','periode_id');
     }
 }

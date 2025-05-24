@@ -47,17 +47,44 @@ class UsersModel extends Authenticatable
      */
     public function getName(): string
     {
-        // ambil data nama_admin dari database t_admin model AdminModel
-        $admin = AdminModel::find($this->user_id);
+        $nama = '';
+        // Ambil data nama_admin dari database sesuai role
+        switch ($this->role) {
+            case 'Admin':
+                $nama = AdminModel::find($this->user_id)->nama_admin;
+                break;
+            case 'Dosen':
+                $nama = DosenModel::find($this->user_id)->nama_dosen;
+                break;
+            case 'Mahasiswa':
+                $nama = MahasiswaModel::find($this->user_id)->nama_mahasiswa;
+                break;
+            default:
+                $nama = 'User';
+        }
 
-        return $admin->nama_admin;
+        return $nama;
     }
 
     public function getProfile(): string
     {
-        // ambil data img_admin dari database t_admin model AdminModel
-        $admin = AdminModel::find($this->user_id);
-        return $admin->img_admin;
+        $img = '';
+
+        // Ambil data img dari database sesuai role
+        switch ($this->role) {
+            case 'admin':
+                $img = AdminModel::find($this->user_id)->img_admin;
+                break;
+            case 'dosen':
+                $img = DosenModel::find($this->user_id)->img_dosen;
+                break;
+            case 'mahasiswa':
+                $img = MahasiswaModel::find($this->user_id)->img_mahasiswa;
+                break;
+            default:
+                $img = 'default-profile.png';
+        }
+        return $img;
     }
 
     /**
@@ -83,5 +110,4 @@ class UsersModel extends Authenticatable
     {
         return $this->role;
     }
-
 }

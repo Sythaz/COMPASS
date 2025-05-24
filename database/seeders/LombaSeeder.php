@@ -17,7 +17,6 @@ class LombaSeeder extends Seeder
         $data = [
             [
                 'lomba_id'               => 1,
-                'kategori_id'            => 5,
                 'nama_lomba'             => 'Lomba Web Development Nasional',
                 'tingkat_lomba_id'       => 5,
                 'deskripsi_lomba'        => 'Kompetisi pengembangan website tingkat nasional untuk mahasiswa.',
@@ -31,7 +30,6 @@ class LombaSeeder extends Seeder
             ],
             [
                 'lomba_id'               => 2,
-                'kategori_id'            => 15,
                 'nama_lomba'             => 'IOT CHALLENGE',
                 'tingkat_lomba_id'       => 5,
                 'deskripsi_lomba'        => 'Smart Solution IoT Competition',
@@ -45,7 +43,6 @@ class LombaSeeder extends Seeder
             ],
             [
                 'lomba_id'               => 3,
-                'kategori_id'            => 11,
                 'nama_lomba'             => 'WS ASEAN 2025',
                 'tingkat_lomba_id'       => 5,
                 'deskripsi_lomba'        => 'WS ASEAN 2025 di bidang Cyber Security untuk Pelajar dan Mahasiswa.',
