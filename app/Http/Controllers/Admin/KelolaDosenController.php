@@ -32,21 +32,27 @@ class KelolaDosenController extends Controller
     public function list(Request $request)
     {
         $data = DosenModel::with(['users', 'kategori'])
-            ->select('dosen_id', 'user_id', 'nip_dosen', 'nama_dosen', 'kategori_id')
+            ->select('dosen_id', 'user_id', 'nip_dosen', 'nama_dosen', 'kategori_id', 'status')
             ->get();
 
         return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('username', fn($row) => $row->users ? ' ' . $row->users->username : '-')
-            ->addColumn('role', fn($row) => $row->users->role ?? '-')
-            ->addColumn('kategori', fn($row) => $row->kategori->nama_kategori ?? '-') // Perbaikan nama kolom kategori
+            ->addColumn('kategori', fn($row) => $row->kategori->nama_kategori ?? '-')
+            ->addColumn('status', function ($row) {
+                if ($row->status === 'Aktif') {
+                    return '<span class="label label-success">Aktif</span>';
+                }
+                return '<span class="badge bg-secondary">-</span>';
+            })
+
             ->addColumn('aksi', function ($row) {
                 $btn = '<button onclick="modalAction(\'' . url('admin/kelola-pengguna/dosen/' . $row->dosen_id . '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('admin/kelola-pengguna/dosen/' . $row->dosen_id . '/edit_ajax') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('admin/kelola-pengguna/dosen/' . $row->dosen_id . '/delete_ajax') . '\')" class="btn btn-danger btn-sm">Hapus</button>';
                 return $btn;
             })
-            ->rawColumns(['aksi'])
+            ->rawColumns(['aksi', 'status'])
             ->make(true);
     }
 

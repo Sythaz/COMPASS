@@ -26,6 +26,7 @@
                                 <strong> Import Data</strong>
                             </a>
                         </div>
+                        {{-- Menu Export Data Excel/PDF --}}
                         <div class="col-6 text-right">
                             <div class="btn-group" role="group">
                                 <button type="button" class="btn btn-outline-primary dropdown-toggle"
@@ -51,7 +52,7 @@
                                     <th>NIP</th>
                                     <th>Nama</th>
                                     <th>Username</th>
-                                    <th class="text-center">Role</th>
+                                    <th class="text-center">Status</th>
                                     <th class="text-center" style="width: 1px; white-space: nowrap;">Aksi</th>
                                 </tr>
                             </thead>
@@ -114,7 +115,7 @@
                     { data: 'nip_dosen', name: 'nip_dosen' },
                     { data: 'nama_dosen', name: 'nama_dosen' },
                     { data: 'username', name: 'users.username' },
-                    { data: 'role', name: 'users.role', className: 'text-center' },
+                    { data: 'status', name: 'status', className: 'text-center' },
                     { data: 'aksi', name: 'aksi', orderable: false, searchable: false, className: 'text-center', width: '150px' },
                 ],
                 drawCallback: function () {
