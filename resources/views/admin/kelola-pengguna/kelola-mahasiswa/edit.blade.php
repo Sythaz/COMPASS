@@ -12,13 +12,14 @@
         <div class="form-group mb-3">
             <label for="nim_mahasiswa" class="col-form-label">NIM <span class="text-danger">*</span></label>
             <input type="text" class="form-control" name="nim_mahasiswa" id="nim_mahasiswa"
-                value="{{ $mahasiswa->nim_mahasiswa }}" required>
+                value="{{ old('nim_mahasiswa', $mahasiswa->nim_mahasiswa ?? '') ?? $mahasiswa->nim_mahasiswa }}"
+                required>
         </div>
 
         <div class="form-group mb-3">
             <label for="nama_mahasiswa" class="col-form-label">Nama <span class="text-danger">*</span></label>
             <input type="text" class="form-control" name="nama_mahasiswa" id="nama_mahasiswa"
-                value="{{ $mahasiswa->nama_mahasiswa }}" required>
+                value="{{ old('nama_mahasiswa', $mahasiswa->nama_mahasiswa) }}" required>
         </div>
 
         <div class="form-group">
@@ -124,7 +125,7 @@
 
         <div class="form-group mb-3">
             <label for="status" class="col-form-label">Status <span class="text-danger">*</span></label>
-            <select name="status" id="status" class="form-control" required>
+            <select name="status" id="status" class="form-control">
                 <option value="">-- Pilih Status --</option>
                 <option value="aktif" {{ old('status', $mahasiswa->status ?? '') == 'aktif' ? 'selected' : '' }}>Aktif
                 </option>

@@ -49,7 +49,8 @@
                                     <th>Username</th>
                                     <th>Prodi</th>
                                     <th>Periode</th>
-                                    <th>Minat Bakat</th>
+                                    {{-- <th>Minat Bakat</th> --}}
+                                    <th>Status</th>
                                     <th class="text-center" style="width: 1px; white-space: nowrap;">Aksi</th>
                                 </tr>
                             </thead>
@@ -114,7 +115,8 @@
                     { data: 'username', name: 'users.username' },
                     { data: 'prodi', name: 'prodi.prodi_nama' },
                     { data: 'periode', name: 'periode.periode_nama' },
-                    { data: 'level_minat_bakat', name: 'level_minat_bakat.level_minbak_nama' },
+                    // { data: 'level_minat_bakat', name: 'level_minat_bakat.level_minbak_nama' }
+                    { data: 'status', name: 'status', className: 'text-center' },
                     { data: 'aksi', name: 'aksi', orderable: false, searchable: false, className: 'text-center', width: '160px' },
                 ],
                 drawCallback: function () {

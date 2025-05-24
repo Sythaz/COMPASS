@@ -32,24 +32,43 @@ class KelolaMahasiswaController extends Controller
     public function list(Request $request)
     {
         $data = MahasiswaModel::with(['users', 'prodi', 'periode', 'level_minat_bakat'])
-            ->select('mahasiswa_id', 'user_id', 'prodi_id', 'periode_id', 'level_minbak_id', 'nim_mahasiswa', 'nama_mahasiswa', 'angkatan')
+            // ->where('status', 'Aktif') // hanya ambil mahasiswa yang statusnya Aktif
+            ->select(
+                'mahasiswa_id',
+                'user_id',
+                'prodi_id',
+                'periode_id',
+                'level_minbak_id',
+                'nim_mahasiswa',
+                'nama_mahasiswa',
+                'status'
+            )
             ->get();
 
         return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('username', fn($row) => $row->users ? ' ' . $row->users->username : '-')
-            ->addColumn('role', fn($row) => $row->users->role ?? '-')
+            // ->addColumn('role', fn($row) => $row->users->role ?? '-')
             ->addColumn('prodi', fn($row) => $row->prodi->nama_prodi ?? '-')
             ->addColumn('periode', fn($row) => $row->periode->semester_periode ?? '-')
-            ->addColumn('level_minat_bakat', fn($row) => $row->level_minat_bakat->level_minbak ?? '-')
-            ->addColumn('angkatan', fn($row) => $row->angkatan ?? '-')
+            // ->addColumn('level_minat_bakat', fn($row) => $row->level_minat_bakat->level_minbak ?? '-')
+            // ->addColumn('angkatan', fn($row) => $row->angkatan ?? '-')
+            ->addColumn('status', function ($row) {
+                if ($row->status === 'Aktif') {
+                    return '<span class="label label-success">Aktif</span>';
+                } elseif ($row->status === 'Nonaktif') {
+                    return '<span class="label label-danger">Nonaktif</span>';
+                }
+                return '<span class="badge bg-secondary">-</span>';
+            })
+
             ->addColumn('aksi', function ($row) {
                 $btn = '<button onclick="modalAction(\'' . url('admin/kelola-pengguna/mahasiswa/' . $row->mahasiswa_id . '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('admin/kelola-pengguna/mahasiswa/' . $row->mahasiswa_id . '/edit_ajax') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('admin/kelola-pengguna/mahasiswa/' . $row->mahasiswa_id . '/delete_ajax') . '\')" class="btn btn-danger btn-sm">Hapus</button>';
                 return $btn;
             })
-            ->rawColumns(['aksi'])
+            ->rawColumns(['status', 'aksi'])
             ->make(true);
     }
 
@@ -127,9 +146,9 @@ class KelolaMahasiswaController extends Controller
                 'img_mahasiswa' => 'profil-default.jpg',
                 'angkatan' => $request->angkatan ?? 2025,
                 'kelamin' => $request->kelamin,
-                'email' => $request->email ?: 'Belum diisi!',
-                'no_hp' => $request->no_hp ?: 'Belum diisi!',
-                'alamat' => $request->alamat ?: 'Belum diisi!',
+                'email' => $request->email ?: null,
+                'no_hp' => $request->no_hp ?: null,
+                'alamat' => $request->alamat ?: null,
             ]);
         });
 
