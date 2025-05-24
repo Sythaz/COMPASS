@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\ProgramStudiController;
 use App\Http\Controllers\Admin\TingkatLombaController;
 use App\Http\Controllers\Admin\DashboardController as DashboardAdminController;
 use App\Http\Controllers\Dosen\DashboardController as DashboardDosenController;
+use App\Http\Controllers\Dosen\ProfileDosenController as ProfileDosenController;
 use App\Http\Controllers\Mahasiswa\DashboardController as DashboardMahasiswaController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\HomeController;
@@ -170,6 +171,12 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
     // Dashboard dosen, hanya untuk role dosen
     Route::middleware('authorize:dosen')->group(function () {
         Route::get('/Dosen', [DashboardDosenController::class, 'index'])->name('dosen.dashboard');
+
+        Route::prefix('dosen/profile-dosen')->group(function () {
+            Route::get('/', [ProfileDosenController::class, 'index'])->name('dosen.profile.index');
+            Route::get('/edit/{id}', [ProfileDosenController::class, 'edit'])->name('dosen.profile.edit');
+            Route::put('/update', [ProfileDosenController::class, 'update'])->name('dosen.profile.update');
+        });
     });
 
     // Dashboard mahasiswa, hanya untuk role mahasiswa
