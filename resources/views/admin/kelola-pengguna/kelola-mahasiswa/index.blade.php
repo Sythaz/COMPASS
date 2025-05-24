@@ -19,7 +19,7 @@
                             <a onclick="modalAction('{{ route('mahasiswa.import.form') }}')"
                                 class="ml-2 btn btn-primary text-white">
                                 <i class="fa-solid fa-file-import"></i>
-                                <strong> Impor Data</strong>
+                                <strong> Import Data</strong>
                             </a>
                         </div>
                         <div class="col-6 text-right">

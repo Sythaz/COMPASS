@@ -10,15 +10,20 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row mb-2">
+
+                        {{-- pilihan Menu --}}
                         <div class="col-6">
+                            {{-- Tombol Create Data Baru --}}
                             <a onclick="modalAction('{{ url('/admin/kelola-pengguna/dosen/create') }}')"
                                 class="btn btn-primary text-white">
                                 <i class="fa-solid fa-plus"></i>
                                 <strong>Tambah Data</strong>
                             </a>
-                            <a href="javascript:void(0)" class="ml-2 btn btn-primary">
+                            {{-- Import Data Excel --}}
+                            <a onclick="modalAction('{{ route('dosen.import.form') }}')"
+                                class="ml-2 btn btn-primary text-white">
                                 <i class="fa-solid fa-file-import"></i>
-                                <strong> Impor Data</strong>
+                                <strong> Import Data</strong>
                             </a>
                         </div>
                         <div class="col-6 text-right">
@@ -29,11 +34,9 @@
                                     <strong>Menu Ekspor</strong>
                                 </button>
                                 <div class="dropdown-menu">
-                                    {{-- {{ route('dosen.export_excel') }} --}}
-                                    <a class="dropdown-item" href="#">Ekspor Data ke
+                                    <a class="dropdown-item" href="{{ route('dosen.export_excel') }}">Ekspor Data ke
                                         XLSX</a>
-                                    {{-- {{ route('dosen.export_pdf') }} --}}
-                                    <a class="dropdown-item" href="#">Ekspor Data ke
+                                    <a class="dropdown-item" href="{{ route('dosen.export_pdf') }}">Ekspor Data ke
                                         PDF</a>
                                 </div>
                             </div>

@@ -7,6 +7,9 @@
         <h5 class="modal-title text-white">
             <i class="fas fa-trash-alt mr-2"></i>Hapus Mahasiswa
         </h5>
+        <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
     </div>
 
     <div class="modal-body">

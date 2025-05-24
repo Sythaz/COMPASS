@@ -10,6 +10,12 @@ use App\Models\UsersModel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Models\KategoriModel;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class KelolaDosenController extends Controller
 {
@@ -175,6 +181,263 @@ class KelolaDosenController extends Controller
             'success' => true,
             'message' => 'Data Dosen Berhasil Dihapus'
         ]);
+    }
+
+    // Export data dosen ke Excel
+    public function export_excel(Request $request)
+    {
+        $status = $request->input('status');
+        $kategori_id = $request->input('kategori_id');
+
+        $query = DosenModel::with(['kategori', 'users'])
+            ->select(
+                'dosen_id',
+                'user_id',
+                'kategori_id',
+                'nip_dosen',
+                'nama_dosen',
+                'kelamin',
+                'status',
+                'alamat',
+                'email',
+                'no_hp'
+            );
+
+        if ($status) {
+            $query->where('status', $status);
+        } else {
+            $query->where('status', 'Aktif');
+        }
+
+        if ($kategori_id) {
+            $query->where('kategori_id', $kategori_id);
+        }
+
+        $dosen = $query->get();
+
+        // inisialisasi spreadsheet
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // header kolom
+        $sheet->setCellValue('A1', 'No');
+        $sheet->setCellValue('B1', 'NIP');
+        $sheet->setCellValue('C1', 'Nama Dosen');
+        $sheet->setCellValue('D1', 'Bidang');
+        $sheet->setCellValue('E1', 'Jenis Kelamin');
+        $sheet->setCellValue('F1', 'Email');
+        $sheet->setCellValue('G1', 'No HP');
+        $sheet->setCellValue('H1', 'Alamat');
+        $sheet->setCellValue('I1', 'Status');
+
+        // Atur Header Style
+        $sheet->getStyle('A1:I1')->getFont()->setBold(true);
+        $sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('E1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('I1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+        // isi data
+        $no = 1;
+        $baris = 2;
+        foreach ($dosen as $row) {
+            $sheet->setCellValue('A' . $baris, $no);
+            $sheet->setCellValueExplicit('B' . $baris, $row->nip_dosen, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('C' . $baris, $row->nama_dosen);
+            $sheet->setCellValue('D' . $baris, $row->kategori->nama_kategori ?? '-');
+            $sheet->setCellValue('E' . $baris, $row->kelamin ?? '-');
+            $sheet->setCellValue('F' . $baris, $row->email ?? '-');
+            $sheet->setCellValue('G' . $baris, $row->no_hp ?? '-');
+            $sheet->setCellValue('H' . $baris, $row->alamat ?? '-');
+            $sheet->setCellValue('I' . $baris, $row->status ?? '-');
+
+            // Center kolom tertentu
+            $sheet->getStyle("A2:A$baris")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("E2:E$baris")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("I2:I$baris")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+            $baris++;
+            $no++;
+        }
+
+        // set kolom auto size
+        foreach (range('A', 'J') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+
+        // export
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $filename = 'Data Dosen ' . date('Ymd_His') . '.xlsx';
+
+        // return response dengan file excel
+        return response()->streamDownload(function () use ($writer) {
+            $writer->save('php://output');
+        }, $filename);
+    }
+
+    // Export data dosen ke PDF
+    public function export_pdf(Request $request)
+    {
+        $status = $request->input('status');
+
+        $query = DosenModel::select('nama_dosen', 'nip_dosen', 'kelamin', 'status')
+            ->orderBy('nama_dosen');
+
+        // Filter status jika tersedia
+        if ($status) {
+            $query->where('status', $status);
+        } else {
+            $query->where('status', 'Aktif'); // Default hanya dosen Aktif
+        }
+
+        $dosen = $query->get();
+
+        $viewPath = resource_path('views/admin/kelola-pengguna/kelola-dosen/export_pdf.blade.php');
+
+        $html = view()->file($viewPath, ['dosen' => $dosen])->render();
+
+        $pdf = Pdf::loadHTML($html);
+        $pdf->setPaper('a4', 'portrait');
+        $pdf->setOption('isRemoteEnabled', true);
+
+        return $pdf->stream('Data Dosen ' . date('Y-m-d H:i:s') . '.pdf');
+    }
+
+    // View Import Form
+    public function importForm()
+    {
+        return view('admin.kelola-pengguna.kelola-dosen.import');
+    }
+
+    // Import Datas Dosen Excel
+    public function import(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            // Validasi file
+            $rules = [
+                'file_dosen' => ['required', 'mimes:xlsx', 'max:1024'], // max 1MB
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi Gagal',
+                    'msgField' => $validator->errors()
+                ]);
+            }
+
+            $file = $request->file('file_dosen');
+            $reader = IOFactory::createReader('Xlsx');
+            $reader->setReadDataOnly(true);
+
+            try {
+                $spreadsheet = $reader->load($file->getRealPath());
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Gagal membaca file Excel: ' . $e->getMessage()
+                ]);
+            }
+
+            $sheet = $spreadsheet->getActiveSheet();
+            $data = $sheet->toArray(null, false, true, true);
+
+            $jumlahBerhasil = 0;
+            $skipped = 0;
+
+            if (count($data) > 1) {
+                foreach ($data as $baris => $value) {
+                    if ($baris == 1)
+                        continue; // Skip header
+
+                    $nip = trim($value['A']); // Kolom A → NIP
+                    $nama = trim($value['B']); // Kolom B → Nama Dosen
+                    $kategori = trim($value['C']); // Kolom C → Nama Kategori (bidang)
+                    $email = trim($value['D']); // Kolom D → Email
+                    $no_hp = trim($value['E']); // Kolom E → No HP
+                    $alamat = trim($value['F']); // Kolom F → Alamat
+                    $kelamin = trim($value['G']); // Kolom G → Jenis Kelamin
+
+                    if ($kelamin !== 'L' && $kelamin !== 'P') {
+                        $kelamin = 'Belum diisi';
+                    }
+
+                    if (empty($nip) || empty($nama) || empty($kategori)) {
+                        Log::warning("Baris $baris dilewati: Data penting kosong (NIP/Nama/Kategori)");
+                        $skipped++;
+                        continue;
+                    }
+
+                    $kategoriModel = KategoriModel::whereRaw('LOWER(nama_kategori) = ?', [strtolower($kategori)])->first();
+                    if (!$kategoriModel) {
+                        Log::warning("Baris $baris dilewati: Kategori '$kategori' tidak ditemukan");
+                        $skipped++;
+                        continue;
+                    }
+
+                    $existingUser = UsersModel::where('username', $nip)->first();
+                    if ($existingUser) {
+                        Log::info("Baris $baris dilewati: User dengan NIP '$nip' sudah ada");
+                        $skipped++;
+                        continue;
+                    }
+
+                    try {
+                        $user = UsersModel::create([
+                            'username' => $nip,
+                            'password' => Hash::make($nip),
+                            'role' => 'Dosen',
+                            'phrase' => $nip,
+                        ]);
+
+                        DosenModel::create([
+                            'user_id' => $user->user_id,
+                            'nip_dosen' => $nip,
+                            'nama_dosen' => strtoupper($nama),
+                            'kategori_id' => $kategoriModel->kategori_id,
+                            'email' => $email,
+                            'no_hp' => $no_hp,
+                            'alamat' => $alamat,
+                            'kelamin' => $kelamin,
+                            'img_dosen' => 'profil-default.jpg',
+                            'status' => 'Aktif',
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+
+                        $jumlahBerhasil++;
+                    } catch (\Exception $e) {
+                        Log::error("Baris $baris gagal disimpan: " . $e->getMessage());
+                        $skipped++;
+                        continue;
+                    }
+                }
+
+                if ($jumlahBerhasil > 0) {
+                    $message = "$jumlahBerhasil data dosen berhasil diimport";
+                    if ($skipped > 0) {
+                        $message .= ", $skipped data dilewati karena duplikat atau data tidak valid.";
+                    }
+
+                    return response()->json([
+                        'status' => true,
+                        'message' => $message
+                    ]);
+                } else {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Tidak ada data baru yang berhasil diimport'
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'status' => false,
+                'message' => 'File Excel kosong atau format tidak sesuai'
+            ]);
+        }
+
+        return redirect('/');
     }
 
 }

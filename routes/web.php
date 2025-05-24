@@ -84,6 +84,10 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::post('dosen/store', [KelolaDosenController::class, 'store'])->name('dosen.store');      // Store
             Route::put('dosen/{id}', [KelolaDosenController::class, 'update'])->name('dosen.update');      // update
             Route::delete('dosen/{id}', [KelolaDosenController::class, 'destroy'])->name('dosen.destroy'); //delete
+            Route::get('dosen/export_excel', [KelolaDosenController::class, 'export_excel'])->name('dosen.export_excel');  // export excel
+            Route::get('dosen/export_pdf', [KelolaDosenController::class, 'export_pdf'])->name('dosen.export_pdf');  // export pdf
+            Route::get('dosen/import', [KelolaDosenController::class, 'importForm'])->name('dosen.import.form');  // form import
+            Route::post('dosen/import', [KelolaDosenController::class, 'import'])->name('dosen.import');  // import
 
             // Rute Kelola Mahasiswa
             Route::get('mahasiswa', [KelolaMahasiswaController::class, 'index'])->name('mahasiswa.index');             // Halaman utama list Mahasiswa
