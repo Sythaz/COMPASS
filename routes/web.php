@@ -10,8 +10,8 @@ use App\Http\Controllers\Admin\PeriodeSemesterController;
 use App\Http\Controllers\Admin\ProgramStudiController;
 use App\Http\Controllers\Admin\TingkatLombaController;
 use App\Http\Controllers\Admin\DashboardController as DashboardAdminController;
+use App\Http\Controllers\Admin\KelolaPrestasiController;
 use App\Http\Controllers\Dosen\DashboardController as DashboardDosenController;
-use App\Http\Controllers\Dosen\ProfileDosenController as ProfileDosenController;
 use App\Http\Controllers\Mahasiswa\DashboardController as DashboardMahasiswaController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\HomeController;
@@ -84,10 +84,6 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::post('dosen/store', [KelolaDosenController::class, 'store'])->name('dosen.store');      // Store
             Route::put('dosen/{id}', [KelolaDosenController::class, 'update'])->name('dosen.update');      // update
             Route::delete('dosen/{id}', [KelolaDosenController::class, 'destroy'])->name('dosen.destroy'); //delete
-            Route::get('dosen/export_excel', [KelolaDosenController::class, 'export_excel'])->name('dosen.export_excel');  // export excel
-            Route::get('dosen/export_pdf', [KelolaDosenController::class, 'export_pdf'])->name('dosen.export_pdf');  // export pdf
-            Route::get('dosen/import', [KelolaDosenController::class, 'importForm'])->name('dosen.import.form');  // form import
-            Route::post('dosen/import', [KelolaDosenController::class, 'import'])->name('dosen.import');  // import
 
             // Rute Kelola Mahasiswa
             Route::get('mahasiswa', [KelolaMahasiswaController::class, 'index'])->name('mahasiswa.index');             // Halaman utama list Mahasiswa
@@ -98,16 +94,11 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::get('mahasiswa/{id}/delete_ajax', [KelolaMahasiswaController::class, 'deleteAjax']);                      // Delete modal actions
             Route::post('mahasiswa/store', [KelolaMahasiswaController::class, 'store'])->name('mahasiswa.store');      // Store
             Route::put('mahasiswa/{id}', [KelolaMahasiswaController::class, 'update'])->name('mahasiswa.update');      // Update
-            Route::delete('mahasiswa/{id}', [KelolaMahasiswaController::class, 'delete'])->name('mahasiswa.delete'); // Delete
+            Route::delete('mahasiswa/{id}', [KelolaMahasiswaController::class, 'destroy'])->name('mahasiswa.destroy'); // Delete
             Route::get('mahasiswa/export_excel', [KelolaMahasiswaController::class, 'export_excel'])->name('mahasiswa.export_excel');  // export excel
             Route::get('mahasiswa/export_pdf', [KelolaMahasiswaController::class, 'export_pdf'])->name('mahasiswa.export_pdf');  // export pdf
             Route::get('mahasiswa/import', [KelolaMahasiswaController::class, 'importForm'])->name('mahasiswa.import.form');  // form import
             Route::post('mahasiswa/import', [KelolaMahasiswaController::class, 'import'])->name('mahasiswa.import');  // import
-            Route::get('mahasiswa/history', [KelolaMahasiswaController::class, 'history'])->name('mahasiswa.history');  // history
-            Route::get('mahasiswa/list_history', [KelolaMahasiswaController::class, 'list_history'])->name('mahasiswa.list_history');
-            Route::get('mahasiswa/history/aktivasi/{id}', [KelolaMahasiswaController::class, 'aktivasi'])->name('mahasiswa.history.aktivasi');
-            Route::get('mahasiswa/history/delete/{id}', [KelolaMahasiswaController::class, 'delete_history'])->name('mahasiswa.history.delete');
-            Route::delete('mahasiswa/history/destroy/{id}', [KelolaMahasiswaController::class, 'destroy'])->name('mahasiswa.history.destroy');
         });
 
         // MASTER DATA
@@ -170,17 +161,25 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::put('kelola-lomba/{id}', [KelolaLombaController::class, 'update'])->name('kelola-lomba.update');
             Route::delete('kelola-lomba/{id}', [KelolaLombaController::class, 'destroy'])->name('kelola-lomba.destroy'); // Seharusnya ::delete namun karena menggunakan status maka diganti menjadi ::put
         });
+
+        // MANAJEMEN PRESTASI
+        Route::prefix('admin/manajemen-prestasi')->group(function () {
+            // Rute Kelola Prestasi
+            Route::get('kelola-prestasi', [KelolaPrestasiController::class, 'index'])->name('kelola-prestasi.index');
+            Route::post('kelola-prestasi/list', [KelolaPrestasiController::class, 'list'])->name('kelola-prestasi.list');
+            Route::get('kelola-prestasi/create', [KelolaPrestasiController::class, 'create'])->name('kelola-prestasi.create');
+            Route::get('kelola-prestasi/{id}/show_ajax', [KelolaPrestasiController::class, 'showAjax']);
+            Route::get('kelola-prestasi/{id}/edit_ajax', [KelolaPrestasiController::class, 'editAjax']);
+            Route::get('kelola-prestasi/{id}/delete_ajax', [KelolaPrestasiController::class, 'deleteAjax']);
+            Route::post('kelola-prestasi/store', [KelolaPrestasiController::class, 'store'])->name('kelola-prestasi.store');
+            Route::put('kelola-prestasi/{id}', [KelolaPrestasiController::class, 'update'])->name('kelola-prestasi.update');
+            Route::delete('kelola-prestasi/{id}', [KelolaPrestasiController::class, 'destroy'])->name('kelola-prestasi.destroy'); // Seharusnya ::delete namun karena menggunakan status maka diganti menjadi ::put
+        });
     });
 
     // Dashboard dosen, hanya untuk role dosen
     Route::middleware('authorize:dosen')->group(function () {
         Route::get('/Dosen', [DashboardDosenController::class, 'index'])->name('dosen.dashboard');
-
-        Route::prefix('dosen/profile-dosen')->group(function () {
-            Route::get('/', [ProfileDosenController::class, 'index'])->name('dosen.profile.index');
-            Route::get('/edit/{id}', [ProfileDosenController::class, 'edit'])->name('dosen.profile.edit');
-            Route::put('/update', [ProfileDosenController::class, 'update'])->name('dosen.profile.update');
-        });
     });
 
     // Dashboard mahasiswa, hanya untuk role mahasiswa
