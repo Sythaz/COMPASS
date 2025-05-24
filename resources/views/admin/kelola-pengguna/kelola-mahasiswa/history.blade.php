@@ -10,20 +10,15 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row mb-2">
+                        {{-- Kembali ke index Mahasiswa --}}
                         <div class="col-6">
-                            <a onclick="modalAction('{{ url('/admin/kelola-pengguna/mahasiswa/create') }}')"
-                                class="btn btn-primary text-white">
-                                <i class="fa-solid fa-plus"></i>
-                                <strong>Tambah Data</strong>
-                            </a>
-                            <a onclick="modalAction('{{ route('mahasiswa.import.form') }}')"
-                                class="ml-2 btn btn-primary text-white">
-                                <i class="fa-solid fa-file-import"></i>
-                                <strong> Impor Data</strong>
+                            <a href="{{ route('mahasiswa.index') }}" class="ml-2 btn btn-primary text-white">
+                                {{-- <i class="fa-solid fa-table"></i> --}}
+                                <strong> Kembali</strong>
                             </a>
                         </div>
+                        {{-- Menu Export Data --}}
                         <div class="col-6 text-right">
-                            {{-- Menu Export Data --}}
                             <div class="btn-group" role="group">
                                 <button type="button" class="btn btn-outline-primary dropdown-toggle"
                                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -31,17 +26,15 @@
                                     <strong>Menu Ekspor</strong>
                                 </button>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="{{ route('mahasiswa.export_excel') }}">Ekspor Data ke
+                                    <a class="dropdown-item"
+                                        href="{{ route('mahasiswa.export_excel', ['status' => 'Nonaktif']) }}">Ekspor Data
+                                        ke
                                         XLSX</a>
-                                    <a class="dropdown-item" href="{{ route('mahasiswa.export_pdf') }}">Ekspor Data ke
+                                    <a class="dropdown-item"
+                                        href="{{ route('mahasiswa.export_pdf', ['status' => 'Nonaktif']) }}">Ekspor Data ke
                                         PDF</a>
                                 </div>
                             </div>
-                            {{-- Menu History --}}
-                            <a href="{{ route('mahasiswa.history') }}" class="ml-2 btn btn-primary text-white">
-                                <i class="fa-solid fa-clock-rotate-left"></i>
-                                <strong> History</strong>
-                            </a>
                         </div>
                     </div>
 
@@ -110,7 +103,7 @@
                 serverSide: true,
                 autoWidth: true,
                 ajax: {
-                    url: "{{ url('admin/kelola-pengguna/mahasiswa/list') }}",
+                    url: "{{ url('admin/kelola-pengguna/mahasiswa/list_history') }}",
                     type: "GET"
                 },
                 columns: [
@@ -160,5 +153,26 @@
         $(idDataTables).on('change', function () {
             $(idDataTables).DataTable().ajax.reload();
         });
+
+        function aktifkanMahasiswa(id) {
+            let url = "{{ url('admin/kelola-pengguna/mahasiswa/history/aktivasi') }}/" + id;
+
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire('Berhasil', response.message, 'success').then(() => {
+                            $('#tabel-mahasiswa').DataTable().ajax.reload(null, false);
+                        });
+                    } else {
+                        Swal.fire('Gagal', 'Gagal mengaktifkan data.', 'error');
+                    }
+                },
+                error: function () {
+                    Swal.fire('Error', 'Terjadi kesalahan saat mengaktifkan data.', 'error');
+                }
+            });
+        }
     </script>
 @endpush

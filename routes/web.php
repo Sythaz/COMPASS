@@ -98,6 +98,11 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::get('mahasiswa/export_pdf', [KelolaMahasiswaController::class, 'export_pdf'])->name('mahasiswa.export_pdf');  // export pdf
             Route::get('mahasiswa/import', [KelolaMahasiswaController::class, 'importForm'])->name('mahasiswa.import.form');  // form import
             Route::post('mahasiswa/import', [KelolaMahasiswaController::class, 'import'])->name('mahasiswa.import');  // import
+            Route::get('mahasiswa/history', [KelolaMahasiswaController::class, 'history'])->name('mahasiswa.history');  // history
+            Route::get('mahasiswa/list_history', [KelolaMahasiswaController::class, 'list_history'])->name('mahasiswa.list_history');
+            Route::get('mahasiswa/history/aktivasi/{id}', [KelolaMahasiswaController::class, 'aktivasi'])->name('mahasiswa.history.aktivasi');
+            Route::get('mahasiswa/history/delete/{id}', [KelolaMahasiswaController::class, 'delete_history'])->name('mahasiswa.history.delete');
+            Route::delete('mahasiswa/history/destroy/{id}', [KelolaMahasiswaController::class, 'destroy'])->name('mahasiswa.history.destroy');
         });
 
         // MASTER DATA

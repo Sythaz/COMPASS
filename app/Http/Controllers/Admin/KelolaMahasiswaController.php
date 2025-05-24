@@ -73,6 +73,53 @@ class KelolaMahasiswaController extends Controller
             ->make(true);
     }
 
+    public function history()
+    {
+        $breadcrumb = (object) [
+            'list' => ['Kelola Pengguna', 'Kelola Mahasiswa', 'History']
+        ];
+        return view('admin.kelola-pengguna.kelola-mahasiswa.history', compact('breadcrumb'));
+    }
+
+    public function list_history(Request $request)
+    {
+        $data = MahasiswaModel::with(['users', 'prodi', 'periode',])
+            ->where('status', 'Nonaktif') // hanya ambil mahasiswa yang statusnya Nonaktif
+            ->select(
+                'mahasiswa_id',
+                'user_id',
+                'prodi_id',
+                'periode_id',
+                'angkatan',
+                'nim_mahasiswa',
+                'nama_mahasiswa',
+                'status'
+            )
+            ->get();
+
+        return DataTables::of($data)
+            ->addIndexColumn()
+            ->addColumn('username', fn($row) => $row->users ? ' ' . $row->users->username : '-')
+            ->addColumn('prodi', fn($row) => $row->prodi->nama_prodi ?? '-')
+            ->addColumn('periode', fn($row) => $row->periode->semester_periode ?? '-')
+            ->addColumn('status', function ($row) {
+                if ($row->status === 'Aktif') {
+                    return '<span class="label label-success">Aktif</span>';
+                } elseif ($row->status === 'Nonaktif') {
+                    return '<span class="label label-danger">Nonaktif</span>';
+                }
+                return '<span class="badge bg-secondary">-</span>';
+            })
+
+            ->addColumn('aksi', function ($row) {
+                $btn = '<button onclick="aktifkanMahasiswa(' . $row->mahasiswa_id . ')" class="btn btn-success btn-sm">Aktifkan</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('admin/kelola-pengguna/mahasiswa/history/delete/' . $row->mahasiswa_id) . '\')" class="btn btn-danger btn-sm">Hapus</button>';
+                return $btn;
+            })
+            ->rawColumns(['status', 'aksi'])
+            ->make(true);
+    }
+
     public function create()
     {
         $list_prodi = ProdiModel::all();
@@ -170,7 +217,6 @@ class KelolaMahasiswaController extends Controller
             'prodi_id' => 'required|exists:t_prodi,prodi_id',
             'periode_id' => 'required|exists:t_periode,periode_id',
             'level_minbak_id' => 'required|exists:t_level_minat_bakat,level_minbak_id',
-            'status' => 'required|in:aktif,nonaktif',
             'username' => 'required|unique:t_users,username,' . $user->user_id . ',user_id',
             'alamat' => 'nullable|string|max:255',
             'email' => 'nullable|email|unique:t_mahasiswa,email,' . $mahasiswa->mahasiswa_id . ',mahasiswa_id',
@@ -195,7 +241,6 @@ class KelolaMahasiswaController extends Controller
             $mahasiswa->prodi_id = $request->prodi_id;
             $mahasiswa->periode_id = $request->periode_id;
             $mahasiswa->level_minbak_id = $request->level_minbak_id;
-            $mahasiswa->status = $request->status;
             $mahasiswa->nim_mahasiswa = $request->nim_mahasiswa;
             $mahasiswa->nama_mahasiswa = $request->nama_mahasiswa;
 
@@ -225,15 +270,54 @@ class KelolaMahasiswaController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Data Mahasiswa berhasil dinonaktifkan'
+            'message' => 'Data Mahasiswa Berhasil Dinonaktifkan'
+        ]);
+    }
+    public function aktivasi($id)
+    {
+        $mahasiswa = MahasiswaModel::findOrFail($id);
+
+        DB::transaction(function () use ($mahasiswa) {
+            $mahasiswa->status = 'Aktif';
+            $mahasiswa->save();
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Mahasiswa Berhasil Diaktifkan'
+        ]);
+    }
+
+    public function delete_history($id)
+    {
+        $mahasiswa = MahasiswaModel::findOrFail($id);
+        return view('admin.kelola-pengguna.kelola-mahasiswa.destroy', compact('mahasiswa'));
+    }
+
+    public function destroy($id)
+    {
+        $mahasiswa = MahasiswaModel::findOrFail($id);
+        $user = $mahasiswa->users;
+
+        DB::transaction(function () use ($mahasiswa, $user) {
+            $mahasiswa->delete();
+            $user->delete();
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Mahasiswa Berhasil Dihapus PERMANEN!'
         ]);
     }
 
     // Export data mahasiswa ke Excel
-    public function export_excel()
+    public function export_excel(Request $request)
     {
-        // Ambil data mahasiswa serat relasinya
-        $mahasiswa = MahasiswaModel::with(['prodi', 'periode'])
+        $status = $request->input('status');
+        $prodi_id = $request->input('prodi_id');
+        $periode = $request->input('semester_periode');
+
+        $query = MahasiswaModel::with(['prodi', 'periode'])
             ->select(
                 'mahasiswa_id',
                 'prodi_id',
@@ -245,8 +329,23 @@ class KelolaMahasiswaController extends Controller
                 'no_hp',
                 'alamat',
                 'status'
-            )
-            ->get();
+            );
+
+        if ($status) {
+            $query->where('status', $status);
+        } else {
+            $query->where('status', 'Aktif'); // Filter mahasiswa aktif 
+        }
+
+        if ($prodi_id) {
+            $query->where('prodi_id', $prodi_id);
+        }
+
+        if ($periode) {
+            $query->where('semester_periode', $periode);
+        }
+
+        $mahasiswa = $query->get();
 
         // inisialisasi spreadsheet
         $spreadsheet = new Spreadsheet();
@@ -320,17 +419,25 @@ class KelolaMahasiswaController extends Controller
 
     public function export_pdf(Request $request)
     {
-        $mahasiswa = MahasiswaModel::select('nama_mahasiswa', 'nim_mahasiswa', 'kelamin')
-            ->orderBy('nama_mahasiswa')
-            ->get();
+        $status = $request->input('status');
 
-        // Jika menggunakan Kebab case (kelola-mahasiswa) harus load satu-satu ya!
+        $query = MahasiswaModel::select('nama_mahasiswa', 'nim_mahasiswa', 'kelamin', 'status')
+            ->orderBy('nama_mahasiswa');
+
+        // Filter status jika tersedia
+        if ($status) {
+            $query->where('status', $status);
+        } else {
+            $query->where('status', 'Aktif'); // Default hanya mahasiswa Aktif
+        }
+
+        $mahasiswa = $query->get();
+
         $viewPath = resource_path('views/admin/kelola-pengguna/kelola-mahasiswa/export_pdf.blade.php');
-        // Fungsi render() mengubah view menjadi HTML string
-        $html = view()->file($viewPath, ['mahasiswa' => $mahasiswa])->render();
-        // Memuat HTML string $html ke PDF generator (misal dompdf atau barryvdh/laravel-dompdf)
-        $pdf = Pdf::loadHTML($html);
 
+        $html = view()->file($viewPath, ['mahasiswa' => $mahasiswa])->render();
+
+        $pdf = Pdf::loadHTML($html);
         $pdf->setPaper('a4', 'portrait');
         $pdf->setOption('isRemoteEnabled', true);
 

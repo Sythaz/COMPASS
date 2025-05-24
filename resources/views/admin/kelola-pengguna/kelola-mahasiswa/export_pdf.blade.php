@@ -102,6 +102,7 @@
                 <th class="text-center">NIM</th>
                 <th class="text-center">Nama</th>
                 <th class="text-center">Jenis Kelamin</th>
+                <th class="text-center">Status</th>
             </tr>
         </thead>
         <tbody>
@@ -111,6 +112,7 @@
                     <td>{{ $mhs->nim_mahasiswa }}</td>
                     <td>{{ $mhs->nama_mahasiswa }}</td>
                     <td class="text-center">{{ $mhs->kelamin }}</td>
+                    <td class="text-center">{{ $mhs->status }}</td>
                 </tr>
             @endforeach
         </tbody>

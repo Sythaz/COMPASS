@@ -123,17 +123,6 @@
                 value="{{ old('phrase', $mahasiswa->users->phrase ?? $mahasiswa->users->username) }}">
         </div>
 
-        <div class="form-group mb-3">
-            <label for="status" class="col-form-label">Status <span class="text-danger">*</span></label>
-            <select name="status" id="status" class="form-control">
-                <option value="">-- Pilih Status --</option>
-                <option value="aktif" {{ old('status', $mahasiswa->status ?? '') == 'aktif' ? 'selected' : '' }}>Aktif
-                </option>
-                <option value="nonaktif" {{ old('status', $mahasiswa->status ?? '') == 'nonaktif' ? 'selected' : '' }}>
-                    Nonaktif</option>
-            </select>
-        </div>
-
         <input type="hidden" name="role" value="mahasiswa">
 
     </div>
