@@ -100,7 +100,8 @@
             <tr>
                 <th class="text-center">No</th>
                 <th class="text-center">NIM</th>
-                <th class="text-center">NAMA</th>
+                <th class="text-center">Nama</th>
+                <th class="text-center">Jenis Kelamin</th>
             </tr>
         </thead>
         <tbody>
@@ -109,6 +110,7 @@
                     <td class="text-center">{{ $loop->iteration }}</td>
                     <td>{{ $mhs->nim_mahasiswa }}</td>
                     <td>{{ $mhs->nama_mahasiswa }}</td>
+                    <td class="text-center">{{ $mhs->kelamin }}</td>
                 </tr>
             @endforeach
         </tbody>

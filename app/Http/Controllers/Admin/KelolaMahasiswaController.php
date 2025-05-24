@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
@@ -232,9 +233,20 @@ class KelolaMahasiswaController extends Controller
     // Export data mahasiswa ke Excel
     public function export_excel()
     {
-        // ambil data mahasiswa dengan relasi prodi
-        $mahasiswa = MahasiswaModel::with('prodi')
-            ->select('mahasiswa_id', 'prodi_id', 'nim_mahasiswa', 'nama_mahasiswa')
+        // Ambil data mahasiswa serat relasinya
+        $mahasiswa = MahasiswaModel::with(['prodi', 'periode'])
+            ->select(
+                'mahasiswa_id',
+                'prodi_id',
+                'periode_id',
+                'nim_mahasiswa',
+                'nama_mahasiswa',
+                'angkatan',
+                'email',
+                'no_hp',
+                'alamat',
+                'status'
+            )
             ->get();
 
         // inisialisasi spreadsheet
@@ -246,8 +258,19 @@ class KelolaMahasiswaController extends Controller
         $sheet->setCellValue('B1', 'NIM');
         $sheet->setCellValue('C1', 'Nama');
         $sheet->setCellValue('D1', 'Program Studi');
+        $sheet->setCellValue('E1', 'Periode');
+        $sheet->setCellValue('F1', 'Angkatan');
+        $sheet->setCellValue('G1', 'Email');
+        $sheet->setCellValue('H1', 'No Handphone');
+        $sheet->setCellValue('I1', 'Alamat');
+        $sheet->setCellValue('J1', 'Status');
 
-        $sheet->getStyle('A1:D1')->getFont()->setBold(true); // bold header
+        // Atur Text Center
+        $sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('F1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('J1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        // Bold header
+        $sheet->getStyle('A1:J1')->getFont()->setBold(true);
 
         // isi data
         $no = 1;
@@ -257,13 +280,24 @@ class KelolaMahasiswaController extends Controller
             $sheet->setCellValueExplicit('B' . $baris, $row->nim_mahasiswa, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
             $sheet->setCellValue('C' . $baris, $row->nama_mahasiswa);
             $sheet->setCellValue('D' . $baris, $row->prodi->nama_prodi ?? '-');
+            $sheet->setCellValue('E' . $baris, $row->periode->semester_periode ?? '-');
+            $sheet->setCellValue('F' . $baris, $row->angkatan ?? '-');
+            $sheet->setCellValue('G' . $baris, $row->email ?? '-');
+            $sheet->setCellValue('H' . $baris, $row->no_hp ?? '-');
+            $sheet->setCellValue('I' . $baris, $row->alamat ?? '-');
+            $sheet->setCellValue('J' . $baris, $row->status ?? '-');
+
+            // Atur Text Center
+            $sheet->getStyle("A2:A$baris")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("F2:F$baris")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("J2:J$baris")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
             $baris++;
             $no++;
         }
 
         // set kolom auto size
-        foreach (range('A', 'D') as $columnID) {
+        foreach (range('A', 'J') as $columnID) {
             $sheet->getColumnDimension($columnID)->setAutoSize(true);
         }
 
@@ -287,7 +321,7 @@ class KelolaMahasiswaController extends Controller
 
     public function export_pdf(Request $request)
     {
-        $mahasiswa = MahasiswaModel::select('nama_mahasiswa', 'nim_mahasiswa')
+        $mahasiswa = MahasiswaModel::select('nama_mahasiswa', 'nim_mahasiswa', 'kelamin')
             ->orderBy('nama_mahasiswa')
             ->get();
 
@@ -308,7 +342,6 @@ class KelolaMahasiswaController extends Controller
     {
         return view('admin.kelola-pengguna.kelola-mahasiswa.import');
     }
-
 
     public function import(Request $request)
     {
