@@ -9,9 +9,6 @@ use App\Models\UsersModel;
 
 class AuthController extends Controller
 {
-    /**
-     * Tampilkan halaman login
-     */
     public function login()
     {
         if (Auth::check()) {
@@ -20,14 +17,46 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    /**
-     * Proses login
-     */
     public function postlogin(Request $request)
     {
         $credentials = $request->only('username', 'password');
 
         if (Auth::attempt($credentials)) {
+            // Ambil user yang login, plus relasi status
+            $user = Auth::user()->load('mahasiswa', 'dosen', 'admin');
+
+            // Cek status aktif sesuai role
+            $role = strtolower($user->role);
+            $isActive = true;
+
+            switch ($role) {
+                case 'mahasiswa':
+                    $isActive = $user->mahasiswa && strcasecmp($user->mahasiswa->status, 'Aktif') === 0;
+                    break;
+                case 'dosen':
+                    $isActive = $user->dosen && strcasecmp($user->dosen->status, 'Aktif') === 0;
+                    break;
+                case 'admin':
+                    $isActive = $user->admin && strcasecmp($user->admin->status, 'Aktif') === 0;
+                    break;
+            }
+
+            if (!$isActive) {
+                Auth::logout();
+
+                $message = 'Akun Anda tidak aktif. Silakan hubungi administrator.';
+
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => $message,
+                    ]);
+                }
+
+                return redirect('login')->withErrors(['message' => $message]);
+            }
+
+            // Jika aktif, proses login sukses
             if ($request->ajax() || $request->wantsJson()) {
                 return response()->json([
                     'status' => true,
@@ -49,20 +78,6 @@ class AuthController extends Controller
         return redirect('login')->withErrors(['message' => 'Username atau Password salah!']);
     }
 
-    /**
-     * Tampilkan halaman register
-     */
-    public function register()
-    {
-        if (Auth::check()) {
-            return redirect('/');
-        }
-        return view('auth.register');
-    }
-
-    /**
-     * Proses register
-     */
     public function postregister(Request $request)
     {
         if ($request->ajax() || $request->wantsJson()) {
@@ -75,15 +90,15 @@ class AuthController extends Controller
 
             $user = new UsersModel([
                 'username' => $request->username,
-                'password' => $request->password, // otomatis di-hash
+                'password' => $request->password,
                 'phrase' => $request->phrase,
                 'role' => $request->role
             ]);
 
             $user->save();
 
-            // Login otomatis setelah register
             Auth::login($user);
+            Auth::user()->load('mahasiswa', 'dosen', 'admin');
 
             return response()->json([
                 'status' => true,
@@ -95,9 +110,6 @@ class AuthController extends Controller
         return redirect('register');
     }
 
-    /**
-     * Logout
-     */
     public function logout(Request $request)
     {
         Auth::logout();

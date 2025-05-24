@@ -33,9 +33,24 @@ function customFormValidation(formId, rules, messages, successCallback) {
                         }
                     },
                     error: function (xhr) {
+                        let errorMessage = "Terjadi kesalahan pada server.";
+
+                        if (xhr.status === 403) {
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                errorMessage = xhr.responseJSON.message;
+                            } else if (xhr.responseText) {
+                                try {
+                                    let parsed = JSON.parse(xhr.responseText);
+                                    errorMessage = parsed.message || errorMessage;
+                                } catch (e) {
+                                    // jika gagal parse, tetap gunakan pesan default
+                                }
+                            }
+                        }
+
                         Swal.fire(
                             "Error",
-                            "Terjadi kesalahan pada server.",
+                            errorMessage,
                             "error"
                         );
                     },
@@ -55,4 +70,5 @@ function customFormValidation(formId, rules, messages, successCallback) {
             },
         });
     });
+    
 }

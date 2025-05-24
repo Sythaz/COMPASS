@@ -33,7 +33,7 @@ class KelolaMahasiswaController extends Controller
     public function list(Request $request)
     {
         $data = MahasiswaModel::with(['users', 'prodi', 'periode', 'level_minat_bakat'])
-            // ->where('status', 'Aktif') // hanya ambil mahasiswa yang statusnya Aktif
+            ->where('status', 'Aktif') // hanya ambil mahasiswa yang statusnya Aktif
             ->select(
                 'mahasiswa_id',
                 'user_id',
@@ -214,19 +214,18 @@ class KelolaMahasiswaController extends Controller
         ]);
     }
 
-    public function destroy($id)
+    public function delete($id)
     {
         $mahasiswa = MahasiswaModel::findOrFail($id);
-        $user = $mahasiswa->users;
 
-        DB::transaction(function () use ($mahasiswa, $user) {
-            $mahasiswa->delete();
-            $user->delete();
+        DB::transaction(function () use ($mahasiswa) {
+            $mahasiswa->status = 'Nonaktif';
+            $mahasiswa->save();
         });
 
         return response()->json([
             'success' => true,
-            'message' => 'Data Mahasiswa berhasil dihapus'
+            'message' => 'Data Mahasiswa berhasil dinonaktifkan'
         ]);
     }
 

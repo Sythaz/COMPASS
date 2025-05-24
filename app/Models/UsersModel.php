@@ -27,6 +27,21 @@ class UsersModel extends Authenticatable
         'password' => 'hashed', // otomatis hash saat isi atau ubah password
     ];
 
+    public function mahasiswa()
+    {
+        return $this->hasOne(MahasiswaModel::class, 'user_id', 'user_id');
+    }
+
+    public function dosen()
+    {
+        return $this->hasOne(DosenModel::class, 'user_id', 'user_id');
+    }
+
+    public function admin()
+    {
+        return $this->hasOne(AdminModel::class, 'user_id', 'user_id');
+    }
+
     /**
      * Mendapatkan nama pengguna
      */
@@ -68,4 +83,5 @@ class UsersModel extends Authenticatable
     {
         return $this->role;
     }
+
 }

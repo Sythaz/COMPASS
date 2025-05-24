@@ -93,7 +93,7 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::get('mahasiswa/{id}/delete_ajax', [KelolaMahasiswaController::class, 'deleteAjax']);                      // Delete modal actions
             Route::post('mahasiswa/store', [KelolaMahasiswaController::class, 'store'])->name('mahasiswa.store');      // Store
             Route::put('mahasiswa/{id}', [KelolaMahasiswaController::class, 'update'])->name('mahasiswa.update');      // Update
-            Route::delete('mahasiswa/{id}', [KelolaMahasiswaController::class, 'destroy'])->name('mahasiswa.destroy'); // Delete
+            Route::delete('mahasiswa/{id}', [KelolaMahasiswaController::class, 'delete'])->name('mahasiswa.delete'); // Delete
             Route::get('mahasiswa/export_excel', [KelolaMahasiswaController::class, 'export_excel'])->name('mahasiswa.export_excel');  // export excel
             Route::get('mahasiswa/export_pdf', [KelolaMahasiswaController::class, 'export_pdf'])->name('mahasiswa.export_pdf');  // export pdf
             Route::get('mahasiswa/import', [KelolaMahasiswaController::class, 'importForm'])->name('mahasiswa.import.form');  // form import

@@ -83,53 +83,96 @@
     <!-- Memanggil Custom Validation untuk form login -->
     <script>
         customFormValidation(
-            "#form-login", {
-            identifier: {
-                required: true,
-                digits: true,
-                minlength: 4,
-                maxlength: 20
+            "#form-login",
+            {
+                identifier: {
+                    required: true,
+                    digits: true,
+                    minlength: 4,
+                    maxlength: 20
+                },
+                password: {
+                    required: true,
+                    minlength: 6,
+                    maxlength: 20
+                }
             },
-            password: {
-                required: true,
-                minlength: 6,
-                maxlength: 20
-            }
-        }, {
-            identifier: {
-                required: "NIM atau NIP wajib diisi",
-                digits: "Hanya boleh angka",
-                minlength: "Minimal 4 karakter",
-                maxlength: "Maksimal 20 karakter"
+            {
+                identifier: {
+                    required: "NIM atau NIP wajib diisi",
+                    digits: "Hanya boleh angka",
+                    minlength: "Minimal 4 karakter",
+                    maxlength: "Maksimal 20 karakter"
+                },
+                password: {
+                    required: "Kata sandi wajib diisi",
+                    minlength: "Minimal 6 karakter",
+                    maxlength: "Maksimal 20 karakter"
+                }
             },
-            password: {
-                required: "Kata sandi wajib diisi",
-                minlength: "Minimal 6 karakter",
-                maxlength: "Maksimal 20 karakter"
-            }
-        },
             function (response, form) {
-                if (response.status) {
+                let data = response;
+
+                // Pastikan response adalah objek (parse jika perlu)
+                if (typeof response === 'string') {
+                    try {
+                        data = JSON.parse(response);
+                    } catch (e) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Terjadi Kesalahan',
+                            text: 'Respon server tidak valid.'
+                        });
+                        return;
+                    }
+                }
+
+                if (data.status) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Berhasil',
-                        text: response.message,
+                        text: data.message,
                     }).then(function () {
-                        window.location = response.redirect;
+                        window.location = data.redirect;
                     });
                 } else {
                     $('.error-text').text('');
-                    $.each(response.msgField, function (prefix, val) {
-                        $('#error-' + prefix).text(val[0]);
-                    });
+
+                    if (data.msgField) {
+                        $.each(data.msgField, function (prefix, val) {
+                            $('#error-' + prefix).text(val[0]);
+                        });
+                    }
+
                     Swal.fire({
                         icon: 'error',
-                        title: 'Terjadi Kesalahan',
-                        text: response.message
+                        title: 'Gagal',
+                        text: data.message || 'Terjadi kesalahan.'
                     });
                 }
             }
-        );
+        ).fail(function (xhr) {
+            let errorMessage = 'Terjadi kesalahan pada server.';
+
+            if (xhr.status === 403) {
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                } else if (xhr.responseText) {
+                    try {
+                        let parsed = JSON.parse(xhr.responseText);
+                        errorMessage = parsed.message || errorMessage;
+                    } catch (e) {
+                        errorMessage = 'Akses ditolak.';
+                    }
+                }
+            }
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Akses Ditolak',
+                text: errorMessage
+            });
+        });
     </script>
 
     <!-- Password icon toggle -->
