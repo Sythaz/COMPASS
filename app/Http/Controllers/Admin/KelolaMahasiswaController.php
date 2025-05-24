@@ -190,7 +190,7 @@ class KelolaMahasiswaController extends Controller
                 'periode_id' => $request->periode_id,
                 'level_minbak_id' => $request->level_minbak_id,
                 'nim_mahasiswa' => $request->nim_mahasiswa,
-                'nama_mahasiswa' => strtoupper($request->nama_mahasiswa),
+                'nama_mahasiswa' => ucwords(strtolower($request->nama_mahasiswa)),
                 'img_mahasiswa' => 'profil-default.jpg',
                 'angkatan' => $request->angkatan ?? 2025,
                 'kelamin' => $request->kelamin,
@@ -225,6 +225,7 @@ class KelolaMahasiswaController extends Controller
             'password' => 'nullable|min:6',
             'angkatan' => 'nullable|integer',
             'phrase' => 'nullable|string',
+            'kelamin' => 'required|in:L,P',
         ]);
 
         DB::transaction(function () use ($request, $mahasiswa, $user) {
@@ -247,7 +248,7 @@ class KelolaMahasiswaController extends Controller
             $mahasiswa->alamat = $request->has('alamat') ? $request->alamat : $mahasiswa->alamat;
             $mahasiswa->email = $request->has('email') ? $request->email : $mahasiswa->email;
             $mahasiswa->no_hp = $request->has('no_hp') ? $request->no_hp : $mahasiswa->no_hp;
-
+            $mahasiswa->kelamin = $request->has('kelamin') ? $request->kelamin : $mahasiswa->kelamin;
             $mahasiswa->angkatan = $request->angkatan ?? $mahasiswa->angkatan ?? 2025;
 
             $mahasiswa->save();
@@ -259,7 +260,7 @@ class KelolaMahasiswaController extends Controller
         ]);
     }
 
-    public function delete($id)
+    public function nonAktif($id)
     {
         $mahasiswa = MahasiswaModel::findOrFail($id);
 
@@ -528,6 +529,20 @@ class KelolaMahasiswaController extends Controller
                         $skipped++;
                         continue;
                     }
+                    // **Cek duplikat email dan no_hp di t_dosen**
+                    $existingEmail = MahasiswaModel::where('email', $email)->first();
+                    if ($email && $existingEmail) {
+                        Log::info("Baris $baris dilewati: Email '$email' sudah digunakan");
+                        $skipped++;
+                        continue;
+                    }
+
+                    $existingNoHp = MahasiswaModel::where('no_hp', $no_hp)->first();
+                    if ($no_hp && $existingNoHp) {
+                        Log::info("Baris $baris dilewati: No HP '$no_hp' sudah digunakan");
+                        $skipped++;
+                        continue;
+                    }
 
                     try {
                         // Buat user baru
@@ -545,7 +560,7 @@ class KelolaMahasiswaController extends Controller
                             'periode_id' => 1, // Nilai default
                             'level_minbak_id' => 1, // Nilai default
                             'nim_mahasiswa' => $nim,
-                            'nama_mahasiswa' => strtoupper($nama),  // Ubah ke kapital semua
+                            'nama_mahasiswa' => ucwords(strtolower($nama)),
                             'kelamin' => $kelamin,
                             'email' => $email,
                             'no_hp' => $no_hp,

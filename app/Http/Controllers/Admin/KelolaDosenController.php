@@ -16,6 +16,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class KelolaDosenController extends Controller
 {
@@ -33,6 +34,7 @@ class KelolaDosenController extends Controller
     {
         $data = DosenModel::with(['users', 'kategori'])
             ->select('dosen_id', 'user_id', 'nip_dosen', 'nama_dosen', 'kategori_id', 'status')
+            ->where('status', 'Aktif')
             ->get();
 
         return DataTables::of($data)
@@ -53,6 +55,50 @@ class KelolaDosenController extends Controller
                 return $btn;
             })
             ->rawColumns(['aksi', 'status'])
+            ->make(true);
+    }
+
+    public function history()
+    {
+        $breadcrumb = (object) [
+            'list' => ['Kelola Pengguna', 'Kelola Dosen', 'History']
+        ];
+        return view('admin.kelola-pengguna.kelola-dosen.history', compact('breadcrumb'));
+    }
+
+    public function list_history(Request $request)
+    {
+        $data = DosenModel::with(['users', 'kategori'])
+            ->where('status', 'Nonaktif') // hanya ambil dosen yang statusnya Nonaktif
+            ->select(
+                'dosen_id',
+                'user_id',
+                'kategori_id',
+                'nip_dosen',
+                'nama_dosen',
+                'status'
+            )
+            ->get();
+
+        return DataTables::of($data)
+            ->addIndexColumn()
+            ->addColumn('nip', fn($row) => $row->nip_dosen)
+            ->addColumn('nama', fn($row) => $row->nama_dosen)
+            ->addColumn('username', fn($row) => $row->users ? $row->users->username : '-')
+            ->addColumn('status', function ($row) {
+                if ($row->status === 'Aktif') {
+                    return '<span class="label label-success">Aktif</span>';
+                } elseif ($row->status === 'Nonaktif') {
+                    return '<span class="label label-danger">Nonaktif</span>';
+                }
+                return '<span class="badge bg-secondary">-</span>';
+            })
+            ->addColumn('aksi', function ($row) {
+                $btn = '<button onclick="aktifkanDosen(' . $row->dosen_id . ')" class="btn btn-success btn-sm">Aktifkan</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('admin/kelola-pengguna/dosen/history/delete/' . $row->dosen_id) . '\')" class="btn btn-danger btn-sm">Hapus</button>';
+                return $btn;
+            })
+            ->rawColumns(['status', 'aksi'])
             ->make(true);
     }
 
@@ -96,6 +142,7 @@ class KelolaDosenController extends Controller
             'email' => 'nullable|email|unique:t_dosen,email',
             'no_hp' => 'nullable|unique:t_dosen,no_hp',
             'alamat' => 'nullable|string|max:255',
+            'kelamin' => 'required|in:L,P',
         ]);
 
         DB::transaction(function () use ($request) {
@@ -109,12 +156,13 @@ class KelolaDosenController extends Controller
             DosenModel::create([
                 'user_id' => $user->user_id,
                 'nip_dosen' => $request->nip_dosen,
-                'nama_dosen' => $request->nama_dosen,
+                'nama_dosen' => ucwords(strtolower($request->nama_dosen)),
                 'kategori_id' => $request->kategori_id,
                 'img_dosen' => 'profil-default.jpg',
-                'email' => $request->email ?: 'Belum diisi!',
-                'no_hp' => $request->no_hp ?: 'Belum diisi!',
-                'alamat' => $request->alamat ?: 'Belum diisi!',
+                'email' => $request->email ?: null,
+                'no_hp' => $request->no_hp ?: null,
+                'alamat' => $request->alamat ?: null,
+                'kelamin' => $request->kelamin,
             ]);
         });
 
@@ -139,8 +187,9 @@ class KelolaDosenController extends Controller
             'password' => 'nullable|min:6',
             'phrase' => 'nullable',
             'alamat' => 'nullable|string|max:255',
-            'email' => 'nullable|email|unique:t_dosen,email,' . $dosen->dosen_id . ',dosen_id',
-            'no_hp' => 'nullable|unique:t_dosen,no_hp,' . $dosen->dosen_id . ',dosen_id',
+            'email' => ['nullable', 'email', Rule::unique('t_dosen')->ignore($dosen->dosen_id, 'dosen_id')],
+            'no_hp' => ['nullable', Rule::unique('t_dosen')->ignore($dosen->dosen_id, 'dosen_id')],
+            'kelamin' => 'required|in:L,P',
         ]);
 
         DB::transaction(function () use ($request, $dosen, $user) {
@@ -153,13 +202,14 @@ class KelolaDosenController extends Controller
             $user->phrase = $request->input('phrase', $user->phrase); // update phrase
             $user->save();
 
-            // Update dosen, termasuk kategori_id
-            $dosen->nip_dosen = $request->nip_dosen;
-            $dosen->nama_dosen = $request->nama_dosen;
-            $dosen->kategori_id = $request->kategori_id;
-            $dosen->alamat = $request->alamat;
-            $dosen->email = $request->email;
-            $dosen->no_hp = $request->no_hp;
+            // Update dosen dengan cek apakah ada di request, kalau tidak pakai data lama
+            $dosen->nip_dosen = $request->has('nip_dosen') ? $request->nip_dosen : $dosen->nip_dosen;
+            $dosen->nama_dosen = $request->has('nama_dosen') ? $request->nama_dosen : $dosen->nama_dosen;
+            $dosen->kategori_id = $request->has('kategori_id') ? $request->kategori_id : $dosen->kategori_id;
+            $dosen->alamat = $request->has('alamat') ? $request->alamat : $dosen->alamat;
+            $dosen->email = $request->has('email') ? $request->email : $dosen->email;
+            $dosen->no_hp = $request->has('no_hp') ? $request->no_hp : $dosen->no_hp;
+            $dosen->kelamin = $request->has('kelamin') ? $request->kelamin : $dosen->kelamin;
 
             $dosen->save();
         });
@@ -170,7 +220,43 @@ class KelolaDosenController extends Controller
         ]);
     }
 
-    // Delete Dosen
+    public function nonAktif($id)
+    {
+        $mahasiswa = DosenModel::findOrFail($id);
+
+        DB::transaction(function () use ($mahasiswa) {
+            $mahasiswa->status = 'Nonaktif';
+            $mahasiswa->save();
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Dosen Berhasil Dinonaktifkan'
+        ]);
+    }
+
+    public function aktivasi($id)
+    {
+        $mahasiswa = DosenModel::findOrFail($id);
+
+        DB::transaction(function () use ($mahasiswa) {
+            $mahasiswa->status = 'Aktif';
+            $mahasiswa->save();
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Mahasiswa Berhasil Diaktifkan'
+        ]);
+    }
+
+    public function delete_history($id)
+    {
+        $dosen = DosenModel::findOrFail($id);
+        return view('admin.kelola-pengguna.kelola-dosen.destroy', compact('dosen'));
+    }
+
+    // Hapus Dosen Permanen
     public function destroy($id)
     {
         $dosen = DosenModel::findOrFail($id);
@@ -185,7 +271,7 @@ class KelolaDosenController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Data Dosen Berhasil Dihapus'
+            'message' => 'Data Dosen Berhasil Dihapus PERMANEN!'
         ]);
     }
 
@@ -388,6 +474,21 @@ class KelolaDosenController extends Controller
                         continue;
                     }
 
+                    // **Cek duplikat email dan no_hp di t_dosen**
+                    $existingEmail = DosenModel::where('email', $email)->first();
+                    if ($email && $existingEmail) {
+                        Log::info("Baris $baris dilewati: Email '$email' sudah digunakan");
+                        $skipped++;
+                        continue;
+                    }
+
+                    $existingNoHp = DosenModel::where('no_hp', $no_hp)->first();
+                    if ($no_hp && $existingNoHp) {
+                        Log::info("Baris $baris dilewati: No HP '$no_hp' sudah digunakan");
+                        $skipped++;
+                        continue;
+                    }
+
                     try {
                         $user = UsersModel::create([
                             'username' => $nip,
@@ -399,7 +500,7 @@ class KelolaDosenController extends Controller
                         DosenModel::create([
                             'user_id' => $user->user_id,
                             'nip_dosen' => $nip,
-                            'nama_dosen' => strtoupper($nama),
+                            'nama_dosen' => ucwords(strtolower($nama)),
                             'kategori_id' => $kategoriModel->kategori_id,
                             'email' => $email,
                             'no_hp' => $no_hp,

@@ -84,11 +84,16 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::get('dosen/{id}/delete_ajax', [KelolaDosenController::class, 'deleteAjax']);                  // Delete modal actions
             Route::post('dosen/store', [KelolaDosenController::class, 'store'])->name('dosen.store');      // Store
             Route::put('dosen/{id}', [KelolaDosenController::class, 'update'])->name('dosen.update');      // update
-            Route::delete('dosen/{id}', [KelolaDosenController::class, 'destroy'])->name('dosen.destroy'); //delete
+            Route::delete('dosen/{id}', [KelolaDosenController::class, 'nonAktif'])->name('dosen.nonAktif'); //nonAktif
             Route::get('dosen/export_excel', [KelolaDosenController::class, 'export_excel'])->name('dosen.export_excel');  // export excel
             Route::get('dosen/export_pdf', [KelolaDosenController::class, 'export_pdf'])->name('dosen.export_pdf');  // export pdf
             Route::get('dosen/import', [KelolaDosenController::class, 'importForm'])->name('dosen.import.form');  // form import
             Route::post('dosen/import', [KelolaDosenController::class, 'import'])->name('dosen.import');  // import
+            Route::get('dosen/history', [KelolaDosenController::class, 'history'])->name('dosen.history');  // history
+            Route::get('dosen/list_history', [KelolaDosenController::class, 'list_history'])->name('dosen.list_history');
+            Route::get('dosen/history/aktivasi/{id}', [KelolaDosenController::class, 'aktivasi'])->name('dosen.history.aktivasi');
+            Route::get('dosen/history/delete/{id}', [KelolaDosenController::class, 'delete_history'])->name('dosen.history.delete');
+            Route::delete('dosen/history/destroy/{id}', [KelolaDosenController::class, 'destroy'])->name('dosen.history.destroy');
 
             // Rute Kelola Mahasiswa
             Route::get('mahasiswa', [KelolaMahasiswaController::class, 'index'])->name('mahasiswa.index');             // Halaman utama list Mahasiswa
@@ -99,16 +104,16 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::get('mahasiswa/{id}/delete_ajax', [KelolaMahasiswaController::class, 'deleteAjax']);                      // Delete modal actions
             Route::post('mahasiswa/store', [KelolaMahasiswaController::class, 'store'])->name('mahasiswa.store');      // Store
             Route::put('mahasiswa/{id}', [KelolaMahasiswaController::class, 'update'])->name('mahasiswa.update');      // Update
-            Route::delete('mahasiswa/{id}', [KelolaMahasiswaController::class, 'delete'])->name('mahasiswa.delete'); // Delete
+            Route::delete('mahasiswa/{id}', [KelolaMahasiswaController::class, 'nonAktif'])->name('mahasiswa.nonAktif'); // Nonaktifkan Akun
             Route::get('mahasiswa/export_excel', [KelolaMahasiswaController::class, 'export_excel'])->name('mahasiswa.export_excel');  // export excel
-            Route::get('mahasiswa/export_pdf', [KelolaMahasiswaController::class, 'export_pdf'])->name('mahasiswa.export_pdf');  // export pdf
-            Route::get('mahasiswa/import', [KelolaMahasiswaController::class, 'importForm'])->name('mahasiswa.import.form');  // form import
-            Route::post('mahasiswa/import', [KelolaMahasiswaController::class, 'import'])->name('mahasiswa.import');  // import
-            Route::get('mahasiswa/history', [KelolaMahasiswaController::class, 'history'])->name('mahasiswa.history');  // history
-            Route::get('mahasiswa/list_history', [KelolaMahasiswaController::class, 'list_history'])->name('mahasiswa.list_history');
-            Route::get('mahasiswa/history/aktivasi/{id}', [KelolaMahasiswaController::class, 'aktivasi'])->name('mahasiswa.history.aktivasi');
-            Route::get('mahasiswa/history/delete/{id}', [KelolaMahasiswaController::class, 'delete_history'])->name('mahasiswa.history.delete');
-            Route::delete('mahasiswa/history/destroy/{id}', [KelolaMahasiswaController::class, 'destroy'])->name('mahasiswa.history.destroy');
+            Route::get('mahasiswa/export_pdf', [KelolaMahasiswaController::class, 'export_pdf'])->name('mahasiswa.export_pdf');        // export pdf
+            Route::get('mahasiswa/import', [KelolaMahasiswaController::class, 'importForm'])->name('mahasiswa.import.form');           // form import
+            Route::post('mahasiswa/import', [KelolaMahasiswaController::class, 'import'])->name('mahasiswa.import');                   // import
+            Route::get('mahasiswa/history', [KelolaMahasiswaController::class, 'history'])->name('mahasiswa.history');                            // View history
+            Route::get('mahasiswa/list_history', [KelolaMahasiswaController::class, 'list_history'])->name('mahasiswa.list_history');             // List history
+            Route::get('mahasiswa/history/aktivasi/{id}', [KelolaMahasiswaController::class, 'aktivasi'])->name('mahasiswa.history.aktivasi');    // Aktivasi akun kembali
+            Route::get('mahasiswa/history/delete/{id}', [KelolaMahasiswaController::class, 'delete_history'])->name('mahasiswa.history.delete');  // Konfirmasi hapus Permanen
+            Route::delete('mahasiswa/history/destroy/{id}', [KelolaMahasiswaController::class, 'destroy'])->name('mahasiswa.history.destroy');    // Hapus Permanen
         });
 
         // MASTER DATA

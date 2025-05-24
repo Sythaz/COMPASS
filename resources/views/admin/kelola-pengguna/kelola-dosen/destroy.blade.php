@@ -1,4 +1,4 @@
-<form id="form-delete-dosen" method="POST" action="{{ url('admin/kelola-pengguna/dosen/' . $dosen->dosen_id) }}">
+<form id="form-delete-dosen" method="POST" action="{{ route('dosen.history.destroy', $dosen->dosen_id) }}">
     @csrf
     @method('DELETE')
 
@@ -6,9 +6,6 @@
         <h5 class="modal-title text-white">
             <i class="fas fa-trash-alt mr-2"></i>Hapus Dosen
         </h5>
-        <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
     </div>
 
     <div class="modal-body">
@@ -16,8 +13,8 @@
             <i class="fas fa-exclamation-triangle fa-lg mr-2"></i>
             <strong class="alert-heading h4">Apakah anda yakin untuk menghapus data ini?</strong>
             <hr class="my-2">
-            Data User akan tetap tersimpan di database, hanya statusnya yang akan diubah dari "Aktif" menjadi
-            "Nonaktif".
+            Data User akan dihapus PERMANEN dari database, Data yang sudah dihapus tidak dapat dikembalikan.
+            Pertimbangkan pilihan Anda!
         </div>
 
         <table class="table table-bordered mt-3 mb-0">

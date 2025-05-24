@@ -557,7 +557,7 @@ class MahasiswaSeeder extends Seeder
                 'periode_id' => 1,
                 'level_minbak_id' => rand(1, 4),
                 'nim_mahasiswa' => $user->username, // Nim Sesuai Username
-                'nama_mahasiswa' => $names[$index] ?? 'Nama Tidak Diketahui',
+                'nama_mahasiswa' => isset($names[$index]) ? ucwords(strtolower($names[$index])) : 'Nama Tidak Diketahui',
                 'angkatan' => '2023',
                 'img_mahasiswa' => 'profil-default.png',
                 'email' => null,

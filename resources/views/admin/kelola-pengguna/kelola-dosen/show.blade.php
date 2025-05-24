@@ -22,12 +22,32 @@
             <td class="text-start">{{ $dosen->users?->username ?? '-' }}</td>
         </tr>
         <tr>
+            <th>Bidang</th>
+            <td class="text-start">{{ $dosen->kategori->nama_kategori ?? '-' }}</td>
+        </tr>
+        <tr>
+            <th>Jenis Kelamin</th>
+            <td class="text-start">{{ $dosen->kelamin ?? '-' }}</td>
+        </tr>
+        <tr>
+            <th>Email</th>
+            <td class="text-start">{{ $dosen->email ?? '-' }}</td>
+        </tr>
+        <tr>
+            <th>No Handphone</th>
+            <td class="text-start">{{ $dosen->no_hp ?? '-' }}</td>
+        </tr>
+        <tr>
+            <th>Alamat</th>
+            <td class="text-start">{{ $dosen->alamat ?? '-' }}</td>
+        </tr>
+        <tr>
             <th>Role</th>
             <td class="text-start">{{ $dosen->users->role }}</td>
         </tr>
         <tr>
-            <th>Bidang</th>
-            <td class="text-start">{{ $dosen->kategori->nama_kategori ?? '-' }}</td>
+            <th>Status</th>
+            <td class="text-start">{{ $dosen->status ?? '-' }}</td>
         </tr>
     </table>
 </div>

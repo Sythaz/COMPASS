@@ -10,23 +10,14 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row mb-2">
-
-                        {{-- pilihan Menu --}}
+                        {{-- Kembali ke index dosen --}}
                         <div class="col-6">
-                            {{-- Tombol Create Data Baru --}}
-                            <a onclick="modalAction('{{ url('/admin/kelola-pengguna/dosen/create') }}')"
-                                class="btn btn-primary text-white">
-                                <i class="fa-solid fa-plus"></i>
-                                <strong>Tambah Data</strong>
-                            </a>
-                            {{-- Import Data Excel --}}
-                            <a onclick="modalAction('{{ route('dosen.import.form') }}')"
-                                class="ml-2 btn btn-primary text-white">
-                                <i class="fa-solid fa-file-import"></i>
-                                <strong> Import Data</strong>
+                            <a href="{{ route('dosen.index') }}" class="ml-2 btn btn-primary text-white">
+                                {{-- <i class="fa-solid fa-table"></i> --}}
+                                <strong> Kembali</strong>
                             </a>
                         </div>
-                        {{-- Menu Export Data Excel/PDF --}}
+                        {{-- Menu Export Data --}}
                         <div class="col-6 text-right">
                             <div class="btn-group" role="group">
                                 <button type="button" class="btn btn-outline-primary dropdown-toggle"
@@ -35,16 +26,14 @@
                                     <strong>Menu Ekspor</strong>
                                 </button>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="{{ route('dosen.export_excel') }}">Ekspor Data ke
+                                    <a class="dropdown-item"
+                                        href="{{ route('dosen.export_excel', ['status' => 'Nonaktif']) }}">Ekspor Data
+                                        ke
                                         XLSX</a>
-                                    <a class="dropdown-item" href="{{ route('dosen.export_pdf') }}">Ekspor Data ke
+                                    <a class="dropdown-item"
+                                        href="{{ route('dosen.export_pdf', ['status' => 'Nonaktif']) }}">Ekspor Data ke
                                         PDF</a>
                                 </div>
-                                {{-- Menu History --}}
-                                <a href="{{ route('dosen.history') }}" class="ml-2 btn btn-primary text-white">
-                                    <i class="fa-solid fa-clock-rotate-left"></i>
-                                    <strong> History</strong>
-                                </a>
                             </div>
                         </div>
                     </div>
@@ -57,7 +46,7 @@
                                     <th>NIP</th>
                                     <th>Nama</th>
                                     <th>Username</th>
-                                    <th class="text-center">Status</th>
+                                    <th>Status</th>
                                     <th class="text-center" style="width: 1px; white-space: nowrap;">Aksi</th>
                                 </tr>
                             </thead>
@@ -112,16 +101,16 @@
                 serverSide: true,
                 autoWidth: true,
                 ajax: {
-                    url: "{{ url('admin/kelola-pengguna/dosen/list') }}",
+                    url: "{{ url('admin/kelola-pengguna/dosen/list_history') }}",
                     type: "GET"
                 },
                 columns: [
                     { data: 'DT_RowIndex', name: 'DT_RowIndex', searchable: false },
-                    { data: 'nip_dosen', name: 'nip_dosen' },
-                    { data: 'nama_dosen', name: 'nama_dosen' },
+                    { data: 'nip', name: 'nip_dosen' },
+                    { data: 'nama', name: 'nama_dosen' },
                     { data: 'username', name: 'users.username' },
                     { data: 'status', name: 'status', className: 'text-center' },
-                    { data: 'aksi', name: 'aksi', orderable: false, searchable: false, className: 'text-center', width: '150px' },
+                    { data: 'aksi', name: 'aksi', orderable: false, searchable: false, className: 'text-center', width: '160px' },
                 ],
                 drawCallback: function () {
                     $(".dataTables_wrapper").css({ margin: "0", padding: "0" });
@@ -160,5 +149,26 @@
         $(idDataTables).on('change', function () {
             $(idDataTables).DataTable().ajax.reload();
         });
+
+        function aktifkanDosen(id) {
+            let url = "{{ url('admin/kelola-pengguna/dosen/history/aktivasi') }}/" + id;
+
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire('Berhasil', response.message, 'success').then(() => {
+                            $(idDataTables).DataTable().ajax.reload(null, false);
+                        });
+                    } else {
+                        Swal.fire('Gagal', 'Gagal mengaktifkan data.', 'error');
+                    }
+                },
+                error: function () {
+                    Swal.fire('Error', 'Terjadi kesalahan saat mengaktifkan data.', 'error');
+                }
+            });
+        }
     </script>
 @endpush
