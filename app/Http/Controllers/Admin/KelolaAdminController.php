@@ -9,6 +9,12 @@ use App\Models\AdminModel;
 use App\Models\UsersModel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class KelolaAdminController extends Controller
 {
@@ -23,22 +29,34 @@ class KelolaAdminController extends Controller
 
     public function list(Request $request)
     {
-        $data = AdminModel::with('users')->select('admin_id', 'user_id', 'nip_admin', 'nama_admin')->get();
-        // return response()->json($data); // tes coba 
+        $data = AdminModel::with('users')
+            ->select('admin_id', 'user_id', 'nip_admin', 'nama_admin', 'email', 'status')
+            ->where('status', 'Aktif') // Hanya menampilkan admin Aktif
+            ->get();
 
         return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('username', fn($row) => $row->users ? ' ' . $row->users->username : '-')
-            ->addColumn('role', fn($row) => $row->users->role ?? '-')
+            ->editColumn('nip_admin', function ($row) {
+                return (string) $row->nip_admin;  // pastikan nip dikirim sebagai string
+            })
+            ->addColumn('status', function ($row) {
+                if ($row->status === 'Aktif') {
+                    return '<span class="label label-success">Aktif</span>';
+                }
+                return '<span class="badge bg-secondary">-</span>';
+            })
+
             ->addColumn('aksi', function ($row) {
                 $btn = '<button onclick="modalAction(\'' . url('admin/kelola-pengguna/admin/' . $row->admin_id . '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('admin/kelola-pengguna/admin/' . $row->admin_id . '/edit_ajax') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('admin/kelola-pengguna/admin/' . $row->admin_id . '/delete_ajax') . '\')" class="btn btn-danger btn-sm">Hapus</button>';
                 return $btn;
             })
-            ->rawColumns(['aksi'])
+            ->rawColumns(['aksi', 'status'])
             ->make(true);
     }
+
     // Show data detail for modal
     public function showAjax($id)
     {
@@ -74,6 +92,7 @@ class KelolaAdminController extends Controller
             'email' => 'nullable|email|unique:t_admin,email',
             'no_hp' => 'nullable|unique:t_admin,no_hp',
             'alamat' => 'nullable|string|max:255',
+            'kelamin' => 'required|in:L,P',
         ]);
 
         DB::transaction(function () use ($request) {
@@ -89,9 +108,10 @@ class KelolaAdminController extends Controller
                 'nip_admin' => $request->nip_admin,
                 'nama_admin' => $request->nama_admin,
                 'img_admin' => 'profil-default.jpg',
-                'email' => $request->email ?: 'Belum diisi!',
-                'no_hp' => $request->no_hp ?: 'Belum diisi!',
-                'alamat' => $request->alamat ?: 'Belum diisi!',
+                'email' => $request->email ?: null,
+                'no_hp' => $request->no_hp ?: null,
+                'alamat' => $request->alamat ?: null,
+                'kelamin' => $request->kelamin
             ]);
         });
 
@@ -110,33 +130,35 @@ class KelolaAdminController extends Controller
         $request->validate([
             'nip_admin' => 'required|unique:t_admin,nip_admin,' . $admin->admin_id . ',admin_id',
             'nama_admin' => 'required',
-            'alamat' => 'nullable|string|max:255',
-            'email' => 'nullable|email|unique:t_admin,email,' . $admin->admin_id . ',admin_id',
-            'no_hp' => 'nullable|unique:t_admin,no_hp,' . $admin->admin_id . ',admin_id',
             'username' => 'required|unique:t_users,username,' . $user->user_id . ',user_id',
             'role' => 'required',
             'password' => 'nullable|min:6',
+
+            // kolom opsional, jika diisi harus valid
+            'email' => 'nullable|email|unique:t_admin,email,' . $admin->admin_id . ',admin_id',
+            'no_hp' => 'nullable|unique:t_admin,no_hp,' . $admin->admin_id . ',admin_id',
+            'alamat' => 'nullable|string|max:255',
+            'kelamin' => 'nullable|in:L,P',
             'phrase' => 'nullable|string',
         ]);
 
         DB::transaction(function () use ($request, $admin, $user) {
+            // Update tabel user
             $user->username = $request->username;
             if ($request->filled('password')) {
                 $user->password = Hash::make($request->password);
             }
             $user->role = $request->role;
-
-            // Update phrase, jika tidak ada input phrase gunakan yang lama
             $user->phrase = $request->input('phrase', $user->phrase);
-
             $user->save();
 
+            // Update tabel admin
             $admin->nip_admin = $request->nip_admin;
             $admin->nama_admin = $request->nama_admin;
-            $admin->alamat = $request->alamat;
-            $admin->email = $request->email;
-            $admin->no_hp = $request->no_hp;
-
+            $admin->alamat = $request->input('alamat', $admin->alamat);
+            $admin->email = $request->input('email', $admin->email);
+            $admin->no_hp = $request->input('no_hp', $admin->no_hp);
+            $admin->kelamin = $request->input('kelamin', $admin->kelamin);
             $admin->save();
         });
 
@@ -159,4 +181,276 @@ class KelolaAdminController extends Controller
             'message' => 'Data Admin Berhasil Dihapus'
         ]);
     }
+
+    // Export data admin ke Excel
+    public function export_excel(Request $request)
+    {
+        $status = $request->input('status');
+
+        $query = AdminModel::with('users')
+            ->select(
+                'admin_id',
+                'user_id',
+                'nip_admin',
+                'nama_admin',
+                'kelamin',
+                'status',
+                'alamat',
+                'email',
+                'no_hp'
+            );
+
+        if ($status) {
+            $query->where('status', $status);
+        } else {
+            $query->where('status', 'Aktif');
+        }
+
+        $admin = $query->get();
+
+        // inisialisasi spreadsheet
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // header kolom
+        $sheet->setCellValue('A1', 'No');
+        $sheet->setCellValue('B1', 'NIP');
+        $sheet->setCellValue('C1', 'Nama Admin');
+        $sheet->setCellValue('D1', 'Jenis Kelamin');
+        $sheet->setCellValue('E1', 'Email');
+        $sheet->setCellValue('F1', 'No HP');
+        $sheet->setCellValue('G1', 'Alamat');
+        $sheet->setCellValue('H1', 'Status');
+
+        // Atur Header Style
+        $sheet->getStyle('A1:H1')->getFont()->setBold(true);
+        $sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('D1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('H1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+        // isi data
+        $no = 1;
+        $baris = 2;
+        foreach ($admin as $row) {
+            $sheet->setCellValue('A' . $baris, $no);
+            $sheet->setCellValueExplicit('B' . $baris, $row->nip_admin, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('C' . $baris, $row->nama_admin);
+            $sheet->setCellValue('D' . $baris, $row->kelamin ?? '-');
+            $sheet->setCellValue('E' . $baris, $row->email ?? '-');
+            $sheet->setCellValue('F' . $baris, $row->no_hp ?? '-');
+            $sheet->setCellValue('G' . $baris, $row->alamat ?? '-');
+            $sheet->setCellValue('H' . $baris, $row->status ?? '-');
+
+            // Center kolom tertentu
+            $sheet->getStyle("A2:A$baris")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("D2:D$baris")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("H2:H$baris")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+            $baris++;
+            $no++;
+        }
+
+        // set kolom auto size
+        foreach (range('A', 'H') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+
+        // export
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $filename = 'Data Admin ' . date('Ymd_His') . '.xlsx';
+
+        return response()->streamDownload(function () use ($writer) {
+            $writer->save('php://output');
+        }, $filename);
+    }
+
+    // Export data admin ke PDF
+    public function export_pdf(Request $request)
+    {
+        $status = $request->input('status');
+
+        $query = AdminModel::select('nama_admin', 'nip_admin', 'kelamin', 'status')
+            ->orderBy('nama_admin');
+
+        // Filter berdasarkan status jika dipilih
+        if ($status) {
+            $query->where('status', $status);
+        } else {
+            $query->where('status', 'Aktif'); // Default hanya admin yang Aktif
+        }
+
+        $admin = $query->get();
+
+        $viewPath = resource_path('views/admin/kelola-pengguna/kelola-admin/export_pdf.blade.php');
+
+        $html = view()->file($viewPath, ['admin' => $admin])->render();
+
+        $pdf = Pdf::loadHTML($html);
+        $pdf->setPaper('a4', 'portrait');
+        $pdf->setOption('isRemoteEnabled', true);
+
+        return $pdf->stream('Data Admin ' . date('Y-m-d H:i:s') . '.pdf');
+    }
+
+    // View Import Form untuk Admin
+    public function importForm()
+    {
+        return view('admin.kelola-pengguna.kelola-admin.import');
+    }
+
+    // Import Data Admin Excel
+    public function import(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'file_admin' => ['required', 'mimes:xlsx', 'max:1024'],
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi Gagal',
+                    'msgField' => $validator->errors()
+                ]);
+            }
+
+            $file = $request->file('file_admin');
+            $reader = IOFactory::createReader('Xlsx');
+            $reader->setReadDataOnly(true);
+
+            try {
+                $spreadsheet = $reader->load($file->getRealPath());
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Gagal membaca file Excel: ' . $e->getMessage()
+                ]);
+            }
+
+            $sheet = $spreadsheet->getActiveSheet();
+            $data = $sheet->toArray(null, false, true, true);
+
+            $jumlahBerhasil = 0;
+            $skipped = 0;
+
+            if (count($data) > 1) {
+                foreach ($data as $baris => $value) {
+                    if ($baris == 1)
+                        continue; // Skip header
+
+                    // Cek apakah baris kosong (semua kolom kosong atau null)
+                    $allEmpty = true;
+                    foreach (['A', 'B', 'C', 'D', 'E', 'F'] as $col) {
+                        if (isset($value[$col]) && trim($value[$col]) !== '') {
+                            $allEmpty = false;
+                            break;
+                        }
+                    }
+                    if ($allEmpty) {
+                        Log::info("Baris $baris dilewati: Baris kosong");
+                        $skipped++;
+                        continue;
+                    }
+
+                    $nip = trim($value['A'] ?? '');
+                    $nama = trim($value['B'] ?? '');
+                    $email = trim($value['C'] ?? '');
+                    $no_hp = trim($value['D'] ?? '');
+                    $alamat = trim($value['E'] ?? '');
+                    $kelamin = trim($value['F'] ?? '');
+
+                    if (!in_array($kelamin, ['L', 'P'])) {
+                        $kelamin = 'Belum diisi';
+                    }
+
+                    if (empty($nip) || empty($nama)) {
+                        Log::warning("Baris $baris dilewati: NIP atau Nama kosong");
+                        $skipped++;
+                        continue;
+                    }
+
+                    // Cek user sudah ada atau belum (username = nip)
+                    $existingUser = UsersModel::where('username', $nip)->first();
+                    if ($existingUser) {
+                        Log::info("Baris $baris dilewati: User dengan NIP '$nip' sudah ada");
+                        $skipped++;
+                        continue;
+                    }
+
+                    // Cek email sudah ada di admin
+                    $existingEmail = AdminModel::where('email', $email)->first();
+                    if ($email && $existingEmail) {
+                        Log::info("Baris $baris dilewati: Email '$email' sudah digunakan");
+                        $skipped++;
+                        continue;
+                    }
+
+                    // Cek no_hp sudah ada di admin
+                    $existingNoHp = AdminModel::where('no_hp', $no_hp)->first();
+                    if ($no_hp && $existingNoHp) {
+                        Log::info("Baris $baris dilewati: No HP '$no_hp' sudah digunakan");
+                        $skipped++;
+                        continue;
+                    }
+
+                    try {
+                        $user = UsersModel::create([
+                            'username' => $nip,
+                            'password' => Hash::make($nip),
+                            'role' => 'Admin',
+                            'phrase' => $nip,
+                        ]);
+
+                        AdminModel::create([
+                            'user_id' => $user->user_id,
+                            'nip_admin' => $nip,
+                            'nama_admin' => ucwords(strtolower($nama)),
+                            'email' => $email,
+                            'no_hp' => $no_hp,
+                            'alamat' => $alamat,
+                            'kelamin' => $kelamin,
+                            'img_admin' => 'profil-default.jpg',
+                            'status' => 'Aktif',
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+
+                        Log::info("Baris $baris berhasil diimport: NIP $nip, Nama $nama");
+                        $jumlahBerhasil++;
+                    } catch (\Exception $e) {
+                        Log::error("Baris $baris gagal disimpan: " . $e->getMessage());
+                        $skipped++;
+                        continue;
+                    }
+                }
+
+                if ($jumlahBerhasil > 0) {
+                    $message = "$jumlahBerhasil data admin berhasil diimport";
+                    if ($skipped > 0) {
+                        $message .= ", $skipped data dilewati karena duplikat, data kosong, atau tidak valid.";
+                    }
+
+                    return response()->json([
+                        'status' => true,
+                        'message' => $message
+                    ]);
+                } else {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Tidak ada data baru yang berhasil diimport'
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'status' => false,
+                'message' => 'File Excel kosong atau format tidak sesuai'
+            ]);
+        }
+
+        return redirect('/');
+    }
+
+
 }

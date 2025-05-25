@@ -41,6 +41,9 @@ class KelolaDosenController extends Controller
             ->addIndexColumn()
             ->addColumn('username', fn($row) => $row->users ? ' ' . $row->users->username : '-')
             ->addColumn('kategori', fn($row) => $row->kategori->nama_kategori ?? '-')
+            ->editColumn('nip_dosen', function ($row) {
+                return (string) $row->nip_dosen;  // pastikan nip dikirim sebagai string
+            })
             ->addColumn('status', function ($row) {
                 if ($row->status === 'Aktif') {
                     return '<span class="label label-success">Aktif</span>';
@@ -84,7 +87,13 @@ class KelolaDosenController extends Controller
             ->addIndexColumn()
             ->addColumn('nip', fn($row) => $row->nip_dosen)
             ->addColumn('nama', fn($row) => $row->nama_dosen)
-            ->addColumn('username', fn($row) => $row->users ? $row->users->username : '-')
+            ->editColumn('username', function ($row) {
+                return (string) $row->users->username;  // pastikan nip dikirim sebagai string
+            })
+
+            ->editColumn('nip_dosen', function ($row) {
+                return (string) $row->nip_dosen;  // pastikan nip dikirim sebagai string
+            })
             ->addColumn('status', function ($row) {
                 if ($row->status === 'Aktif') {
                     return '<span class="label label-success">Aktif</span>';

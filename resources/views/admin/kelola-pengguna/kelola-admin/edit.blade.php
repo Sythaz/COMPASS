@@ -7,19 +7,47 @@
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
+
     <div class="modal-body">
+        {{-- NIP Admin --}}
         <div class="form-group">
             <label for="nip_admin" class="col-form-label">NIP <span class="text-danger">*</span></label>
             <div class="custom-validation">
                 <input type="text" class="form-control" name="nip_admin" value="{{ $admin->nip_admin }}" required>
             </div>
         </div>
+        {{-- Nama Admin --}}
         <div class="form-group">
             <label for="nama_admin" class="col-form-label">Nama <span class="text-danger">*</span></label>
             <div class="custom-validation">
                 <input type="text" class="form-control" name="nama_admin" value="{{ $admin->nama_admin }}" required>
             </div>
         </div>
+        {{-- Email admin --}}
+        <div class="form-group mb-3">
+            <label for="email" class="col-form-label">Email
+                <small class="text-muted">(boleh dikosongkan)</small>
+            </label>
+            <input type="email" class="form-control" name="email" id="email" value="{{ old('email', $admin->email) }}"
+                placeholder="contoh: email@example.com">
+        </div>
+        {{-- No Handphone admin --}}
+        <div class="form-group mb-3">
+            <label for="no_hp" class="col-form-label">No Handphone
+                <small class="text-muted">(boleh dikosongkan)</small>
+            </label>
+            <input type="text" class="form-control" name="no_hp" id="no_hp" value="{{ old('no_hp', $admin->no_hp) }}"
+                placeholder="08xxxxxxxxxx">
+        </div>
+        {{-- Alamat admin --}}
+        <div class="form-group mb-3">
+            <label for="alamat" class="col-form-label">Alamat
+                <small class="text-muted">(boleh dikosongkan)</small>
+            </label>
+            <input type="text" class="form-control" name="alamat" id="alamat"
+                value="{{ old('alamat', $admin->alamat) }}" placeholder="Alamat tempat tinggal">
+        </div>
+        {{-- Username Admin --}}
         <div class="form-group">
             <label for="username" class="col-form-label">Username <span class="text-danger">*</span></label>
             <div class="custom-validation">
@@ -27,6 +55,7 @@
                     required>
             </div>
         </div>
+        {{-- Password Admin --}}
         <div class="form-group">
             <label for="password" class="col-form-label">Password <small> (kosongkan jika tidak ingin
                     diubah)</small></label>
@@ -34,11 +63,13 @@
                 <input type="password" class="form-control" name="password" placeholder="Password baru">
             </div>
         </div>
+        {{-- Pharase (Lupa Password) --}}
         <div class="mb-3">
             <label for="password" class="form-label">Phrase <small> (Biarkan jika tidak ingin diubah)</small></label>
             <input type="text" class="form-control" name="phrase" id="phrase"
                 value="{{ old('phrase', $admin->users->phrase ?? $admin->users->username) }}">
         </div>
+        {{-- Role auto input --}}
         <input type="hidden" name="role" value="admin">
     </div>
     <div class="modal-footer">

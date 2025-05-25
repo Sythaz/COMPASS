@@ -106,7 +106,14 @@
                 },
                 columns: [
                     { data: 'DT_RowIndex', name: 'DT_RowIndex', searchable: false },
-                    { data: 'nip', name: 'nip_dosen' },
+                    {
+                        data: 'nip_dosen',
+                        name: 'nip_dosen',
+                        render: function (data, type, row, meta) {
+                            // Paksa tampilkan sebagai string, agar tidak dibulatkan
+                            return data ? data.toString() : '';
+                        }
+                    },
                     { data: 'nama', name: 'nama_dosen' },
                     { data: 'username', name: 'users.username' },
                     { data: 'status', name: 'status', className: 'text-center' },

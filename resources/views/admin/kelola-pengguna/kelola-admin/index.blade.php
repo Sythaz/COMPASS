@@ -10,17 +10,22 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row mb-2">
+                        {{-- Pilihan Menu --}}
                         <div class="col-6">
+                            {{-- Tombol Create Data Baru --}}
                             <a onclick="modalAction('{{ url('/admin/kelola-pengguna/admin/create') }}')"
                                 class="btn btn-primary text-white">
                                 <i class="fa-solid fa-plus"></i>
                                 <strong>Tambah Data</strong>
                             </a>
-                            <a href="javascript:void(0)" class="ml-2 btn btn-primary">
+                            {{-- Import Data Excel --}}
+                            <a onclick="modalAction('{{ route('admin.import.form') }}')"
+                                class="ml-2 btn btn-primary text-white">
                                 <i class="fa-solid fa-file-import"></i>
-                                <strong> Impor Data</strong>
+                                <strong> Import Data</strong>
                             </a>
                         </div>
+                        {{-- Menu Export Excel/PDF --}}
                         <div class="col-6 text-right">
                             <div class="btn-group" role="group">
                                 <button type="button" class="btn btn-outline-primary dropdown-toggle"
@@ -29,11 +34,9 @@
                                     <strong>Menu Ekspor</strong>
                                 </button>
                                 <div class="dropdown-menu">
-                                    {{-- {{ route('admin.export_excel') }} --}}
-                                    <a class="dropdown-item" href="#">Ekspor Data ke
+                                    <a class="dropdown-item" href="{{ route('admin.export_excel') }}">Ekspor Data ke
                                         XLSX</a>
-                                    {{-- {{ route('admin.export_pdf') }} --}}
-                                    <a class="dropdown-item" href="">Ekspor Data ke
+                                    <a class="dropdown-item" href="{{ route('admin.export_pdf') }}">Ekspor Data ke
                                         PDF</a>
                                 </div>
                             </div>
@@ -48,7 +51,7 @@
                                     <th>NIP</th>
                                     <th>Nama</th>
                                     <th>Username</th>
-                                    <th class="text-center">Role</th>
+                                    <th class="text-center">Status</th>
                                     <th class="text-center" style="width: 1px; white-space: nowrap;">Aksi</th>
                                 </tr>
                             </thead>
@@ -114,10 +117,17 @@
                 },
                 columns: [
                     { data: 'DT_RowIndex', name: 'DT_RowIndex', searchable: false },
-                    { data: 'nip_admin', name: 'nip_admin' },
+                    {
+                        data: 'nip_admin',
+                        name: 'nip_admin',
+                        render: function (data, type, row, meta) {
+                            // Paksa tampilkan sebagai string, agar tidak dibulatkan
+                            return data ? data.toString() : '';
+                        }
+                    },
                     { data: 'nama_admin', name: 'nama_admin' },
                     { data: 'username', name: 'users.username' },
-                    { data: 'role', name: 'users.role', className: 'text-center' },
+                    { data: 'status', name: 'status', className: 'text-center' },
                     { data: 'aksi', name: 'aksi', orderable: false, searchable: false, className: 'text-center', width: '150px' },
                 ],
                 drawCallback: function () {

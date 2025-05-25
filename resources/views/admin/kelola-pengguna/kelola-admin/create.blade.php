@@ -7,6 +7,7 @@
         </button>
     </div>
 
+    {{-- NIP Admin --}}
     <div class="modal-body">
         <div class="form-group">
             <label for="nip_admin" class="col-form-label">NIP <span class="text-danger">*</span></label>
@@ -16,6 +17,7 @@
             </div>
         </div>
 
+        {{-- Nama Admin --}}
         <div class="form-group">
             <label for="nama_admin" class="col-form-label">Nama <span class="text-danger">*</span></label>
             <div class="custom-validation">
@@ -24,21 +26,53 @@
             </div>
         </div>
 
-        {{-- <div class="form-group">
-            <label for="username" class="col-form-label">Username <span class="text-danger">*</span></label>
+        {{-- Jenis Kelamin Admin --}}
+        <div class="form-group">
+            <label for="kelamin" class="col-form-label">Jenis Kelamin <span class="text-danger">*</span></label>
             <div class="custom-validation">
-                <input type="text" class="form-control" name="username" required>
-                <span class="error-text text-danger" id="error-username"></span>
+                <select name="kelamin" id="kelamin" class="form-control" required>
+                    <option value="">-- Pilih Jenis Kelamin --</option>
+                    <option value="L" {{ old('kelamin', $admin->kelamin ?? '') == 'L' ? 'selected' : '' }}>Laki-laki
+                    </option>
+                    <option value="P" {{ old('kelamin', $admin->kelamin ?? '') == 'P' ? 'selected' : '' }}>Perempuan
+                    </option>
+                </select>
+                <span class="error-text text-danger" id="error-kelamin"></span>
             </div>
-        </div> --}}
+        </div>
 
-        {{-- <div class="form-group">
-            <label for="password" class="col-form-label">Password <span class="text-danger">*</span></label>
+        {{-- Email Admin (Boleh dikosongi) --}}
+        <div class="form-group">
+            <label for="email" class="col-form-label">Email <small class="text-muted">(Boleh
+                    dikosongkan)</small></label>
             <div class="custom-validation">
-                <input type="password" class="form-control" name="password" required minlength="6">
-                <span class="error-text text-danger" id="error-password"></span>
+                <input type="email" name="email" id="email" class="form-control"
+                    placeholder="Contoh: user@example.com (boleh dikosongkan)" value="{{ old('email') }}">
+                <span class="error-text text-danger" id="error-email"></span>
             </div>
-        </div> --}}
+        </div>
+
+        {{-- No. Handphone Admin (Boleh dikosongi) --}}
+        <div class="form-group">
+            <label for="no_hp" class="col-form-label">No. Handphone <small class="text-muted">(Boleh
+                    dikosongkan)</small></label>
+            <div class="custom-validation">
+                <input type="text" name="no_hp" id="no_hp" class="form-control"
+                    placeholder="Contoh: 08123456789 (boleh dikosongkan)" value="{{ old('no_hp') }}">
+                <span class="error-text text-danger" id="error-no_hp"></span>
+            </div>
+        </div>
+
+        {{-- Alamat Admin (Boleh dikosongi) --}}
+        <div class="form-group">
+            <label for="alamat" class="col-form-label">Alamat <small class="text-muted">(Boleh
+                    dikosongkan)</small></label>
+            <div class="custom-validation">
+                <textarea name="alamat" id="alamat" class="form-control" rows="2"
+                    placeholder="Contoh: Jl. Contoh No. 1 (boleh dikosongkan)">{{ old('alamat') }}</textarea>
+                <span class="error-text text-danger" id="error-alamat"></span>
+            </div>
+        </div>
 
         <input type="hidden" name="role" value="admin">
     </div>

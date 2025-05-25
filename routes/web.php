@@ -74,6 +74,10 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::post('admin/store', [KelolaAdminController::class, 'store'])->name('admin.store');      // Store 
             Route::put('admin/{id}', [KelolaAdminController::class, 'update'])->name('admin.update');      // update
             Route::delete('admin/{id}', [KelolaAdminController::class, 'destroy'])->name('admin.destroy'); //delete
+            Route::get('admin/export_excel', [KelolaAdminController::class, 'export_excel'])->name('admin.export_excel');  // export excel
+            Route::get('admin/export_pdf', [KelolaAdminController::class, 'export_pdf'])->name('admin.export_pdf');        // export pdf
+            Route::get('admin/import', [KelolaAdminController::class, 'importForm'])->name('admin.import.form');           // form import
+            Route::post('admin/import', [KelolaAdminController::class, 'import'])->name('admin.import');                   // import
 
             // Rute Kelola Dosen
             Route::get('dosen', [KelolaDosenController::class, 'index'])->name('dosen.index');             // Halaman utama list Dosen
@@ -84,16 +88,16 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::get('dosen/{id}/delete_ajax', [KelolaDosenController::class, 'deleteAjax']);                  // Delete modal actions
             Route::post('dosen/store', [KelolaDosenController::class, 'store'])->name('dosen.store');      // Store
             Route::put('dosen/{id}', [KelolaDosenController::class, 'update'])->name('dosen.update');      // update
-            Route::delete('dosen/{id}', [KelolaDosenController::class, 'nonAktif'])->name('dosen.nonAktif'); //nonAktif
+            Route::delete('dosen/{id}', [KelolaDosenController::class, 'nonAktif'])->name('dosen.nonAktif'); // Nonaktifkan Akun
             Route::get('dosen/export_excel', [KelolaDosenController::class, 'export_excel'])->name('dosen.export_excel');  // export excel
-            Route::get('dosen/export_pdf', [KelolaDosenController::class, 'export_pdf'])->name('dosen.export_pdf');  // export pdf
-            Route::get('dosen/import', [KelolaDosenController::class, 'importForm'])->name('dosen.import.form');  // form import
-            Route::post('dosen/import', [KelolaDosenController::class, 'import'])->name('dosen.import');  // import
-            Route::get('dosen/history', [KelolaDosenController::class, 'history'])->name('dosen.history');  // history
-            Route::get('dosen/list_history', [KelolaDosenController::class, 'list_history'])->name('dosen.list_history');
-            Route::get('dosen/history/aktivasi/{id}', [KelolaDosenController::class, 'aktivasi'])->name('dosen.history.aktivasi');
-            Route::get('dosen/history/delete/{id}', [KelolaDosenController::class, 'delete_history'])->name('dosen.history.delete');
-            Route::delete('dosen/history/destroy/{id}', [KelolaDosenController::class, 'destroy'])->name('dosen.history.destroy');
+            Route::get('dosen/export_pdf', [KelolaDosenController::class, 'export_pdf'])->name('dosen.export_pdf');        // export pdf
+            Route::get('dosen/import', [KelolaDosenController::class, 'importForm'])->name('dosen.import.form');           // form import
+            Route::post('dosen/import', [KelolaDosenController::class, 'import'])->name('dosen.import');                   // import excel
+            Route::get('dosen/history', [KelolaDosenController::class, 'history'])->name('dosen.history');                           // history
+            Route::get('dosen/list_history', [KelolaDosenController::class, 'list_history'])->name('dosen.list_history');            // List history
+            Route::get('dosen/history/aktivasi/{id}', [KelolaDosenController::class, 'aktivasi'])->name('dosen.history.aktivasi');   // Aktivasi akun kembali
+            Route::get('dosen/history/delete/{id}', [KelolaDosenController::class, 'delete_history'])->name('dosen.history.delete'); // Konfirmasi hapus Permanen
+            Route::delete('dosen/history/destroy/{id}', [KelolaDosenController::class, 'destroy'])->name('dosen.history.destroy');   // Hapus Permanen
 
             // Rute Kelola Mahasiswa
             Route::get('mahasiswa', [KelolaMahasiswaController::class, 'index'])->name('mahasiswa.index');             // Halaman utama list Mahasiswa

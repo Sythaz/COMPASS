@@ -6,29 +6,35 @@
         <h5 class="modal-title text-white">
             <i class="fas fa-trash-alt mr-2"></i>Hapus Admin
         </h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+        <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
 
     <div class="modal-body">
-        <div class="alert alert-danger d-flex align-items-center gap-2">
-            <i class="fas fa-exclamation-triangle fa-lg"></i>
-            <strong class="alert-heading h5 mb-0">
-                Apakah Anda yakin ingin menghapus data ini?
-            </strong>
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle fa-lg mr-2"></i>
+            <strong class="alert-heading h4">Apakah anda yakin untuk menghapus data ini?</strong>
+            <hr class="my-2">
+            Data User akan tetap tersimpan di database, hanya statusnya yang akan diubah dari "Aktif" menjadi
+            "Nonaktif".
         </div>
+
         <table class="table table-bordered mt-3 mb-0">
             <tr>
-                <th style="width: 30%">Nama Admin:</th>
-                <td class="text-start">{{ $admin->nama_admin }}</td>
-            </tr>
-            <tr>
-                <th>NIP:</th>
+                <th>NIP</th>
                 <td class="text-start"><code>{{ $admin->nip_admin }}</code></td>
             </tr>
             <tr>
-                <th>Username:</th>
+                <th>Nama Admin</th>
+                <td class="text-start">{{ $admin->nama_admin }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td class="text-start">{{ $admin->email ?? '-' }}</td>
+            </tr>
+            <tr>
+                <th>Username</th>
                 <td class="text-start">{{ $admin->users->username ?? '-' }}</td>
             </tr>
         </table>
@@ -45,7 +51,7 @@
 </form>
 
 <script>
-    $(document).off('submit', '#form-delete-admin'); // Hapus event handler lama (jika ada)
+    $(document).off('submit', '#form-delete-admin');
     $(document).on('submit', '#form-delete-admin', function (e) {
         e.preventDefault();
         let form = $(this);
@@ -58,14 +64,13 @@
             success: function (response) {
                 if (response.success) {
                     Swal.fire('Berhasil', response.message, 'success').then(() => {
-                        // Tutup modal, pastikan id modal benar
                         var modalEl = document.querySelector('.modal.show');
                         if (modalEl) {
                             let modalInstance = bootstrap.Modal.getInstance(modalEl);
                             if (modalInstance) modalInstance.hide();
                         }
 
-                        // Reload tabel DataTables (ganti sesuai id tabel admin)
+                        // Ganti id tabel sesuai nama tabel admin yang digunakan
                         $('#tabel-admin').DataTable().ajax.reload(null, false);
                     });
                 } else {

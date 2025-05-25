@@ -21,8 +21,28 @@
             <td class="text-start">{{ $admin->users->username ?? '-' }}</td>
         </tr>
         <tr>
+            <th>Jenis Kelamin</th>
+            <td class="text-start">{{ $admin->kelamin ?? '-' }}</td>
+        </tr>
+        <tr>
+            <th>Email</th>
+            <td class="text-start">{{ $admin->email ?? '-' }}</td>
+        </tr>
+        <tr>
+            <th>No Handphone</th>
+            <td class="text-start">{{ $admin->no_hp ?? '-' }}</td>
+        </tr>
+        <tr>
+            <th>Alamat</th>
+            <td class="text-start">{{ $admin->alamat ?? '-' }}</td>
+        </tr>
+        <tr>
             <th>Role</th>
             <td class="text-start"> {{ $admin->users->role }}</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td class="text-start">{{ $admin->status ?? '-' }}</td>
         </tr>
     </table>
 </div>
