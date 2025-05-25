@@ -57,6 +57,44 @@ class KelolaAdminController extends Controller
             ->make(true);
     }
 
+    public function history()
+    {
+        $breadcrumb = (object) [
+            'list' => ['Kelola Pengguna', 'Kelola Admin', 'History']
+        ];
+        return view('admin.kelola-pengguna.kelola-admin.history', compact('breadcrumb'));
+    }
+
+    public function list_history(Request $request)
+    {
+        $data = AdminModel::with('users')
+            ->select('admin_id', 'user_id', 'nip_admin', 'nama_admin', 'email', 'status')
+            ->where('status', 'Nonaktif') // Hanya menampilkan admin Nonktif
+            ->get();
+
+        return DataTables::of($data)
+            ->addIndexColumn()
+            ->addColumn('username', fn($row) => $row->users ? ' ' . $row->users->username : '-')
+            ->editColumn('nip_admin', function ($row) {
+                return (string) $row->nip_admin;
+            })
+            ->addColumn('status', function ($row) {
+                if ($row->status === 'Nonaktif') {
+                    return '<span class="label label-danger">Nonaktif</span>';
+                }
+                return '<span class="badge bg-secondary">-</span>';
+            })
+
+            ->addColumn('aksi', function ($row) {
+                $btn = '<button onclick="aktifkanAdmin(' . $row->admin_id . ')" class="btn btn-success btn-sm">Aktifkan</button> ';
+                $btn .= '<button onclick="modalAction(\'' . route('admin.history.delete', $row->admin_id) . '\')" class="btn btn-danger btn-sm">Hapus</button>';
+                return $btn;
+            })
+
+            ->rawColumns(['aksi', 'status'])
+            ->make(true);
+    }
+
     // Show data detail for modal
     public function showAjax($id)
     {
@@ -168,7 +206,43 @@ class KelolaAdminController extends Controller
         ]);
     }
 
-    // Delete admin
+    public function nonAktif($id)
+    {
+        $admin = AdminModel::findOrFail($id);
+
+        DB::transaction(function () use ($admin) {
+            $admin->status = 'Nonaktif';
+            $admin->save();
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Admin Berhasil Dinonaktifkan'
+        ]);
+    }
+
+    public function aktivasi($id)
+    {
+        $admin = AdminModel::findOrFail($id);
+
+        DB::transaction(function () use ($admin) {
+            $admin->status = 'Aktif';
+            $admin->save();
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Admin Berhasil Diaktifkan'
+        ]);
+    }
+
+    public function delete_history($id)
+    {
+        $admin = AdminModel::findOrFail($id);
+        return view('admin.kelola-pengguna.kelola-admin.destroy', compact('admin'));
+    }
+
+    // Delete admin permanen
     public function destroy($id)
     {
         $admin = AdminModel::findOrFail($id);

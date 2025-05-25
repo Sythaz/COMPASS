@@ -2,7 +2,7 @@
 
 @section('title', 'Kelola Admin | COMPASS')
 @section('page-title', 'Kelola Admin')
-@section('page-description', 'Halaman Kelola Admin')
+@section('page-description', 'Halaman Kelola Admin Nonaktif')
 
 @section('content')
     <div class="row">
@@ -10,22 +10,13 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row mb-2">
-                        {{-- Pilihan Menu --}}
+                        {{-- Kembali ke index admin --}}
                         <div class="col-6">
-                            {{-- Tombol Create Data Baru --}}
-                            <a onclick="modalAction('{{ url('/admin/kelola-pengguna/admin/create') }}')"
-                                class="btn btn-primary text-white">
-                                <i class="fa-solid fa-plus"></i>
-                                <strong>Tambah Data</strong>
-                            </a>
-                            {{-- Import Data Excel --}}
-                            <a onclick="modalAction('{{ route('admin.import.form') }}')"
-                                class="ml-2 btn btn-primary text-white">
-                                <i class="fa-solid fa-file-import"></i>
-                                <strong> Import Data</strong>
+                            <a href="{{ route('admin.index') }}" class="ml-2 btn btn-primary text-white">
+                                <strong>Kembali</strong>
                             </a>
                         </div>
-                        {{-- Menu Export Excel/PDF --}}
+                        {{-- Menu Export Data --}}
                         <div class="col-6 text-right">
                             <div class="btn-group" role="group">
                                 <button type="button" class="btn btn-outline-primary dropdown-toggle"
@@ -34,16 +25,13 @@
                                     <strong>Menu Ekspor</strong>
                                 </button>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="{{ route('admin.export_excel') }}">Ekspor Data ke
+                                    <a class="dropdown-item"
+                                        href="{{ route('admin.export_excel', ['status' => 'Nonaktif']) }}">Ekspor Data ke
                                         XLSX</a>
-                                    <a class="dropdown-item" href="{{ route('admin.export_pdf') }}">Ekspor Data ke
+                                    <a class="dropdown-item"
+                                        href="{{ route('admin.export_pdf', ['status' => 'Nonaktif']) }}">Ekspor Data ke
                                         PDF</a>
                                 </div>
-                                {{-- Menu History --}}
-                                <a href="{{ route('admin.history') }}" class="ml-2 btn btn-primary text-white">
-                                    <i class="fa-solid fa-clock-rotate-left"></i>
-                                    <strong> History</strong>
-                                </a>
                             </div>
                         </div>
                     </div>
@@ -56,7 +44,7 @@
                                     <th>NIP</th>
                                     <th>Nama</th>
                                     <th>Username</th>
-                                    <th class="text-center">Status</th>
+                                    <th>Status</th>
                                     <th class="text-center" style="width: 1px; white-space: nowrap;">Aksi</th>
                                 </tr>
                             </thead>
@@ -79,21 +67,15 @@
 @endsection
 
 @push('css')
-    <!-- DataTables CSS -->
     <link href="{{ asset('theme/plugins/tables/css/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css-custom/pagination-datatables.css') }}" rel="stylesheet">
 @endpush
 
 @push('js')
-    <!-- jQuery dan DataTables -->
     <script src="{{ asset('theme/plugins/tables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('theme/plugins/tables/js/datatable/dataTables.bootstrap4.min.js') }}"></script>
-
-    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- Bootstrap Bundle JS (Wajib! agar Modal bisa jalan) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 
     <script>
         const idDataTables = '#tabel-admin';
@@ -117,7 +99,7 @@
                 serverSide: true,
                 autoWidth: true,
                 ajax: {
-                    url: "{{ url('admin/kelola-pengguna/admin/list') }}",
+                    url: "{{ url('admin/kelola-pengguna/admin/list_history') }}",
                     type: "GET"
                 },
                 columns: [
@@ -126,14 +108,13 @@
                         data: 'nip_admin',
                         name: 'nip_admin',
                         render: function (data, type, row, meta) {
-                            // Paksa tampilkan sebagai string, agar tidak dibulatkan
                             return data ? data.toString() : '';
                         }
                     },
                     { data: 'nama_admin', name: 'nama_admin' },
                     { data: 'username', name: 'users.username' },
                     { data: 'status', name: 'status', className: 'text-center' },
-                    { data: 'aksi', name: 'aksi', orderable: false, searchable: false, className: 'text-center', width: '150px' },
+                    { data: 'aksi', name: 'aksi', orderable: false, searchable: false, className: 'text-center', width: '160px' },
                 ],
                 drawCallback: function () {
                     $(".dataTables_wrapper").css({ margin: "0", padding: "0" });
@@ -160,8 +141,6 @@
             $.get(url)
                 .done(function (res) {
                     $('#ajaxModalContent').html(res);
-
-                    // Bootstrap 5 way to show modal
                     const modalEl = document.getElementById('myModal');
                     const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
                     modal.show();
@@ -171,9 +150,29 @@
                 });
         }
 
-
         $(idDataTables).on('change', function () {
             $(idDataTables).DataTable().ajax.reload();
         });
+
+        function aktifkanAdmin(id) {
+            let url = "{{ url('admin/kelola-pengguna/admin/history/aktivasi') }}/" + id;
+
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire('Berhasil', response.message, 'success').then(() => {
+                            $(idDataTables).DataTable().ajax.reload(null, false);
+                        });
+                    } else {
+                        Swal.fire('Gagal', 'Gagal mengaktifkan data.', 'error');
+                    }
+                },
+                error: function () {
+                    Swal.fire('Error', 'Terjadi kesalahan saat mengaktifkan data.', 'error');
+                }
+            });
+        }
     </script>
 @endpush

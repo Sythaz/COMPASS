@@ -231,11 +231,11 @@ class KelolaDosenController extends Controller
 
     public function nonAktif($id)
     {
-        $mahasiswa = DosenModel::findOrFail($id);
+        $dosen = DosenModel::findOrFail($id);
 
-        DB::transaction(function () use ($mahasiswa) {
-            $mahasiswa->status = 'Nonaktif';
-            $mahasiswa->save();
+        DB::transaction(function () use ($dosen) {
+            $dosen->status = 'Nonaktif';
+            $dosen->save();
         });
 
         return response()->json([
@@ -246,16 +246,16 @@ class KelolaDosenController extends Controller
 
     public function aktivasi($id)
     {
-        $mahasiswa = DosenModel::findOrFail($id);
+        $dosen = DosenModel::findOrFail($id);
 
-        DB::transaction(function () use ($mahasiswa) {
-            $mahasiswa->status = 'Aktif';
-            $mahasiswa->save();
+        DB::transaction(function () use ($dosen) {
+            $dosen->status = 'Aktif';
+            $dosen->save();
         });
 
         return response()->json([
             'success' => true,
-            'message' => 'Data Mahasiswa Berhasil Diaktifkan'
+            'message' => 'Data Dosen Berhasil Diaktifkan'
         ]);
     }
 

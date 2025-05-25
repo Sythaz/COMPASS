@@ -74,11 +74,16 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::get('admin/{id}/delete_ajax', [KelolaAdminController::class, 'deleteAjax']);                  // Delete modal actions
             Route::post('admin/store', [KelolaAdminController::class, 'store'])->name('admin.store');      // Store 
             Route::put('admin/{id}', [KelolaAdminController::class, 'update'])->name('admin.update');      // update
-            Route::delete('admin/{id}', [KelolaAdminController::class, 'destroy'])->name('admin.destroy'); //delete
+            Route::delete('admin/{id}', [KelolaAdminController::class, 'nonAktif'])->name('admin.nonAktif'); //delete
             Route::get('admin/export_excel', [KelolaAdminController::class, 'export_excel'])->name('admin.export_excel');  // export excel
             Route::get('admin/export_pdf', [KelolaAdminController::class, 'export_pdf'])->name('admin.export_pdf');        // export pdf
             Route::get('admin/import', [KelolaAdminController::class, 'importForm'])->name('admin.import.form');           // form import
             Route::post('admin/import', [KelolaAdminController::class, 'import'])->name('admin.import');                   // import
+            Route::get('admin/history', [KelolaAdminController::class, 'history'])->name('admin.history');                           // history
+            Route::get('admin/list_history', [KelolaAdminController::class, 'list_history'])->name('admin.list_history');            // List history
+            Route::get('admin/history/aktivasi/{id}', [KelolaAdminController::class, 'aktivasi'])->name('admin.history.aktivasi');   // Aktivasi akun kembali
+            Route::get('admin/history/delete/{id}', [KelolaAdminController::class, 'delete_history'])->name('admin.history.delete'); // Konfirmasi hapus Permanen
+            Route::delete('admin/history/destroy/{id}', [KelolaAdminController::class, 'destroy'])->name('admin.history.destroy');   // Hapus Permanen
 
             // Rute Kelola Dosen
             Route::get('dosen', [KelolaDosenController::class, 'index'])->name('dosen.index');             // Halaman utama list Dosen
