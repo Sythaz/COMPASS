@@ -10974,7 +10974,7 @@ table.dataTable thead .sorting::after {
 
 .page-titles {
   padding: 0.9375rem 1.875rem;
-  background: #F3F3F9;
+  background: transparent;
   transition: all .2s ease; }
   @media only screen and (max-width: 767px) {
     .page-titles {

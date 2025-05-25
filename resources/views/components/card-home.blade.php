@@ -9,7 +9,6 @@
 ])
 
 <div class="col-12 col-md-6 col-lg-4 mb-4 split-animate">
-
     <div class="card-custom">
         <div class="card-custom-inner">
             <div class="card-custom-front d-flex flex-column w-100 overflow-hidden relative h-100">
@@ -41,7 +40,16 @@
                 </div>
             </div>
             <div class="card-custom-back d-flex flex-column p-3" onclick="window.open('{{ $link }}', '_blank')">
-                <p>"{{ $quote }}"</p>
+                <img src="{{ asset('assets/images/logo/compass-putih.svg') }}" alt="COMPASS Logo" class="logo" />
+                <img src="{{ asset('assets/images/quote.png') }}" alt="Quote icon" class="quote-icon" />
+                <img src="{{ $foto }}" alt="Foto {{ $nama }}" class="profile-pic" style="" />
+                <p class="testimonial-text">
+                    "{{ $quote }}"
+                </p>
+                <img style="right: 20%;" src="{{ asset('assets/images/bintang.png') }}" alt="Bintang icon" class="bintang-icon" />
+                <img style="right: 40%;" src="{{ asset('assets/images/bintang.png') }}" alt="Bintang icon" class="bintang-icon" />
+                <img style="left: 20%;" src="{{ asset('assets/images/bintang.png') }}" alt="Bintang icon" class="bintang-icon" />
+                <img style="left: 40%;" src="{{ asset('assets/images/bintang.png') }}" alt="Bintang icon" class="bintang-icon" />
             </div>
         </div>
     </div>

@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\ProgramStudiController;
 use App\Http\Controllers\Admin\TingkatLombaController;
 use App\Http\Controllers\Admin\DashboardController as DashboardAdminController;
 use App\Http\Controllers\Admin\KelolaPrestasiController;
+use App\Http\Controllers\Admin\VerifikasiPrestasiController;
 use App\Http\Controllers\Dosen\DashboardController as DashboardDosenController;
 use App\Http\Controllers\Dosen\ProfileDosenController as ProfileDosenController;
 use App\Http\Controllers\Mahasiswa\DashboardController as DashboardMahasiswaController;
@@ -192,7 +193,20 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::get('kelola-prestasi/{id}/delete_ajax', [KelolaPrestasiController::class, 'deleteAjax']);
             Route::post('kelola-prestasi/store', [KelolaPrestasiController::class, 'store'])->name('kelola-prestasi.store');
             Route::put('kelola-prestasi/{id}', [KelolaPrestasiController::class, 'update'])->name('kelola-prestasi.update');
-            Route::delete('kelola-prestasi/{id}', [KelolaPrestasiController::class, 'destroy'])->name('kelola-prestasi.destroy'); // Seharusnya ::delete namun karena menggunakan status maka diganti menjadi ::put
+            Route::delete('kelola-prestasi/{id}', [KelolaPrestasiController::class, 'destroy'])->name('kelola-prestasi.destroy');
+
+            // Rute Verifikasi Prestasi
+            Route::get('verifikasi-prestasi', [VerifikasiPrestasiController::class, 'index'])->name('verifikasi-prestasi.index');
+            Route::post('verifikasi-prestasi/list', [VerifikasiPrestasiController::class, 'list'])->name('verifikasi-prestasi.list');
+            // Route::get('verifikasi-prestasi/create', [VerifikasiPrestasiController::class, 'create'])->name('verifikasi-prestasi.create');
+            Route::get('verifikasi-prestasi/{id}/show_ajax', [VerifikasiPrestasiController::class, 'showAjax']);
+            Route::get('verifikasi-prestasi/{id}/terima_prestasi_ajax', [VerifikasiPrestasiController::class, 'terimaPrestasiAjax']);
+            Route::get('verifikasi-prestasi/{id}/tolak_prestasi_ajax', [VerifikasiPrestasiController::class, 'tolakPrestasiAjax']);
+            // Route::get('verifikasi-prestasi/{id}/delete_ajax', [VerifikasiPrestasiController::class, 'deleteAjax']);
+            // Route::post('verifikasi-prestasi/store', [VerifikasiPrestasiController::class, 'store'])->name('verifikasi-prestasi.store');
+            Route::put('verifikasi-prestasi/verifikasi/{id}', [VerifikasiPrestasiController::class, 'terimaPrestasi'])->name('verifikasi-prestasi.terimaPrestasi');
+            Route::put('verifikasi-prestasi/tolak/{id}', [VerifikasiPrestasiController::class, 'tolakPrestasi'])->name('verifikasi-prestasi.tolakPrestasi');
+            Route::delete('verifikasi-prestasi/{id}', [VerifikasiPrestasiController::class, 'destroy'])->name('verifikasi-prestasi.destroy');
         });
     });
 

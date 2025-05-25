@@ -170,7 +170,14 @@
                         border: "1px solid #ced4da",
                     });
                     $(idDataTables + '_wrapper .table-bordered').css({
-                        "border-radius": "5px",
+                        "border-top-left-radius": "5px",
+                        "border-top-right-radius": "5px",
+                    });
+                    $(idDataTables + '_wrapper .dataTables_scrollBody table').css({
+                        "border-top-left-radius": "0px",
+                        "border-top-right-radius": "0px",
+                        "border-bottom-left-radius": "5px",
+                        "border-bottom-right-radius": "5px",
                     });
                 }
             });
