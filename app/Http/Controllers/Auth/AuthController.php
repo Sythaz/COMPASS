@@ -58,14 +58,21 @@ class AuthController extends Controller
 
             // Jika aktif, proses login sukses
             if ($request->ajax() || $request->wantsJson()) {
+                // Redirect sesuai role
+                $redirectUrl = match ($role) {
+                    'admin' => route('admin.dashboard'),
+                    'dosen' => route('dosen.dashboard'),
+                    'mahasiswa' => route('mahasiswa.dashboard'),
+                    default => url('/'),
+                };
+
                 return response()->json([
                     'status' => true,
                     'message' => 'Login Berhasil',
-                    'redirect' => url('/')
+                    'redirect' => $redirectUrl,
                 ]);
             }
 
-            return redirect('/');
         }
 
         if ($request->ajax() || $request->wantsJson()) {

@@ -22,27 +22,13 @@ use Illuminate\Support\Facades\Auth;
 // Validasi global parameter {id} agar hanya angka
 Route::pattern('id', '[0-9]+');
 
-Route::get('home', [HomeController::class, 'index'])->name('home');
-
-// Cek Sesuai role
+// Redirect root ke home (akan dicek di HomeController)
 Route::get('/', function () {
-    $user = Auth::user();
-
-    if (!$user) {
-        return redirect()->route('login');
-    }
-
-    switch ($user->getRole()) {
-        case 'Admin':
-            return redirect()->route('admin.dashboard');
-        case 'Dosen':
-            return redirect()->route('dosen.dashboard');
-        case 'Mahasiswa':
-            return redirect()->route('mahasiswa.dashboard');
-        default:
-            abort(403, 'Role tidak dikenali');
-    }
+    return redirect()->route('home');
 });
+
+// Halaman home, cek role di dalam controllernya
+Route::get('home', [HomeController::class, 'index'])->name('home');
 
 // Group route untuk tamu (belum login)
 Route::middleware('guest')->group(function () {
@@ -217,7 +203,10 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
 
     // Dashboard dosen, hanya untuk role dosen
     Route::middleware('authorize:dosen')->group(function () {
+        // Dashboard
         Route::get('/Dosen', [DashboardDosenController::class, 'index'])->name('dosen.dashboard');
+
+        // Profil Dosen
         Route::prefix('dosen/profile-dosen')->group(function () {
             Route::get('/', [ProfileDosenController::class, 'index'])->name('dosen.profile.index');
             Route::get('/edit/{id}', [ProfileDosenController::class, 'edit'])->name('dosen.profile.edit');

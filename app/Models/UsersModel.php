@@ -47,20 +47,23 @@ class UsersModel extends Authenticatable
      */
     public function getName(): string
     {
-        $nama = '';
-        // Ambil data nama_admin dari database sesuai role
+        $nama = 'User';
+
         switch ($this->role) {
             case 'Admin':
-                $nama = AdminModel::find($this->user_id)->nama_admin;
+                $admin = \App\Models\AdminModel::where('user_id', $this->user_id)->first();
+                $nama = $admin?->nama_admin ?? 'Admin';
                 break;
+
             case 'Dosen':
-                $nama = DosenModel::find($this->user_id)->nama_dosen;
+                $dosen = \App\Models\DosenModel::where('user_id', $this->user_id)->first();
+                $nama = $dosen?->nama_dosen ?? 'Dosen';
                 break;
+
             case 'Mahasiswa':
-                $nama = MahasiswaModel::find($this->user_id)->nama_mahasiswa;
+                $mhs = \App\Models\MahasiswaModel::where('user_id', $this->user_id)->first();
+                $nama = $mhs?->nama_mahasiswa ?? 'Mahasiswa';
                 break;
-            default:
-                $nama = 'User';
         }
 
         return $nama;
