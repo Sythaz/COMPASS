@@ -162,7 +162,7 @@
                     {{-- Card 1 --}}
                     <x-card-home nama="M. Syafiq Aldiansyah" nim="2341720102" role="Frontend"
                         deskripsi="Mahasiswa Politeknik Negeri Malang"
-                        quote="Membangun aplikasi berkualitas dengan antarmuka yang elegan dan performa tinggi."
+                        quote="Be brave enough to be bad at something new — that's where greatness begins."
                         foto="{{ asset('assets/images/card-img/sythaz-card-img.jpg') }}"
                         link="https://github.com/Sythaz/" />
 
@@ -170,7 +170,8 @@
                     <x-card-home nama="Satrio Wisnu Adi Pratama" nim="2341720219" role="Frontend"
                         deskripsi="Mahasiswa Politeknik Negeri Malang"
                         quote="Terbang seperti Cadillac, Menusuk seperti Bimmer."
-                        foto="{{ asset('assets/images/card-img/satt.jpg') }}" link="https://github.com/flywithsaturn" />
+                        foto="{{ asset('assets/images/card-img/satt.jpg') }}"
+                        link="https://github.com/flywithsaturn" />
 
                     {{-- Card 3 --}}
                     <x-card-home nama="M. Syafiq Aldiansyah" nim="2341720102" role="Frontend"
@@ -192,211 +193,6 @@
                         quote="Membangun aplikasi berkualitas dengan antarmuka yang elegan dan performa tinggi."
                         foto="https://cdn1-production-images-kly.akamaized.net/E2MB-7EF-q6nqQNMNfyMbgxjRJc=/1200x1200/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/3220607/original/002220400_1598510794-9b3ee95069a9d94d80dfcdba43.jpg"
                         link="https://github.com/Sythaz/" />
-
-                    {{-- Card 1 --}}
-                    {{-- <div class="col-12 col-md-6 col-lg-4 mb-4 split-animate">
-                        <div class="card-custom">
-                            <div class="card-custom-inner">
-                                <div class="card-custom-front d-flex flex-column w-100 overflow-hidden relative h-100">
-                                    <img src="https://cdn1-production-images-kly.akamaized.net/E2MB-7EF-q6nqQNMNfyMbgxjRJc=/1200x1200/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/3220607/original/002220400_1598510794-9b3ee95069a9d94d80dfcdba43.jpg"
-                                        alt="Muhammad Syafiq Aldiansyah" class="w-100 h-100"
-                                        style="object-fit: cover; border-radius: inherit;">
-                                    <div class="overlay"
-                                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.8)); border-radius: inherit;">
-                                    </div>
-                                    <div class="position-absolute w-100 bottom-0 p-3" style="bottom: 0;">
-                                        <div class="woilah">
-                                            <h3 class="text-white mb-0">M. Syafiq Aldiansyah</h2>
-                                                <p class="text-muted">Mahasiswa Politeknik Negeri Malang</p>
-                                        </div>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="d-flex align-items-center">
-                                                <i class="fas fa-id-badge text-success mr-1"></i>
-                                                <span class="text-white font-weight-bold">2341720102</span>
-                                            </div>
-                                            <div class="d-flex align-items-center">
-                                                <i class="fas fa-laptop-code text-success mr-1"></i>
-                                                <span class="text-white font-weight-bold">Frontend</span>
-                                            </div>
-                                            <div>
-                                                <a href="https://github.com/muhammadrafi123"
-                                                    class="fw-bold btn btn-success btn-rounded font-weight-bold">Ikuti
-                                                    <i class="ml-1 fas fa-plus"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-custom-back d-flex flex-column p-3">
-                                    <p>"Membangun aplikasi berkualitas dengan antarmuka yang elegan dan performa
-                                        tinggi."</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Card 2 --}}
-                    {{-- <div class="col-12 col-md-6 col-lg-4 mb-4 split-animate">
-                        <div class="card-custom">
-                            <div class="card-custom-inner">
-                                <div class="card-custom-front d-flex flex-column w-100 overflow-hidden relative h-100">
-                                    <img src="https://cdn1-production-images-kly.akamaized.net/E2MB-7EF-q6nqQNMNfyMbgxjRJc=/1200x1200/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/3220607/original/002220400_1598510794-9b3ee95069a9d94d80dfcdba43.jpg"
-                                        alt="Muhammad Syafiq Aldiansyah" class="w-100 h-100"
-                                        style="object-fit: cover; border-radius: inherit;">
-                                    <div class="overlay"
-                                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.8)); border-radius: inherit;">
-                                    </div>
-                                    <div class="position-absolute w-100 bottom-0 p-3" style="bottom: 0;">
-                                        <div class="woilah">
-                                            <h3 class="text-white mb-0">M. Syafiq Aldiansyah</h2>
-                                                <p class="text-muted">Mahasiswa Politeknik Negeri Malang</p>
-                                        </div>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="d-flex align-items-center">
-                                                <i class="fas fa-id-badge text-success mr-1"></i>
-                                                <span class="text-white font-weight-bold">2341720102</span>
-                                            </div>
-                                            <div class="d-flex align-items-center">
-                                                <i class="fas fa-laptop-code text-success mr-1"></i>
-                                                <span class="text-white font-weight-bold">Frontend</span>
-                                            </div>
-                                            <div>
-                                                <a href="https://github.com/muhammadrafi123"
-                                                    class="fw-bold btn btn-success btn-rounded font-weight-bold">Ikuti
-                                                    <i class="ml-1 fas fa-plus"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-custom-back d-flex flex-column p-3">
-                                    <p>"Membangun aplikasi berkualitas dengan antarmuka yang elegan dan performa
-                                        tinggi."</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div> --}}
-
-                    {{-- Card 2 --}}
-                    {{-- <div class="col-12 col-md-6 col-lg-4 mb-4 split-animate">
-                        <div class="card-custom">
-                            <div class="card-custom-inner">
-                                <div class="card-custom-front d-flex flex-column w-100 overflow-hidden relative h-100">
-                                    <img src="https://cdn1-production-images-kly.akamaized.net/E2MB-7EF-q6nqQNMNfyMbgxjRJc=/1200x1200/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/3220607/original/002220400_1598510794-9b3ee95069a9d94d80dfcdba43.jpg"
-                                        alt="Muhammad Syafiq Aldiansyah" class="w-100 h-100"
-                                        style="object-fit: cover; border-radius: inherit;">
-                                    <div class="overlay"
-                                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.8)); border-radius: inherit;">
-                                    </div>
-                                    <div class="position-absolute w-100 bottom-0 p-3" style="bottom: 0;">
-                                        <div class="woilah">
-                                            <h3 class="text-white mb-0">M. Syafiq Aldiansyah</h2>
-                                                <p class="text-muted">Mahasiswa Politeknik Negeri Malang</p>
-                                        </div>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="d-flex align-items-center">
-                                                <i class="fas fa-id-badge text-success mr-1"></i>
-                                                <span class="text-white font-weight-bold">2341720102</span>
-                                            </div>
-                                            <div class="d-flex align-items-center">
-                                                <i class="fas fa-laptop-code text-success mr-1"></i>
-                                                <span class="text-white font-weight-bold">Frontend</span>
-                                            </div>
-                                            <div>
-                                                <a href=""
-                                                    class="fw-bold btn btn-success btn-rounded font-weight-bold">Ikuti
-                                                    <i class="ml-1 fas fa-plus"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-custom-back d-flex flex-column p-3">
-                                    <p>"Membangun aplikasi berkualitas dengan antarmuka yang elegan dan performa
-                                        tinggi."</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div> --}}
-
-                    {{-- Card 2 --}}
-                    {{-- <div class="col-12 col-md-6 col-lg-4 mb-4 split-animate">
-                        <div class="card-custom">
-                            <div class="card-custom-inner">
-                                <div class="card-custom-front d-flex flex-column w-100 overflow-hidden relative h-100">
-                                    <img src="https://cdn1-production-images-kly.akamaized.net/E2MB-7EF-q6nqQNMNfyMbgxjRJc=/1200x1200/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/3220607/original/002220400_1598510794-9b3ee95069a9d94d80dfcdba43.jpg"
-                                        alt="Muhammad Syafiq Aldiansyah" class="w-100 h-100"
-                                        style="object-fit: cover; border-radius: inherit;">
-                                    <div class="overlay"
-                                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.8)); border-radius: inherit;">
-                                    </div>
-                                    <div class="position-absolute w-100 bottom-0 p-3" style="bottom: 0;">
-                                        <div class="woilah">
-                                            <h3 class="text-white mb-0">M. Syafiq Aldiansyah</h2>
-                                                <p class="text-muted">Mahasiswa Politeknik Negeri Malang</p>
-                                        </div>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="d-flex align-items-center">
-                                                <i class="fas fa-id-badge text-success mr-1"></i>
-                                                <span class="text-white font-weight-bold">2341720102</span>
-                                            </div>
-                                            <div class="d-flex align-items-center">
-                                                <i class="fas fa-laptop-code text-success mr-1"></i>
-                                                <span class="text-white font-weight-bold">Frontend</span>
-                                            </div>
-                                            <div>
-                                                <a href="https://github.com/muhammadrafi123"
-                                                    class="fw-bold btn btn-success btn-rounded font-weight-bold">Ikuti
-                                                    <i class="ml-1 fas fa-plus"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-custom-back d-flex flex-column p-3">
-                                    <p>"Membangun aplikasi berkualitas dengan antarmuka yang elegan dan performa
-                                        tinggi."</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div> --}}
-
-                    {{-- Card 2 --}}
-                    {{-- <div class="col-12 col-md-6 col-lg-4 mb-4 split-animate">
-                        <div class="card-custom">
-                            <div class="card-custom-inner">
-                                <div class="card-custom-front d-flex flex-column w-100 overflow-hidden relative h-100">
-                                    <img src="https://cdn1-production-images-kly.akamaized.net/E2MB-7EF-q6nqQNMNfyMbgxjRJc=/1200x1200/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/3220607/original/002220400_1598510794-9b3ee95069a9d94d80dfcdba43.jpg"
-                                        alt="Muhammad Syafiq Aldiansyah" class="w-100 h-100"
-                                        style="object-fit: cover; border-radius: inherit;">
-                                    <div class="overlay"
-                                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.8)); border-radius: inherit;">
-                                    </div>
-                                    <div class="position-absolute w-100 bottom-0 p-3" style="bottom: 0;">
-                                        <div class="woilah">
-                                            <h3 class="text-white mb-0">M. Syafiq Aldiansyah</h2>
-                                                <p class="text-muted">Mahasiswa Politeknik Negeri Malang</p>
-                                        </div>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="d-flex align-items-center">
-                                                <i class="fas fa-id-badge text-success mr-1"></i>
-                                                <span class="text-white font-weight-bold">2341720102</span>
-                                            </div>
-                                            <div class="d-flex align-items-center">
-                                                <i class="fas fa-laptop-code text-success mr-1"></i>
-                                                <span class="text-white font-weight-bold">Frontend</span>
-                                            </div>
-                                            <div>
-                                                <a href="https://github.com/muhammadrafi123"
-                                                    class="fw-bold btn btn-success btn-rounded font-weight-bold">Ikuti
-                                                    <i class="ml-1 fas fa-plus"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-custom-back d-flex flex-column p-3">
-                                    <p>"Membangun aplikasi berkualitas dengan antarmuka yang elegan dan performa
-                                        tinggi."</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div> --}}
                 </div>
         </section>
         <!-- Time Pengembang Section End -->
@@ -420,16 +216,16 @@
 
     <!-- GSAP Animation Script dan Navbar Script -->
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            $(document).ready(function () {
-                $('.navbar-toggler').on('click', function () {
+        document.addEventListener('DOMContentLoaded', function() {
+            $(document).ready(function() {
+                $('.navbar-toggler').on('click', function() {
                     $('.navbar-collapse-custom').collapse('toggle');
                 });
-                $('.navbar-nav a').on('click', function () {
+                $('.navbar-nav a').on('click', function() {
                     $('.navbar-collapse-custom').collapse('hide');
                 });
 
-                $('.dropdown-toggle-custom').on('click', function () {
+                $('.dropdown-toggle-custom').on('click', function() {
                     $('.dropdown-menu').collapse('toggle');
                 });
 
@@ -538,7 +334,7 @@
             });
 
             // Navbar scroll effect
-            window.addEventListener('scroll', function () {
+            window.addEventListener('scroll', function() {
                 const navbar = document.querySelector('.navbar-landing');
                 if (window.scrollY > 50) {
                     navbar.classList.add('navbar-scrolled');
@@ -556,7 +352,7 @@
             });
 
             // Tombol scroll keatas
-            document.querySelector('.scrollToTop').addEventListener('click', function () {
+            document.querySelector('.scrollToTop').addEventListener('click', function() {
                 window.scrollTo({
                     top: 0,
                     behavior: 'smooth'
@@ -565,8 +361,8 @@
 
             // Smooth scroll saat klik link
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    anchor.addEventListener('click', function (e) {
+                anchor.addEventListener('click', function(e) {
+                    anchor.addEventListener('click', function(e) {
                         e.preventDefault();
                         const targetId = this.getAttribute('href');
                         if (targetId === '#') return;
@@ -582,11 +378,11 @@
             });
 
             // Tambahan
-            document.addEventListener('DOMContentLoaded', function () {
+            document.addEventListener('DOMContentLoaded', function() {
                 const navbar = document.querySelector('.navbar-landing');
 
                 // Navbar scroll effect
-                window.addEventListener('scroll', function () {
+                window.addEventListener('scroll', function() {
                     if (window.scrollY > 50) {
                         navbar.classList.add('navbar-scrolled');
                     } else {

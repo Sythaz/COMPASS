@@ -354,10 +354,62 @@
 }
 
 .card-custom-back {
-    background: #615ae5;
+    background: linear-gradient(135deg, #2c2c36 0%, #1a1a22 100%);
     color: white;
     transform: rotateY(180deg);
     text-align: center;
+}
+
+/* Card Back */
+.card-custom-back .testimonial-text {
+    max-width: 280px;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: left;
+    line-height: 1;
+    margin-top: 6rem;
+}
+
+.card-custom-back .quote-icon {
+    position: absolute;
+    left: 10%;
+    top: 35%;
+    width: 60px;
+    height: 60px;
+    z-index: -1;
+    opacity: 0.3;
+    transform: scale(-1, 1);
+}
+
+.card-custom-back .bintang-icon {
+    position: absolute;
+    bottom: 15%;
+    width: 25px;
+    height: 25px;
+    z-index: -1;
+    opacity: 0.5;
+    transform: rotate(-2deg);
+}
+
+.card-custom-back .profile-pic {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 96px;
+    height: 96px;
+    border-radius: 0 1rem 1rem 0;
+    ;
+    object-fit: cover;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 40% 100%, 0 60%);
+}
+
+.card-custom-back .logo {
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    width: 60px;
+    height: 60px;
 }
 
 .text-about {

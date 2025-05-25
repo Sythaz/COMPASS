@@ -1,47 +1,27 @@
 @extends('layouts.template')
 
-@section('title', 'Kelola Periode Semester | COMPASS')
+@section('title', 'Verifikasi Prestasi | COMPASS')
 
-@section('page-title', 'Kelola Periode Semester')
+@section('page-title', 'Verifikasi Prestasi')
 
-@section('page-description', 'Halaman untuk mengelola periode semester!')
+@section('page-description', 'Halaman untuk memverifikasi prestasi!')
 
 @section('content')
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-body">
-                    <div class="row mb-2">
-                        <div class="col-6">
-                            <a onclick="modalAction('{{ url('/admin/master-data/periode-semester/create') }}')"
-                                class="btn btn-primary text-white">
-                                <i class="fa-solid fa-plus"></i>
-                                <strong>Tambah Data</strong>
-                            </a>
-                            <a href="javascript:void(0)" class="ml-2 btn btn-primary">
-                                <i class="fa-solid fa-file-import"></i>
-                                <strong> Impor Data</strong>
-                            </a>
-                        </div>
-                        <div class="col-6 text-right">
-                            <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-outline-primary dropdown-toggle"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i
-                                        class="fa-solid fa-file-export"></i> <strong>Menu Ekspor </strong></button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#">Ekspor Data ke XLSX</a>
-                                    <a class="dropdown-item" href="#">Ekspor Data ke PDF</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="card-body">                    
                     <div class="table-responsive">
-                        <table class="w-100 table table-striped table-bordered custom-datatable"
-                            id="tabel-periode-semester">
+                        <table class="w-100 table table-striped table-bordered custom-datatable" id="tabel-verifikasi-prestasi">
                             <thead>
                                 <tr>
                                     <th style="width: 1px; white-space: nowrap;">No</th>
-                                    <th>Periode Semester</th>
+                                    <th>NIM</th>
+                                    <th>Nama Mahasiswa</th>
+                                    <th>Nama Lomba</th>
+                                    <th>Dosen Pembimbing</th>
+                                    <th>Tanggal</th>
+                                    <th>Juara</th>
                                     <th class="text-center" style="width: 1px; white-space: nowrap;">Aksi</th>
                                 </tr>
                             </thead>
@@ -68,6 +48,11 @@
     <link href="{{ asset('theme/plugins/tables/css/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     {{-- Custom Pagination DataTables CSS --}}
     <link href="{{ asset('css-custom/pagination-datatables.css') }}" rel="stylesheet">
+
+    <!-- CSS Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-theme@0.1.0-beta.10/dist/select2-bootstrap.min.css"
+        rel="stylesheet" />
 @endpush
 
 @push('js')
@@ -75,8 +60,11 @@
     <script src="{{ asset('theme/plugins/tables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('theme/plugins/tables/js/datatable/dataTables.bootstrap4.min.js') }}"></script>
 
+    <!-- JS Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script>
-        var idDataTables = '#tabel-periode-semester';
+        var idDataTables = '#tabel-verifikasi-prestasi';
 
         $(document).ready(function() {
             // Dropdown tidak bisa di buka langsung sehingga perlu dipanggil
@@ -102,7 +90,7 @@
                 serverSide: true,
                 autoWidth: true,
                 ajax: {
-                    url: "{{ route('periode-semester.list') }}",
+                    url: "{{ route('verifikasi-prestasi.list') }}",
                     type: "POST",
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -112,11 +100,30 @@
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
                         searchable: false,
-
                     },
                     {
-                        data: 'semester_periode',
-                        name: 'semester_periode',
+                        data: 'mahasiswa.nim_mahasiswa',
+                        name: 'mahasiswa.nim_mahasiswa',
+                    },
+                    {
+                        data: 'mahasiswa.nama_mahasiswa',
+                        name: 'mahasiswa.nama_mahasiswa',
+                    },
+                    {
+                        data: 'lomba.nama_lomba',
+                        name: 'lomba.nama_lomba',
+                    },           
+                    {
+                        data: 'dosen.nama_dosen',
+                        name: 'dosen.nama_dosen',
+                    },
+                    {
+                        data: 'tanggal_prestasi',
+                        name: 'tanggal_prestasi',
+                    },
+                    {
+                        data: 'juara_prestasi',
+                        name: 'juara_prestasi',
                     },
                     {
                         data: 'aksi',
@@ -196,3 +203,4 @@
         })
     </script>
 @endpush
+

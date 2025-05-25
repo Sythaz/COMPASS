@@ -24,8 +24,8 @@
             </div>
 
             {{-- Nama Lomba --}}
-            <label for="lomba_id" class="col-form-label mt-2">Nama Lomba <small>(Lomba harus terdaftar terlebih dahulu)</small> <span
-                    class="text-danger" style="color: red;">*</span></label>
+            <label for="lomba_id" class="col-form-label mt-2">Nama Lomba <span class="text-danger"
+                    style="color: red;">*</span></label>
             <div class="custom-validation">
                 <select name="lomba_id select2" id="lomba_id" class="form-control select2" required>
                     @foreach ($daftarLomba as $lomba)

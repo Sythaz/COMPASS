@@ -275,8 +275,8 @@
     }
 </style>
 
+{{-- Memanggil Select2 single select --}}
 <script>
-    // Memanggil Select2 single select
     $(document).ready(function() {
         $('select.select2:not(.normal)').each(function() {
             $(this).select2({
