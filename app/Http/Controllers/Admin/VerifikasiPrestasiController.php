@@ -34,7 +34,7 @@ class VerifikasiPrestasiController extends Controller
                 'periode:periode_id,semester_periode'
             ])
                 ->select('prestasi_id', 'mahasiswa_id', 'lomba_id', 'kategori_id', 'dosen_id', 'periode_id', 'jenis_prestasi', 'tanggal_prestasi', 'juara_prestasi', 'status_verifikasi')
-                ->where('status_verifikasi', 'Menunggu')
+                ->whereIn('status_verifikasi', ['Menunggu', 'Valid'])
                 ->get();
 
             return DataTables::of($data)
@@ -62,6 +62,9 @@ class VerifikasiPrestasiController extends Controller
                     switch ($statusLomba) {
                         case 'Terverifikasi':
                             $badge = '<span class="label label-success">Terverifikasi</span>';
+                            break;
+                        case 'Valid':
+                            $badge = '<span class="label label-info">Valid</span>';
                             break;
                         case 'Menunggu':
                             $badge = '<span class="label label-warning">Menunggu</span>';

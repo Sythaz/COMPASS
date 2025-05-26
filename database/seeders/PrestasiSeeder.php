@@ -110,6 +110,22 @@ class PrestasiSeeder extends Seeder
                 'surat_tugas_prestasi'  => 'surat-tugas-prestasi.pdf',
                 'status_prestasi'       => 'Aktif',
                 'status_verifikasi'     => 'Ditolak'
+            ],
+            [
+                'prestasi_id'           => 7,
+                'mahasiswa_id'          => 6,
+                'lomba_id'              => 3,
+                'dosen_id'              => 3,
+                'kategori_id'           => 5,
+                'periode_id'            => 1,
+                'tanggal_prestasi'      => '2025-02-15',
+                'juara_prestasi'        => 'Juara 5',
+                'jenis_prestasi'        => 'Tim',
+                'img_kegiatan'          => 'img-kegiatan.jpg',
+                'bukti_prestasi'        => 'bukti-sertifikat.pdf',
+                'surat_tugas_prestasi'  => 'surat-tugas-prestasi.pdf',
+                'status_prestasi'       => 'Aktif',
+                'status_verifikasi'     => 'Valid'
             ]
         ];
         DB::table('t_prestasi')->insert($data);

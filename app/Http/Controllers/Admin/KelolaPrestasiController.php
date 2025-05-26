@@ -35,7 +35,7 @@ class KelolaPrestasiController extends Controller
                 'periode:periode_id,semester_periode'
             ])
                 ->select('prestasi_id', 'mahasiswa_id', 'lomba_id', 'kategori_id', 'dosen_id', 'periode_id', 'jenis_prestasi', 'tanggal_prestasi', 'juara_prestasi', 'status_verifikasi')
-                ->whereIn('status_verifikasi', ['Terverifikasi', 'Ditolak'])
+                ->whereIn('status_verifikasi', ['Terverifikasi','Ditolak'])
                 ->get();
 
             return DataTables::of($data)
@@ -63,6 +63,9 @@ class KelolaPrestasiController extends Controller
                     switch ($statusLomba) {
                         case 'Terverifikasi':
                             $badge = '<span class="label label-success">Terverifikasi</span>';
+                            break;
+                        case 'Valid':
+                            $badge = '<span class="label label-info">Valid</span>';
                             break;
                         case 'Menunggu':
                             $badge = '<span class="label label-warning">Menunggu</span>';
@@ -161,7 +164,7 @@ class KelolaPrestasiController extends Controller
             'img_kegiatan' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'bukti_prestasi' => 'nullable|mimes:pdf|max:2048',
             'surat_tugas_prestasi' => 'nullable|mimes:pdf|max:2048',
-            'status_verifikasi' => 'required|in:Terverifikasi,Menunggu,Ditolak',
+            'status_verifikasi' => 'required|in:Terverifikasi,Valid,Menunggu,Ditolak',
         ]);
 
         try {
@@ -216,7 +219,7 @@ class KelolaPrestasiController extends Controller
             'img_kegiatan' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'bukti_prestasi' => 'nullable|mimes:pdf|max:2048',
             'surat_tugas_prestasi' => 'nullable|mimes:pdf|max:2048',
-            'status_verifikasi' => 'required|in:Terverifikasi,Menunggu,Ditolak',
+            'status_verifikasi' => 'required|in:Terverifikasi,Valid,Menunggu,Ditolak',
         ]);
 
         try {

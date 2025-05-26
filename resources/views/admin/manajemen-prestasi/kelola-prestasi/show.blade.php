@@ -102,6 +102,11 @@
                             <span class="label label-success">{{ $kelolaPrestasi->status_verifikasi }}</span>
                         @break
 
+                        @case('Valid')
+                            {{-- Valid (diverifikasi admin) --}}
+                            <span class="label label-info">{{ $kelolaPrestasi->status_verifikasi }}</span>
+                        @break
+
                         @default
                             {{-- Ditolak --}}
                             <span class="label label-danger">{{ $kelolaPrestasi->status_verifikasi }}</span>
