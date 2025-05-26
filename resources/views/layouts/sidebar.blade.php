@@ -64,7 +64,7 @@
                     </a>
                     <ul aria-expanded="false">
                         <li><a href="{{ route('kelola-lomba.index') }}">Kelola Lomba</a></li>
-                        <li><a href="javascript:void()">Verifikasi Lomba</a></li>
+                        <li><a href="{{ route('verifikasi-lomba.index') }}">Verifikasi Lomba</a></li>
                         <li><a href="javascript:void()">Rekomendasi Lomba</a></li>
                     </ul>
                 </li>

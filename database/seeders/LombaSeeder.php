@@ -53,6 +53,19 @@ class LombaSeeder extends Seeder
                 'img_lomba'              => 'WSASEAN2025.png',
                 'status_verifikasi'      => 'Terverifikasi',
                 'status_lomba'           => 'Aktif'
+            ],
+            [
+                'lomba_id'               => 4,
+                'nama_lomba'             => 'Lomba Mobile App Development Jawa Timur #21',
+                'tingkat_lomba_id'       => 4,
+                'deskripsi_lomba'        => 'Kompetisi pengembangan aplikasi mobile tingkat provinsi untuk mahasiswa seluruh Jawa Timur 2025.',
+                'penyelenggara_lomba'    => 'Kemenkominfo Jawa Timur',
+                'awal_registrasi_lomba'  => Carbon::parse('2025-02-21'),
+                'akhir_registrasi_lomba' => Carbon::parse('2025-06-30'),
+                'link_pendaftaran_lomba' => 'https://contoh-lomba.com/daftar',
+                'img_lomba'              => 'MobileApp2025.png',
+                'status_verifikasi'      => 'Valid',
+                'status_lomba'           => 'Aktif'
             ]
         ];
         DB::table('t_lomba')->insert($data);

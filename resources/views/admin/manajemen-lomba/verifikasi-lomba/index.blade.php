@@ -1,46 +1,22 @@
 @extends('layouts.template')
 
-@section('title', 'Kelola Lomba | COMPASS')
+@section('title', 'Verifikasi Lomba | COMPASS')
 
-@section('page-title', 'Kelola Lomba')
+@section('page-title', 'Verifikasi Lomba')
 
-@section('page-description', 'Halaman untuk mengelola lomba!')
+@section('page-description', 'Halaman untuk memverifikasi lomba!')
 
 @section('content')
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-body">
-                    <div class="row mb-2">
-                        <div class="col-6">
-                            <a onclick="modalAction('{{ url('/admin/manajemen-lomba/kelola-lomba/create') }}')"
-                                class="btn btn-primary text-white">
-                                <i class="fa-solid fa-plus"></i>
-                                <strong>Tambah Data</strong>
-                            </a>
-                            <a href="javascript:void(0)" class="ml-2 btn btn-primary">
-                                <i class="fa-solid fa-file-import"></i>
-                                <strong> Impor Data</strong>
-                            </a>
-                        </div>
-                        <div class="col-6 text-right">
-                            <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-outline-primary dropdown-toggle"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i
-                                        class="fa-solid fa-file-export"></i> <strong>Menu Ekspor </strong></button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#">Ekspor Data ke XLSX</a>
-                                    <a class="dropdown-item" href="#">Ekspor Data ke PDF</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="card-body">                    
                     <div class="table-responsive">
-                        <table class="w-100 table table-striped table-bordered custom-datatable" id="tabel-kelola-lomba">
+                        <table class="w-100 table table-striped table-bordered custom-datatable" id="tabel-verifikasi-lomba">
                             <thead>
                                 <tr>
                                     <th style="width: 1px; white-space: nowrap;">No</th>
-                                    <th>Nama</th>
+                                    <th>Nama Lomba</th>
                                     <th>Kategori</th>
                                     <th>Tingkat</th>
                                     <th>Awal Reg.</th>
@@ -72,6 +48,11 @@
     <link href="{{ asset('theme/plugins/tables/css/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     {{-- Custom Pagination DataTables CSS --}}
     <link href="{{ asset('css-custom/pagination-datatables.css') }}" rel="stylesheet">
+
+    <!-- CSS Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-theme@0.1.0-beta.10/dist/select2-bootstrap.min.css"
+        rel="stylesheet" />
 @endpush
 
 @push('js')
@@ -79,11 +60,11 @@
     <script src="{{ asset('theme/plugins/tables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('theme/plugins/tables/js/datatable/dataTables.bootstrap4.min.js') }}"></script>
 
-    <!-- Script Select2 Dropdown -->
+    <!-- JS Select2 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
-        var idDataTables = '#tabel-kelola-lomba';
+        var idDataTables = '#tabel-verifikasi-lomba';
 
         $(document).ready(function() {
             // Dropdown tidak bisa di buka langsung sehingga perlu dipanggil
@@ -109,7 +90,7 @@
                 serverSide: true,
                 autoWidth: true,
                 ajax: {
-                    url: "{{ route('kelola-lomba.list') }}",
+                    url: "{{ route('verifikasi-lomba.list') }}",
                     type: "POST",
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -129,8 +110,8 @@
                         name: 'kategori',
                     },
                     {
-                        data: 'tingkat_lomba',
-                        name: 'tingkat_lomba',
+                        data: 'tingkat_lomba.nama_tingkat',
+                        name: 'tingkat_lomba.nama_tingkat',
                     },
                     {
                         data: 'awal_registrasi_lomba',
@@ -222,3 +203,4 @@
         })
     </script>
 @endpush
+

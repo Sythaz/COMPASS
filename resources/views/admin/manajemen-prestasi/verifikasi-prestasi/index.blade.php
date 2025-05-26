@@ -19,9 +19,10 @@
                                     <th>NIM</th>
                                     <th>Nama Mahasiswa</th>
                                     <th>Nama Lomba</th>
-                                    <th>Dosen Pembimbing</th>
+                                    {{-- <th>Dosen Pembimbing</th> --}}
                                     <th>Tanggal</th>
                                     <th>Juara</th>
+                                    <th>Status</th>
                                     <th class="text-center" style="width: 1px; white-space: nowrap;">Aksi</th>
                                 </tr>
                             </thead>
@@ -113,10 +114,10 @@
                         data: 'lomba.nama_lomba',
                         name: 'lomba.nama_lomba',
                     },           
-                    {
-                        data: 'dosen.nama_dosen',
-                        name: 'dosen.nama_dosen',
-                    },
+                    // {
+                    //     data: 'dosen.nama_dosen',
+                    //     name: 'dosen.nama_dosen',
+                    // },
                     {
                         data: 'tanggal_prestasi',
                         name: 'tanggal_prestasi',
@@ -124,6 +125,10 @@
                     {
                         data: 'juara_prestasi',
                         name: 'juara_prestasi',
+                    },
+                    {
+                        data: 'status_verifikasi',
+                        name: 'status_verifikasi',
                     },
                     {
                         data: 'aksi',

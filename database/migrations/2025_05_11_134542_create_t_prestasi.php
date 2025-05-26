@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('bukti_prestasi')->nullable();
             $table->string('surat_tugas_prestasi')->nullable();
             $table->enum('status_prestasi',['Aktif','Tidak Aktif']);
-            $table->enum('status_verifikasi',['Ditolak','Menunggu','Terverifikasi']);
+            $table->enum('status_verifikasi',['Ditolak','Menunggu','Valid','Terverifikasi']);
             $table->timestamps();
 
             $table->foreign('mahasiswa_id')->references('mahasiswa_id')->on('t_mahasiswa');

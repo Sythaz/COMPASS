@@ -45,11 +45,9 @@
         <tr>
             <th style="width: 30%">Gambar Kegiatan:</th>
             <td class="text-start">
-                @if (
-                    !is_null($prestasi->img_kegiatan) &&
-                        file_exists(public_path('storage/prestasi/img/' . $prestasi->img_kegiatan)))
-                    <a href="{{ asset('storage/prestasi/img/' . $prestasi->img_kegiatan) }}"
-                        data-lightbox="prestasi" data-title="Gambar Kegiatan">
+                @if (!is_null($prestasi->img_kegiatan) && file_exists(public_path('storage/prestasi/img/' . $prestasi->img_kegiatan)))
+                    <a href="{{ asset('storage/prestasi/img/' . $prestasi->img_kegiatan) }}" data-lightbox="prestasi"
+                        data-title="Gambar Kegiatan">
                         <img src="{{ asset('storage/prestasi/img/' . $prestasi->img_kegiatan) }}" width="100"
                             class="d-block mx-auto img-thumbnail" alt="Gambar Kegiatan" style="cursor: zoom-in;" />
                     </a>
@@ -65,8 +63,7 @@
                     !is_null($prestasi->bukti_prestasi) &&
                         file_exists(public_path('storage/prestasi/bukti/' . $prestasi->bukti_prestasi)))
                     <a class="btn btn-primary"
-                        href="{{ asset('storage/prestasi/bukti/' . $prestasi->bukti_prestasi) }}"
-                        target="_blank">
+                        href="{{ asset('storage/prestasi/bukti/' . $prestasi->bukti_prestasi) }}" target="_blank">
                         <i class="fa fa-file-alt"></i>
                         <span class="ml-1">Lihat Bukti</span>
                     </a>
@@ -102,8 +99,13 @@
                             <span class="label label-warning">{{ $prestasi->status_verifikasi }}</span>
                         @break
 
+                        @case('Valid')
+                            {{-- Valid (diverifikasi admin) --}}
+                            <span class="label label-info">{{ $prestasi->status_verifikasi }}</span>
+                        @break
+
                         @default
-                            {{-- Ditolak --}}
+                            {{-- Jika terdapat anomali --}}
                             <span class="label label-danger">{{ $prestasi->status_verifikasi }}</span>
                     @endswitch
                 </span>

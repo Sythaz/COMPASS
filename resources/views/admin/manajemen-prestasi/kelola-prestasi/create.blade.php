@@ -150,6 +150,7 @@
             <div class="custom-validation">
                 <select name="status_verifikasi" id="status_verifikasi" class="form-control" required>
                     <option value="Terverifikasi">Terverifikasi</option>
+                    <option value="Valid">Valid</option>
                     <option value="Menunggu">Menunggu</option>
                     <option value="Ditolak">Ditolak</option>
                 </select>
