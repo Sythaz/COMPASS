@@ -80,14 +80,22 @@
                 <tr>
                     <th style="width: 30%">Status: </th>
                     <td class="text-start">
-                        <span
-                            class="label
-                    @if ($kelolaLomba->status_verifikasi == 'Terverifikasi') label-success
-                    @elseif ($kelolaLomba->status_verifikasi == 'Menunggu')
-                        label-warning
-                    @else
-                        label-danger @endif">
-                            {{ $kelolaLomba->status_verifikasi }}
+                        <span>
+                            @switch($kelolaLomba->status_verifikasi)
+                                @case('Terverifikasi')
+                                    {{-- Terverifikasi --}}
+                                    <span class="label label-success">{{ $kelolaLomba->status_verifikasi }}</span>
+                                @break
+
+                                @case('Valid')
+                                    {{-- Valid (diverifikasi admin) --}}
+                                    <span class="label label-info">{{ $kelolaLomba->status_verifikasi }}</span>
+                                @break
+
+                                @default
+                                    {{-- Ditolak --}}
+                                    <span class="label label-danger">{{ $kelolaLomba->status_verifikasi }}</span>
+                            @endswitch
                         </span>
                     </td>
                 </tr>

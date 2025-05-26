@@ -18,77 +18,75 @@ class VerifikasiPrestasiController extends Controller
     {
         $breadcrumb = (object) [
             'title' => 'Manajemen Prestasi',
-            'list'  => ['Dashboard', 'Manajemen Prestasi', 'Verifikasi Prestasi']
+            'list'  => ['Manajemen Prestasi', 'Verifikasi Prestasi']
         ];
         return view('admin.manajemen-prestasi.verifikasi-prestasi.index', compact('breadcrumb'));
     }
 
     public function list(Request $request)
     {
-        if ($request->ajax()) {
-            $data = PrestasiModel::with([
-                'mahasiswa:mahasiswa_id,nim_mahasiswa,nama_mahasiswa',
-                'lomba:lomba_id,nama_lomba',
-                'kategori:kategori_id,nama_kategori',
-                'dosen:dosen_id,nama_dosen',
-                'periode:periode_id,semester_periode'
-            ])
-                ->select('prestasi_id', 'mahasiswa_id', 'lomba_id', 'kategori_id', 'dosen_id', 'periode_id', 'jenis_prestasi', 'tanggal_prestasi', 'juara_prestasi', 'status_verifikasi')
-                ->whereIn('status_verifikasi', ['Menunggu', 'Valid'])
-                ->get();
+        $data = PrestasiModel::with([
+            'mahasiswa:mahasiswa_id,nim_mahasiswa,nama_mahasiswa',
+            'lomba:lomba_id,nama_lomba',
+            'kategori:kategori_id,nama_kategori',
+            'dosen:dosen_id,nama_dosen',
+            'periode:periode_id,semester_periode'
+        ])
+            ->select('prestasi_id', 'mahasiswa_id', 'lomba_id', 'kategori_id', 'dosen_id', 'periode_id', 'jenis_prestasi', 'tanggal_prestasi', 'juara_prestasi', 'status_verifikasi')
+            ->whereIn('status_verifikasi', ['Menunggu', 'Valid'])
+            ->get();
 
-            return DataTables::of($data)
-                ->addIndexColumn()
-                ->addColumn('nim_mahasiswa', function ($row) {
-                    return $row->mahasiswa?->nim_mahasiswa ?? '-';
-                })
-                ->addColumn('nama_mahasiswa', function ($row) {
-                    return $row->mahasiswa?->nama_mahasiswa ?? '-';
-                })
-                ->addColumn('nama_lomba', function ($row) {
-                    return $row->lomba?->nama_lomba ?? '-';
-                })
-                ->addColumn('nama_kategori', function ($row) {
-                    return $row->kategori?->nama_kategori ?? '-';
-                })
-                ->addColumn('nama_dosen', function ($row) {
-                    return $row->dosen?->nama_dosen ?? '-';
-                })
-                ->addColumn('semester_periode', function ($row) {
-                    return $row->periode?->semester_periode ?? '-';
-                })
-                ->addColumn('status_verifikasi', function ($row) {
-                    $statusLomba = $row->status_verifikasi;
-                    switch ($statusLomba) {
-                        case 'Terverifikasi':
-                            $badge = '<span class="label label-success">Terverifikasi</span>';
-                            break;
-                        case 'Valid':
-                            $badge = '<span class="label label-info">Valid</span>';
-                            break;
-                        case 'Menunggu':
-                            $badge = '<span class="label label-warning">Menunggu</span>';
-                            break;
-                        case 'Ditolak':
-                            $badge = '<span class="label label-danger">Ditolak</span>';
-                            break;
-                        default:
-                            $badge = '<span class="label label-secondary">Tidak Diketahui</span>';
-                            break;
-                    }
-                    return $badge;
-                })
-                ->addColumn('aksi', function ($row) {
-                    $btn = '<div class="d-flex justify-content-center">';
-                    $btn .= '<button style="white-space:nowrap" onclick="modalAction(\'' . url('/admin/manajemen-prestasi/verifikasi-prestasi/' . $row->prestasi_id . '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button>';
-                    $btn .= '<button style="white-space:nowrap" onclick="modalAction(\'' . url('/admin/manajemen-prestasi/verifikasi-prestasi/' . $row->prestasi_id . '/terima_prestasi_ajax') . '\')" class="btn text-white btn-success btn-sm mx-2">Terima</button>';
-                    $btn .= '<button style="white-space:nowrap" onclick="modalAction(\'' . url('/admin/manajemen-prestasi/verifikasi-prestasi/' . $row->prestasi_id . '/tolak_prestasi_ajax') . '\')" class="btn btn-danger btn-sm">Tolak</button>';
-                    $btn .= '</div>';
-                    return $btn;
-                })
-                ->rawColumns(['aksi', 'status_verifikasi'])
-                ->make(true);
-        }
+        return DataTables::of($data)
+            ->addIndexColumn()
+            ->addColumn('nim_mahasiswa', function ($row) {
+                return $row->mahasiswa?->nim_mahasiswa ?? '-';
+            })
+            ->addColumn('nama_mahasiswa', function ($row) {
+                return $row->mahasiswa?->nama_mahasiswa ?? '-';
+            })
+            ->addColumn('nama_lomba', function ($row) {
+                return $row->lomba?->nama_lomba ?? '-';
+            })
+            ->addColumn('nama_kategori', function ($row) {
+                return $row->kategori?->nama_kategori ?? '-';
+            })
+            ->addColumn('nama_dosen', function ($row) {
+                return $row->dosen?->nama_dosen ?? '-';
+            })
+            ->addColumn('semester_periode', function ($row) {
+                return $row->periode?->semester_periode ?? '-';
+            })
+            ->addColumn('status_verifikasi', function ($row) {
+                $statusLomba = $row->status_verifikasi;
+                switch ($statusLomba) {
+                    case 'Terverifikasi':
+                        $badge = '<span class="label label-success">Terverifikasi</span>';
+                        break;
+                    case 'Valid':
+                        $badge = '<span class="label label-info">Valid</span>';
+                        break;
+                    case 'Menunggu':
+                        $badge = '<span class="label label-warning">Menunggu</span>';
+                        break;
+                    case 'Ditolak':
+                        $badge = '<span class="label label-danger">Ditolak</span>';
+                        break;
+                    default:
+                        $badge = '<span class="label label-secondary">Tidak Diketahui</span>';
+                        break;
+                }
+                return $badge;
+            })
+            ->addColumn('aksi', function ($row) {
+                $btn = '<div class="d-flex justify-content-center">';
+                $btn .= '<button style="white-space:nowrap" onclick="modalAction(\'' . url('/admin/manajemen-prestasi/verifikasi-prestasi/' . $row->prestasi_id . '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button>';
+                $btn .= '<button style="white-space:nowrap" onclick="modalAction(\'' . url('/admin/manajemen-prestasi/verifikasi-prestasi/' . $row->prestasi_id . '/terima_prestasi_ajax') . '\')" class="btn text-white btn-success btn-sm mx-2">Terima</button>';
+                $btn .= '<button style="white-space:nowrap" onclick="modalAction(\'' . url('/admin/manajemen-prestasi/verifikasi-prestasi/' . $row->prestasi_id . '/tolak_prestasi_ajax') . '\')" class="btn btn-danger btn-sm">Tolak</button>';
+                $btn .= '</div>';
+                return $btn;
+            })
+            ->rawColumns(['aksi', 'status_verifikasi'])
+            ->make(true);
     }
 
     public function showAjax($id)
@@ -107,27 +105,15 @@ class VerifikasiPrestasiController extends Controller
     public function terimaPrestasiAjax($id)
     {
         $prestasi = PrestasiModel::findOrFail($id);
-        // Load data tambahan untuk dropdown di form edit
-        $daftarMahasiswa = MahasiswaModel::where('status', 'Aktif')->get();
-        $daftarDosen = DosenModel::where('status', 'Aktif')->get();
-        $daftarLomba = LombaModel::where('status_lomba', 'Aktif')->get();
-        $daftarKategori = KategoriModel::where('status_kategori', 'Aktif')->get();
-        $daftarPeriode = PeriodeModel::all();
 
-        return view('admin.manajemen-prestasi.verifikasi-prestasi.terima', compact('prestasi', 'daftarMahasiswa', 'daftarLomba', 'daftarKategori', 'daftarDosen', 'daftarPeriode'));
+        return view('admin.manajemen-prestasi.verifikasi-prestasi.terima', compact('prestasi'));
     }
 
     public function tolakPrestasiAjax($id)
     {
         $prestasi = PrestasiModel::findOrFail($id);
-        // Load data tambahan untuk dropdown di form edit
-        $daftarMahasiswa = MahasiswaModel::where('status', 'Aktif')->get();
-        $daftarDosen = DosenModel::where('status', 'Aktif')->get();
-        $daftarLomba = LombaModel::where('status_lomba', 'Aktif')->get();
-        $daftarKategori = KategoriModel::where('status_kategori', 'Aktif')->get();
-        $daftarPeriode = PeriodeModel::all();
 
-        return view('admin.manajemen-prestasi.verifikasi-prestasi.tolak', compact('prestasi', 'daftarMahasiswa', 'daftarLomba', 'daftarKategori', 'daftarDosen', 'daftarPeriode'));
+        return view('admin.manajemen-prestasi.verifikasi-prestasi.tolak', compact('prestasi'));
     }
 
     public function terimaPrestasi($id)

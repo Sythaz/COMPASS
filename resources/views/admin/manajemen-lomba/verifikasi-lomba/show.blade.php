@@ -8,69 +8,69 @@
     <table class="table table-bordered">
         <tr>
             <th style="width: 30%">Nama Lomba: </th>
-            <td class="text-start">{{ $kelolaLomba->nama_lomba }}</td>
+            <td class="text-start">{{ $lomba->nama_lomba }}</td>
         </tr>
         <tr>
             <th style="width: 30%">Deskripsi: </th>
-            <td class="text-start">{{ $kelolaLomba->deskripsi_lomba }}</td>
+            <td class="text-start">{{ $lomba->deskripsi_lomba }}</td>
         </tr>
         <tr>
             <th style="width: 30%">Kategori: </th>
-            <td class="text-start">{{ $kelolaLomba->kategori->pluck('nama_kategori')->join(', ') ?: 'Tidak Diketahui' }}
+            <td class="text-start">{{ $lomba->kategori->pluck('nama_kategori')->join(', ') ?: 'Tidak Diketahui' }}
             </td>
         </tr>
         <tr>
             <th style="width: 30%">Tingkat: </th>
-            <td class="text-start">{{ $kelolaLomba->tingkat_lomba->nama_tingkat }}</td>
+            <td class="text-start">{{ $lomba->tingkat_lomba->nama_tingkat }}</td>
         </tr>
         <tr>
             <th style="width: 30%">Penyelenggara: </th>
-            <td class="text-start">{{ $kelolaLomba->penyelenggara_lomba }}</td>
+            <td class="text-start">{{ $lomba->penyelenggara_lomba }}</td>
         </tr>
         <tr>
             <th style="width: 30%">Awal Registrasi: </th>
-            <td class="text-start">{{ $kelolaLomba->awal_registrasi_lomba }}</td>
+            <td class="text-start">{{ $lomba->awal_registrasi_lomba }}</td>
         </tr>
         <tr>
             <th style="width: 30%">Akhir Registrasi: </th>
-            <td class="text-start">{{ $kelolaLomba->akhir_registrasi_lomba }}</td>
+            <td class="text-start">{{ $lomba->akhir_registrasi_lomba }}</td>
         </tr>
         <tr>
             <th style="width: 30%">Link Pendaftaran Lomba: </th>
             <td class="text-start">
-                <a class="alert-primary" href="{{ $kelolaLomba->link_pendaftaran_lomba }}"
-                    target="_blank">{{ $kelolaLomba->link_pendaftaran_lomba }}</a>
+                <a class="alert-primary" href="{{ $lomba->link_pendaftaran_lomba }}"
+                    target="_blank">{{ $lomba->link_pendaftaran_lomba }}</a>
             </td>
         </tr>
         <tr>
             <th style="width: 30%">Status: </th>
             <td class="text-start">
                 <span>
-                    @switch($kelolaLomba->status_verifikasi)
-                        @case('Terverifikasi')
+                    @switch($lomba->status_verifikasi)
+                        @case('Menunggu')
                             {{-- Terverifikasi --}}
-                            <span class="label label-success">{{ $kelolaLomba->status_verifikasi }}</span>
+                            <span class="label label-warning">{{ $lomba->status_verifikasi }}</span>
                         @break
 
                         @case('Valid')
                             {{-- Valid (diverifikasi admin) --}}
-                            <span class="label label-info">{{ $kelolaLomba->status_verifikasi }}</span>
+                            <span class="label label-info">{{ $lomba->status_verifikasi }}</span>
                         @break
 
                         @default
                             {{-- Ditolak --}}
-                            <span class="label label-danger">{{ $kelolaLomba->status_verifikasi }}</span>
+                            <span class="label label-danger">{{ $lomba->status_verifikasi }}</span>
                     @endswitch
-                    </span>
+                </span>
             </td>
         </tr>
         <tr>
             <th style="width: 30%">Gambar Poster Lomba:</th>
             <td class="text-start">
-                @if (!is_null($kelolaLomba->img_lomba) && file_exists(public_path('storage/img/lomba/' . $kelolaLomba->img_lomba)))
-                    <a href="{{ asset('storage/img/lomba/' . $kelolaLomba->img_lomba) }}" data-lightbox="lomba"
+                @if (!is_null($lomba->img_lomba) && file_exists(public_path('storage/img/lomba/' . $lomba->img_lomba)))
+                    <a href="{{ asset('storage/img/lomba/' . $lomba->img_lomba) }}" data-lightbox="lomba"
                         data-title="Gambar Poster Lomba">
-                        <img src="{{ asset('storage/img/lomba/' . $kelolaLomba->img_lomba) }}" width="100"
+                        <img src="{{ asset('storage/img/lomba/' . $lomba->img_lomba) }}" width="100"
                             class="d-block mx-auto img-thumbnail" alt="Gambar Poster Lomba" style="cursor: zoom-in;" />
                     </a>
                 @else
