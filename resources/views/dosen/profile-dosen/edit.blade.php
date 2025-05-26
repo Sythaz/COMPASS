@@ -1,5 +1,5 @@
 <!-- Modal Edit Profile (Optional - jika ingin tetap menggunakan modal) -->
-<form action="{{ url('/dosen/profile-dosen/update') }}" method="POST" id="form-edit-modal" enctype="multipart/form-data">
+<form action="{{ url('/dosen/profile-dosen/update/' . $dosen->dosen_id) }}" method="POST" id="form-edit-modal" enctype="multipart/form-data">
     @csrf
     @method('PUT')
     <div id="modal-master" class="modal-dialog modal-lg" role="document">

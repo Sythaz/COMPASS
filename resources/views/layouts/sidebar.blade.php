@@ -85,6 +85,12 @@
                     </a>
                 </li>
 
+                <li>
+                    <a href="{{ route('dosen.profile.index') }}">
+                        <i class="fas fa-user-cog"></i><span class="nav-text">Profile Dosen</span>                    
+                    </a>
+                </li>
+
                 <li class="nav-item">
                     <a href="{{ url('/logout') }}">
                         <i class="nav-icon fas fa-arrow-right-from-bracket"></i>
