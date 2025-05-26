@@ -143,7 +143,6 @@
                     {
                         data: 'status_verifikasi',
                         name: 'status_verifikasi',
-                        orderable: false,
                     },
                     {
                         data: 'aksi',

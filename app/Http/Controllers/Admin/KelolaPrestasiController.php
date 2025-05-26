@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\DosenModel;
 use App\Models\KategoriModel;
+use App\Models\LaporanPrestasiModel;
 use App\Models\LombaModel;
 use App\Models\MahasiswaModel;
 use App\Models\PeriodeModel;
@@ -258,8 +259,12 @@ class KelolaPrestasiController extends Controller
     public function destroy($id)
     {
         try {
+            $laporanPrestasi = LaporanPrestasiModel::where('prestasi_id', $id)->first();
+            $laporanPrestasi->delete();
+
             $prestasi = PrestasiModel::findOrFail($id);
             $prestasi->delete();
+
             return response()->json([
                 'success' => true,
                 'message' => 'Data prestasi berhasil dihapus.'

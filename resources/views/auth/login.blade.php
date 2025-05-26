@@ -85,7 +85,7 @@
         customFormValidation(
             "#form-login",
             {
-                identifier: {
+                username: {
                     required: true,
                     digits: true,
                     minlength: 4,
@@ -98,8 +98,8 @@
                 }
             },
             {
-                identifier: {
-                    required: "NIM atau NIP wajib diisi",
+                username: {
+                    required: "Username wajib diisi",
                     digits: "Hanya boleh angka",
                     minlength: "Minimal 4 karakter",
                     maxlength: "Maksimal 20 karakter"
