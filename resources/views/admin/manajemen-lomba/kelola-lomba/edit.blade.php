@@ -123,6 +123,9 @@
                         <option value="Terverifikasi"
                             {{ old('status_verifikasi', $kelolaLomba->status_verifikasi) == 'Terverifikasi' ? 'selected' : '' }}>
                             Terverifikasi</option>
+                        <option value="Valid"
+                            {{ old('status_verifikasi', $kelolaLomba->status_verifikasi) == 'Valid' ? 'selected' : '' }}>
+                            Valid</option>
                         <option value="Menunggu"
                             {{ old('status_verifikasi', $kelolaLomba->status_verifikasi) == 'Menunggu' ? 'selected' : '' }}>
                             Menunggu</option>

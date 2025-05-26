@@ -19,7 +19,7 @@ class KelolaPrestasiController extends Controller
     {
         $breadcrumb = (object) [
             'title' => 'Manajemen Prestasi',
-            'list'  => ['Dashboard', 'Manajemen Prestasi', 'Kelola Prestasi']
+            'list'  => ['Manajemen Prestasi', 'Kelola Prestasi']
         ];
         return view('admin.manajemen-prestasi.kelola-prestasi.index', compact('breadcrumb'));
     }

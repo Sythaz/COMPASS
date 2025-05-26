@@ -16,7 +16,8 @@
         </tr>
         <tr>
             <th style="width: 30%">Kategori: </th>
-            <td class="text-start">{{ $kelolaLomba->kategori->pluck('nama_kategori')->join(', ') ?: 'Tidak Diketahui' }}</td>
+            <td class="text-start">{{ $kelolaLomba->kategori->pluck('nama_kategori')->join(', ') ?: 'Tidak Diketahui' }}
+            </td>
         </tr>
         <tr>
             <th style="width: 30%">Tingkat: </th>
@@ -44,15 +45,23 @@
         <tr>
             <th style="width: 30%">Status: </th>
             <td class="text-start">
-                <span
-                    class="label
-                    @if ($kelolaLomba->status_verifikasi == 'Terverifikasi') label-success
-                    @elseif ($kelolaLomba->status_verifikasi == 'Menunggu')
-                        label-warning
-                    @else
-                        label-danger @endif">
-                    {{ $kelolaLomba->status_verifikasi }}
-                </span>
+                <span>
+                    @switch($kelolaLomba->status_verifikasi)
+                        @case('Terverifikasi')
+                            {{-- Terverifikasi --}}
+                            <span class="label label-success">{{ $kelolaLomba->status_verifikasi }}</span>
+                        @break
+
+                        @case('Valid')
+                            {{-- Valid (diverifikasi admin) --}}
+                            <span class="label label-info">{{ $kelolaLomba->status_verifikasi }}</span>
+                        @break
+
+                        @default
+                            {{-- Ditolak --}}
+                            <span class="label label-danger">{{ $kelolaLomba->status_verifikasi }}</span>
+                    @endswitch
+                    </span>
             </td>
         </tr>
         <tr>
@@ -78,17 +87,19 @@
 </div>
 
 <style>
- .lightbox .lb-data {
+    .lightbox .lb-data {
         top: 0;
         bottom: auto;
         background: rgba(0, 0, 0, 0.7);
     }
+
     .lightbox .lb-data .lb-caption {
         color: #fff;
         padding: 10px;
         font-size: 16px;
         text-align: center;
     }
+
     .lightbox .lb-close {
         top: 10px;
         right: 10px;
