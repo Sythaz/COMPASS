@@ -72,7 +72,7 @@
                 <li class="nav-item">
                     <a href="{{ url('/logout') }}">
                         <i class="nav-icon fas fa-arrow-right-from-bracket"></i>
-                        <p>Logout</p>
+                        <span class="nav-text">Log Out</span>
                     </a>
                 </li>
 
@@ -87,14 +87,29 @@
 
                 <li>
                     <a href="{{ route('dosen.profile.index') }}">
-                        <i class="fas fa-user-cog"></i><span class="nav-text">Profile Dosen</span>                    
+                        <i class="fas fa-user-cog"></i><span class="nav-text">Profile Dosen</span>
                     </a>
                 </li>
 
+                {{-- Manajemen Mahasiswa Bimbingan --}}
+                <li>
+                    <a href="{{ route('dosen.manajemen-bimbingan.index') }}">
+                        <i class="fas fa-chalkboard-teacher"></i><span class="nav-text">Manajemen Bimbingan</span>
+                    </a>
+                </li>
+
+                {{-- Halaman Info Lomba --}}
+                <li>
+                    <a href="{{ route('dosen.info-lomba.index') }}">
+                        <i class="fas fa-trophy"></i><span class="nav-text">Info Lomba</span>
+                    </a>
+                </li>
+
+                {{-- Log Out --}}
                 <li class="nav-item">
                     <a href="{{ url('/logout') }}">
                         <i class="nav-icon fas fa-arrow-right-from-bracket"></i>
-                        <p>Logout</p>
+                        <span class="nav-text">Log Out</span>
                     </a>
                 </li>
 
@@ -106,23 +121,23 @@
                         <i class="icon-speedometer menu-icon"></i><span class="nav-text">Dashboard</span>
                     </a>
                 </li>
-                
-    <li class="nav-label mt-2">Input Data</li>
-    <li>
-        <a href="{{ route('mahasiswa.prestasi.input') }}">
-            <i class="fas fa-edit"></i><span class="nav-text">Input Data Prestasi</span>
-        </a>
-    </li>
-    <li>
-        <a href="{{ route('mahasiswa.lomba.input') }}">
-            <i class="fas fa-trophy"></i><span class="nav-text">Input Data Lomba</span>
-        </a>
-    </li>
+
+                <li class="nav-label mt-2">Input Data</li>
+                <li>
+                    <a href="{{ route('mahasiswa.prestasi.input') }}">
+                        <i class="fas fa-edit"></i><span class="nav-text">Input Data Prestasi</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('mahasiswa.lomba.input') }}">
+                        <i class="fas fa-trophy"></i><span class="nav-text">Input Data Lomba</span>
+                    </a>
+                </li>
 
                 <li class="nav-item">
                     <a href="{{ url('/logout') }}">
                         <i class="nav-icon fas fa-arrow-right-from-bracket"></i>
-                        <p>Logout</p>
+                        <span class="nav-text">Log Out</span>
                     </a>
                 </li>
             @endif

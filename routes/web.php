@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Console\View\Components\Info;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\KelolaMahasiswaController;
 use App\Http\Controllers\Admin\KelolaDosenController;
@@ -20,7 +21,8 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Mahasiswa\InputLombaController;
 use App\Http\Controllers\Mahasiswa\InputPrestasiController;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Dosen\ManajemenBimbinganController;
+use App\Http\Controllers\Dosen\InfoLombaController;
 
 // Validasi global parameter {id} agar hanya angka
 Route::pattern('id', '[0-9]+');
@@ -221,6 +223,14 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::get('/', [ProfileDosenController::class, 'index'])->name('dosen.profile.index');
             Route::get('/edit/{id}', [ProfileDosenController::class, 'edit'])->name('dosen.profile.edit');
             Route::put('/update', [ProfileDosenController::class, 'update'])->name('dosen.profile.update');
+        });
+
+        Route::prefix('dosen/manajemen-bimbingan')->group(function () {
+            Route::get('/', [ManajemenBimbinganController::class, 'index'])->name('dosen.manajemen-bimbingan.index');
+        });
+
+        Route::prefix('dosen/info-lomba')->group(function () {
+            Route::get('/', [InfoLombaController::class, 'index'])->name('dosen.info-lomba.index');
         });
     });
 
