@@ -56,7 +56,7 @@ class ProfileDosenController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $dosen = DosenModel::where('user_id', Auth::user()->user_id)->firstOrFail();
+            $dosen = DosenModel::findOrFail($id);            
             $user = $dosen->users;
             $kategori = $dosen->kategori;
 
