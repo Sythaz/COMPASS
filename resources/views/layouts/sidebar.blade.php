@@ -100,6 +100,18 @@
                         <i class="icon-speedometer menu-icon"></i><span class="nav-text">Dashboard</span>
                     </a>
                 </li>
+                
+    <li class="nav-label mt-2">Input Data</li>
+    <li>
+        <a href="{{ route('mahasiswa.prestasi.input') }}">
+            <i class="fas fa-edit"></i><span class="nav-text">Input Data Prestasi</span>
+        </a>
+    </li>
+    <li>
+        <a href="{{ route('mahasiswa.lomba.input') }}">
+            <i class="fas fa-trophy"></i><span class="nav-text">Input Data Lomba</span>
+        </a>
+    </li>
 
                 <li class="nav-item">
                     <a href="{{ url('/logout') }}">
