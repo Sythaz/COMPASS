@@ -174,11 +174,11 @@
                         link="https://github.com/flywithsaturn" />
 
                     {{-- Card 3 --}}
-                    <x-card-home nama="M. Syafiq Aldiansyah" nim="2341720102" role="Frontend"
+                    <x-card-home nama="Adinda Mirza Devani" nim="2341720046" role="Backend"
                         deskripsi="Mahasiswa Politeknik Negeri Malang"
-                        quote="Membangun aplikasi berkualitas dengan antarmuka yang elegan dan performa tinggi."
-                        foto="https://cdn1-production-images-kly.akamaized.net/E2MB-7EF-q6nqQNMNfyMbgxjRJc=/1200x1200/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/3220607/original/002220400_1598510794-9b3ee95069a9d94d80dfcdba43.jpg"
-                        link="https://github.com/Sythaz/" />
+                        quote="Pengen Mie Ayam...."
+                        foto="{{ asset('assets/images/card-img/ipung.jpg') }}"
+                        link="https://github.com/suckgitariuses/" />
 
                     {{-- Card 4 --}}
                     <x-card-home nama="M. Syafiq Aldiansyah" nim="2341720102" role="Frontend"
