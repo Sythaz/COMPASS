@@ -17,6 +17,8 @@ use App\Http\Controllers\Dosen\ProfileDosenController as ProfileDosenController;
 use App\Http\Controllers\Mahasiswa\DashboardController as DashboardMahasiswaController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Mahasiswa\InputLombaController;
+use App\Http\Controllers\Mahasiswa\InputPrestasiController;
 use Illuminate\Support\Facades\Auth;
 
 // Validasi global parameter {id} agar hanya angka
@@ -217,5 +219,58 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
     // Dashboard mahasiswa, hanya untuk role mahasiswa
     Route::middleware('authorize:mahasiswa')->group(function () {
         Route::get('/Mahasiswa', [DashboardMahasiswaController::class, 'index'])->name('mahasiswa.dashboard');
+              // ==== Input Data Prestasi ====
+    Route::prefix('prestasi')->group(function () {
+        Route::get('input', [InputPrestasiController::class, 'index'])
+            ->name('mahasiswa.prestasi.input');
+
+        Route::post('input/list', [InputPrestasiController::class, 'list'])
+            ->name('mahasiswa.prestasi.list');
+
+        Route::get('input/create', [InputPrestasiController::class, 'create'])
+            ->name('mahasiswa.prestasi.create');
+
+        Route::get('input/{id}/show_ajax', [InputPrestasiController::class, 'showAjax']);
+
+        Route::get('input/{id}/edit_ajax', [InputPrestasiController::class, 'editAjax']);
+
+        Route::get('input/{id}/delete_ajax', [InputPrestasiController::class, 'deleteAjax']);
+
+        Route::post('input/store', [InputPrestasiController::class, 'store'])
+            ->name('mahasiswa.prestasi.store');
+
+        Route::put('input/{id}', [InputPrestasiController::class, 'update'])
+            ->name('mahasiswa.prestasi.update');
+
+        Route::delete('input/{id}', [InputPrestasiController::class, 'destroy'])
+            ->name('mahasiswa.prestasi.destroy');
     });
+
+    // ==== Input Data Lomba ====
+    Route::prefix('lomba')->group(function () {
+        Route::get('input', [InputLombaController::class, 'index'])
+            ->name('mahasiswa.lomba.input');
+
+        Route::post('input/list', [InputLombaController::class, 'list'])
+            ->name('mahasiswa.lomba.list');
+
+        Route::get('input/create', [InputLombaController::class, 'create'])
+            ->name('mahasiswa.lomba.create');
+
+        Route::get('input/{id}/show_ajax', [InputLombaController::class, 'showAjax']);
+
+        Route::get('input/{id}/edit_ajax', [InputLombaController::class, 'editAjax']);
+
+        Route::get('input/{id}/delete_ajax', [InputLombaController::class, 'deleteAjax']);
+
+        Route::post('input/store', [InputLombaController::class, 'store'])
+            ->name('mahasiswa.lomba.store');
+
+        Route::put('input/{id}', [InputLombaController::class, 'update'])
+            ->name('mahasiswa.lomba.update');
+
+        Route::delete('input/{id}', [InputLombaController::class, 'destroy'])
+            ->name('mahasiswa.lomba.destroy');
+    });
+});
 });
