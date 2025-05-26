@@ -463,8 +463,7 @@
 }
 
 .dropdown-item-logout:hover {
-    background-color: red;
-    color: white;
+    color: #7571F9;
 }
 
 .profile-nav-small {

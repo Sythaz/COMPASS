@@ -94,6 +94,8 @@
     <!-- Bootstrap Bundle JS (Wajib! agar Modal bisa jalan) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
+    <!-- Custom show header JS -->
+    <script src="{{ asset('js-custom/header-show-bootstrap5.js') }}"></script>
 
     <script>
         const idDataTables = '#tabel-admin';

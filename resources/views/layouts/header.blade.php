@@ -1,6 +1,5 @@
 {{-- NAVBAR SAAT di home --}}
 @if (request()->routeIs('home'))
-    {{-- NAVBAR SAAT di home dan BELUM LOGIN --}}
     <nav class="navbar navbar-expand-lg navbar-dark navbar-landing">
         <div class="container">
             <div class="row">
@@ -12,6 +11,7 @@
                         class="img-fluid">
                 </a>
             </div>
+            {{-- SAAT di home dan SUDAH LOGIN (Layar Kecil) --}}
             @if (auth()->check())
                 <div class="profile-nav-small d-flex justify-content-center align-items-center ml-3">
                     <div class="dropdown">
@@ -39,6 +39,7 @@
                         <a class="nav-link nav-btn-custom" href="#tim-pengembang">Pengembang</a>
                     </li>
                     @if (auth()->check())
+                        {{-- SAAT di home dan SUDAH LOGIN --}}
                         <div class="profile-nav nav-item-home d-flex justify-content-center align-items-center ml-3">
                             <div class="dropdown">
                                 <a href="javascript:void(0)" class="d-flex align-items-center dropdown-toggle-custom"
@@ -54,12 +55,15 @@
                                     </div>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownUser">
-                                    <a href="javascript:void(0)" class="dropdown-item">Profil Saya</a>
-                                    <a href="{{ route('logout') }}" class="dropdown-item-logout">Logout</a>
+                                    <a href="javascript:void(0)" class="dropdown-item"><i
+                                            class="icon-user mr-2"></i><span>Profil Saya</span></a>
+                                    <a href="{{ route('logout') }}" class="dropdown-item-logout"><i
+                                            class="icon-key mr-2"></i><span>Logout</span></a>
                                 </div>
                             </div>
                         </div>
                     @else
+                        {{-- SAAT di home dan BELUM LOGIN --}}
                         <li class="nav-item-home">
                             <a href="{{ route('login') }}" class="btn btn-rounded btn-masuk font-weight-bold">Masuk</a>
                         </li>
@@ -68,9 +72,8 @@
             </div>
         </div>
     </nav>
-    {{-- kode SAAT di home dan BELUM LOGIN --}}
 @else
-    {{-- Kode saat BUKAN di home --}}
+    {{-- Kode saat BUKAN di Home --}}
     <div class="header">
         <div class="header-content clearfix">
 
@@ -81,14 +84,14 @@
             </div>
             <div class="header-right">
                 <ul class="clearfix">
-                    <li class="icons dropdown"><a href="javascript:void(0)" data-toggle="dropdown">
-                            <i class="mdi mdi-email-outline"></i>
+                    <li class="icons dropdown">
+                        <a href="javascript:void(0)" class="dropdown-toggle icon-dropdown-none" data-toggle="dropdown">
+                            <i class="mdi mdi-bell-outline"></i>
                             <span class="badge gradient-1 badge-pill badge-primary">3</span>
                         </a>
-                        <div class="drop-down animated fadeIn dropdown-menu">
+                        <div class="drop-down animated dropdown-menu">
                             <div class="dropdown-content-heading d-flex justify-content-between">
                                 <span class="">3 New Messages</span>
-
                             </div>
                             <div class="dropdown-content-body">
                                 <ul>
@@ -143,102 +146,44 @@
                             </div>
                         </div>
                     </li>
-                    <li class="icons dropdown"><a href="javascript:void(0)" data-toggle="dropdown">
-                            <i class="mdi mdi-bell-outline"></i>
-                            <span class="badge badge-pill gradient-2 badge-primary">3</span>
-                        </a>
-                        <div class="drop-down animated fadeIn dropdown-menu dropdown-notfication">
-                            <div class="dropdown-content-heading d-flex justify-content-between">
-                                <span class="">2 New Notifications</span>
-
+                    <li class="icons dropdown ml-4 mr-3">
+                        <div class="user-img c-pointer position-relative dropdown-toggle icon-dropdown-none"
+                            data-toggle="dropdown">
+                            <div class="row justify-content-center align-items-center">
+                                <div class="position-relative">
+                                    <span class="activity active"></span>
+                                    <img src="{{ auth()->user()->getProfile() && Storage::exists('storage/img/profile' . auth()->user()->getProfile()) ? asset('storage/img/profile' . auth()->user()->getProfile()) : asset('assets/images/profil/default-profile.png') }}"
+                                        class="rounded-circle" width="40" height="40" alt="Foto Profil">
+                                </div>
+                                <div class="ml-2 text-left">
+                                    <div class="font-weight-bold text-black d-block" style="line-height: 1.2">
+                                        {{ Str::limit(auth()->user()->getName() ?? 'User', 12) }}
+                                    </div>
+                                    <small class="text-black d-block" style="line-height: 1.2">
+                                        {{ auth()->user()->getRoleName() ?? 'Role' }}
+                                    </small>
+                                </div>
                             </div>
-                            <div class="dropdown-content-body">
-                                <ul>
-                                    <li>
-                                        <a href="javascript:void()">
-                                            <span class="mr-3 avatar-icon bg-success-lighten-2"><i
-                                                    class="icon-present"></i></span>
-                                            <div class="notification-content">
-                                                <h6 class="notification-heading">Events near you</h6>
-                                                <span class="notification-text">Within next 5 days</span>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void()">
-                                            <span class="mr-3 avatar-icon bg-danger-lighten-2"><i
-                                                    class="icon-present"></i></span>
-                                            <div class="notification-content">
-                                                <h6 class="notification-heading">Event Started</h6>
-                                                <span class="notification-text">One hour ago</span>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void()">
-                                            <span class="mr-3 avatar-icon bg-success-lighten-2"><i
-                                                    class="icon-present"></i></span>
-                                            <div class="notification-content">
-                                                <h6 class="notification-heading">Event Ended Successfully</h6>
-                                                <span class="notification-text">One hour ago</span>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void()">
-                                            <span class="mr-3 avatar-icon bg-danger-lighten-2"><i
-                                                    class="icon-present"></i></span>
-                                            <div class="notification-content">
-                                                <h6 class="notification-heading">Events to Join</h6>
-                                                <span class="notification-text">After two days</span>
-                                            </div>
-                                        </a>
-                                    </li>
-                                </ul>
-
-                            </div>
-                        </div>
-                    </li>
-                    <li class="icons dropdown d-none d-md-flex">
-                        <a href="javascript:void(0)" class="log-user" data-toggle="dropdown">
-                            <span>English</span> <i class="fa fa-angle-down f-s-14" aria-hidden="true"></i>
-                        </a>
-                        <div class="drop-down dropdown-language animated fadeIn  dropdown-menu">
-                            <div class="dropdown-content-body">
-                                <ul>
-                                    <li><a href="javascript:void()">English</a></li>
-                                    <li><a href="javascript:void()">Dutch</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="icons dropdown">
-                        <div class="user-img c-pointer position-relative" data-toggle="dropdown">
-                            <span class="activity active"></span>
-                            <img src="{{ asset('theme/images/user/1.png') }}" height="40" width="40"
-                                alt="">
                         </div>
                         <div class="drop-down dropdown-profile dropdown-menu">
                             <div class="dropdown-content-body">
                                 <ul>
                                     <li>
-                                        <a href="{{ url('app-profile.html') }}"><i class="icon-user"></i>
-                                            <span>Profile</span></a>
+                                        <a href="{{ url('app-profile.html') }}"><i
+                                                class="icon-user"></i><span>Profile</span></a>
                                     </li>
                                     <li>
                                         <a href="{{ url('email-inbox.html') }}"><i class="icon-envelope-open"></i>
                                             <span>Inbox</span>
-                                            <div class="badge gradient-3 badge-pill badge-primary">3</div>
+                                            <div class="badge gradient-1 badge-pill badge-primary">3</div>
                                         </a>
                                     </li>
 
                                     <hr class="my-2">
                                     <li>
-                                        <a href="{{ url('page-lock.html') }}"><i class="icon-lock"></i> <span>Lock
-                                                Screen</span></a>
-                                    </li>
-                                    <li><a href="{{ url('page-login.html') }}"><i class="icon-key"></i>
-                                            <span>Logout</span></a>
+                                        <a href="{{ route('logout') }}" class="dropdown-item-logout"><i
+                                                class="icon-key mr-2"></i><span
+                                                class="logout-text-custom">Logout</span></a>
                                     </li>
                                 </ul>
                             </div>
@@ -248,4 +193,18 @@
             </div>
         </div>
     </div>
+
+    <style>
+        .logout-text-custom {
+            color: red;
+        }
+
+        .logout-text-custom:hover {
+            color: #7571F9;
+        }
+
+        .icon-dropdown-none::after {
+            display: none;
+        }
+    </style>
 @endif

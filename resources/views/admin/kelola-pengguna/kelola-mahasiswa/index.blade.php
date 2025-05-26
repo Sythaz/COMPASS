@@ -88,10 +88,13 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
+    <!-- Custom show header JS -->
+    <script src="{{ asset('js-custom/header-show-bootstrap5.js') }}"></script>
+
     <script>
         const idDataTables = '#tabel-mahasiswa';
 
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('.dropdown-toggle').dropdown();
 
             $(idDataTables).DataTable({
@@ -113,51 +116,92 @@
                     url: "{{ url('admin/kelola-pengguna/mahasiswa/list') }}",
                     type: "GET"
                 },
-                columns: [
-                    { data: 'DT_RowIndex', name: 'DT_RowIndex', searchable: false },
-                    { data: 'nim_mahasiswa', name: 'nim_mahasiswa' },
-                    { data: 'nama_mahasiswa', name: 'nama_mahasiswa' },
-                    { data: 'username', name: 'users.username' },
-                    { data: 'prodi', name: 'prodi.prodi_nama' },
-                    { data: 'periode', name: 'periode.periode_nama' },
-                    { data: 'status', name: 'status', className: 'text-center' },
-                    { data: 'aksi', name: 'aksi', orderable: false, searchable: false, className: 'text-center', width: '160px' },
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        searchable: false
+                    },
+                    {
+                        data: 'nim_mahasiswa',
+                        name: 'nim_mahasiswa'
+                    },
+                    {
+                        data: 'nama_mahasiswa',
+                        name: 'nama_mahasiswa'
+                    },
+                    {
+                        data: 'username',
+                        name: 'users.username'
+                    },
+                    {
+                        data: 'prodi',
+                        name: 'prodi.prodi_nama'
+                    },
+                    {
+                        data: 'periode',
+                        name: 'periode.periode_nama'
+                    },
+                    {
+                        data: 'status',
+                        name: 'status',
+                        className: 'text-center'
+                    },
+                    {
+                        data: 'aksi',
+                        name: 'aksi',
+                        orderable: false,
+                        searchable: false,
+                        className: 'text-center',
+                        width: '160px'
+                    },
                 ],
-                drawCallback: function () {
-                    $(".dataTables_wrapper").css({ margin: "0", padding: "0" });
+                drawCallback: function() {
+                    $(".dataTables_wrapper").css({
+                        margin: "0",
+                        padding: "0"
+                    });
                     $(".dataTables_paginate .pagination").addClass("justify-content-end");
-                    $(".dataTables_paginate .paginate_button").removeClass("paginate_button").addClass("page-item");
-                    $(".dataTables_paginate .paginate_button a").addClass("page-link").css("border-radius", "5px");
+                    $(".dataTables_paginate .paginate_button").removeClass("paginate_button").addClass(
+                        "page-item");
+                    $(".dataTables_paginate .paginate_button a").addClass("page-link").css(
+                        "border-radius", "5px");
                     $(".dataTables_paginate .paginate_button.previous a").text("Sebelum");
                     $(".dataTables_paginate .paginate_button.next a").text("Lanjut");
                     $(".dataTables_paginate .paginate_button.first a").text("Pertama");
                     $(".dataTables_paginate .paginate_button.last a").text("Terakhir");
 
                     $(idDataTables + ' select').css({
-                        width: "auto", height: "auto", "border-radius": "5px", border: "1px solid #ced4da",
+                        width: "auto",
+                        height: "auto",
+                        "border-radius": "5px",
+                        border: "1px solid #ced4da",
                     });
                     $(idDataTables + '_filter input').css({
-                        height: "auto", "border-radius": "5px", border: "1px solid #ced4da",
+                        height: "auto",
+                        "border-radius": "5px",
+                        border: "1px solid #ced4da",
                     });
-                    $(idDataTables + '_wrapper .table-bordered').css({ "border-radius": "5px" });
+                    $(idDataTables + '_wrapper .table-bordered').css({
+                        "border-radius": "5px"
+                    });
                 }
             });
         });
 
         function modalAction(url) {
             $.get(url)
-                .done(function (res) {
+                .done(function(res) {
                     $('#ajaxModalContent').html(res);
                     const modalEl = document.getElementById('myModal');
                     const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
                     modal.show();
                 })
-                .fail(function () {
+                .fail(function() {
                     Swal.fire('Gagal', 'Tidak dapat memuat data dari server.', 'error');
                 });
         }
 
-        $(idDataTables).on('change', function () {
+        $(idDataTables).on('change', function() {
             $(idDataTables).DataTable().ajax.reload();
         });
     </script>
