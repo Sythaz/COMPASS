@@ -83,7 +83,7 @@
                                 {{-- @foreach ($lombaSedangAktif as $index => $upcomingLomba) --}}
                                 <tr>
                                     <td class="pl-0 col-8 font-weight-bold">IO CHALLENGE</td>
-                                    <td class="text-center col">30 June 2025	</td>
+                                    <td class="text-center col">30 June 2025 </td>
                                     <th class="text-center col"><i class="fa fa-solid fa-angle-right fa-2x"></i></th>
                                 </tr>
                                 {{-- @endforeach --}}
@@ -117,6 +117,9 @@
 
     <!-- Memanggil Chart Script -->
     <script src="{{ asset('js-custom/charts/mahasiswa/bar-chart.js') }}"></script>
+
+    <!-- Custom show header JS untuk Bootstrap 5 -->
+    <script src="{{ asset('js-custom/header-show-bootstrap5.js') }}"></script>
 
     <!-- Data didefinisikan di view -->
     <script>
