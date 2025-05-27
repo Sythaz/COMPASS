@@ -23,6 +23,7 @@ use App\Http\Controllers\Mahasiswa\InputLombaController;
 use App\Http\Controllers\Mahasiswa\InputPrestasiController;
 use App\Http\Controllers\Dosen\ManajemenBimbinganController;
 use App\Http\Controllers\Dosen\InfoLombaController;
+use App\Http\Controllers\Dosen\DataLombaController;
 
 // Validasi global parameter {id} agar hanya angka
 Route::pattern('id', '[0-9]+');
@@ -49,7 +50,7 @@ Route::get('logout', [AuthController::class, 'logout'])->middleware('auth')->nam
 // Route group untuk user yang sudah login
 Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam sini ya!
 
-    // Dashboard admin
+    // ROUTE ADMIN
     Route::middleware('authorize:Admin')->group(function () {
         // Dashboard admin, hanya untuk role admin
         Route::get('/admin', [DashboardAdminController::class, 'index'])->name('admin.dashboard');
@@ -213,9 +214,9 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
         });
     });
 
-    // Dashboard dosen, hanya untuk role dosen
+    // ROUTE DOSEN
     Route::middleware('authorize:dosen')->group(function () {
-        // Dashboard
+        // Dashboard dosen, hanya untuk role dosen
         Route::get('/Dosen', [DashboardDosenController::class, 'index'])->name('dosen.dashboard');
 
         // Profil Dosen
@@ -225,18 +226,30 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::put('/update', [ProfileDosenController::class, 'update'])->name('dosen.profile.update');
         });
 
+        // Halaman Manajemen Bimbingan (Menampilkan Prestasi mahasiswa sesuai Mahasiswa Bimbingan)
         Route::prefix('dosen/manajemen-bimbingan')->group(function () {
             Route::get('/', [ManajemenBimbinganController::class, 'index'])->name('dosen.manajemen-bimbingan.index');
         });
 
+        // Halaman Informasi Lomba (Menampilkan Lomba yang statusnya Aktif Dan Terverifikasi saja)
         Route::prefix('dosen/info-lomba')->group(function () {
             Route::get('/', [InfoLombaController::class, 'index'])->name('dosen.info-lomba.index');
             Route::get('info-lomba/list', [InfoLombaController::class, 'list'])->name('info-lomba.list');
+            Route::get('info-lomba/{id}/show', [InfoLombaController::class, 'showAjax'])->name('info-lomba.show');
         });
+
+        // Halaman yang menampilkan riwayat Lomba yang pernah diajukan dosen
+        Route::prefix('dosen/data-lomba')->group(function () {
+            Route::get('/', [DataLombaController::class, 'index'])->name('dosen.info-lomba.index');
+            Route::get('data-lomba/list', [DataLombaController::class, 'list'])->name('data-lomba.list');
+            Route::get('data-lomba/{id}/show', [DataLombaController::class, 'showAjax'])->name('data-lomba.show');
+        });
+
     });
 
-    // Dashboard mahasiswa, hanya untuk role mahasiswa
+    // ROUTE MAHASISWA
     Route::middleware('authorize:mahasiswa')->group(function () {
+        // Dashboard mahasiswa, hanya untuk role mahasiswa
         Route::get('/Mahasiswa', [DashboardMahasiswaController::class, 'index'])->name('mahasiswa.dashboard');
         // ==== Input Data Prestasi ====
         Route::prefix('prestasi')->group(function () {
