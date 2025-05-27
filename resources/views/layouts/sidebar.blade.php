@@ -23,7 +23,7 @@
                         <i class="icon-speedometer menu-icon"></i><span class="nav-text">Dashboard</span>
                     </a>
                 </li>
-
+                {{-- Menu Kelola Pengguna --}}
                 <li class="nav-label mt-2">Manajemen Data</li>
                 <li>
                     <a class="has-arrow" href="javascript:void()" aria-expanded="false">
@@ -35,6 +35,7 @@
                         <li><a href="{{ route('mahasiswa.index') }}">Mahasiswa</a></li>
                     </ul>
                 </li>
+                {{-- Menu Manajemen Data --}}
                 <li>
                     <a class="has-arrow" href="javascript:void()" aria-expanded="false">
                         <i class="fas fa-database"></i><span class="nav-text">Master Data</span>
@@ -48,6 +49,7 @@
                     </ul>
                 </li>
 
+                {{-- Menu Manajemen Prestasi --}}
                 <li class="nav-label mt-2">Prestasi & Lomba</li>
                 <li>
                     <a class="has-arrow" href="javascript:void()" aria-expanded="false">
@@ -58,6 +60,8 @@
                         <li><a href="{{ route('verifikasi-prestasi.index') }}">Verifikasi Prestasi</a></li>
                     </ul>
                 </li>
+
+                {{-- Menu Manajemen Lomba --}}
                 <li>
                     <a class="has-arrow" href="javascript:void()" aria-expanded="false">
                         <i class="fa-solid fa-trophy"></i><span class="nav-text">Manajemen Lomba</span>
@@ -69,6 +73,7 @@
                     </ul>
                 </li>
 
+                {{-- Log Out --}}
                 <li class="nav-item">
                     <a href="{{ url('/logout') }}">
                         <i class="nav-icon fas fa-arrow-right-from-bracket"></i>
@@ -85,24 +90,37 @@
                     </a>
                 </li>
 
+                {{-- Profil Dosen --}}
                 <li>
                     <a href="{{ route('dosen.profile.index') }}">
                         <i class="fas fa-user-cog"></i><span class="nav-text">Profile Dosen</span>
                     </a>
                 </li>
 
+                <li class="nav-label mt-2">Manajemen Data</li>
                 {{-- Manajemen Mahasiswa Bimbingan --}}
                 <li>
-                    <a href="{{ route('dosen.manajemen-bimbingan.index') }}">
+                    <a class="has-arrow" href="javascript:void()" aria-expanded="false">
                         <i class="fas fa-chalkboard-teacher"></i><span class="nav-text">Manajemen Bimbingan</span>
                     </a>
+                    <ul aria-expanded="false">
+                        {{-- Halaman untuk melihat Daftar Mahasiswa Bimbingan --}}
+                        <li><a href="#">Kelola Bimbingan</a></li>
+                        {{-- Halaman untuk verifikasi daftar Mahasiswa Bimbingan --}}
+                        <li><a href="{{ route('dosen.manajemen-bimbingan.index') }}">Verifikasi Bimbingan</a></li>
+                    </ul>
                 </li>
-
-                {{-- Halaman Info Lomba --}}
+                {{-- Halaman Lomba --}}
                 <li>
-                    <a href="{{ route('dosen.info-lomba.index') }}">
-                        <i class="fas fa-trophy"></i><span class="nav-text">Info Lomba</span>
+                    <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                        <i class="fa-solid fa-trophy"></i><span class="nav-text">Manajemen Lomba</span>
                     </a>
+                    <ul aria-expanded="false">
+                        {{-- Dosen dapat melihat Lomba yang Tersedia dan mengajukan Lomba baru --}}
+                        <li><a href="{{ route('dosen.info-lomba.index') }}">Info Lomba</a></li>
+                        {{-- Halaman untuk melihat Daftar Lomba yang pernah diajukan Dosen --}}
+                        <li><a href="#">Data Lomba</a></li>
+                    </ul>
                 </li>
 
                 {{-- Log Out --}}
