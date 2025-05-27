@@ -11,6 +11,10 @@
             <td class="text-start">{{ $kelolaLomba->nama_lomba }}</td>
         </tr>
         <tr>
+            <th style="width: 30%">Pengusul: </th>
+            <td class="text-start">{{ $namaPengusul }}</td>
+        </tr>
+        <tr>
             <th style="width: 30%">Deskripsi: </th>
             <td class="text-start">{{ $kelolaLomba->deskripsi_lomba }}</td>
         </tr>
