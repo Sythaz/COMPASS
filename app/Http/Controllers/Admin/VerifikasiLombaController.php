@@ -3,10 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdminModel;
+use App\Models\DosenModel;
 use App\Models\KategoriModel;
 use Illuminate\Http\Request;
 use App\Models\LombaModel;
+use App\Models\MahasiswaModel;
 use App\Models\TingkatLombaModel;
+use App\Models\UsersModel;
 use Yajra\DataTables\Facades\DataTables;
 
 class VerifikasiLombaController extends Controller
@@ -80,21 +84,76 @@ class VerifikasiLombaController extends Controller
     public function showAjax($id)
     {
         $lomba = LombaModel::with('kategori', 'tingkat_lomba')->findOrFail($id);
-        return view('admin.manajemen-lomba.verifikasi-lomba.show', compact('lomba'));
+        $pengusul = $lomba->pengusul_id;
+        $rolePengusul = UsersModel::where('user_id', $pengusul)->first()->role;
+
+        $namaPengusul = '';
+        switch ($rolePengusul) {
+            case 'Admin':
+                $namaPengusul = AdminModel::where('user_id', $pengusul)->first()->nama_admin;
+                break;
+            case 'Dosen':
+                $namaPengusul = DosenModel::where('user_id', $pengusul)->first()->nama_dosen;
+                break;
+            case 'Mahasiswa':
+                $namaPengusul = MahasiswaModel::where('user_id', $pengusul)->first()->nama_mahasiswa;
+                break;
+
+            default:
+                $namaPengusul = 'Pengusul tidak diketahui';
+                break;
+        }
+        return view('admin.manajemen-lomba.verifikasi-lomba.show', compact('lomba', 'namaPengusul'));
     }
 
     public function terimaLombaAjax($id)
     {
         $lomba = LombaModel::findOrFail($id);
+        $pengusul = $lomba->pengusul_id;
+        $rolePengusul = UsersModel::where('user_id', $pengusul)->first()->role;
 
-        return view('admin.manajemen-lomba.verifikasi-lomba.terima', compact('lomba'));
+        $namaPengusul = '';
+        switch ($rolePengusul) {
+            case 'Admin':
+                $namaPengusul = AdminModel::where('user_id', $pengusul)->first()->nama_admin;
+                break;
+            case 'Dosen':
+                $namaPengusul = DosenModel::where('user_id', $pengusul)->first()->nama_dosen;
+                break;
+            case 'Mahasiswa':
+                $namaPengusul = MahasiswaModel::where('user_id', $pengusul)->first()->nama_mahasiswa;
+                break;
+
+            default:
+                $namaPengusul = 'Pengusul tidak diketahui';
+                break;
+        }
+        return view('admin.manajemen-lomba.verifikasi-lomba.terima', compact('lomba', 'namaPengusul'));
     }
 
     public function tolakLombaAjax($id)
     {
         $lomba = LombaModel::findOrFail($id);
+        $pengusul = $lomba->pengusul_id;
+        $rolePengusul = UsersModel::where('user_id', $pengusul)->first()->role;
 
-        return view('admin.manajemen-lomba.verifikasi-lomba.tolak', compact('lomba'));
+        $namaPengusul = '';
+        switch ($rolePengusul) {
+            case 'Admin':
+                $namaPengusul = AdminModel::where('user_id', $pengusul)->first()->nama_admin;
+                break;
+            case 'Dosen':
+                $namaPengusul = DosenModel::where('user_id', $pengusul)->first()->nama_dosen;
+                break;
+            case 'Mahasiswa':
+                $namaPengusul = MahasiswaModel::where('user_id', $pengusul)->first()->nama_mahasiswa;
+                break;
+
+            default:
+                $namaPengusul = 'Pengusul tidak diketahui';
+                break;
+        }
+        return view('admin.manajemen-lomba.verifikasi-lomba.tolak', compact('lomba', 'namaPengusul'));
     }
 
     public function terimaLomba($id)

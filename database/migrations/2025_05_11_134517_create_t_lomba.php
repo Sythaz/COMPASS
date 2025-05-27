@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('t_lomba', function (Blueprint $table) {
             $table->id('lomba_id');
-            // $table->unsignedBigInteger('kategori_id')->index();
+            $table->unsignedBigInteger('pengusul_id')->index();
             $table->string('nama_lomba',255);
             $table->unsignedBigInteger('tingkat_lomba_id')->index();
             $table->longtext('deskripsi_lomba');
@@ -26,8 +26,8 @@ return new class extends Migration
             $table->enum('status_lomba',['Aktif','Nonaktif']);
             $table->timestamps();
 
-            // $table->foreign('kategori_id')->references('kategori_id')->on('t_kategori');
             $table->foreign('tingkat_lomba_id')->references('tingkat_lomba_id')->on('t_tingkat_lomba');
+            $table->foreign('pengusul_id')->references('user_id')->on('t_users');
         });
     }
 
