@@ -1,8 +1,8 @@
 @extends('layouts.template')
 
-@section('title', 'Informasi Lomba | COMPASS')
-@section('page-title', 'Informasi Lomba')
-@section('page-description', 'Halaman Informasi Lomba yang Tersedia')
+@section('title', 'Data Lomba | COMPASS')
+@section('page-title', 'Data Lomba')
+@section('page-description', 'Halaman Daftar Riwayat Lomba yang pernah Diajukan')
 
 @section('content')
     <div class="row">
@@ -58,45 +58,6 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
-        $(function () {
-            $('#tabel-kelola-lomba').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: '{{ route("info-lomba.list") }}',
-                columns: [
-                    { data: 'DT_RowIndex', name: 'DT_RowIndex' },
-                    { data: 'nama_lomba', name: 'nama_lomba' },
-                    { data: 'kategori', name: 'kategori' },
-                    { data: 'tingkat_lomba', name: 'tingkat_lomba' },
-                    { data: 'awal_registrasi_lomba', name: 'awal_registrasi_lomba' },
-                    { data: 'akhir_registrasi_lomba', name: 'akhir_registrasi_lomba' },
-                    {
-                        data: 'status_verifikasi',
-                        name: 'status_verifikasi',
-                        orderable: false,
-                        searchable: false,
-                        className: 'text-center'
-                    },
-                    {
-                        data: 'aksi',
-                        name: 'aksi',
-                        orderable: false,
-                        searchable: false,
-                        className: 'text-center'
-                    }
-                ]
-            });
-        });
 
-        function modalAction(url) {
-            $.get(url)
-                .done(function (res) {
-                    $('#ajaxModalContent').html(res);
-                    $('#myModal').modal('show');
-                })
-                .fail(function () {
-                    Swal.fire('Gagal', 'Tidak dapat memuat data dari server.', 'error');
-                });
-        }
     </script>
 @endpush

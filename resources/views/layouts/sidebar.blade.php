@@ -119,7 +119,7 @@
                         {{-- Dosen dapat melihat Lomba yang Tersedia dan mengajukan Lomba baru --}}
                         <li><a href="{{ route('dosen.info-lomba.index') }}">Info Lomba</a></li>
                         {{-- Halaman untuk melihat Daftar Lomba yang pernah diajukan Dosen --}}
-                        <li><a href="#">Data Lomba</a></li>
+                        <li><a href="{{ route('dosen.data-lomba.index') }}">Data Lomba</a></li>
                     </ul>
                 </li>
 

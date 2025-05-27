@@ -7,5 +7,12 @@ use Illuminate\Http\Request;
 
 class DataLombaController extends Controller
 {
-    //
+    public function index()
+    {
+        $breadcrumb = (object) [
+            'list' => ['Manajemen Lomba', 'Data Lomba']
+        ];
+
+        return view('dosen.data-lomba.index', compact('breadcrumb'));
+    }
 }

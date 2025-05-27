@@ -240,7 +240,7 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
 
         // Halaman yang menampilkan riwayat Lomba yang pernah diajukan dosen
         Route::prefix('dosen/data-lomba')->group(function () {
-            Route::get('/', [DataLombaController::class, 'index'])->name('dosen.info-lomba.index');
+            Route::get('/', [DataLombaController::class, 'index'])->name('dosen.data-lomba.index');
             Route::get('data-lomba/list', [DataLombaController::class, 'list'])->name('data-lomba.list');
             Route::get('data-lomba/{id}/show', [DataLombaController::class, 'showAjax'])->name('data-lomba.show');
         });
