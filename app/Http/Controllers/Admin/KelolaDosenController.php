@@ -76,7 +76,6 @@ class KelolaDosenController extends Controller
             ->select(
                 'dosen_id',
                 'user_id',
-                'kategori_id',
                 'nip_dosen',
                 'nama_dosen',
                 'status'

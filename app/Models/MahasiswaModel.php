@@ -17,7 +17,6 @@ class MahasiswaModel extends Model
         'user_id',
         'prodi_id',
         'periode_id',
-        'level_minbak_id',
         'nim_mahasiswa',
         'nama_mahasiswa',
         'img_mahasiswa',
@@ -31,21 +30,39 @@ class MahasiswaModel extends Model
 
     public function users(): BelongsTo
     {
-        return $this->belongsTo(UsersModel::class, 'user_id', 'user_id');
+        return $this->belongsTo(
+            UsersModel::class,
+            'user_id',
+            'user_id'
+        );
     }
 
     public function prodi(): BelongsTo
     {
-        return $this->belongsTo(ProdiModel::class, 'prodi_id', 'prodi_id');
+        return $this->belongsTo(
+            ProdiModel::class,
+            'prodi_id',
+            'prodi_id'
+        );
     }
 
     public function periode(): BelongsTo
     {
-        return $this->belongsTo(PeriodeModel::class, 'periode_id', 'periode_id');
+        return $this->belongsTo(
+            PeriodeModel::class,
+            'periode_id',
+            'periode_id'
+        );
     }
 
-    public function level_minat_bakat(): BelongsTo
+    public function kategoris()
     {
-        return $this->belongsTo(LevelMinatBakatModel::class, 'level_minbak_id', 'level_minbak_id');
+        return $this->belongsToMany(
+            KategoriModel::class,
+            't_kategori_mahasiswa',
+            'mahasiswa_id',
+            'kategori_id'
+        );
     }
+
 }

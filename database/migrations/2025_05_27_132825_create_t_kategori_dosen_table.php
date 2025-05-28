@@ -15,6 +15,8 @@ return new class extends Migration {
 
             $table->foreign('dosen_id')->references('dosen_id')->on('t_dosen')->onDelete('cascade');
             $table->foreign('kategori_id')->references('kategori_id')->on('t_kategori')->onDelete('cascade');
+
+            $table->unique(['dosen_id', 'kategori_id']); // ← mencegah data ganda
         });
     }
 

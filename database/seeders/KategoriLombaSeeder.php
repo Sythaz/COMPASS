@@ -18,7 +18,12 @@ class KategoriLombaSeeder extends Seeder
             ['lomba_id' => 1, 'kategori_id' => 2, 'created_at' => now(), 'updated_at' => now()],
             ['lomba_id' => 2, 'kategori_id' => 1, 'created_at' => now(), 'updated_at' => now()],
             ['lomba_id' => 2, 'kategori_id' => 2, 'created_at' => now(), 'updated_at' => now()],
-            ['lomba_id' => 2, 'kategori_id' => 3, 'created_at' => now(), 'updated_at' => now()],
+            ['lomba_id' => 3, 'kategori_id' => 3, 'created_at' => now(), 'updated_at' => now()],
+            ['lomba_id' => 3, 'kategori_id' => 2, 'created_at' => now(), 'updated_at' => now()],
+            ['lomba_id' => 4, 'kategori_id' => 2, 'created_at' => now(), 'updated_at' => now()],
+            ['lomba_id' => 4, 'kategori_id' => 3, 'created_at' => now(), 'updated_at' => now()],
+            ['lomba_id' => 5, 'kategori_id' => 2, 'created_at' => now(), 'updated_at' => now()],
+            ['lomba_id' => 5, 'kategori_id' => 3, 'created_at' => now(), 'updated_at' => now()],
         ]);
     }
 }
