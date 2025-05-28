@@ -129,9 +129,9 @@ class KelolaDosenController extends Controller
     // Modal actions Edit
     public function editAjax($id)
     {
-        $dosen = DosenModel::with(['users', 'kategori'])->findOrFail($id);
-        $kategori = KategoriModel::all();
-        return view('admin.kelola-pengguna.kelola-dosen.edit', compact('dosen', 'kategori'));
+        $dosen = DosenModel::with(['users', 'kategoris'])->findOrFail($id);
+        $kategoris = KategoriModel::all();
+        return view('admin.kelola-pengguna.kelola-dosen.edit', compact('dosen', 'kategoris'));
     }
 
     // Modal actions Delete
@@ -192,39 +192,53 @@ class KelolaDosenController extends Controller
         $user = $dosen->users;
 
         $request->validate([
-            'nip_dosen' => 'required|unique:t_dosen,nip_dosen,' . $dosen->dosen_id . ',dosen_id',
+            'nip_dosen' => [
+                'required',
+                Rule::unique('t_dosen', 'nip_dosen')->ignore($dosen->dosen_id, 'dosen_id'),
+            ],
             'nama_dosen' => 'required',
-            'kategori_id' => 'required|exists:t_kategori,kategori_id', // perbaikan tabel kategori
-            'username' => 'required|unique:t_users,username,' . $user->user_id . ',user_id',
+            'kategori_id' => 'required|array',
+            'kategori_id.*' => 'exists:t_kategori,kategori_id',
             'role' => 'required',
             'password' => 'nullable|min:6',
             'phrase' => 'nullable',
             'alamat' => 'nullable|string|max:255',
-            'email' => ['nullable', 'email', Rule::unique('t_dosen')->ignore($dosen->dosen_id, 'dosen_id')],
-            'no_hp' => ['nullable', Rule::unique('t_dosen')->ignore($dosen->dosen_id, 'dosen_id')],
+            'email' => [
+                'nullable',
+                'email',
+                Rule::unique('t_dosen', 'email')->ignore($dosen->dosen_id, 'dosen_id'),
+            ],
+            'no_hp' => [
+                'nullable',
+                Rule::unique('t_dosen', 'no_hp')->ignore($dosen->dosen_id, 'dosen_id'),
+            ],
             'kelamin' => 'required|in:L,P',
         ]);
 
         DB::transaction(function () use ($request, $dosen, $user) {
-            // Update user
-            $user->username = $request->username;
+            // Update username agar selalu ikut nip
+            $user->username = $request->nip_dosen;
+
+            // Update password hanya jika dikirim
             if ($request->filled('password')) {
                 $user->password = Hash::make($request->password);
             }
+
             $user->role = $request->role;
-            $user->phrase = $request->input('phrase', $user->phrase); // update phrase
+            $user->phrase = $request->input('phrase', $user->phrase);
             $user->save();
 
-            // Update dosen dengan cek apakah ada di request, kalau tidak pakai data lama
-            $dosen->nip_dosen = $request->has('nip_dosen') ? $request->nip_dosen : $dosen->nip_dosen;
-            $dosen->nama_dosen = $request->has('nama_dosen') ? $request->nama_dosen : $dosen->nama_dosen;
-            $dosen->kategori_id = $request->has('kategori_id') ? $request->kategori_id : $dosen->kategori_id;
-            $dosen->alamat = $request->has('alamat') ? $request->alamat : $dosen->alamat;
-            $dosen->email = $request->has('email') ? $request->email : $dosen->email;
-            $dosen->no_hp = $request->has('no_hp') ? $request->no_hp : $dosen->no_hp;
-            $dosen->kelamin = $request->has('kelamin') ? $request->kelamin : $dosen->kelamin;
-
+            // Update dosen
+            $dosen->nip_dosen = $request->nip_dosen;
+            $dosen->nama_dosen = ucwords(strtolower($request->nama_dosen));
+            $dosen->email = $request->email ?: null;
+            $dosen->no_hp = $request->no_hp ?: null;
+            $dosen->alamat = $request->alamat ?: null;
+            $dosen->kelamin = $request->kelamin;
             $dosen->save();
+
+            // Update many-to-many kategori
+            $dosen->kategoris()->sync($request->kategori_id);
         });
 
         return response()->json([
@@ -299,11 +313,10 @@ class KelolaDosenController extends Controller
         $status = $request->input('status');
         $kategori_id = $request->input('kategori_id');
 
-        $query = DosenModel::with(['kategori', 'users'])
+        $query = DosenModel::with(['kategoris', 'users']) // perhatikan plural 'kategoris' karena relasi many-to-many
             ->select(
                 'dosen_id',
                 'user_id',
-                'kategori_id',
                 'nip_dosen',
                 'nama_dosen',
                 'kelamin',
@@ -319,8 +332,11 @@ class KelolaDosenController extends Controller
             $query->where('status', 'Aktif');
         }
 
+        // Jika ingin filter kategori, karena many-to-many, gunakan whereHas
         if ($kategori_id) {
-            $query->where('kategori_id', $kategori_id);
+            $query->whereHas('kategoris', function ($q) use ($kategori_id) {
+                $q->where('kategori_id', $kategori_id);
+            });
         }
 
         $dosen = $query->get();
@@ -350,10 +366,13 @@ class KelolaDosenController extends Controller
         $no = 1;
         $baris = 2;
         foreach ($dosen as $row) {
+            // gabungkan nama kategori yang terkait, pisahkan dengan koma
+            $bidang = $row->kategoris->pluck('nama_kategori')->implode(', ');
+
             $sheet->setCellValue('A' . $baris, $no);
             $sheet->setCellValueExplicit('B' . $baris, $row->nip_dosen, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
             $sheet->setCellValue('C' . $baris, $row->nama_dosen);
-            $sheet->setCellValue('D' . $baris, $row->kategori->nama_kategori ?? '-');
+            $sheet->setCellValue('D' . $baris, $bidang ?: '-');
             $sheet->setCellValue('E' . $baris, $row->kelamin ?? '-');
             $sheet->setCellValue('F' . $baris, $row->email ?? '-');
             $sheet->setCellValue('G' . $baris, $row->no_hp ?? '-');
@@ -370,7 +389,7 @@ class KelolaDosenController extends Controller
         }
 
         // set kolom auto size
-        foreach (range('A', 'J') as $columnID) {
+        foreach (range('A', 'I') as $columnID) {
             $sheet->getColumnDimension($columnID)->setAutoSize(true);
         }
 
@@ -378,7 +397,6 @@ class KelolaDosenController extends Controller
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
         $filename = 'Data Dosen ' . date('Ymd_His') . '.xlsx';
 
-        // return response dengan file excel
         return response()->streamDownload(function () use ($writer) {
             $writer->save('php://output');
         }, $filename);
@@ -462,7 +480,7 @@ class KelolaDosenController extends Controller
 
                     $nip = trim($value['A']); // Kolom A → NIP
                     $nama = trim($value['B']); // Kolom B → Nama Dosen
-                    $kategori = trim($value['C']); // Kolom C → Nama Kategori (bidang)
+                    $kategoriStr = trim($value['C']); // Kolom C → Nama Kategori (bidang), bisa lebih dari 1 kategori pisah koma
                     $email = trim($value['D']); // Kolom D → Email
                     $no_hp = trim($value['E']); // Kolom E → No HP
                     $alamat = trim($value['F']); // Kolom F → Alamat
@@ -472,15 +490,20 @@ class KelolaDosenController extends Controller
                         $kelamin = 'Belum diisi';
                     }
 
-                    if (empty($nip) || empty($nama) || empty($kategori)) {
+                    if (empty($nip) || empty($nama) || empty($kategoriStr)) {
                         Log::warning("Baris $baris dilewati: Data penting kosong (NIP/Nama/Kategori)");
                         $skipped++;
                         continue;
                     }
 
-                    $kategoriModel = KategoriModel::whereRaw('LOWER(nama_kategori) = ?', [strtolower($kategori)])->first();
-                    if (!$kategoriModel) {
-                        Log::warning("Baris $baris dilewati: Kategori '$kategori' tidak ditemukan");
+                    // Parse kategori, support multiple kategori pisah koma
+                    $kategoriNames = array_map('trim', explode(',', $kategoriStr));
+                    // Cari kategori yang sesuai dengan nama, case insensitive
+                    $kategoriModels = KategoriModel::whereIn('nama_kategori', $kategoriNames)->get();
+
+                    // Jika jumlah kategori yang ditemukan tidak sama dengan jumlah nama kategori input, berarti ada kategori tidak ditemukan
+                    if ($kategoriModels->count() !== count($kategoriNames)) {
+                        Log::warning("Baris $baris dilewati: Ada kategori yang tidak ditemukan");
                         $skipped++;
                         continue;
                     }
@@ -492,7 +515,7 @@ class KelolaDosenController extends Controller
                         continue;
                     }
 
-                    // **Cek duplikat email dan no_hp di t_dosen**
+                    // Cek duplikat email dan no_hp di t_dosen
                     $existingEmail = DosenModel::where('email', $email)->first();
                     if ($email && $existingEmail) {
                         Log::info("Baris $baris dilewati: Email '$email' sudah digunakan");
@@ -515,20 +538,22 @@ class KelolaDosenController extends Controller
                             'phrase' => $nip,
                         ]);
 
-                        DosenModel::create([
+                        $dosen = DosenModel::create([
                             'user_id' => $user->user_id,
                             'nip_dosen' => $nip,
                             'nama_dosen' => ucwords(strtolower($nama)),
-                            'kategori_id' => $kategoriModel->kategori_id,
-                            'email' => $email,
-                            'no_hp' => $no_hp,
-                            'alamat' => $alamat,
+                            'email' => $email ?: null,
+                            'no_hp' => $no_hp ?: null,
+                            'alamat' => $alamat ?: null,
                             'kelamin' => $kelamin,
                             'img_dosen' => 'profil-default.jpg',
                             'status' => 'Aktif',
                             'created_at' => now(),
                             'updated_at' => now(),
                         ]);
+
+                        // Hubungkan dosen dengan kategori many-to-many
+                        $dosen->kategoris()->sync($kategoriModels->pluck('kategori_id')->toArray());
 
                         $jumlahBerhasil++;
                     } catch (\Exception $e) {

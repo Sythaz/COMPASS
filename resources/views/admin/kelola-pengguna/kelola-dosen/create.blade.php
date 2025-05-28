@@ -157,12 +157,14 @@
         {
             nip_dosen: { required: true },
             nama_dosen: { required: true },
-            kategori_id: { required: true },
+            kelamin: { required: true },
+            'kategori_id[]': { required: true },
         },
         {
             nip_dosen: { required: "NIP wajib diisi" },
             nama_dosen: { required: "Nama wajib diisi" },
-            kategori_id: { required: "Kategori wajib dipilih" },
+            kelamin: { required: "Jenis Kelamin wajib dipilih" },
+            'kategori_id[]': { required: "Pilih Minimal 1 Bidang" },
             username: { required: "Username wajib diisi" },
             password: {
                 required: "Password wajib diisi",
