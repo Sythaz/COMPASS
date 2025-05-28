@@ -1,23 +1,20 @@
-<form id="form-delete-dosen" method="POST" action="{{ url('admin/kelola-pengguna/dosen/' . $dosen->dosen_id) }}">
+<form id="form-aktivasi-dosen" method="POST" action="{{ route('dosen.history.aktivasi', $dosen->dosen_id) }}">
     @csrf
-    @method('DELETE')
+    @method('PUT')
 
-    <div class="modal-header bg-primary rounded">
+    <div class="modal-header bg-success rounded">
         <h5 class="modal-title text-white">
-            <i class="fas fa-trash-alt mr-2"></i>Nonaktifkan Dosen
+            <i class="fas fa-check-circle mr-2"></i>Aktifkan Dosen
         </h5>
-        <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
     </div>
 
     <div class="modal-body">
-        <div class="alert alert-danger">
-            <i class="fas fa-exclamation-triangle fa-lg mr-2"></i>
-            <strong class="alert-heading h4">Konfirmasi Penonaktifan Data</strong>
+        <div class="alert alert-success">
+            <i class="fas fa-info-circle fa-lg mr-2"></i>
+            <strong class="alert-heading h4">Apakah anda yakin untuk mengaktifkan dosen ini?</strong>
             <hr class="my-2">
-            Data pengguna akan tetap tersimpan di dalam sistem, namun statusnya akan diubah menjadi
-            <strong>Nonaktif</strong>. Proses ini dapat dibatalkan kapan saja jika diperlukan.
+            Data dosen akan diaktifkan dan dapat digunakan kembali dalam sistem.
         </div>
 
         <table class="table table-bordered mt-3 mb-0">
@@ -31,9 +28,7 @@
             </tr>
             <tr>
                 <th>Bidang</th>
-                <td class="text-start">
-                    {{ $dosen->kategoris->pluck('nama_kategori')->implode(', ') ?: '-' }}
-                </td>
+                <td class="text-start">{{ $dosen->kategori->nama_kategori ?? '-' }}</td>
             </tr>
             <tr>
                 <th>Username</th>
@@ -43,8 +38,8 @@
     </div>
 
     <div class="modal-footer">
-        <button type="submit" class="btn btn-danger d-flex align-items-center gap-2">
-            <i class="fas fa-lock mr-2"></i>Nonaktifkan
+        <button type="submit" class="btn btn-success d-flex align-items-center gap-2">
+            <i class="fas fa-check-circle mr-2"></i>Aktifkan
         </button>
         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
             <i class="fas fa-times mr-2"></i>Batal
@@ -53,35 +48,42 @@
 </form>
 
 <script>
-    $(document).off('submit', '#form-delete-dosen'); // Hapus event handler lama (jika ada)
-    $(document).on('submit', '#form-delete-dosen', function (e) {
+    // Hapus event handler lama (jika ada) agar tidak dobel
+    $(document).off('submit', '#form-aktivasi-dosen');
+
+    // Pasang event handler baru untuk submit form aktivasi dosen
+    $(document).on('submit', '#form-aktivasi-dosen', function (e) {
         e.preventDefault();
+
         let form = $(this);
         let url = form.attr('action');
 
         $.ajax({
             url: url,
-            type: 'DELETE',
+            type: 'PUT',
             data: form.serialize(),
             success: function (response) {
                 if (response.success) {
                     Swal.fire('Berhasil', response.message, 'success').then(() => {
-                        // Tutup modal, pastikan id modal benar
+                        // Cari modal yang sedang aktif (class .modal.show)
                         var modalEl = document.querySelector('.modal.show');
                         if (modalEl) {
+                            // Dapatkan instance bootstrap modal dari elemen modal
                             let modalInstance = bootstrap.Modal.getInstance(modalEl);
-                            if (modalInstance) modalInstance.hide();
+                            if (modalInstance) {
+                                modalInstance.hide(); // tutup modal
+                            }
                         }
 
-                        // Reload tabel DataTables (ganti sesuai id tabel dosen)
+                        // Reload data tabel dosen tanpa reset paging
                         $('#tabel-dosen').DataTable().ajax.reload(null, false);
                     });
                 } else {
-                    Swal.fire('Error', 'Hapus gagal.', 'error');
+                    Swal.fire('Error', response.message || 'Aktivasi gagal.', 'error');
                 }
             },
             error: function () {
-                Swal.fire('Error', 'Terjadi kesalahan saat menghapus data.', 'error');
+                Swal.fire('Error', 'Terjadi kesalahan saat mengaktifkan data.', 'error');
             }
         });
     });

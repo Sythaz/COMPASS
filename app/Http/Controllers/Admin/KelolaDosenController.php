@@ -32,15 +32,21 @@ class KelolaDosenController extends Controller
     // List data Dosen
     public function list(Request $request)
     {
-        $data = DosenModel::with(['users', 'kategori'])
-            ->select('dosen_id', 'user_id', 'nip_dosen', 'nama_dosen', 'kategori_id', 'status')
+        $data = DosenModel::with(['users', 'kategoris']) // pakai 'kategoris' sesuai nama relasi
+            ->select('dosen_id', 'user_id', 'nip_dosen', 'nama_dosen', 'status')
             ->where('status', 'Aktif')
             ->get();
 
         return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('username', fn($row) => $row->users ? ' ' . $row->users->username : '-')
-            ->addColumn('kategori', fn($row) => $row->kategori->nama_kategori ?? '-')
+            ->addColumn('kategori', function ($row) {
+                // Gabungkan nama kategori jika banyak
+                if ($row->kategoris && $row->kategoris->count()) {
+                    return $row->kategoris->pluck('nama_kategori')->implode(', ');
+                }
+                return '-';
+            })
             ->editColumn('nip_dosen', function ($row) {
                 return (string) $row->nip_dosen;  // pastikan nip dikirim sebagai string
             })
@@ -50,11 +56,10 @@ class KelolaDosenController extends Controller
                 }
                 return '<span class="badge bg-secondary">-</span>';
             })
-
             ->addColumn('aksi', function ($row) {
                 $btn = '<button onclick="modalAction(\'' . url('admin/kelola-pengguna/dosen/' . $row->dosen_id . '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('admin/kelola-pengguna/dosen/' . $row->dosen_id . '/edit_ajax') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
-                $btn .= '<button onclick="modalAction(\'' . url('admin/kelola-pengguna/dosen/' . $row->dosen_id . '/delete_ajax') . '\')" class="btn btn-danger btn-sm">Hapus</button>';
+                $btn .= '<button onclick="modalAction(\'' . url('admin/kelola-pengguna/dosen/' . $row->dosen_id . '/delete_ajax') . '\')" class="btn btn-danger btn-sm">Nonaktifkan</button>';
                 return $btn;
             })
             ->rawColumns(['aksi', 'status'])
@@ -71,7 +76,7 @@ class KelolaDosenController extends Controller
 
     public function list_history(Request $request)
     {
-        $data = DosenModel::with(['users', 'kategori'])
+        $data = DosenModel::with(['users', 'kategoris']) // ganti 'kategori' jadi 'kategoris'
             ->where('status', 'Nonaktif') // hanya ambil dosen yang statusnya Nonaktif
             ->select(
                 'dosen_id',
@@ -84,14 +89,11 @@ class KelolaDosenController extends Controller
 
         return DataTables::of($data)
             ->addIndexColumn()
-            ->addColumn('nip', fn($row) => $row->nip_dosen)
+            ->addColumn('nip', fn($row) => (string) $row->nip_dosen)
             ->addColumn('nama', fn($row) => $row->nama_dosen)
-            ->editColumn('username', function ($row) {
-                return (string) $row->users->username;  // pastikan nip dikirim sebagai string
-            })
-
-            ->editColumn('nip_dosen', function ($row) {
-                return (string) $row->nip_dosen;  // pastikan nip dikirim sebagai string
+            ->addColumn('username', fn($row) => $row->users->username ?? '-')
+            ->addColumn('kategori', function ($row) {
+                return $row->kategoris->pluck('nama_kategori')->implode(', ') ?: '-';
             })
             ->addColumn('status', function ($row) {
                 if ($row->status === 'Aktif') {
@@ -102,7 +104,7 @@ class KelolaDosenController extends Controller
                 return '<span class="badge bg-secondary">-</span>';
             })
             ->addColumn('aksi', function ($row) {
-                $btn = '<button onclick="aktifkanDosen(' . $row->dosen_id . ')" class="btn btn-success btn-sm">Aktifkan</button> ';
+                $btn = '<span style="padding-right:10px;"><button onclick="modalAction(\'' . route('dosen.history.aktivasi.konfirmasi', $row->dosen_id) . '\')" class="btn btn-success btn-sm">Aktifkan</button></span>';
                 $btn .= '<button onclick="modalAction(\'' . url('admin/kelola-pengguna/dosen/history/delete/' . $row->dosen_id) . '\')" class="btn btn-danger btn-sm">Hapus</button>';
                 return $btn;
             })
@@ -113,14 +115,14 @@ class KelolaDosenController extends Controller
     // Form Create
     public function create()
     {
-        $kategori = KategoriModel::all();
-        return view('admin.kelola-pengguna.kelola-dosen.create', compact('kategori'));
+        $kategoris = KategoriModel::all();
+        return view('admin.kelola-pengguna.kelola-dosen.create', compact('kategoris'));
     }
 
     // Modal actions Show
     public function showAjax($id)
     {
-        $dosen = DosenModel::with(['users', 'kategori'])->findOrFail($id);
+        $dosen = DosenModel::with(['users', 'kategoris'])->findOrFail($id);
         return view('admin.kelola-pengguna.kelola-dosen.show', compact('dosen'));
     }
 
@@ -145,7 +147,8 @@ class KelolaDosenController extends Controller
         $request->validate([
             'nip_dosen' => 'required|unique:t_dosen,nip_dosen',
             'nama_dosen' => 'required',
-            'kategori_id' => 'required|exists:t_kategori,kategori_id',
+            'kategori_id' => 'required|array',
+            'kategori_id.*' => 'exists:t_kategori,kategori_id',
             'role' => 'required',
             'email' => 'nullable|email|unique:t_dosen,email',
             'no_hp' => 'nullable|unique:t_dosen,no_hp',
@@ -161,17 +164,19 @@ class KelolaDosenController extends Controller
                 'phrase' => $request->nip_dosen,
             ]);
 
-            DosenModel::create([
+            $dosen = DosenModel::create([
                 'user_id' => $user->user_id,
                 'nip_dosen' => $request->nip_dosen,
                 'nama_dosen' => ucwords(strtolower($request->nama_dosen)),
-                'kategori_id' => $request->kategori_id,
                 'img_dosen' => 'profil-default.jpg',
                 'email' => $request->email ?: null,
                 'no_hp' => $request->no_hp ?: null,
                 'alamat' => $request->alamat ?: null,
                 'kelamin' => $request->kelamin,
             ]);
+
+            // Simpan relasi many-to-many dosen-kategori
+            $dosen->kategoris()->sync($request->kategori_id);
         });
 
         return response()->json([
@@ -241,6 +246,11 @@ class KelolaDosenController extends Controller
             'success' => true,
             'message' => 'Data Dosen Berhasil Dinonaktifkan'
         ]);
+    }
+    public function confirm_aktivasi($id)
+    {
+        $dosen = DosenModel::findOrFail($id);
+        return view('admin.kelola-pengguna.kelola-dosen.aktivasi', compact('dosen'));
     }
 
     public function aktivasi($id)
