@@ -135,7 +135,7 @@
                     { data: 'nama_admin', name: 'nama_admin' },
                     { data: 'username', name: 'users.username' },
                     { data: 'status', name: 'status', className: 'text-center' },
-                    { data: 'aksi', name: 'aksi', orderable: false, searchable: false, className: 'text-center', width: '150px' },
+                    { data: 'aksi', name: 'aksi', orderable: false, searchable: false, className: 'text-center', width: '180px' },
                 ],
                 drawCallback: function () {
                     $(".dataTables_wrapper").css({ margin: "0", padding: "0" });

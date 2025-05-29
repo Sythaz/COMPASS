@@ -22,6 +22,12 @@
             <td class="text-start">{{ $mahasiswa->nama_mahasiswa }}</td>
         </tr>
         <tr>
+            <th>Minat Bakat</th>
+            <td class="text-start">
+                {{ $mahasiswa->kategoris->pluck('nama_kategori')->implode(', ') ?: '-' }}
+            </td>
+        </tr>
+        <tr>
             <th>Jenis Kelamin</th>
             <td class="text-start">{{ $mahasiswa->kelamin }}</td>
         </tr>

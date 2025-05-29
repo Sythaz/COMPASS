@@ -61,17 +61,19 @@
                 value="{{ old('alamat', $dosen->alamat) }}" placeholder="Alamat tempat tinggal">
         </div>
         {{-- Bidang Minat Bakat --}}
-        <label for="kategori_id" class="col-form-label mt-2">Bidang Dosen<span class="text-danger">*</span></label>
-        <div class="custom-validation">
-            <select name="kategori_id[]" id="kategori_id" class="form-control multiselect-dropdown-kategori"
-                multiple="multiple" required>
-                <option value="">-- Pilih Kategori --</option>
-                @foreach ($kategoris as $kategori)
-                    <option value="{{ $kategori->kategori_id }}" {{ in_array($kategori->kategori_id, $dosen->kategoris->pluck('kategori_id')->toArray()) ? 'selected' : '' }}>
-                        {{ $kategori->nama_kategori }}
-                    </option>
-                @endforeach
-            </select>
+        <div class="form-group mb-3">
+            <label for="kategori_id" class="col-form-label mt-2">Bidang Dosen<span class="text-danger">*</span></label>
+            <div class="custom-validation">
+                <select name="kategori_id[]" id="kategori_id" class="form-control multiselect-dropdown-kategori"
+                    multiple="multiple" required>
+                    <option value="">-- Pilih Kategori --</option>
+                    @foreach ($kategoris as $kategori)
+                        <option value="{{ $kategori->kategori_id }}" {{ in_array($kategori->kategori_id, $dosen->kategoris->pluck('kategori_id')->toArray()) ? 'selected' : '' }}>
+                            {{ $kategori->nama_kategori }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
         </div>
         {{-- Password --}}
         <div class="form-group">

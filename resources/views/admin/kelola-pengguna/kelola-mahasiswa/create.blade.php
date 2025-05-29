@@ -29,6 +29,21 @@
             </div>
         </div>
 
+        {{-- Bidang Mahasiswa --}}
+        <div class="form-group">
+            <label for="kategori_id" class="col-form-label mt-2">Minat Bakat<span class="text-danger">*</span></label>
+            <div class="custom-validation">
+                <select name="kategori_id[]" id="kategori_id" class="form-control multiselect-dropdown-kategori"
+                    multiple="multiple" required>
+                    @foreach ($kategoris as $kategori)
+                        <option value="{{ $kategori->kategori_id }}" @if(isset($mahasiswa) && $mahasiswa->kategoris->contains('kategori_id', $kategori->kategori_id)) selected @endif>
+                            {{ $kategori->nama_kategori }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+
         {{-- Jenis Kelamin Mahasiswa --}}
         <div class="form-group">
             <label for="kelamin" class="col-form-label">Jenis Kelamin <span class="text-danger">*</span></label>
@@ -41,6 +56,38 @@
                     </option>
                 </select>
                 <span class="error-text text-danger" id="error-kelamin"></span>
+            </div>
+        </div>
+
+        {{-- Program Studi --}}
+        <div class="form-group">
+            <label for="prodi_id" class="col-form-label">Program Studi <span class="text-danger">*</span></label>
+            <div class="custom-validation">
+                <select name="prodi_id" id="prodi_id" class="form-control" required>
+                    <option value="">-- Pilih Program Studi --</option>
+                    @foreach ($list_prodi as $prodi)
+                        <option value="{{ $prodi->prodi_id }}" {{ old('prodi_id', $mahasiswa->prodi_id ?? '') == $prodi->prodi_id ? 'selected' : '' }}>
+                            {{ $prodi->nama_prodi }}
+                        </option>
+                    @endforeach
+                </select>
+                <span class="error-text text-danger" id="error-prodi_id"></span>
+            </div>
+        </div>
+
+        {{-- Periode --}}
+        <div class="form-group">
+            <label for="periode_id" class="col-form-label">Periode <span class="text-danger">*</span></label>
+            <div class="custom-validation">
+                <select name="periode_id" id="periode_id" class="form-control" required>
+                    <option value="">-- Pilih Periode --</option>
+                    @foreach ($list_periode as $periode)
+                        <option value="{{ $periode->periode_id }}" {{ old('periode_id', $mahasiswa->periode_id ?? '') == $periode->periode_id ? 'selected' : '' }}>
+                            {{ $periode->semester_periode }}
+                        </option>
+                    @endforeach
+                </select>
+                <span class="error-text text-danger" id="error-periode_id"></span>
             </div>
         </div>
 
@@ -77,78 +124,6 @@
             </div>
         </div>
 
-        {{-- Program Studi --}}
-        <div class="form-group">
-            <label for="prodi_id" class="col-form-label">Program Studi <span class="text-danger">*</span></label>
-            <div class="custom-validation">
-                <select name="prodi_id" id="prodi_id" class="form-control" required>
-                    <option value="">-- Pilih Program Studi --</option>
-                    @foreach ($list_prodi as $prodi)
-                        <option value="{{ $prodi->prodi_id }}" {{ old('prodi_id', $mahasiswa->prodi_id ?? '') == $prodi->prodi_id ? 'selected' : '' }}>
-                            {{ $prodi->nama_prodi }}
-                        </option>
-                    @endforeach
-                </select>
-                <span class="error-text text-danger" id="error-prodi_id"></span>
-            </div>
-        </div>
-
-        {{-- Periode --}}
-        <div class="form-group">
-            <label for="periode_id" class="col-form-label">Periode <span class="text-danger">*</span></label>
-            <div class="custom-validation">
-                <select name="periode_id" id="periode_id" class="form-control" required>
-                    <option value="">-- Pilih Periode --</option>
-                    @foreach ($list_periode as $periode)
-                        <option value="{{ $periode->periode_id }}" {{ old('periode_id', $mahasiswa->periode_id ?? '') == $periode->periode_id ? 'selected' : '' }}>
-                            {{ $periode->semester_periode }}
-                        </option>
-                    @endforeach
-                </select>
-                <span class="error-text text-danger" id="error-periode_id"></span>
-            </div>
-        </div>
-
-        {{-- Level Minat Bakat --}}
-        <div class="form-group">
-            <label for="level_minbak_id" class="col-form-label">Level Minat Bakat <span
-                    class="text-danger">*</span></label>
-            <div class="custom-validation">
-                <select name="level_minbak_id" id="level_minbak_id" class="form-control" required>
-                    <option value="">-- Pilih Level Minat Bakat --</option>
-                    @foreach ($list_level as $level)
-                        <option value="{{ $level->level_minbak_id }}" {{ old('level_minbak_id', $mahasiswa->level_minbak_id ?? '') == $level->level_minbak_id ? 'selected' : '' }}>
-                            {{ $level->level_minbak }}
-                        </option>
-                    @endforeach
-                </select>
-                <span class="error-text text-danger" id="error-level_minbak_id"></span>
-            </div>
-        </div>
-
-        {{-- Komentar input username karena otomatis di backend --}}
-        {{--
-        <div class="form-group">
-            <label for="username" class="col-form-label">Username <span class="text-danger">*</span></label>
-            <div class="custom-validation">
-                <input type="text" name="username" id="username" class="form-control" required
-                    value="{{ old('username') }}">
-                <span class="error-text text-danger" id="error-username"></span>
-            </div>
-        </div>
-        --}}
-
-        {{-- Komentar input password karena otomatis di backend --}}
-        {{--
-        <div class="form-group">
-            <label for="password" class="col-form-label">Password <span class="text-danger">*</span></label>
-            <div class="custom-validation">
-                <input type="password" name="password" id="password" class="form-control" required minlength="6">
-                <span class="error-text text-danger" id="error-password"></span>
-            </div>
-        </div>
-        --}}
-
         <input type="hidden" name="role" value="mahasiswa">
     </div>
 
@@ -159,6 +134,53 @@
         </button>
     </div>
 </form>
+
+<script src="{{ asset('js-custom/form-validation.js') }}"></script>
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<style>
+    .select2-container .select2-selection--multiple {
+        min-height: 45px;
+        border-radius: 0;
+        border: 1px solid #ced4da !important;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        color: #7571F9;
+        background-color: white !important;
+        outline: 2px solid #7571F9 !important;
+        border: none;
+        border-radius: 4px;
+        margin-top: 10px;
+        margin-left: 12px
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+        color: white;
+        background-color: #7571F9;
+    }
+
+    .select2-container .select2-search--inline .select2-search__field {
+        margin-top: 12px;
+        margin-left: 12px;
+    }
+
+    .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+        background-color: #7571F9;
+    }
+</style>
+
+<script>
+    // Memanggil Select2 multiselect
+    $(document).ready(function () {
+        $('.multiselect-dropdown-kategori').select2({
+            width: '100%',
+            placeholder: 'Belum ada kategori terpilih',
+        });
+    });
+</script>
 
 <script src="{{ asset('js-custom/form-validation.js') }}"></script>
 

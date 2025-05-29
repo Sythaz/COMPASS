@@ -50,7 +50,7 @@ class KelolaAdminController extends Controller
             ->addColumn('aksi', function ($row) {
                 $btn = '<button onclick="modalAction(\'' . url('admin/kelola-pengguna/admin/' . $row->admin_id . '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('admin/kelola-pengguna/admin/' . $row->admin_id . '/edit_ajax') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
-                $btn .= '<button onclick="modalAction(\'' . url('admin/kelola-pengguna/admin/' . $row->admin_id . '/delete_ajax') . '\')" class="btn btn-danger btn-sm">Hapus</button>';
+                $btn .= '<button onclick="modalAction(\'' . url('admin/kelola-pengguna/admin/' . $row->admin_id . '/delete_ajax') . '\')" class="btn btn-danger btn-sm">Nonaktifkan</button>';
                 return $btn;
             })
             ->rawColumns(['aksi', 'status'])
@@ -86,7 +86,7 @@ class KelolaAdminController extends Controller
             })
 
             ->addColumn('aksi', function ($row) {
-                $btn = '<button onclick="aktifkanAdmin(' . $row->admin_id . ')" class="btn btn-success btn-sm">Aktifkan</button> ';
+                $btn = '<span style="padding-right:10px;"><button onclick="modalAction(\'' . route('admin.history.aktivasi.konfirmasi', $row->admin_id) . '\')" class="btn btn-success btn-sm">Aktifkan</button></span>';
                 $btn .= '<button onclick="modalAction(\'' . route('admin.history.delete', $row->admin_id) . '\')" class="btn btn-danger btn-sm">Hapus</button>';
                 return $btn;
             })
@@ -219,6 +219,12 @@ class KelolaAdminController extends Controller
             'success' => true,
             'message' => 'Data Admin Berhasil Dinonaktifkan'
         ]);
+    }
+
+    public function confirm_aktivasi($id)
+    {
+        $admin = AdminModel::with(['users'])->findOrFail($id);
+        return view('admin.kelola-pengguna.kelola-admin.aktivasi', compact('admin'));
     }
 
     public function aktivasi($id)

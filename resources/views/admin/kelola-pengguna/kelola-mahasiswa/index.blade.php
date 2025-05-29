@@ -94,7 +94,7 @@
     <script>
         const idDataTables = '#tabel-mahasiswa';
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('.dropdown-toggle').dropdown();
 
             $(idDataTables).DataTable({
@@ -117,45 +117,45 @@
                     type: "GET"
                 },
                 columns: [{
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex',
-                        searchable: false
-                    },
-                    {
-                        data: 'nim_mahasiswa',
-                        name: 'nim_mahasiswa'
-                    },
-                    {
-                        data: 'nama_mahasiswa',
-                        name: 'nama_mahasiswa'
-                    },
-                    {
-                        data: 'username',
-                        name: 'users.username'
-                    },
-                    {
-                        data: 'prodi',
-                        name: 'prodi.prodi_nama'
-                    },
-                    {
-                        data: 'periode',
-                        name: 'periode.periode_nama'
-                    },
-                    {
-                        data: 'status',
-                        name: 'status',
-                        className: 'text-center'
-                    },
-                    {
-                        data: 'aksi',
-                        name: 'aksi',
-                        orderable: false,
-                        searchable: false,
-                        className: 'text-center',
-                        width: '160px'
-                    },
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    searchable: false
+                },
+                {
+                    data: 'nim_mahasiswa',
+                    name: 'nim_mahasiswa'
+                },
+                {
+                    data: 'nama_mahasiswa',
+                    name: 'nama_mahasiswa'
+                },
+                {
+                    data: 'username',
+                    name: 'users.username'
+                },
+                {
+                    data: 'prodi',
+                    name: 'prodi.prodi_nama'
+                },
+                {
+                    data: 'periode',
+                    name: 'periode.periode_nama'
+                },
+                {
+                    data: 'status',
+                    name: 'status',
+                    className: 'text-center'
+                },
+                {
+                    data: 'aksi',
+                    name: 'aksi',
+                    orderable: false,
+                    searchable: false,
+                    className: 'text-center',
+                    width: '180px'
+                },
                 ],
-                drawCallback: function() {
+                drawCallback: function () {
                     $(".dataTables_wrapper").css({
                         margin: "0",
                         padding: "0"
@@ -190,18 +190,18 @@
 
         function modalAction(url) {
             $.get(url)
-                .done(function(res) {
+                .done(function (res) {
                     $('#ajaxModalContent').html(res);
                     const modalEl = document.getElementById('myModal');
                     const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
                     modal.show();
                 })
-                .fail(function() {
+                .fail(function () {
                     Swal.fire('Gagal', 'Tidak dapat memuat data dari server.', 'error');
                 });
         }
 
-        $(idDataTables).on('change', function() {
+        $(idDataTables).on('change', function () {
             $(idDataTables).DataTable().ajax.reload();
         });
     </script>

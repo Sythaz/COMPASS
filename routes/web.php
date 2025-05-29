@@ -73,7 +73,8 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::post('admin/import', [KelolaAdminController::class, 'import'])->name('admin.import');                   // import
             Route::get('admin/history', [KelolaAdminController::class, 'history'])->name('admin.history');                           // history
             Route::get('admin/list_history', [KelolaAdminController::class, 'list_history'])->name('admin.list_history');            // List history
-            Route::get('admin/history/aktivasi/{id}', [KelolaAdminController::class, 'aktivasi'])->name('admin.history.aktivasi');   // Aktivasi akun kembali
+            Route::get('admin/history/aktivasi/konfirmasi/{id}', [KelolaAdminController::class, 'confirm_aktivasi'])->name('admin.history.aktivasi.konfirmasi');
+            Route::put('admin/history/aktivasi/{id}', [KelolaAdminController::class, 'aktivasi'])->name('admin.history.aktivasi');
             Route::get('admin/history/delete/{id}', [KelolaAdminController::class, 'delete_history'])->name('admin.history.delete'); // Konfirmasi hapus Permanen
             Route::delete('admin/history/destroy/{id}', [KelolaAdminController::class, 'destroy'])->name('admin.history.destroy');   // Hapus Permanen
 
@@ -93,12 +94,8 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::post('dosen/import', [KelolaDosenController::class, 'import'])->name('dosen.import');                   // import excel
             Route::get('dosen/history', [KelolaDosenController::class, 'history'])->name('dosen.history');                           // history
             Route::get('dosen/list_history', [KelolaDosenController::class, 'list_history'])->name('dosen.list_history');            // List history
-        
             Route::get('dosen/history/aktivasi/konfirmasi/{id}', [KelolaDosenController::class, 'confirm_aktivasi'])->name('dosen.history.aktivasi.konfirmasi');
-
-          
             Route::put('dosen/history/aktivasi/{id}', [KelolaDosenController::class, 'aktivasi'])->name('dosen.history.aktivasi');
-
             Route::get('dosen/history/delete/{id}', [KelolaDosenController::class, 'delete_history'])->name('dosen.history.delete'); // Konfirmasi hapus Permanen
             Route::delete('dosen/history/destroy/{id}', [KelolaDosenController::class, 'destroy'])->name('dosen.history.destroy');   // Hapus Permanen
 
@@ -118,7 +115,8 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::post('mahasiswa/import', [KelolaMahasiswaController::class, 'import'])->name('mahasiswa.import');                   // import
             Route::get('mahasiswa/history', [KelolaMahasiswaController::class, 'history'])->name('mahasiswa.history');                            // View history
             Route::get('mahasiswa/list_history', [KelolaMahasiswaController::class, 'list_history'])->name('mahasiswa.list_history');             // List history
-            Route::get('mahasiswa/history/aktivasi/{id}', [KelolaMahasiswaController::class, 'aktivasi'])->name('mahasiswa.history.aktivasi');    // Aktivasi akun kembali
+            Route::get('mahasiswa/history/aktivasi/konfirmasi/{id}', [KelolaMahasiswaController::class, 'confirm_aktivasi'])->name('mahasiswa.history.aktivasi.konfirmasi');
+            Route::put('mahasiswa/history/aktivasi/{id}', [KelolaMahasiswaController::class, 'aktivasi'])->name('mahasiswa.history.aktivasi');
             Route::get('mahasiswa/history/delete/{id}', [KelolaMahasiswaController::class, 'delete_history'])->name('mahasiswa.history.delete');  // Konfirmasi hapus Permanen
             Route::delete('mahasiswa/history/destroy/{id}', [KelolaMahasiswaController::class, 'destroy'])->name('mahasiswa.history.destroy');    // Hapus Permanen
         });

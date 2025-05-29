@@ -9,6 +9,7 @@ use App\Models\MahasiswaModel;
 use App\Models\UsersModel;
 use App\Models\PeriodeModel;
 use App\Models\ProdiModel;
+use App\Models\KategoriModel;
 use App\Models\LevelMinatBakatModel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -32,14 +33,13 @@ class KelolaMahasiswaController extends Controller
 
     public function list(Request $request)
     {
-        $data = MahasiswaModel::with(['users', 'prodi', 'periode', 'level_minat_bakat'])
-            ->where('status', 'Aktif') // hanya ambil mahasiswa yang statusnya Aktif
+        $data = MahasiswaModel::with(['users', 'prodi', 'periode', 'kategoris'])
+            ->where('status', 'Aktif')
             ->select(
                 'mahasiswa_id',
                 'user_id',
                 'prodi_id',
                 'periode_id',
-                'level_minbak_id',
                 'nim_mahasiswa',
                 'nama_mahasiswa',
                 'status'
@@ -48,12 +48,15 @@ class KelolaMahasiswaController extends Controller
 
         return DataTables::of($data)
             ->addIndexColumn()
-            ->addColumn('username', fn($row) => $row->users ? ' ' . $row->users->username : '-')
-            // ->addColumn('role', fn($row) => $row->users->role ?? '-')
+            ->addColumn('username', fn($row) => $row->users ? $row->users->username : '-')
             ->addColumn('prodi', fn($row) => $row->prodi->nama_prodi ?? '-')
             ->addColumn('periode', fn($row) => $row->periode->semester_periode ?? '-')
-            // ->addColumn('level_minat_bakat', fn($row) => $row->level_minat_bakat->level_minbak ?? '-')
-            // ->addColumn('angkatan', fn($row) => $row->angkatan ?? '-')
+            ->addColumn('kategori', function ($row) {
+                if ($row->kategoris && $row->kategoris->count() > 0) {
+                    return $row->kategoris->pluck('nama_kategori')->implode(', ');
+                }
+                return '-';
+            })
             ->addColumn('status', function ($row) {
                 if ($row->status === 'Aktif') {
                     return '<span class="label label-success">Aktif</span>';
@@ -62,11 +65,10 @@ class KelolaMahasiswaController extends Controller
                 }
                 return '<span class="badge bg-secondary">-</span>';
             })
-
             ->addColumn('aksi', function ($row) {
                 $btn = '<button onclick="modalAction(\'' . url('admin/kelola-pengguna/mahasiswa/' . $row->mahasiswa_id . '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('admin/kelola-pengguna/mahasiswa/' . $row->mahasiswa_id . '/edit_ajax') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
-                $btn .= '<button onclick="modalAction(\'' . url('admin/kelola-pengguna/mahasiswa/' . $row->mahasiswa_id . '/delete_ajax') . '\')" class="btn btn-danger btn-sm">Hapus</button>';
+                $btn .= '<button onclick="modalAction(\'' . url('admin/kelola-pengguna/mahasiswa/' . $row->mahasiswa_id . '/delete_ajax') . '\')" class="btn btn-danger btn-sm">Nonaktifkan</button>';
                 return $btn;
             })
             ->rawColumns(['status', 'aksi'])
@@ -83,7 +85,7 @@ class KelolaMahasiswaController extends Controller
 
     public function list_history(Request $request)
     {
-        $data = MahasiswaModel::with(['users', 'prodi', 'periode',])
+        $data = MahasiswaModel::with(['users', 'prodi', 'periode'])
             ->where('status', 'Nonaktif') // hanya ambil mahasiswa yang statusnya Nonaktif
             ->select(
                 'mahasiswa_id',
@@ -110,9 +112,8 @@ class KelolaMahasiswaController extends Controller
                 }
                 return '<span class="badge bg-secondary">-</span>';
             })
-
             ->addColumn('aksi', function ($row) {
-                $btn = '<button onclick="aktifkanMahasiswa(' . $row->mahasiswa_id . ')" class="btn btn-success btn-sm">Aktifkan</button> ';
+                $btn = '<span style="padding-right:10px;"><button onclick="modalAction(\'' . route('mahasiswa.history.aktivasi.konfirmasi', $row->mahasiswa_id) . '\')" class="btn btn-success btn-sm">Aktifkan</button></span>';
                 $btn .= '<button onclick="modalAction(\'' . url('admin/kelola-pengguna/mahasiswa/history/delete/' . $row->mahasiswa_id) . '\')" class="btn btn-danger btn-sm">Hapus</button>';
                 return $btn;
             })
@@ -124,25 +125,25 @@ class KelolaMahasiswaController extends Controller
     {
         $list_prodi = ProdiModel::all();
         $list_periode = PeriodeModel::all();
-        $list_level = LevelMinatBakatModel::all();
+        $kategoris = KategoriModel::all();
 
-        return view('admin.kelola-pengguna.kelola-mahasiswa.create', compact('list_prodi', 'list_periode', 'list_level'));
+        return view('admin.kelola-pengguna.kelola-mahasiswa.create', compact('list_prodi', 'list_periode', 'kategoris'));
     }
 
     public function showAjax($id)
     {
-        $mahasiswa = MahasiswaModel::with(['users', 'prodi', 'periode', 'level_minat_bakat'])->findOrFail($id);
+        $mahasiswa = MahasiswaModel::with(['users', 'prodi', 'periode', 'kategoris'])->findOrFail($id);
         return view('admin.kelola-pengguna.kelola-mahasiswa.show', compact('mahasiswa'));
     }
 
     public function editAjax($id)
     {
-        $mahasiswa = MahasiswaModel::with(['users', 'prodi', 'periode', 'level_minat_bakat'])->findOrFail($id);
+        $mahasiswa = MahasiswaModel::with(['users', 'prodi', 'periode', 'kategoris'])->findOrFail($id);
         $list_prodi = ProdiModel::all();
         $list_periode = PeriodeModel::all();
-        $list_level = LevelMinatBakatModel::all();
+        $kategoris = KategoriModel::all();
 
-        return view('admin.kelola-pengguna.kelola-mahasiswa.edit', compact('mahasiswa', 'list_prodi', 'list_periode', 'list_level'));
+        return view('admin.kelola-pengguna.kelola-mahasiswa.edit', compact('mahasiswa', 'list_prodi', 'list_periode', 'kategoris'));
     }
 
     public function deleteAjax($id)
@@ -153,19 +154,19 @@ class KelolaMahasiswaController extends Controller
 
     public function store(Request $request)
     {
-
         $request->validate([
             'nim_mahasiswa' => 'required|unique:t_mahasiswa,nim_mahasiswa',
             'nama_mahasiswa' => 'required',
             'prodi_id' => 'required|exists:t_prodi,prodi_id',
             'periode_id' => 'required|exists:t_periode,periode_id',
-            'level_minbak_id' => 'required|exists:t_level_minat_bakat,level_minbak_id',
             'angkatan' => 'nullable|integer',
             'role' => 'required',
-            'email' => 'nullable|email|unique:t_dosen,email',
-            'no_hp' => 'nullable|unique:t_dosen,no_hp',
+            'email' => 'nullable|email|unique:t_mahasiswa,email',
+            'no_hp' => 'nullable|unique:t_mahasiswa,no_hp',
             'alamat' => 'nullable|string|max:255',
             'kelamin' => 'required|in:L,P',
+            'kategori_id' => 'required|array|min:1', // minimal 1 kategori
+            'kategori_id.*' => 'exists:t_kategori,kategori_id', // setiap id kategori valid
         ]);
 
         // Validasi username yang akan sama nim belum dipakai
@@ -184,20 +185,22 @@ class KelolaMahasiswaController extends Controller
                 'phrase' => $request->nim_mahasiswa,
             ]);
 
-            MahasiswaModel::create([
+            $mahasiswa = MahasiswaModel::create([
                 'user_id' => $user->user_id,
                 'prodi_id' => $request->prodi_id,
                 'periode_id' => $request->periode_id,
-                'level_minbak_id' => $request->level_minbak_id,
                 'nim_mahasiswa' => $request->nim_mahasiswa,
                 'nama_mahasiswa' => ucwords(strtolower($request->nama_mahasiswa)),
                 'img_mahasiswa' => 'profil-default.jpg',
-                'angkatan' => $request->angkatan ?? 2025,
+                'angkatan' => $request->angkatan ?? date('Y'),
                 'kelamin' => $request->kelamin,
                 'email' => $request->email ?: null,
                 'no_hp' => $request->no_hp ?: null,
                 'alamat' => $request->alamat ?: null,
             ]);
+
+            // Sync kategori many-to-many
+            $mahasiswa->kategoris()->sync($request->kategori_id);
         });
 
         return response()->json([
@@ -216,7 +219,6 @@ class KelolaMahasiswaController extends Controller
             'nama_mahasiswa' => 'required',
             'prodi_id' => 'required|exists:t_prodi,prodi_id',
             'periode_id' => 'required|exists:t_periode,periode_id',
-            'level_minbak_id' => 'required|exists:t_level_minat_bakat,level_minbak_id',
             'username' => 'required|unique:t_users,username,' . $user->user_id . ',user_id',
             'alamat' => 'nullable|string|max:255',
             'email' => 'nullable|email|unique:t_mahasiswa,email,' . $mahasiswa->mahasiswa_id . ',mahasiswa_id',
@@ -226,37 +228,40 @@ class KelolaMahasiswaController extends Controller
             'angkatan' => 'nullable|integer',
             'phrase' => 'nullable|string',
             'kelamin' => 'required|in:L,P',
+            'kategori_id' => 'nullable|array',
+            'kategori_id.*' => 'exists:t_kategori,kategori_id',
         ]);
 
         DB::transaction(function () use ($request, $mahasiswa, $user) {
-            // Update user
+            // Update tabel users
             $user->username = $request->username;
+            $user->role = $request->role;
+            $user->phrase = $request->input('phrase', $user->phrase);
             if ($request->filled('password')) {
                 $user->password = Hash::make($request->password);
             }
-            $user->role = $request->role;
-            $user->phrase = $request->input('phrase', $user->phrase);
             $user->save();
 
-            // Update mahasiswa
-            $mahasiswa->prodi_id = $request->prodi_id;
-            $mahasiswa->periode_id = $request->periode_id;
-            $mahasiswa->level_minbak_id = $request->level_minbak_id;
-            $mahasiswa->nim_mahasiswa = $request->nim_mahasiswa;
-            $mahasiswa->nama_mahasiswa = $request->nama_mahasiswa;
+            // Update tabel mahasiswa
+            $mahasiswa->update([
+                'prodi_id' => $request->prodi_id,
+                'periode_id' => $request->periode_id,
+                'nim_mahasiswa' => $request->nim_mahasiswa,
+                'nama_mahasiswa' => $request->nama_mahasiswa,
+                'alamat' => $request->alamat,
+                'email' => $request->email,
+                'no_hp' => $request->no_hp,
+                'kelamin' => $request->kelamin,
+                'angkatan' => $request->angkatan ?? $mahasiswa->angkatan ?? 2025,
+            ]);
 
-            $mahasiswa->alamat = $request->has('alamat') ? $request->alamat : $mahasiswa->alamat;
-            $mahasiswa->email = $request->has('email') ? $request->email : $mahasiswa->email;
-            $mahasiswa->no_hp = $request->has('no_hp') ? $request->no_hp : $mahasiswa->no_hp;
-            $mahasiswa->kelamin = $request->has('kelamin') ? $request->kelamin : $mahasiswa->kelamin;
-            $mahasiswa->angkatan = $request->angkatan ?? $mahasiswa->angkatan ?? 2025;
-
-            $mahasiswa->save();
+            // Sinkronisasi kategori
+            $mahasiswa->kategoris()->sync($request->kategori_id ?? []);
         });
 
         return response()->json([
             'success' => true,
-            'message' => 'Data Mahasiswa Berhasil Diperbarui'
+            'message' => 'Data Mahasiswa berhasil diperbarui.'
         ]);
     }
 
@@ -274,6 +279,13 @@ class KelolaMahasiswaController extends Controller
             'message' => 'Data Mahasiswa Berhasil Dinonaktifkan'
         ]);
     }
+
+    public function confirm_aktivasi($id)
+    {
+        $mahasiswa = MahasiswaModel::with(['prodi', 'users'])->findOrFail($id);
+        return view('admin.kelola-pengguna.kelola-mahasiswa.aktivasi', compact('mahasiswa'));
+    }
+
     public function aktivasi($id)
     {
         $mahasiswa = MahasiswaModel::findOrFail($id);
@@ -318,7 +330,7 @@ class KelolaMahasiswaController extends Controller
         $prodi_id = $request->input('prodi_id');
         $periode = $request->input('semester_periode');
 
-        $query = MahasiswaModel::with(['prodi', 'periode'])
+        $query = MahasiswaModel::with(['prodi', 'periode', 'kategoris']) // pastikan relasi kategoris() ada
             ->select(
                 'mahasiswa_id',
                 'prodi_id',
@@ -363,13 +375,14 @@ class KelolaMahasiswaController extends Controller
         $sheet->setCellValue('H1', 'No Handphone');
         $sheet->setCellValue('I1', 'Alamat');
         $sheet->setCellValue('J1', 'Status');
+        $sheet->setCellValue('K1', 'Minat & Bakat');
 
         // Atur Text Center
         $sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $sheet->getStyle('F1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $sheet->getStyle('J1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        // Bold header
-        $sheet->getStyle('A1:J1')->getFont()->setBold(true);
+        $sheet->getStyle('K1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+        $sheet->getStyle('A1:K1')->getFont()->setBold(true);
 
         // isi data
         $no = 1;
@@ -386,24 +399,30 @@ class KelolaMahasiswaController extends Controller
             $sheet->setCellValue('I' . $baris, $row->alamat ?? '-');
             $sheet->setCellValue('J' . $baris, $row->status ?? '-');
 
-            // Atur Text Center
-            $sheet->getStyle("A2:A$baris")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->getStyle("F2:F$baris")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->getStyle("J2:J$baris")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            // Ambil dan tampilkan kategori
+            $kategoriList = $row->kategoris->pluck('nama_kategori')->toArray();
+            $kategoriText = count($kategoriList) > 0 ? implode(', ', $kategoriList) : 'Belum memilih minat & bakat';
+            $sheet->setCellValue('K' . $baris, $kategoriText);
+
+            // Atur Alignment per baris
+            $sheet->getStyle("A$baris")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("F$baris")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("J$baris")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("K$baris")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
             $baris++;
             $no++;
         }
 
         // set kolom auto size
-        foreach (range('A', 'J') as $columnID) {
+        foreach (range('A', 'K') as $columnID) {
             $sheet->getColumnDimension($columnID)->setAutoSize(true);
         }
 
         $sheet->setTitle('Data Mahasiswa');
 
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-        $filename = 'Data Mahasiswa ' . date('Y-m-d H:i:s') . '.xlsx';
+        $filename = 'Data Mahasiswa ' . date('Y-m-d H-i-s') . '.xlsx';
 
         // header download
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -453,7 +472,6 @@ class KelolaMahasiswaController extends Controller
     public function import(Request $request)
     {
         if ($request->ajax() || $request->wantsJson()) {
-            // Validasi file
             $rules = [
                 'file_mahasiswa' => ['required', 'mimes:xlsx', 'max:1024'], // max 1MB
             ];
@@ -488,12 +506,9 @@ class KelolaMahasiswaController extends Controller
 
             if (count($data) > 1) {
                 foreach ($data as $baris => $value) {
-                    if ($baris == 1) {
-                        // Skip header
-                        continue;
-                    }
+                    if ($baris == 1)
+                        continue; // Skip header
 
-                    // Format data
                     $nim = trim($value['A']);
                     $nama = trim($value['B']);
                     $nama_prodi = trim($value['C']);
@@ -501,20 +516,18 @@ class KelolaMahasiswaController extends Controller
                     $no_hp = trim($value['E']);
                     $alamat = trim($value['F']);
                     $kelamin = trim($value['G']);
+                    $nama_kategori = isset($value['H']) ? trim($value['H']) : null;
 
-                    // Jika kelamin bukan 'L' atau 'P', beri nilai default
                     if ($kelamin !== 'L' && $kelamin !== 'P') {
                         $kelamin = 'Belum diisi';
                     }
 
-                    // Validasi data penting
                     if (empty($nim) || empty($nama) || empty($nama_prodi)) {
                         Log::warning("Baris $baris dilewati: Data penting kosong (NIM/Nama/Prodi)");
                         $skipped++;
                         continue;
                     }
 
-                    // Cari prodi_id dari nama_prodi (case-insensitive)
                     $prodi = ProdiModel::whereRaw('LOWER(nama_prodi) = ?', [strtolower($nama_prodi)])->first();
                     if (!$prodi) {
                         Log::warning("Baris $baris dilewati: Prodi '$nama_prodi' tidak ditemukan");
@@ -522,14 +535,13 @@ class KelolaMahasiswaController extends Controller
                         continue;
                     }
 
-                    // Cek jika user dengan username (NIM) sudah ada
                     $existingUser = UsersModel::where('username', $nim)->first();
                     if ($existingUser) {
                         Log::info("Baris $baris dilewati: User dengan NIM '$nim' sudah ada");
                         $skipped++;
                         continue;
                     }
-                    // **Cek duplikat email dan no_hp di t_dosen**
+
                     $existingEmail = MahasiswaModel::where('email', $email)->first();
                     if ($email && $existingEmail) {
                         Log::info("Baris $baris dilewati: Email '$email' sudah digunakan");
@@ -545,7 +557,6 @@ class KelolaMahasiswaController extends Controller
                     }
 
                     try {
-                        // Buat user baru
                         $user = UsersModel::create([
                             'username' => $nim,
                             'password' => Hash::make($nim),
@@ -553,12 +564,11 @@ class KelolaMahasiswaController extends Controller
                             'phrase' => $nim,
                         ]);
 
-                        // Buat data mahasiswa
-                        MahasiswaModel::create([
+                        $mahasiswa = MahasiswaModel::create([
                             'user_id' => $user->user_id,
                             'prodi_id' => $prodi->prodi_id,
-                            'periode_id' => 1, // Nilai default
-                            'level_minbak_id' => 1, // Nilai default
+                            'periode_id' => 1,
+                            'level_minbak_id' => 1,
                             'nim_mahasiswa' => $nim,
                             'nama_mahasiswa' => ucwords(strtolower($nama)),
                             'kelamin' => $kelamin,
@@ -566,11 +576,21 @@ class KelolaMahasiswaController extends Controller
                             'no_hp' => $no_hp,
                             'alamat' => $alamat,
                             'img_mahasiswa' => 'profil-default.jpg',
-                            'angkatan' => 2023, // Default ubah di edit
+                            'angkatan' => 2023,
                             'status' => 'Aktif',
                             'created_at' => now(),
                             'updated_at' => now(),
                         ]);
+
+                        // Tambah kategori jika tersedia
+                        if (!empty($nama_kategori)) {
+                            $kategori = KategoriModel::whereRaw('LOWER(nama_kategori) = ?', [strtolower($nama_kategori)])->first();
+                            if ($kategori) {
+                                $mahasiswa->kategoris()->sync([$kategori->kategori_id]);
+                            } else {
+                                Log::warning("Baris $baris: Kategori '$nama_kategori' tidak ditemukan");
+                            }
+                        }
 
                         $jumlahBerhasil++;
                     } catch (\Exception $e) {
