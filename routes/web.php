@@ -237,15 +237,17 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
         // Halaman Informasi Lomba (Menampilkan Lomba yang statusnya Aktif Dan Terverifikasi saja)
         Route::prefix('dosen/info-lomba')->group(function () {
             Route::get('/', [InfoLombaController::class, 'index'])->name('dosen.info-lomba.index');
-            Route::get('info-lomba/list', [InfoLombaController::class, 'list'])->name('info-lomba.list');
-            Route::get('info-lomba/{id}/show', [InfoLombaController::class, 'showAjax'])->name('info-lomba.show');
+            Route::get('list', [InfoLombaController::class, 'list'])->name('info-lomba.list');
+            Route::get('{id}/show', [InfoLombaController::class, 'showAjax'])->name('info-lomba.show');
         });
 
         // Halaman yang menampilkan riwayat Lomba yang pernah diajukan dosen
-        Route::prefix('dosen/data-lomba')->group(function () {
-            Route::get('/', [DataLombaController::class, 'index'])->name('dosen.data-lomba.index');
-            Route::get('data-lomba/list', [DataLombaController::class, 'list'])->name('data-lomba.list');
-            Route::get('data-lomba/{id}/show', [DataLombaController::class, 'showAjax'])->name('data-lomba.show');
+        Route::prefix('dosen/data-lomba')->as('dosen.data-lomba.')->group(function () {
+            Route::get('/', [DataLombaController::class, 'index'])->name('index');
+            Route::get('list', [DataLombaController::class, 'list'])->name('list');
+            Route::get('{id}/show', [DataLombaController::class, 'showAjax'])->name('show');
+            Route::get('create', [DataLombaController::class, 'create'])->name('create');
+            Route::post('store', [DataLombaController::class, 'store'])->name('store');
         });
 
     });

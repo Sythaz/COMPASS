@@ -47,25 +47,9 @@
             </td>
         </tr>
         <tr>
-            <th style="width: 30%">Status: </th>
+            <th style="width: 30%">Status:</th>
             <td class="text-start">
-                <span>
-                    @switch($lomba->status_verifikasi)
-                        @case('Menunggu')
-                            {{-- Terverifikasi --}}
-                            <span class="label label-warning">{{ $lomba->status_verifikasi }}</span>
-                        @break
-
-                        @case('Valid')
-                            {{-- Valid (diverifikasi admin) --}}
-                            <span class="label label-info">{{ $lomba->status_verifikasi }}</span>
-                        @break
-
-                        @default
-                            {{-- Ditolak --}}
-                            <span class="label label-danger">{{ $lomba->status_verifikasi }}</span>
-                    @endswitch
-                </span>
+                {!! $badgeStatus !!}
             </td>
         </tr>
         <tr>

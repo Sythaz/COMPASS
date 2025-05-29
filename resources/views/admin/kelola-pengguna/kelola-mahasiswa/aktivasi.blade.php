@@ -7,7 +7,9 @@
         <h5 class="modal-title text-white">
             <i class="fas fa-check-circle mr-2"></i>Aktifkan Mahasiswa
         </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+        <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
     </div>
 
     <div class="modal-body">

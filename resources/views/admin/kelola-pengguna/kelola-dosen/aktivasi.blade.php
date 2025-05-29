@@ -6,7 +6,9 @@
         <h5 class="modal-title text-white">
             <i class="fas fa-check-circle mr-2"></i>Aktifkan Dosen
         </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+        <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
     </div>
 
     <div class="modal-body">
@@ -28,7 +30,9 @@
             </tr>
             <tr>
                 <th>Bidang</th>
-                <td class="text-start">{{ $dosen->kategori->nama_kategori ?? '-' }}</td>
+                <td class="text-start">
+                    {{ $dosen->kategoris->pluck('nama_kategori')->implode(', ') ?: '-' }}
+                </td>
             </tr>
             <tr>
                 <th>Username</th>

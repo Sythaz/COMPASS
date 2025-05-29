@@ -9,15 +9,6 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <div class="row mb-2">
-                        <div class="col-6">
-                            <a onclick="modalAction('{{ url('/admin/manajemen-lomba/kelola-lomba/create') }}')"
-                                class="btn btn-primary text-white">
-                                <i class="fa-solid fa-plus"></i>
-                                <strong>Tambah Data</strong>
-                            </a>
-                        </div>
-                    </div>
                     <div class="table-responsive">
                         <table class="w-100 table table-striped table-bordered custom-datatable" id="tabel-kelola-lomba">
                             <thead>
@@ -28,7 +19,7 @@
                                     <th>Tingkat</th>
                                     <th>Awal Reg.</th>
                                     <th>Akhir Reg.</th>
-                                    <th class="text-center">Status</th>
+                                    <th class="text-center">Status Lomba</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>

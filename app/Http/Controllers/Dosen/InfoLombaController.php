@@ -57,6 +57,25 @@ class InfoLombaController extends Controller
             ->make(true);
     }
 
+    // Tambahkan method private untuk membuat badge status
+    private function getStatusBadge($status_verifikasi)
+    {
+        $status = strtolower($status_verifikasi ?? '');
+
+        switch ($status) {
+            case 'terverifikasi':
+                return '<span class="badge bg-success text-white">' . e($status_verifikasi) . '</span>';
+            case 'valid':
+                return '<span class="badge bg-info text-white">' . e($status_verifikasi) . '</span>';
+            case 'menunggu':
+                return '<span class="badge bg-warning text-dark">' . e($status_verifikasi) . '</span>';
+            case 'ditolak':
+                return '<span class="badge bg-danger text-white">' . e($status_verifikasi) . '</span>';
+            default:
+                return '<span class="badge bg-secondary text-white">Tidak diketahui</span>';
+        }
+    }
+
     public function showAjax($id)
     {
         $lomba = LombaModel::with('kategori', 'tingkat_lomba')->findOrFail($id);
@@ -79,11 +98,13 @@ class InfoLombaController extends Controller
                 break;
         }
 
+        $badgeStatus = $this->getStatusBadge($lomba->status_verifikasi);
+
         $breadcrumb = (object) [
             'list' => ['Info Lomba', 'Detail Lomba']
         ];
 
-        return view('dosen.info-lomba.show', compact('lomba', 'namaPengusul', 'breadcrumb'));
+        return view('dosen.info-lomba.show', compact('lomba', 'namaPengusul', 'breadcrumb', 'badgeStatus'));
     }
 
 }
