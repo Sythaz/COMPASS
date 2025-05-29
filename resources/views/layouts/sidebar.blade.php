@@ -105,9 +105,9 @@
                     </a>
                     <ul aria-expanded="false">
                         {{-- Halaman untuk melihat Daftar Mahasiswa Bimbingan --}}
-                        <li><a href="#">Kelola Bimbingan</a></li>
+                        <li><a href="{{ route('dosen.kelola-bimbingan.index') }}">Kelola Bimbingan</a></li>
                         {{-- Halaman untuk verifikasi daftar Mahasiswa Bimbingan --}}
-                        <li><a href="{{ route('dosen.manajemen-bimbingan.index') }}">Verifikasi Bimbingan</a></li>
+                        <li><a href="{{ route('dosen.verifikasi-bimbingan.index') }}">Verifikasi Bimbingan</a></li>
                     </ul>
                 </li>
                 {{-- Halaman Lomba --}}

@@ -21,9 +21,10 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Mahasiswa\InputLombaController;
 use App\Http\Controllers\Mahasiswa\InputPrestasiController;
-use App\Http\Controllers\Dosen\ManajemenBimbinganController;
 use App\Http\Controllers\Dosen\InfoLombaController;
 use App\Http\Controllers\Dosen\DataLombaController;
+use App\Http\Controllers\Dosen\KelolaBimbinganController;
+use App\Http\Controllers\Dosen\VerifikasiBimbinganController;
 
 // Validasi global parameter {id} agar hanya angka
 Route::pattern('id', '[0-9]+');
@@ -229,9 +230,21 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::put('/update', [ProfileDosenController::class, 'update'])->name('dosen.profile.update');
         });
 
-        // Halaman Manajemen Bimbingan (Menampilkan Prestasi mahasiswa sesuai Mahasiswa Bimbingan)
-        Route::prefix('dosen/manajemen-bimbingan')->group(function () {
-            Route::get('/', [ManajemenBimbinganController::class, 'index'])->name('dosen.manajemen-bimbingan.index');
+        // Halaman Kelola Bimbingan (Menampilkan Riwayat Prestasi mahasiswa sesuai Mahasiswa yang Di Bimbing)
+        Route::prefix('dosen/kelola-bimbingan')->group(function () {
+            Route::get('/', [KelolaBimbinganController::class, 'index'])->name('dosen.kelola-bimbingan.index');
+            Route::get('list', [KelolaBimbinganController::class, 'list'])->name('dosen.kelola-bimbingan.list');
+            Route::get('{id}/show_ajax', [KelolaBimbinganController::class, 'showAjax'])->name('dosen.kelola-bimbingan.showAjax');
+        });
+
+        // Halaman Verifikasi Bimbingan
+        Route::prefix('dosen/verifikasi-bimbingan')->group(function () {
+            Route::get('/', [VerifikasiBimbinganController::class, 'index'])->name('dosen.verifikasi-bimbingan.index');
+            Route::get('list', [VerifikasiBimbinganController::class, 'list'])->name('dosen.verifikasi-bimbingan.list');
+            Route::get('{id}/terima_prestasi_ajax', [VerifikasiBimbinganController::class, 'terimaPrestasiAjax'])->name('dosen.terimaPrestasiAjax');
+            Route::get('{id}/tolak_prestasi_ajax', [VerifikasiBimbinganController::class, 'tolakPrestasiAjax'])->name('dosen.tolakPrestasiAjax');
+            Route::put('verifikasi/{id}', [VerifikasiBimbinganController::class, 'terimaPrestasi'])->name('dosen.terimaPrestasi');
+            Route::put('tolak/{id}', [VerifikasiBimbinganController::class, 'tolakPrestasi'])->name('dosen.tolakPrestasi');
         });
 
         // Halaman Informasi Lomba (Menampilkan Lomba yang statusnya Aktif Dan Terverifikasi saja)
