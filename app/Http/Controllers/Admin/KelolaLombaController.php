@@ -42,7 +42,7 @@ class KelolaLombaController extends Controller
                 'status_verifikasi'
             ])
             ->where('status_lomba', 'Aktif')
-            ->whereIn('status_verifikasi', ['Terverifikasi', 'Ditolak'])
+            ->whereIn('status_verifikasi', ['Terverifikasi'])
             ->get();
 
         return DataTables::of($dataKelolaLomba)
