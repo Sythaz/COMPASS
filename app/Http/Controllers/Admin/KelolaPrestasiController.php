@@ -35,7 +35,7 @@ class KelolaPrestasiController extends Controller
                 'periode:periode_id,semester_periode'
             ])
                 ->select('prestasi_id', 'mahasiswa_id', 'lomba_id', 'kategori_id', 'dosen_id', 'periode_id', 'jenis_prestasi', 'tanggal_prestasi', 'juara_prestasi', 'status_verifikasi')
-                ->whereIn('status_verifikasi', ['Terverifikasi','Ditolak'])
+                ->whereIn('status_verifikasi', ['Terverifikasi'])
                 ->get();
 
             return DataTables::of($data)
