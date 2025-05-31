@@ -69,6 +69,7 @@
                     <ul aria-expanded="false">
                         <li><a href="{{ route('kelola-lomba.index') }}">Kelola Lomba</a></li>
                         <li><a href="{{ route('verifikasi-lomba.index') }}">Verifikasi Lomba</a></li>
+                        <li><a href="{{ route('verifikasi-pendaftaran.index') }}">Verifikasi Pendaftaran</a></li>
                         <li><a href="{{ route('histori-pengajuan-lomba.index') }}">Histori Pengajuan Lomba</a></li>
                         <li><a href="{{ route('rekomendasi-lomba.index') }}">Rekomendasi Lomba</a></li>
                     </ul>
