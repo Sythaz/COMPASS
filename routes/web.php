@@ -290,6 +290,9 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
                 ->name('mahasiswa.informasi-lomba.riwayat-pendaftaran');
             Route::get('riwayat-pendaftaran/list', [LombaMahasiswaController::class, 'list_pendaftaran'])
                 ->name('mahasiswa.informasi-lomba.list-pendaftaran');
+            // Detail Pendaftaran
+            Route::get('riwayat-pendaftaran/{id}/detail', [LombaMahasiswaController::class, 'detail_pendaftaran'])
+                ->name('mahasiswa.informasi-lomba.detail-pendaftaran');
 
             // Aksi 
             Route::get('{id}/show', [LombaMahasiswaController::class, 'showAjax'])->name('informasi-lomba.show');

@@ -14,13 +14,11 @@
                             <thead>
                                 <tr>
                                     <th style="width: 1px; white-space: nowrap;">No</th>
-                                    <th>Nama</th>
-                                    {{-- <th>Kategori</th> --}}
+                                    <th>Nama Lomba</th>
                                     <th>Tingkat</th>
-                                    <th>Awal Reg.</th>
-                                    <th>Akhir Reg.</th>
+                                    <th>Kategori</th>
                                     <th>Tipe Lomba</th>
-                                    <th class="text-center">Status</th>
+                                    <th>Submit Laporan</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -28,6 +26,7 @@
                         <div class="bootstrap-pagination"></div>
                     </div>
                 </div>
+
                 <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="ajaxModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content" id="ajaxModalContent">
@@ -56,27 +55,19 @@
                 serverSide: true,
                 ajax: '{{ route("mahasiswa.informasi-lomba.list-pendaftaran") }}',
                 columns: [
-                    { data: 'DT_RowIndex', name: 'DT_RowIndex' },
+                    { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
                     { data: 'nama_lomba', name: 'nama_lomba' },
-                    // { data: 'kategori', name: 'kategori' },
                     { data: 'tingkat_lomba', name: 'tingkat_lomba' },
-                    { data: 'awal_registrasi_lomba', name: 'awal_registrasi_lomba' },
-                    { data: 'akhir_registrasi_lomba', name: 'akhir_registrasi_lomba' },
-                    { data: 'tipe_lomba', name: 'tipe_lomba', className: 'text-center' },
-                    {
-                        data: 'status_verifikasi',
-                        name: 'status_verifikasi',
-                        orderable: false,
-                        searchable: false,
-                        className: 'text-center'
-                    },
+                    { data: 'kategori', name: 'kategori' },
+                    { data: 'tipe_lomba', name: 'tipe_lomba' },
+                    { data: 'submit_laporan', name: 'submit_laporan' },
                     {
                         data: 'aksi',
                         name: 'aksi',
                         orderable: false,
                         searchable: false,
                         className: 'text-center',
-                        width: '150px'
+                        width: '80px'
                     }
                 ]
             });

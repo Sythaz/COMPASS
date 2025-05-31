@@ -327,41 +327,37 @@ class LombaMahasiswaController extends Controller
 
     public function list_pendaftaran(Request $request)
     {
-        // Ambil data lomba yang status_lomba = 'Aktif' dan status_verifikasi = 'Terverifikasi' saja
-        $dataKelolaLomba = LombaModel::with(['kategori', 'tingkat_lomba'])
-            ->where('status_lomba', 'Aktif')
-            ->where('status_verifikasi', 'Terverifikasi') // hanya Terverifikasi
-            ->get();
+        $mahasiswaId = Auth::user()->mahasiswa->mahasiswa_id;
 
-        return DataTables::of($dataKelolaLomba)
+        $pendaftaran = PendaftaranLombaModel::with(['lomba.kategori', 'lomba.tingkat_lomba'])
+            ->where('mahasiswa_id', $mahasiswaId);
+
+        return DataTables::of($pendaftaran)
             ->addIndexColumn()
-            // ->addColumn('kategori', function ($row) {
-            //     return $row->kategori->pluck('nama_kategori')->join(', ') ?: 'Tidak Diketahui';
-            // })
-            ->addColumn('tingkat_lomba', function ($row) {
-                return $row->tingkat_lomba->nama_tingkat ?? '-';
+            ->addColumn('nama_lomba', fn($row) => $row->lomba->nama_lomba ?? '-')
+            ->addColumn('tingkat_lomba', fn($row) => $row->lomba->tingkat_lomba->nama_tingkat ?? '-')
+            ->addColumn('kategori', function ($row) {
+                // kalau relasi kategori many-to-many, pluck dan implode, kalau one-to-many bisa langsung akses
+                return $row->lomba->kategori ? ($row->lomba->kategori->pluck('nama_kategori')->implode(', ') ?: '-') : '-';
             })
-            ->addColumn('tipe_lomba', function ($row) {
-                return ucfirst($row->tipe_lomba) ?? '-';
-            })
-            ->addColumn('status_verifikasi', function ($row) {
-                // Tampilkan status_lomba (yang pasti "Aktif" sesuai kondisi)
-                $status = $row->status_lomba;
-                if ($status === 'Aktif') {
-                    return '<span class="label label-success">Aktif</span>';
-                }
-                // Jika ingin fallback, tapi seharusnya gak perlu karena filter di query
-                return '<span class="label label-secondary">Tidak Diketahui</span>';
+            ->addColumn('tipe_lomba', fn($row) => $row->lomba->tipe_lomba ?? '-')
+            ->addColumn('submit_laporan', function ($row) {
+                return $row->updated_at ? $row->updated_at->format('d M Y') : '-';
             })
             ->addColumn('aksi', function ($row) {
-                $btn = '<div class="text-center">';
-                $btn .= '<button style="white-space:nowrap; margin-right: 5px;" onclick="modalAction(\'' . route('informasi-lomba.show', $row->lomba_id) . '\')" class="btn btn-info btn-sm">Detail</button>';
-                $btn .= '<button style="white-space:nowrap;" onclick="modalAction(\'' . route('informasi-lomba.daftar', $row->lomba_id) . '\')" class="btn btn-success btn-sm">Daftar</button>';
-                $btn .= '</div>';
-                return $btn;
+                // gunakan pendaftaran_id untuk detail
+                return '<button style="white-space:nowrap" onclick="modalAction(\'' . route('mahasiswa.informasi-lomba.detail-pendaftaran', $row->pendaftaran_id) . '\')" class="btn btn-info btn-sm">Detail</button>';
             })
-            ->rawColumns(['aksi', 'status_verifikasi'])
+            ->rawColumns(['aksi'])
             ->make(true);
+    }
+
+    public function detail_pendaftaran($id)
+    {
+        $pendaftaran = PendaftaranLombaModel::with(['lomba', 'mahasiswa', 'anggota'])
+            ->findOrFail($id);
+
+        return view('mahasiswa.informasi-lomba.riwayat-pendaftaran', compact('pendaftaran'));
     }
 
 }
