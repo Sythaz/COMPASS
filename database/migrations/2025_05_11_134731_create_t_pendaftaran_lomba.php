@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('mahasiswa_id')->index();
             $table->unsignedBigInteger('lomba_id')->index();
             $table->String('bukti_pendaftaran');
+            $table->enum('status_pendaftaran', ['Ditolak', 'Menunggu', 'Terverifikasi'])->default('Menunggu');
             $table->timestamps();
 
             $table->foreign('mahasiswa_id')->references('mahasiswa_id')->on('t_mahasiswa');

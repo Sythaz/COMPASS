@@ -21,15 +21,10 @@ return new class extends Migration {
             $table->date('akhir_registrasi_lomba');
             $table->string('link_pendaftaran_lomba', 255);
             $table->string('img_lomba')->nullable();
-<<<<<<< HEAD
-            $table->enum('status_verifikasi', ['Ditolak', 'Menunggu', 'Valid', 'Terverifikasi']);
-            $table->enum('status_lomba', ['Aktif', 'Nonaktif']);
-            $table->enum('tipe_lomba', ['individu', 'tim'])->default('tim');
-=======
-            $table->enum('status_verifikasi',['Ditolak','Menunggu', 'Terverifikasi']);
+            $table->enum('status_verifikasi', ['Ditolak', 'Menunggu', 'Terverifikasi']);
             $table->string('alasan_tolak')->nullable();
-            $table->enum('status_lomba',['Aktif','Nonaktif']);
->>>>>>> a9da72e6ad9eb72e27387c2359534cb82809caf8
+            $table->enum('tipe_lomba', ['Individu', 'Tim'])->default('Individu');
+            $table->enum('status_lomba', ['Aktif', 'Nonaktif']);
             $table->timestamps();
 
             $table->foreign('tingkat_lomba_id')->references('tingkat_lomba_id')->on('t_tingkat_lomba');

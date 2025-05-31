@@ -67,15 +67,10 @@ class LombaSeeder extends Seeder
                 'awal_registrasi_lomba' => Carbon::parse('2025-02-21'),
                 'akhir_registrasi_lomba' => Carbon::parse('2025-06-30'),
                 'link_pendaftaran_lomba' => 'https://contoh-lomba.com/daftar',
-<<<<<<< HEAD
+
                 'img_lomba' => 'MobileApp2025.png',
-                'status_verifikasi' => 'Valid',
+                'status_verifikasi' => 'Ditolak',
                 'status_lomba' => 'Aktif'
-=======
-                'img_lomba'              => 'MobileApp2025.png',
-                'status_verifikasi'      => 'Ditolak',
-                'status_lomba'           => 'Aktif'
->>>>>>> a9da72e6ad9eb72e27387c2359534cb82809caf8
             ],
             [
                 'lomba_id' => 5,
@@ -87,43 +82,9 @@ class LombaSeeder extends Seeder
                 'awal_registrasi_lomba' => Carbon::parse('2025-03-01'),
                 'akhir_registrasi_lomba' => Carbon::parse('2025-07-15'),
                 'link_pendaftaran_lomba' => 'https://contoh-lomba.com/daftar',
-<<<<<<< HEAD
                 'img_lomba' => 'GameDev2025.png',
-                'status_verifikasi' => 'Valid',
+                'status_verifikasi' => 'Ditolak',
                 'status_lomba' => 'Aktif'
-            ],
-            [
-                'lomba_id' => 6,
-                'pengusul_id' => 6,
-                'nama_lomba' => 'Hackathon Game Development Jawa Timur #21',
-                'tingkat_lomba_id' => 4,
-                'deskripsi_lomba' => 'Kompetisi pengembangan game tingkat provinsi untuk mahasiswa seluruh Jawa Timur 2025.',
-                'penyelenggara_lomba' => 'Politeknik Negeri Malang',
-                'awal_registrasi_lomba' => Carbon::parse('2025-03-01'),
-                'akhir_registrasi_lomba' => Carbon::parse('2025-07-15'),
-                'link_pendaftaran_lomba' => 'https://contoh-lomba.com/daftar',
-                'img_lomba' => 'GameDev2025.png',
-                'status_verifikasi' => 'Valid',
-                'status_lomba' => 'Aktif'
-            ],
-            [
-                'lomba_id' => 7,
-                'pengusul_id' => 6,
-                'nama_lomba' => 'Programming Contest Game Development Jawa Timur #21',
-                'tingkat_lomba_id' => 4,
-                'deskripsi_lomba' => 'Kompetisi pengembangan game tingkat provinsi untuk mahasiswa seluruh Jawa Timur 2025.',
-                'penyelenggara_lomba' => 'Politeknik Negeri Malang',
-                'awal_registrasi_lomba' => Carbon::parse('2025-03-01'),
-                'akhir_registrasi_lomba' => Carbon::parse('2025-07-15'),
-                'link_pendaftaran_lomba' => 'https://contoh-lomba.com/daftar',
-                'img_lomba' => 'GameDev2025.png',
-                'status_verifikasi' => 'Valid',
-                'status_lomba' => 'Aktif'
-=======
-                'img_lomba'              => 'GameDev2025.png',
-                'status_verifikasi'      => 'Ditolak',
-                'status_lomba'           => 'Aktif'
->>>>>>> a9da72e6ad9eb72e27387c2359534cb82809caf8
             ]
         ];
         DB::table('t_lomba')->insert($data);
