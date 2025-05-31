@@ -64,11 +64,6 @@
                                 <span class="label label-warning">{{ $lomba->status_verifikasi }}</span>
                             @break
 
-                            @case('Valid')
-                                {{-- Valid --}}
-                                <span class="label label-info">{{ $lomba->status_verifikasi }}</span>
-                            @break
-
                             @default
                                 {{-- Selain Menunggu --}}
                                 <span class="label label-danger">{{ $lomba->status_verifikasi }}</span>

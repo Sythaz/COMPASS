@@ -22,7 +22,7 @@ return new class extends Migration
             $table->date('akhir_registrasi_lomba');
             $table->string('link_pendaftaran_lomba',255);
             $table->string('img_lomba')->nullable();
-            $table->enum('status_verifikasi',['Ditolak','Menunggu', 'Valid', 'Terverifikasi']);
+            $table->enum('status_verifikasi',['Ditolak','Menunggu', 'Terverifikasi']);
             $table->string('alasan_tolak')->nullable();
             $table->enum('status_lomba',['Aktif','Nonaktif']);
             $table->timestamps();

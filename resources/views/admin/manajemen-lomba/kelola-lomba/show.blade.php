@@ -55,12 +55,6 @@
                             {{-- Terverifikasi --}}
                             <span class="label label-success">{{ $kelolaLomba->status_verifikasi }}</span>
                         @break
-
-                        @case('Valid')
-                            {{-- Valid (diverifikasi admin) --}}
-                            <span class="label label-info">{{ $kelolaLomba->status_verifikasi }}</span>
-                        @break
-
                         @default
                             {{-- Ditolak --}}
                             <span class="label label-danger">{{ $kelolaLomba->status_verifikasi }}</span>

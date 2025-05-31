@@ -102,7 +102,6 @@
                 <label for="awal_registrasi_lomba" class="col-form-label mt-2">Awal Registrasi Lomba <span
                         class="text-danger" style="color: red;">*</span></label>
                 <div class="custom-validation">
-                    {{-- Membutuhkan id karena menggunakan custom script validation --}}
                     <input type="date" class="form-control" name="awal_registrasi_lomba" id="awal_registrasi_lomba"
                         value="{{ old('awal_registrasi_lomba', $lomba->awal_registrasi_lomba) }}" required>
                 </div>
@@ -110,7 +109,6 @@
                 <label for="akhir_registrasi_lomba" class="col-form-label mt-2">Akhir Registrasi Lomba <span
                         class="text-danger" style="color: red;">*</span></label>
                 <div class="custom-validation">
-                    {{-- Membutuhkan id karena menggunakan custom script validation --}}
                     <input type="date" class="form-control" name="akhir_registrasi_lomba"
                         id="akhir_registrasi_lomba"
                         value="{{ old('akhir_registrasi_lomba', $lomba->akhir_registrasi_lomba) }}" required>

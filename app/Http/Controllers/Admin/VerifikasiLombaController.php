@@ -37,7 +37,7 @@ class VerifikasiLombaController extends Controller
                 'status_verifikasi'
             ])
             ->where('status_lomba', 'Aktif')
-            ->whereIn('status_verifikasi', ['Menunggu', 'Valid'])
+            ->whereIn('status_verifikasi', ['Menunggu'])
             ->get();
 
         return DataTables::of($data)
@@ -53,9 +53,6 @@ class VerifikasiLombaController extends Controller
                 switch ($statusLomba) {
                     case 'Terverifikasi':
                         $badge = '<span class="label label-success">Terverifikasi</span>';
-                        break;
-                    case 'Valid':
-                        $badge = '<span class="label label-info">Valid</span>';
                         break;
                     case 'Menunggu':
                         $badge = '<span class="label label-warning">Menunggu</span>';
