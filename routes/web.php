@@ -25,6 +25,7 @@ use App\Http\Controllers\Dosen\InfoLombaController;
 use App\Http\Controllers\Dosen\DataLombaController;
 use App\Http\Controllers\Dosen\KelolaBimbinganController;
 use App\Http\Controllers\Dosen\VerifikasiBimbinganController;
+use App\Http\Controllers\Mahasiswa\LombaMahasiswaController;
 
 // Validasi global parameter {id} agar hanya angka
 Route::pattern('id', '[0-9]+');
@@ -269,6 +270,16 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
     Route::middleware('authorize:mahasiswa')->group(function () {
         // Dashboard mahasiswa, hanya untuk role mahasiswa
         Route::get('/Mahasiswa', [DashboardMahasiswaController::class, 'index'])->name('mahasiswa.dashboard');
+
+        // Halaman Informasi Lomba (Menampilkan Lomba yang statusnya Aktif Dan Terverifikasi saja)
+        Route::prefix('mahasiswa/info-lomba')->group(function () {
+            Route::get('/', [LombaMahasiswaController::class, 'index'])->name('mahasiswa.informasi-lomba.index');
+            Route::get('list', [LombaMahasiswaController::class, 'list'])->name('mahasiswa.informasi-lomba.list');
+            Route::get('{id}/show', [LombaMahasiswaController::class, 'showAjax'])->name('informasi-lomba.show');
+            Route::get('{id}/daftar', [LombaMahasiswaController::class, 'form_daftar'])->name('informasi-lomba.daftar');
+            Route::post('{id}/daftar', [LombaMahasiswaController::class, 'store'])->name('informasi-lomba.store');
+        });
+
         // ==== Input Data Prestasi ====
         Route::prefix('prestasi')->group(function () {
             Route::get('input', [InputPrestasiController::class, 'index'])

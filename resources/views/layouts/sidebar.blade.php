@@ -140,7 +140,7 @@
                     </a>
                 </li>
 
-                <li class="nav-label mt-2">Input Data</li>
+                {{-- <li class="nav-label mt-2">Input Data</li>
                 <li>
                     <a href="{{ route('mahasiswa.prestasi.input') }}">
                         <i class="fas fa-edit"></i><span class="nav-text">Input Data Prestasi</span>
@@ -150,6 +150,32 @@
                     <a href="{{ route('mahasiswa.lomba.input') }}">
                         <i class="fas fa-trophy"></i><span class="nav-text">Input Data Lomba</span>
                     </a>
+                </li> --}}
+
+                <li class="nav-label mt-2">Prestasi & Lomba</li>
+                {{-- Manajemen Mahasiswa Bimbingan --}}
+                <li>
+                    <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                        <i class="fas fa-award"></i><span class="nav-text">Prestasi Mahasiswa</span>
+                    </a>
+                    <ul aria-expanded="false">
+                        {{-- Halaman untuk melihat Daftar Mahasiswa Bimbingan --}}
+                        <li><a href="{{ route('dosen.kelola-bimbingan.index') }}">Prestasiku</a></li>
+                        {{-- Halaman untuk verifikasi daftar Mahasiswa Bimbingan --}}
+                        <li><a href="{{ route('dosen.verifikasi-bimbingan.index') }}">Riwayat </a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                        <i class="fas fa-trophy"></i><span class="nav-text">Informasi Lomba</span>
+                    </a>
+                    <ul aria-expanded="false">
+                        {{-- Mahasiswa dapat melihat Lomba yang Tersedia dan mengajukan Lomba baru --}}
+                        <li><a href="{{ route('mahasiswa.informasi-lomba.index') }}">Info Lomba</a></li>
+                        {{-- Halaman untuk melihat Daftar Lomba yang pernah diajukan mahasiswa --}}
+                        {{-- <li><a href="{{ route('mahasiswa.data-lomba.index') }}">Data Lomba</a></li> --}}
+                    </ul>
                 </li>
 
                 <li class="nav-item">
