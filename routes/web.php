@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\TingkatLombaController;
 use App\Http\Controllers\Admin\DashboardController as DashboardAdminController;
 use App\Http\Controllers\Admin\HistoriPengajuanLombaController;
 use App\Http\Controllers\Admin\KelolaPrestasiController;
+use App\Http\Controllers\Admin\RekomendasiLombaController;
 use App\Http\Controllers\Admin\VerifikasiLombaController;
 use App\Http\Controllers\Admin\VerifikasiPrestasiController;
 use App\Http\Controllers\Dosen\DashboardController as DashboardDosenController;
@@ -183,13 +184,6 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::put('kelola-lomba/{id}', [KelolaLombaController::class, 'update'])->name('kelola-lomba.update');
             Route::delete('kelola-lomba/{id}', [KelolaLombaController::class, 'destroy'])->name('kelola-lomba.destroy'); // Seharusnya ::delete namun karena menggunakan status maka diganti menjadi ::put
             
-            // Rute Histori Pengajuan Lomba
-            Route::get('histori-pengajuan-lomba', [HistoriPengajuanLombaController::class, 'index'])->name('histori-pengajuan-lomba.index');
-            Route::post('histori-pengajuan-lomba/list', [HistoriPengajuanLombaController::class, 'list'])->name('histori-pengajuan-lomba.list');
-            Route::get('histori-pengajuan-lomba/{id}/show_ajax', [HistoriPengajuanLombaController::class, 'showAjax']);
-            Route::get('histori-pengajuan-lomba/{id}/edit_ajax', [HistoriPengajuanLombaController::class, 'editAjax']);
-            Route::put('histori-pengajuan-lomba/{id}', [HistoriPengajuanLombaController::class, 'update'])->name('histori-pengajuan-lomba.update');
-            
             // Rute Verifikasi Lomba
             Route::get('verifikasi-lomba', [VerifikasiLombaController::class, 'index'])->name('verifikasi-lomba.index');
             Route::post('verifikasi-lomba/list', [VerifikasiLombaController::class, 'list'])->name('verifikasi-lomba.list');
@@ -199,6 +193,18 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::put('verifikasi-lomba/verifikasi/{id}', [VerifikasiLombaController::class, 'terimaLomba'])->name('verifikasi-lomba.terimaLomba');
             Route::put('verifikasi-lomba/tolak/{id}', [VerifikasiLombaController::class, 'tolakLomba'])->name('verifikasi-lomba.tolakLomba');
             Route::delete('verifikasi-lomba/{id}', [VerifikasiLombaController::class, 'destroy'])->name('verifikasi-lomba.destroy');
+            
+            // Rute Histori Pengajuan Lomba
+            Route::get('histori-pengajuan-lomba', [HistoriPengajuanLombaController::class, 'index'])->name('histori-pengajuan-lomba.index');
+            Route::post('histori-pengajuan-lomba/list', [HistoriPengajuanLombaController::class, 'list'])->name('histori-pengajuan-lomba.list');
+            Route::get('histori-pengajuan-lomba/{id}/show_ajax', [HistoriPengajuanLombaController::class, 'showAjax']);
+            Route::get('histori-pengajuan-lomba/{id}/edit_ajax', [HistoriPengajuanLombaController::class, 'editAjax']);
+            Route::put('histori-pengajuan-lomba/{id}', [HistoriPengajuanLombaController::class, 'update'])->name('histori-pengajuan-lomba.update');
+            
+            // Rute Rekomendasi Lomba
+            Route::get('rekomendasi-lomba', [RekomendasiLombaController::class, 'index'])->name('rekomendasi-lomba.index');
+            Route::get('rekomendasi-lomba/{id}/show_ajax', [RekomendasiLombaController::class, 'showAjax']);
+            
         });
 
         // MANAJEMEN PRESTASI
