@@ -68,7 +68,7 @@ class LombaSeeder extends Seeder
                 'akhir_registrasi_lomba' => Carbon::parse('2025-06-30'),
                 'link_pendaftaran_lomba' => 'https://contoh-lomba.com/daftar',
                 'img_lomba'              => 'MobileApp2025.png',
-                'status_verifikasi'      => 'Valid',
+                'status_verifikasi'      => 'Ditolak',
                 'status_lomba'           => 'Aktif'
             ],
             [
@@ -82,7 +82,7 @@ class LombaSeeder extends Seeder
                 'akhir_registrasi_lomba' => Carbon::parse('2025-07-15'),
                 'link_pendaftaran_lomba' => 'https://contoh-lomba.com/daftar',
                 'img_lomba'              => 'GameDev2025.png',
-                'status_verifikasi'      => 'Valid',
+                'status_verifikasi'      => 'Ditolak',
                 'status_lomba'           => 'Aktif'
             ]
         ];

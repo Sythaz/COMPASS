@@ -54,9 +54,6 @@ class HistoriPengajuanLombaController extends Controller
                     case 'Terverifikasi':
                         $label = '<span class="label label-success">Terverifikasi</span>';
                         break;
-                    case 'Valid':
-                        $label = '<span class="label label-info">Valid</span>';
-                        break;
                     case 'Menunggu':
                         $label = '<span class="label label-warning">Menunggu</span>';
                         break;
