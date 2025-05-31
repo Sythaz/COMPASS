@@ -1,7 +1,7 @@
 @extends('layouts.template')
 
 @section('title', 'Riwayat Pendaftaran | COMPASS')
-@section('page-title', 'Riwayat Lomba')
+@section('page-title', 'Riwayat Pendaftaran Lomba')
 @section('page-description', 'Halaman Riwayat Pendaftaran Lomba')
 
 @section('content')
@@ -18,7 +18,8 @@
                                     <th>Tingkat</th>
                                     <th>Kategori</th>
                                     <th>Tipe Lomba</th>
-                                    <th>Submit Laporan</th>
+                                    <th>Tanggal</th>
+                                    <th>Status</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -60,7 +61,8 @@
                     { data: 'tingkat_lomba', name: 'tingkat_lomba' },
                     { data: 'kategori', name: 'kategori' },
                     { data: 'tipe_lomba', name: 'tipe_lomba' },
-                    { data: 'submit_laporan', name: 'submit_laporan' },
+                    { data: 'tanggal', name: 'tanggal' },
+                    { data: 'status', name: 'status' },
                     {
                         data: 'aksi',
                         name: 'aksi',

@@ -285,27 +285,10 @@ class LombaMahasiswaController extends Controller
             ->addColumn('tingkat_lomba', fn($row) => $row->tingkat_lomba->nama_tingkat ?? '-')
             ->addColumn('awal_registrasi_lomba', fn($row) => date('d M Y', strtotime($row->awal_registrasi_lomba)))
             ->addColumn('akhir_registrasi_lomba', fn($row) => date('d M Y', strtotime($row->akhir_registrasi_lomba)))
-            ->addColumn('status_verifikasi', function ($row) {
-                $statusLomba = $row->status_verifikasi;
-                switch ($statusLomba) {
-                    case 'Terverifikasi':
-                        $badge = '<span class="label label-success">Terverifikasi</span>';
-                        break;
-                    case 'Valid':
-                        $badge = '<span class="label label-info">Valid</span>';
-                        break;
-                    case 'Menunggu':
-                        $badge = '<span class="label label-warning">Menunggu</span>';
-                        break;
-                    case 'Ditolak':
-                        $badge = '<span class="label label-danger">Ditolak</span>';
-                        break;
-                    default:
-                        $badge = '<span class="label label-secondary">Tidak Diketahui</span>';
-                        break;
-                }
-                return $badge;
+            ->addColumn('status', function ($row) {
+                return $this->getStatusBadge($row->status_verifikasi);
             })
+
             ->addColumn('aksi', function ($row) {
                 return '<div class="text-center">
                     <button style="white-space:nowrap" onclick="modalAction(\'' . route('informasi-lomba.show', $row->lomba_id) . '\')" class="btn btn-info btn-sm">Detail</button>
@@ -315,6 +298,21 @@ class LombaMahasiswaController extends Controller
             ->make(true);
     }
 
+    private function getStatusPendaftaran(?string $status_pendaftaran)
+    {
+        $status = strtolower(trim($status_pendaftaran ?? ''));
+
+        switch ($status) {
+            case 'terverifikasi':
+                return '<span class="label label-success">' . e(ucwords($status)) . '</span>';
+            case 'menunggu':
+                return '<span class="label label-warning">' . e(ucwords($status)) . '</span>';
+            case 'ditolak':
+                return '<span class="label label-danger">' . e(ucwords($status)) . '</span>';
+            default:
+                return '<span class="label label-secondary">Tidak Diketahui</span>';
+        }
+    }
 
     public function riwayat_pendaftaran()
     {
@@ -340,15 +338,23 @@ class LombaMahasiswaController extends Controller
                 // kalau relasi kategori many-to-many, pluck dan implode, kalau one-to-many bisa langsung akses
                 return $row->lomba->kategori ? ($row->lomba->kategori->pluck('nama_kategori')->implode(', ') ?: '-') : '-';
             })
+
             ->addColumn('tipe_lomba', fn($row) => $row->lomba->tipe_lomba ?? '-')
-            ->addColumn('submit_laporan', function ($row) {
+
+            ->addColumn('status', function ($row) {
+                return $this->getStatusPendaftaran($row->status_pendaftaran);
+            })
+
+            ->addColumn('tanggal', function ($row) {
                 return $row->updated_at ? $row->updated_at->format('d M Y') : '-';
             })
+
             ->addColumn('aksi', function ($row) {
                 // gunakan pendaftaran_id untuk detail
                 return '<button style="white-space:nowrap" onclick="modalAction(\'' . route('mahasiswa.informasi-lomba.detail-pendaftaran', $row->pendaftaran_id) . '\')" class="btn btn-info btn-sm">Detail</button>';
             })
-            ->rawColumns(['aksi'])
+
+            ->rawColumns(['status', 'aksi'])
             ->make(true);
     }
 
