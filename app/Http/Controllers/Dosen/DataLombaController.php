@@ -22,25 +22,6 @@ class DataLombaController extends Controller
         return view('dosen.data-lomba.index', compact('breadcrumb'));
     }
 
-    // Method untuk generate badge status_verifikasi dengan warna yang sesuai
-    private function getStatusBadge($status_verifikasi)
-    {
-        $status = strtolower($status_verifikasi ?? '');
-
-        switch ($status) {
-            case 'terverifikasi':
-                return '<span class="badge bg-success text-white">' . e($status_verifikasi) . '</span>';
-            case 'valid':
-                return '<span class="badge bg-info text-white">' . e($status_verifikasi) . '</span>';
-            case 'menunggu':
-                return '<span class="badge bg-warning text-dark">' . e($status_verifikasi) . '</span>';
-            case 'ditolak':
-                return '<span class="badge bg-danger text-white">' . e($status_verifikasi) . '</span>';
-            default:
-                return '<span class="badge bg-secondary text-white">Tidak diketahui</span>';
-        }
-    }
-
     public function list(Request $request)
     {
         $dosenId = auth()->user()->user_id;
@@ -57,7 +38,25 @@ class DataLombaController extends Controller
             ->addColumn('awal_registrasi_lomba', fn($row) => date('d M Y', strtotime($row->awal_registrasi_lomba)))
             ->addColumn('akhir_registrasi_lomba', fn($row) => date('d M Y', strtotime($row->akhir_registrasi_lomba)))
             ->addColumn('status_verifikasi', function ($row) {
-                return $this->getStatusBadge($row->status_verifikasi);
+                $statusLomba = $row->status_verifikasi;
+                switch ($statusLomba) {
+                    case 'Terverifikasi':
+                        $badge = '<span class="label label-success">Terverifikasi</span>';
+                        break;
+                    case 'Valid':
+                        $badge = '<span class="label label-info">Valid</span>';
+                        break;
+                    case 'Menunggu':
+                        $badge = '<span class="label label-warning">Menunggu</span>';
+                        break;
+                    case 'Ditolak':
+                        $badge = '<span class="label label-danger">Ditolak</span>';
+                        break;
+                    default:
+                        $badge = '<span class="label label-secondary">Tidak Diketahui</span>';
+                        break;
+                }
+                return $badge;
             })
             ->addColumn('aksi', function ($row) {
                 return '<div class="text-center">
@@ -88,7 +87,6 @@ class DataLombaController extends Controller
             'akhir_registrasi_lomba' => 'required|date|after_or_equal:awal_registrasi_lomba',
             'link_pendaftaran_lomba' => 'required|url',
             'img_lomba' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            // 'status_verifikasi' dihapus dari validasi
         ]);
 
         if ($validator->fails()) {

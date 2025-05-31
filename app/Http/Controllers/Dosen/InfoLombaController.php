@@ -64,15 +64,15 @@ class InfoLombaController extends Controller
 
         switch ($status) {
             case 'terverifikasi':
-                return '<span class="badge bg-success text-white">' . e($status_verifikasi) . '</span>';
+                return '<span class="label label-success">' . e(ucwords($status)) . '</span>';
             case 'valid':
-                return '<span class="badge bg-info text-white">' . e($status_verifikasi) . '</span>';
+                return '<span class="label label-info">' . e(ucwords($status)) . '</span>';
             case 'menunggu':
-                return '<span class="badge bg-warning text-dark">' . e($status_verifikasi) . '</span>';
+                return '<span class="label label-warning">' . e(ucwords($status)) . '</span>';
             case 'ditolak':
-                return '<span class="badge bg-danger text-white">' . e($status_verifikasi) . '</span>';
+                return '<span class="label label-danger">' . e(ucwords($status)) . '</span>';
             default:
-                return '<span class="badge bg-secondary text-white">Tidak diketahui</span>';
+                return '<span class="label label-secondary">Tidak Diketahui</span>';
         }
     }
 

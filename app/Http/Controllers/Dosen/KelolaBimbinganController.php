@@ -48,13 +48,25 @@ class KelolaBimbinganController extends Controller
                 ->addColumn('nama_kategori', fn($row) => $row->kategori?->nama_kategori ?? '-')
                 ->addColumn('semester_periode', fn($row) => $row->periode?->semester_periode ?? '-')
                 ->addColumn('status_verifikasi', function ($row) {
-                    return match ($row->status_verifikasi) {
-                        'Terverifikasi' => '<span class="badge badge-success">Terverifikasi</span>',
-                        'Valid' => '<span class="badge badge-info">Valid</span>',
-                        'Menunggu' => '<span class="badge badge-warning">Menunggu</span>',
-                        'Ditolak' => '<span class="badge badge-danger">Ditolak</span>',
-                        default => '<span class="badge badge-secondary">Tidak Diketahui</span>',
-                    };
+                    $status = $row->status_verifikasi;
+                    switch ($status) {
+                        case 'Terverifikasi':
+                            $badge = '<span class="label label-success">Terverifikasi</span>';
+                            break;
+                        case 'Valid':
+                            $badge = '<span class="label label-info">Valid</span>';
+                            break;
+                        case 'Menunggu':
+                            $badge = '<span class="label label-warning">Menunggu</span>';
+                            break;
+                        case 'Ditolak':
+                            $badge = '<span class="label label-danger">Ditolak</span>';
+                            break;
+                        default:
+                            $badge = '<span class="label label-secondary">Tidak Diketahui</span>';
+                            break;
+                    }
+                    return $badge;
                 })
                 ->addColumn('aksi', function ($row) {
                     $btn = '<div class="d-flex justify-content-center">';
@@ -78,11 +90,11 @@ class KelolaBimbinganController extends Controller
         ])->findOrFail($id);
 
         $statusBadge = match ($kelolaPrestasi->status_verifikasi) {
-            'Terverifikasi' => '<span class="badge badge-success">Terverifikasi</span>',
-            'Valid' => '<span class="badge badge-info">Valid</span>',
-            'Menunggu' => '<span class="badge badge-warning">Menunggu</span>',
-            'Ditolak' => '<span class="badge badge-danger">Ditolak</span>',
-            default => '<span class="badge badge-secondary">Tidak Diketahui</span>',
+            'Terverifikasi' => '<span class="label label-success">Terverifikasi</span>',
+            'Valid' => '<span class="label label-info">Valid</span>',
+            'Menunggu' => '<span class="label label-warning">Menunggu</span>',
+            'Ditolak' => '<span class="label label-danger">Ditolak</span>',
+            default => '<span class="label label-secondary">Tidak Diketahui</span>',
         };
 
         return view('dosen.kelola-bimbingan.show', compact('kelolaPrestasi', 'statusBadge'));

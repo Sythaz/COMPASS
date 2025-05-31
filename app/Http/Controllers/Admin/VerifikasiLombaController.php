@@ -19,7 +19,7 @@ class VerifikasiLombaController extends Controller
     {
         $breadcrumb = (object) [
             'title' => 'Manajemen Lomba',
-            'list'  => ['Manajemen Lomba', 'Verifikasi Lomba']
+            'list' => ['Manajemen Lomba', 'Verifikasi Lomba']
         ];
         return view('admin.manajemen-lomba.verifikasi-lomba.index', compact('breadcrumb'));
     }
@@ -37,7 +37,7 @@ class VerifikasiLombaController extends Controller
                 'status_verifikasi'
             ])
             ->where('status_lomba', 'Aktif')
-            ->whereIn('status_verifikasi', ['Menunggu', 'Valid'])
+            ->whereIn('status_verifikasi', ['Menunggu'])
             ->get();
 
         return DataTables::of($data)
