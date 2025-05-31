@@ -54,9 +54,6 @@ class VerifikasiLombaController extends Controller
                     case 'Terverifikasi':
                         $badge = '<span class="label label-success">Terverifikasi</span>';
                         break;
-                    case 'Valid':
-                        $badge = '<span class="label label-info">Valid</span>';
-                        break;
                     case 'Menunggu':
                         $badge = '<span class="label label-warning">Menunggu</span>';
                         break;
@@ -176,17 +173,18 @@ class VerifikasiLombaController extends Controller
         }
     }
 
-    public function tolakLomba($id)
+    public function tolakLomba(Request $request, $id)
     {
         $lomba = LombaModel::findOrFail($id);
+        $alasan_tolak = $request->input('alasan_tolak');
 
         try {
             // Update status_verifikasi menjadi Ditolak
-            $lomba->update(['status_verifikasi' => 'Ditolak']);
+            $lomba->update(['status_verifikasi' => 'Ditolak', 'alasan_tolak' => $alasan_tolak]);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Lomba berhasil ditolak.'
+                'message' => 'Lomba berhasil ditolak. Alasan: ' . $alasan_tolak
             ]);
         } catch (\Exception $e) {
             return response()->json([

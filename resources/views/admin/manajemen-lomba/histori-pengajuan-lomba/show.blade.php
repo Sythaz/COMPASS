@@ -56,11 +56,6 @@
                             <span class="label label-warning">{{ $lomba->status_verifikasi }}</span>
                         @break
 
-                        @case('Valid')
-                            {{-- Valid (diverifikasi admin) --}}
-                            <span class="label label-info">{{ $lomba->status_verifikasi }}</span>
-                        @break
-
                         @case('Ditolak')
                             {{-- Ditolak --}}
                             <span class="label label-danger">{{ $lomba->status_verifikasi }}</span>
@@ -93,6 +88,12 @@
                 <td class="text-start">
                     <span class="label label-danger">Terhapus</span>
                 </td>
+            </tr>
+        @endif
+        @if (!empty($lomba->alasan_tolak))
+            <tr>
+                <th style="width: 30%">Alasan Penolakan:</th>
+                <td class="text-start">{{ $lomba->alasan_tolak }}</td>
             </tr>
         @endif
     </table>

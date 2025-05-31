@@ -1,4 +1,4 @@
-@if (empty($kelolaLomba))
+@if (empty($lomba))
     <div class="modal-content">
         <div class="modal-header bg-danger text-white">
             <h5 class="modal-title"><i class="fas fa-exclamation-triangle mr-2"></i>Kesalahan</h5>
@@ -25,12 +25,12 @@
     </div>
 @else
     <form id="form-edit" method="POST"
-        action="{{ url('admin/manajemen-lomba/kelola-lomba/' . $kelolaLomba->lomba_id) }}"
+        action="{{ url('admin/manajemen-lomba/histori-pengajuan-lomba/' . $lomba->lomba_id) }}"
         enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="modal-header bg-primary rounded">
-            <h5 class="modal-title text-white"><i class="fas fa-edit mr-2"></i>Edit Lomba</h5>
+            <h5 class="modal-title text-white"><i class="fas fa-edit mr-2"></i>Edit Histori Pengajuan Lomba</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -42,7 +42,7 @@
                         style="color: red;">*</span></label>
                 <div class="custom-validation">
                     <input type="text" class="form-control" name="nama_lomba"
-                        value="{{ old('nama_lomba', $kelolaLomba->nama_lomba) }}" required>
+                        value="{{ old('nama_lomba', $lomba->nama_lomba) }}" required>
                 </div>
 
                 {{-- Nama Pengusul (tidak bisa diedit) --}}
@@ -57,7 +57,7 @@
                 <label for="deskripsi_lomba" class="col-form-label mt-2">Deskripsi Lomba <span class="text-danger"
                         style="color: red;">*</span></label>
                 <div class="custom-validation">
-                    <textarea name="deskripsi_lomba" id="deskripsi_lomba" class="form-control" required>{{ old('deskripsi_lomba', $kelolaLomba->deskripsi_lomba) }}</textarea>
+                    <textarea name="deskripsi_lomba" id="deskripsi_lomba" class="form-control" required>{{ old('deskripsi_lomba', $lomba->deskripsi_lomba) }}</textarea>
                 </div>
 
                 {{-- Kategori Lomba --}}
@@ -68,7 +68,7 @@
                         multiple="multiple" required>
                         @foreach ($daftarKategori as $kategori)
                             <option value="{{ $kategori->kategori_id }}"
-                                {{ in_array($kategori->kategori_id, old('kategori_id', $kelolaLomba->kategori->pluck('kategori_id')->toArray() ?? [])) ? 'selected' : '' }}>
+                                {{ in_array($kategori->kategori_id, old('kategori_id', $lomba->kategori->pluck('kategori_id')->toArray() ?? [])) ? 'selected' : '' }}>
                                 {{ $kategori->nama_kategori }}
                             </option>
                         @endforeach
@@ -83,7 +83,7 @@
                         <option value="">-- Pilih Tingkat --</option>
                         @foreach ($daftarTingkatLomba as $tingkat_lomba)
                             <option value="{{ $tingkat_lomba->tingkat_lomba_id }}"
-                                {{ old('tingkat_lomba_id', $kelolaLomba->tingkat_lomba_id ?? '') == $tingkat_lomba->tingkat_lomba_id ? 'selected' : '' }}>
+                                {{ old('tingkat_lomba_id', $lomba->tingkat_lomba_id) == $tingkat_lomba->tingkat_lomba_id ? 'selected' : '' }}>
                                 {{ $tingkat_lomba->nama_tingkat }}
                             </option>
                         @endforeach
@@ -95,24 +95,23 @@
                         class="text-danger" style="color: red;">*</span></label>
                 <div class="custom-validation">
                     <input type="text" class="form-control" name="penyelenggara_lomba"
-                        value="{{ old('penyelenggara_lomba', $kelolaLomba->penyelenggara_lomba) }}" required>
+                        value="{{ old('penyelenggara_lomba', $lomba->penyelenggara_lomba) }}" required>
                 </div>
 
                 {{-- Tanggal Registrasi Lomba --}}
                 <label for="awal_registrasi_lomba" class="col-form-label mt-2">Awal Registrasi Lomba <span
                         class="text-danger" style="color: red;">*</span></label>
                 <div class="custom-validation">
-                    {{-- Membutuhkan id karena menggunakan custom script validation --}}
                     <input type="date" class="form-control" name="awal_registrasi_lomba" id="awal_registrasi_lomba"
-                        value="{{ old('awal_registrasi_lomba', $kelolaLomba->awal_registrasi_lomba) }}" required>
+                        value="{{ old('awal_registrasi_lomba', $lomba->awal_registrasi_lomba) }}" required>
                 </div>
 
                 <label for="akhir_registrasi_lomba" class="col-form-label mt-2">Akhir Registrasi Lomba <span
                         class="text-danger" style="color: red;">*</span></label>
                 <div class="custom-validation">
-                    {{-- Membutuhkan id karena menggunakan custom script validation --}}
-                    <input type="date" class="form-control" name="akhir_registrasi_lomba" id="akhir_registrasi_lomba"
-                        value="{{ old('akhir_registrasi_lomba', $kelolaLomba->akhir_registrasi_lomba) }}" required>
+                    <input type="date" class="form-control" name="akhir_registrasi_lomba"
+                        id="akhir_registrasi_lomba"
+                        value="{{ old('akhir_registrasi_lomba', $lomba->akhir_registrasi_lomba) }}" required>
                 </div>
 
                 {{-- Link Pendaftaran Lomba --}}
@@ -120,33 +119,16 @@
                         class="text-danger" style="color: red;">*</span></label>
                 <div class="custom-validation">
                     <input type="text" class="form-control" name="link_pendaftaran_lomba"
-                        value="{{ old('link_pendaftaran_lomba', $kelolaLomba->link_pendaftaran_lomba) }}" required>
+                        value="{{ old('link_pendaftaran_lomba', $lomba->link_pendaftaran_lomba) }}" required>
                 </div>
-
-                {{-- Status Lomba --}}
-                <label for="status_verifikasi" class="col-form-label mt-2">Status Lomba <span class="text-danger"
-                        style="color: red;">*</span></label>
-                <div class="custom-validation">
-                    <select name="status_verifikasi" id="status_verifikasi" class="form-control" required>
-                        <option value="Terverifikasi"
-                            {{ old('status_verifikasi', $kelolaLomba->status_verifikasi) == 'Terverifikasi' ? 'selected' : '' }}>
-                            Terverifikasi</option>
-                        <option value="Menunggu"
-                            {{ old('status_verifikasi', $kelolaLomba->status_verifikasi) == 'Menunggu' ? 'selected' : '' }}>
-                            Menunggu</option>
-                        <option value="Ditolak"
-                            {{ old('status_verifikasi', $kelolaLomba->status_verifikasi) == 'Ditolak' ? 'selected' : '' }}>
-                            Ditolak</option>
-                    </select>
-                </div>
-
+            
                 {{-- Gambar Poster Lomba --}}
                 <label for="img_lomba" class="col-form-label mt-2">Gambar Poster Lomba </label>
                 <div class="custom-validation">
-                    @if (!is_null($kelolaLomba->img_lomba) && file_exists(public_path('storage/img/lomba/' . $kelolaLomba->img_lomba)))
-                        <a href="{{ asset('storage/img/lomba/' . $kelolaLomba->img_lomba) }}" data-lightbox="lomba"
+                    @if (!is_null($lomba->img_lomba) && file_exists(public_path('storage/img/lomba/' . $lomba->img_lomba)))
+                        <a href="{{ asset('storage/img/lomba/' . $lomba->img_lomba) }}" data-lightbox="lomba"
                             data-title="Gambar Poster Lomba">
-                            <img src="{{ asset('storage/img/lomba/' . $kelolaLomba->img_lomba) }}" width="100"
+                            <img src="{{ asset('storage/img/lomba/' . $lomba->img_lomba) }}" width="100"
                                 class="d-block mx-auto img-thumbnail" alt="Gambar Poster Lomba"
                                 style="cursor: zoom-in;" />
                         </a>
@@ -161,6 +143,13 @@
                             <label class="custom-file-label" id="img_lomba_label" for="img_lomba">Pilih File</label>
                         </div>
                     </div>
+                </div>
+
+                {{-- Alasan Penolakan --}}
+                <label for="alasan_tolak" class="col-form-label mt-2">Alasan Penolakan <span class="text-danger"
+                        style="color: red;">*</span></label>
+                <div class="custom-validation">
+                    <textarea name="alasan_tolak" id="alasan_tolak" class="form-control" required readonly>{{ old('alasan_tolak', $lomba->alasan_tolak) }}</textarea>
                 </div>
             </div>
         </div>
@@ -284,9 +273,6 @@
                     required: true,
                     url: true,
                 },
-                status_verifikasi: {
-                    required: true,
-                },
                 img_lomba: {
                     // Menggunakan custom validasi untuk gambar
                     validImageExtension: true,
@@ -320,9 +306,6 @@
                     required: "Link Pendaftaran Lomba wajib diisi",
                     url: "Link harus berupa URL dan dimulai dengan http:// atau https://",
                 },
-                status_verifikasi: {
-                    required: "Status Lomba wajib diisi",
-                },
                 img_lomba: {
                     extension: 'Ekstensi file harus .png, .jpg, .jpeg',
                     maxFileSize: 'Ukuran file maksimal 2MB'
@@ -340,7 +323,7 @@
                         $('#myModal').modal('hide');
 
                         // Reload tabel DataTables (Sesuaikan dengan ID tabel DataTables di Index)
-                        $('#tabel-kelola-lomba').DataTable().ajax.reload();
+                        $('#tabel-histori-pengajuan-lomba').DataTable().ajax.reload();
                     });
                 } else {
                     $('.error-text').text('');

@@ -64,11 +64,6 @@
                                 <span class="label label-warning">{{ $lomba->status_verifikasi }}</span>
                             @break
 
-                            @case('Valid')
-                                {{-- Valid --}}
-                                <span class="label label-info">{{ $lomba->status_verifikasi }}</span>
-                            @break
-
                             @default
                                 {{-- Selain Menunggu --}}
                                 <span class="label label-danger">{{ $lomba->status_verifikasi }}</span>
@@ -91,6 +86,17 @@
                     @endif
                 </td>
             </tr>
+            <tr>
+                <th style="width: 30%">
+                    <label for="alasan_tolak" class="col-form-label mt-2">Alasan Penolakan: <span class="text-danger"
+                            style="color: red;">*</span></label>
+                </th>
+                <td class="text-start">
+                    <div class="custom-validation">
+                        <textarea name="alasan_tolak" id="alasan_tolak" cols="30" rows="3" class="form-control" required></textarea>
+                    </div>
+                </td>
+            </tr>
         </table>
     </div>
     <div class="modal-footer">
@@ -100,7 +106,47 @@
     </div>
 </form>
 
+<!-- Memanggil Fungsi Form Validation Custom -->
+<script src="{{ asset('js-custom/form-validation.js') }}"></script>
+
 <script>
+    customFormValidation(
+        "#form-tolak-verifikasi", {
+            alasan_tolak: {
+                required: true,
+            }
+        }, {
+            alasan_tolak: {
+                required: "Alasan penolakan tidak boleh kosong",
+            }
+        },
+        function(response, form) {
+            if (response.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: response.message,
+                }).then(function() {
+                    // Tutup modal
+                    $('#myModal').modal('hide');
+
+                    // Reload tabel DataTables (Sesuaikan dengan ID tabel DataTables di Index)
+                    $('#tabel-verifikasi-lomba').DataTable().ajax.reload();
+                });
+            } else {
+                $('.error-text').text('');
+                $.each(response.msgField, function(prefix, val) {
+                    $('#error-' + prefix).text(val[0]);
+                });
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Terjadi Kesalahan',
+                    text: response.message
+                });
+            }
+        }
+    );
+
     $(document).off('submit', '#form-tolak-verifikasi'); // Hapus event handler lama (jika ada)
     $(document).on('submit', '#form-tolak-verifikasi', function(e) {
         e.preventDefault();
