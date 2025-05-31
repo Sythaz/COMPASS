@@ -20,6 +20,7 @@ use App\Http\Controllers\Dosen\ProfileDosenController as ProfileDosenController;
 use App\Http\Controllers\Mahasiswa\DashboardController as DashboardMahasiswaController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Mahasiswa\InputPrestasiController;
 use App\Http\Controllers\Dosen\InfoLombaController;
 use App\Http\Controllers\Dosen\DataLombaController;
 use App\Http\Controllers\Dosen\KelolaBimbinganController;
@@ -276,8 +277,8 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
         // Dashboard mahasiswa, hanya untuk role mahasiswa
         Route::get('/Mahasiswa', [DashboardMahasiswaController::class, 'index'])->name('mahasiswa.dashboard');
 
-        // Halaman Kelola Prestasi Mahasiswa
         Route::prefix('mahasiswa/prestasi')->group(function () {
+            // Halaman utama lomba
             Route::get('/', [PrestasiController::class, 'index'])->name('mahasiswa.prestasi.index');
         });
 
@@ -305,5 +306,34 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::get('create', [LombaMahasiswaController::class, 'create'])->name('create-lomba');
             Route::post('store', [LombaMahasiswaController::class, 'store_lomba'])->name('store-lomba');
         });
+
+
+        // ==== Input Data Prestasi ====
+        Route::prefix('prestasi')->group(function () {
+            Route::get('input', [InputPrestasiController::class, 'index'])
+                ->name('mahasiswa.prestasi.input');
+
+            Route::post('input/list', [InputPrestasiController::class, 'list'])
+                ->name('mahasiswa.prestasi.list');
+
+            Route::get('input/create', [InputPrestasiController::class, 'create'])
+                ->name('mahasiswa.prestasi.create');
+
+            Route::get('input/{id}/show_ajax', [InputPrestasiController::class, 'showAjax']);
+
+            Route::get('input/{id}/edit_ajax', [InputPrestasiController::class, 'editAjax']);
+
+            Route::get('input/{id}/delete_ajax', [InputPrestasiController::class, 'deleteAjax']);
+
+            Route::post('input/store', [InputPrestasiController::class, 'store'])
+                ->name('mahasiswa.prestasi.store');
+
+            Route::put('input/{id}', [InputPrestasiController::class, 'update'])
+                ->name('mahasiswa.prestasi.update');
+
+            Route::delete('input/{id}', [InputPrestasiController::class, 'destroy'])
+                ->name('mahasiswa.prestasi.destroy');
+        });
+
     });
 });

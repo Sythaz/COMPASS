@@ -141,20 +141,8 @@
                     </a>
                 </li>
 
-                {{-- <li class="nav-label mt-2">Input Data</li>
-                <li>
-                    <a href="{{ route('mahasiswa.prestasi.input') }}">
-                        <i class="fas fa-edit"></i><span class="nav-text">Input Data Prestasi</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('mahasiswa.lomba.input') }}">
-                        <i class="fas fa-trophy"></i><span class="nav-text">Input Data Lomba</span>
-                    </a>
-                </li> --}}
-
                 <li class="nav-label mt-2">Prestasi & Lomba</li>
-                {{-- Manajemen Mahasiswa Bimbingan --}}
+                {{-- Manajemen Prestasi Mahasiswa --}}
                 <li>
                     <a class="has-arrow" href="javascript:void()" aria-expanded="false">
                         <i class="fas fa-award"></i><span class="nav-text">Prestasi Mahasiswa</span>
