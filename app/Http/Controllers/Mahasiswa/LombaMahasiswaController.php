@@ -12,7 +12,10 @@ use App\Models\MahasiswaModel;
 use App\Models\UsersModel;
 use App\Models\PendaftaranLombaModel;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use App\Models\KategoriModel;
+use App\Models\TingkatLombaModel;
+use App\Models\KategoriLombaModel;
 
 class LombaMahasiswaController extends Controller
 {
@@ -71,15 +74,15 @@ class LombaMahasiswaController extends Controller
 
         switch ($status) {
             case 'terverifikasi':
-                return '<span class="badge bg-success text-white">' . e($status_verifikasi) . '</span>';
+                return '<span class="label label-success">' . e(ucwords($status)) . '</span>';
             case 'valid':
-                return '<span class="badge bg-info text-white">' . e($status_verifikasi) . '</span>';
+                return '<span class="label label-info">' . e(ucwords($status)) . '</span>';
             case 'menunggu':
-                return '<span class="badge bg-warning text-dark">' . e($status_verifikasi) . '</span>';
+                return '<span class="label label-warning">' . e(ucwords($status)) . '</span>';
             case 'ditolak':
-                return '<span class="badge bg-danger text-white">' . e($status_verifikasi) . '</span>';
+                return '<span class="label label-danger">' . e(ucwords($status)) . '</span>';
             default:
-                return '<span class="badge bg-secondary text-white">Tidak diketahui</span>';
+                return '<span class="label label-secondary">Tidak Diketahui</span>';
         }
     }
 
@@ -127,7 +130,7 @@ class LombaMahasiswaController extends Controller
         return view('mahasiswa.informasi-lomba.daftar', compact('lomba', 'daftarMahasiswa', 'breadcrumb'));
     }
 
-    public function store(Request $request)
+    public function store_pendaftaran(Request $request)
     {
         $request->validate([
             'lomba_id' => 'required|exists:t_lomba,lomba_id',
@@ -186,6 +189,78 @@ class LombaMahasiswaController extends Controller
         ], 200);
     }
 
+    public function create()
+    {
+        $daftarKategori = KategoriModel::where('status_kategori', 'Aktif')->get();
+        $daftarTingkatLomba = TingkatLombaModel::where('status_tingkat_lomba', 'Aktif')->get();
+        return view('mahasiswa.informasi-lomba.create', compact('daftarKategori', 'daftarTingkatLomba'));
+    }
+
+    public function store_lomba(Request $request)
+    {
+        // Validasi data yang dikirimkan (hapus status_verifikasi)
+        $validator = Validator::make($request->all(), [
+            'nama_lomba' => 'required',
+            'deskripsi_lomba' => 'required',
+            'kategori_id' => 'required|array|exists:t_kategori,kategori_id',
+            'tingkat_lomba_id' => 'required|exists:t_tingkat_lomba,tingkat_lomba_id',
+            'penyelenggara_lomba' => 'required',
+            'awal_registrasi_lomba' => 'required|date',
+            'akhir_registrasi_lomba' => 'required|date|after_or_equal:awal_registrasi_lomba',
+            'link_pendaftaran_lomba' => 'required|url',
+            'img_lomba' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi data gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            $data = $request->except('img_lomba', 'kategori_id');
+
+            // Tambahkan pengusul_id dengan pengusul yang sedang login
+            $data['pengusul_id'] = auth()->user()->user_id;
+
+            // Set status_verifikasi default "Menunggu"
+            $data['status_verifikasi'] = 'Menunggu';
+
+            // Simpan data ke database terlebih dahulu
+            $lomba = LombaModel::create($data);
+
+            // Buat kategori lomba baru
+            foreach ($request->kategori_id as $kategoriId) {
+                KategoriLombaModel::create([
+                    'lomba_id' => $lomba->lomba_id,
+                    'kategori_id' => $kategoriId,
+                ]);
+            }
+
+            // Jika ada gambar, upload ke storage
+            if ($request->hasFile('img_lomba')) {
+                $file = $request->file('img_lomba');
+                $filename = $lomba->lomba_id . '_' . time() . '.' . $file->getClientOriginalExtension();
+                $path = $file->storeAs('public/img/lomba', $filename); // Simpan ke storage
+
+                // Update kolom img_lomba di database
+                $lomba->update(['img_lomba' => $filename]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil ditambahkan'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan. ' . $e->getMessage()
+            ]);
+        }
+    }
+
     public function history()
     {
         $breadcrumb = (object) [
@@ -197,38 +272,44 @@ class LombaMahasiswaController extends Controller
 
     public function list_history(Request $request)
     {
-        // Ambil data lomba yang status_lomba = 'Aktif' dan status_verifikasi = 'Terverifikasi' saja
+        $mahasiswaId = auth()->user()->user_id;
+
         $dataKelolaLomba = LombaModel::with(['kategori', 'tingkat_lomba'])
-            ->where('status_lomba', 'Aktif')
-            ->where('status_verifikasi', 'Terverifikasi') // hanya Terverifikasi
+            ->where('pengusul_id', $mahasiswaId)
             ->get();
 
         return DataTables::of($dataKelolaLomba)
             ->addIndexColumn()
-            // ->addColumn('kategori', function ($row) {
-            //     return $row->kategori->pluck('nama_kategori')->join(', ') ?: 'Tidak Diketahui';
-            // })
-            ->addColumn('tingkat_lomba', function ($row) {
-                return $row->tingkat_lomba->nama_tingkat ?? '-';
-            })
-            ->addColumn('tipe_lomba', function ($row) {
-                return ucfirst($row->tipe_lomba) ?? '-';
-            })
+            ->addColumn('nama_lomba', fn($row) => $row->nama_lomba ?? '-')
+            ->addColumn('kategori', fn($row) => $row->kategori->pluck('nama_kategori')->join(', ') ?: 'Tidak Diketahui')
+            ->addColumn('tingkat_lomba', fn($row) => $row->tingkat_lomba->nama_tingkat ?? '-')
+            ->addColumn('awal_registrasi_lomba', fn($row) => date('d M Y', strtotime($row->awal_registrasi_lomba)))
+            ->addColumn('akhir_registrasi_lomba', fn($row) => date('d M Y', strtotime($row->akhir_registrasi_lomba)))
             ->addColumn('status_verifikasi', function ($row) {
-                // Tampilkan status_lomba (yang pasti "Aktif" sesuai kondisi)
-                $status = $row->status_lomba;
-                if ($status === 'Aktif') {
-                    return '<span class="label label-success">Aktif</span>';
+                $statusLomba = $row->status_verifikasi;
+                switch ($statusLomba) {
+                    case 'Terverifikasi':
+                        $badge = '<span class="label label-success">Terverifikasi</span>';
+                        break;
+                    case 'Valid':
+                        $badge = '<span class="label label-info">Valid</span>';
+                        break;
+                    case 'Menunggu':
+                        $badge = '<span class="label label-warning">Menunggu</span>';
+                        break;
+                    case 'Ditolak':
+                        $badge = '<span class="label label-danger">Ditolak</span>';
+                        break;
+                    default:
+                        $badge = '<span class="label label-secondary">Tidak Diketahui</span>';
+                        break;
                 }
-                // Jika ingin fallback, tapi seharusnya gak perlu karena filter di query
-                return '<span class="label label-secondary">Tidak Diketahui</span>';
+                return $badge;
             })
             ->addColumn('aksi', function ($row) {
-                $btn = '<div class="text-center">';
-                $btn .= '<button style="white-space:nowrap; margin-right: 5px;" onclick="modalAction(\'' . route('informasi-lomba.show', $row->lomba_id) . '\')" class="btn btn-info btn-sm">Detail</button>';
-                $btn .= '<button style="white-space:nowrap;" onclick="modalAction(\'' . route('informasi-lomba.daftar', $row->lomba_id) . '\')" class="btn btn-success btn-sm">Daftar</button>';
-                $btn .= '</div>';
-                return $btn;
+                return '<div class="text-center">
+                    <button style="white-space:nowrap" onclick="modalAction(\'' . route('informasi-lomba.show', $row->lomba_id) . '\')" class="btn btn-info btn-sm">Detail</button>
+                </div>';
             })
             ->rawColumns(['aksi', 'status_verifikasi'])
             ->make(true);

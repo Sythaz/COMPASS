@@ -183,12 +183,12 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::post('kelola-lomba/store', [KelolaLombaController::class, 'store'])->name('kelola-lomba.store');
             Route::put('kelola-lomba/{id}', [KelolaLombaController::class, 'update'])->name('kelola-lomba.update');
             Route::delete('kelola-lomba/{id}', [KelolaLombaController::class, 'destroy'])->name('kelola-lomba.destroy'); // Seharusnya ::delete namun karena menggunakan status maka diganti menjadi ::put
-            
+
             // Rute Histori Pengajuan Lomba
             Route::get('histori-pengajuan-lomba', [HistoriPengajuanLombaController::class, 'index'])->name('histori-pengajuan-lomba.index');
             Route::post('histori-pengajuan-lomba/list', [HistoriPengajuanLombaController::class, 'list'])->name('histori-pengajuan-lomba.list');
             Route::get('histori-pengajuan-lomba/{id}/show_ajax', [HistoriPengajuanLombaController::class, 'showAjax']);
-            
+
             // Rute Verifikasi Lomba
             Route::get('verifikasi-lomba', [VerifikasiLombaController::class, 'index'])->name('verifikasi-lomba.index');
             Route::post('verifikasi-lomba/list', [VerifikasiLombaController::class, 'list'])->name('verifikasi-lomba.list');
@@ -291,10 +291,12 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::get('riwayat-pendaftaran/list', [LombaMahasiswaController::class, 'list_pendaftaran'])
                 ->name('mahasiswa.informasi-lomba.list-pendaftaran');
 
-            // Detail dan pendaftaran
+            // Aksi 
             Route::get('{id}/show', [LombaMahasiswaController::class, 'showAjax'])->name('informasi-lomba.show');
             Route::get('{id}/daftar', [LombaMahasiswaController::class, 'form_daftar'])->name('informasi-lomba.daftar');
-            Route::post('{id}/daftar', [LombaMahasiswaController::class, 'store'])->name('informasi-lomba.store');
+            Route::post('{id}/daftar', [LombaMahasiswaController::class, 'store_pendaftaran'])->name('informasi-lomba.store');
+            Route::get('create', [LombaMahasiswaController::class, 'create'])->name('create-lomba');
+            Route::post('store', [LombaMahasiswaController::class, 'store_lomba'])->name('store-lomba');
         });
 
 
@@ -325,31 +327,5 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
                 ->name('mahasiswa.prestasi.destroy');
         });
 
-        // ==== Input Data Lomba ====
-        Route::prefix('lomba')->group(function () {
-            Route::get('input', [InputLombaController::class, 'index'])
-                ->name('mahasiswa.lomba.input');
-
-            Route::post('input/list', [InputLombaController::class, 'list'])
-                ->name('mahasiswa.lomba.list');
-
-            Route::get('input/create', [InputLombaController::class, 'create'])
-                ->name('mahasiswa.lomba.create');
-
-            Route::get('input/{id}/show_ajax', [InputLombaController::class, 'showAjax']);
-
-            Route::get('input/{id}/edit_ajax', [InputLombaController::class, 'editAjax']);
-
-            Route::get('input/{id}/delete_ajax', [InputLombaController::class, 'deleteAjax']);
-
-            Route::post('input/store', [InputLombaController::class, 'store'])
-                ->name('mahasiswa.lomba.store');
-
-            Route::put('input/{id}', [InputLombaController::class, 'update'])
-                ->name('mahasiswa.lomba.update');
-
-            Route::delete('input/{id}', [InputLombaController::class, 'destroy'])
-                ->name('mahasiswa.lomba.destroy');
-        });
     });
 });

@@ -11,8 +11,7 @@
                 <div class="card-body">
 
                     <div class="row mb-2">
-                        <a onclick="modalAction('{{ route('dosen.data-lomba.create') }}')"
-                            class="btn btn-primary text-white">
+                        <a onclick="modalAction('{{ route('create-lomba') }}')" class="btn btn-primary text-white">
                             <i class="fa-solid fa-plus"></i>
                             <strong> Ajukan Lomba</strong>
                         </a>
