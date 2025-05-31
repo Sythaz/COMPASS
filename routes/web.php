@@ -187,6 +187,8 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::get('histori-pengajuan-lomba', [HistoriPengajuanLombaController::class, 'index'])->name('histori-pengajuan-lomba.index');
             Route::post('histori-pengajuan-lomba/list', [HistoriPengajuanLombaController::class, 'list'])->name('histori-pengajuan-lomba.list');
             Route::get('histori-pengajuan-lomba/{id}/show_ajax', [HistoriPengajuanLombaController::class, 'showAjax']);
+            Route::get('histori-pengajuan-lomba/{id}/edit_ajax', [HistoriPengajuanLombaController::class, 'editAjax']);
+            Route::put('histori-pengajuan-lomba/{id}', [HistoriPengajuanLombaController::class, 'update'])->name('histori-pengajuan-lomba.update');
             
             // Rute Verifikasi Lomba
             Route::get('verifikasi-lomba', [VerifikasiLombaController::class, 'index'])->name('verifikasi-lomba.index');
