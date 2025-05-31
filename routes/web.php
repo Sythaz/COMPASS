@@ -273,12 +273,24 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
 
         // Halaman Informasi Lomba (Menampilkan Lomba yang statusnya Aktif Dan Terverifikasi saja)
         Route::prefix('mahasiswa/info-lomba')->group(function () {
+            // Halaman utama lomba
             Route::get('/', [LombaMahasiswaController::class, 'index'])->name('mahasiswa.informasi-lomba.index');
             Route::get('list', [LombaMahasiswaController::class, 'list'])->name('mahasiswa.informasi-lomba.list');
+            // Halaman riwayat lomba
+            Route::get('history', [LombaMahasiswaController::class, 'history'])->name('mahasiswa.informasi-lomba.history');
+            Route::get('list-history', [LombaMahasiswaController::class, 'list_history'])->name('mahasiswa.informasi-lomba.list-history');
+            // Riwayat Pendaftaran
+            Route::get('riwayat-pendaftaran', [LombaMahasiswaController::class, 'riwayat_pendaftaran'])
+                ->name('mahasiswa.informasi-lomba.riwayat-pendaftaran');
+            Route::get('riwayat-pendaftaran/list', [LombaMahasiswaController::class, 'list_pendaftaran'])
+                ->name('mahasiswa.informasi-lomba.list-pendaftaran');
+
+            // Detail dan pendaftaran
             Route::get('{id}/show', [LombaMahasiswaController::class, 'showAjax'])->name('informasi-lomba.show');
             Route::get('{id}/daftar', [LombaMahasiswaController::class, 'form_daftar'])->name('informasi-lomba.daftar');
             Route::post('{id}/daftar', [LombaMahasiswaController::class, 'store'])->name('informasi-lomba.store');
         });
+
 
         // ==== Input Data Prestasi ====
         Route::prefix('prestasi')->group(function () {

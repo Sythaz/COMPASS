@@ -1,23 +1,14 @@
 @extends('layouts.template')
 
-@section('title', 'Informasi Lomba | COMPASS')
-@section('page-title', 'Informasi Lomba')
-@section('page-description', 'Halaman Informasi Lomba yang Tersedia')
+@section('title', 'Riwayat Pendaftaran | COMPASS')
+@section('page-title', 'Riwayat Lomba')
+@section('page-description', 'Halaman Riwayat Pendaftaran Lomba')
 
 @section('content')
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-
-                    <div class="row mb-2">
-                        <a onclick="modalAction('{{ route('dosen.data-lomba.create') }}')"
-                            class="btn btn-primary text-white">
-                            <i class="fa-solid fa-plus"></i>
-                            <strong> Ajukan Lomba</strong>
-                        </a>
-                    </div>
-
                     <div class="table-responsive">
                         <table class="w-100 table table-striped table-bordered custom-datatable" id="tabel-kelola-lomba">
                             <thead>
@@ -29,7 +20,7 @@
                                     <th>Awal Reg.</th>
                                     <th>Akhir Reg.</th>
                                     <th>Tipe Lomba</th>
-                                    <th class="text-center">Status Lomba</th>
+                                    <th class="text-center">Status</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -63,7 +54,7 @@
             $('#tabel-kelola-lomba').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: '{{ route("mahasiswa.informasi-lomba.list") }}',
+                ajax: '{{ route("mahasiswa.informasi-lomba.list-pendaftaran") }}',
                 columns: [
                     { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                     { data: 'nama_lomba', name: 'nama_lomba' },
