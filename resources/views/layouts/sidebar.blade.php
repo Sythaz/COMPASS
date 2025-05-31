@@ -161,9 +161,7 @@
                     </a>
                     <ul aria-expanded="false">
                         {{-- Halaman untuk melihat Daftar Mahasiswa Bimbingan --}}
-                        <li><a href="{{ route('dosen.kelola-bimbingan.index') }}">Prestasiku</a></li>
-                        {{-- Halaman untuk verifikasi daftar Mahasiswa Bimbingan --}}
-                        <li><a href="{{ route('dosen.verifikasi-bimbingan.index') }}">Riwayat </a></li>
+                        <li><a href="{{ route('mahasiswa.prestasi.index') }}">Informasi Prestasi</a></li>
                     </ul>
                 </li>
 
