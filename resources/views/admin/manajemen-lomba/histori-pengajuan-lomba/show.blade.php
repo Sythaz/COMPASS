@@ -95,6 +95,12 @@
                 </td>
             </tr>
         @endif
+        @if (!empty($lomba->alasan_tolak))
+            <tr>
+                <th style="width: 30%">Alasan Penolakan:</th>
+                <td class="text-start">{{ $lomba->alasan_tolak }}</td>
+            </tr>
+        @endif
     </table>
 </div>
 <div class="modal-footer">

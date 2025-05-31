@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('link_pendaftaran_lomba',255);
             $table->string('img_lomba')->nullable();
             $table->enum('status_verifikasi',['Ditolak','Menunggu', 'Valid', 'Terverifikasi']);
+            $table->string('alasan_tolak')->nullable();
             $table->enum('status_lomba',['Aktif','Nonaktif']);
             $table->timestamps();
 
@@ -39,3 +40,4 @@ return new class extends Migration
         Schema::dropIfExists('t_lomba');
     }
 };
+
