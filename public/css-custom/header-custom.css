@@ -1,0 +1,33 @@
+.logout-text-custom {
+    color: red;
+}
+
+.logout-text-custom:hover {
+    color: #7571F9;
+}
+
+.icon-dropdown-none::after {
+    display: none;
+}
+
+.hover-bg-light:hover {
+    background-color: #F8F9FA;
+    border-radius: 8px;
+}
+
+.drop-down.tinggi-notifikasi {
+    min-width: 430px;
+    border-radius: 8px;
+}
+
+.dropdown-menu a.text-muted:hover {
+    color: #7571F9 !important;
+}
+
+.btn-filter-notification:hover {
+    background-color: #F8F9FA;
+}
+
+.btn-filter-notification.active {
+    color: #7571F9 !important;
+}

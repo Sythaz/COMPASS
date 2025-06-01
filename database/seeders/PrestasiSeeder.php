@@ -52,7 +52,7 @@ class PrestasiSeeder extends Seeder
                 'mahasiswa_id'          => 2,
                 'lomba_id'              => 2,
                 'dosen_id'              => 3,
-                'kategori_id'           => 15,
+                'kategori_id'           => 12, // Diubah dari 15 ke 12 (sesuai range 1-14)
                 'periode_id'            => 2,
                 'tanggal_prestasi'      => '2025-03-03',
                 'juara_prestasi'        => 'Juara 3',
@@ -128,6 +128,7 @@ class PrestasiSeeder extends Seeder
                 'status_verifikasi'     => 'Valid'
             ]
         ];
+
         DB::table('t_prestasi')->insert($data);
     }
 }
