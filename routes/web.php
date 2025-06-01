@@ -297,9 +297,10 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
         // Dashboard mahasiswa, hanya untuk role mahasiswa
         Route::get('/Mahasiswa', [DashboardMahasiswaController::class, 'index'])->name('mahasiswa.dashboard');
 
-        Route::prefix('mahasiswa/prestasi')->group(function () {
-            // Halaman utama lomba
-            Route::get('/', [PrestasiController::class, 'index'])->name('mahasiswa.prestasi.index');
+        Route::prefix('mhs/prestasi')->group(function () {
+            Route::get('/', [PrestasiController::class, 'index'])->name('mhs.prestasi.index');
+            Route::get('tambah', [PrestasiController::class, 'create_prestasi'])->name('mhs.prestasi.create');
+            Route::post('simpan', [PrestasiController::class, 'store'])->name('mhs.prestasi.store');
         });
 
         // Halaman Informasi Lomba (Menampilkan Lomba yang statusnya Aktif Dan Terverifikasi saja)

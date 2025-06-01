@@ -285,7 +285,7 @@ class LombaMahasiswaController extends Controller
             ->addColumn('tingkat_lomba', fn($row) => $row->tingkat_lomba->nama_tingkat ?? '-')
             ->addColumn('awal_registrasi_lomba', fn($row) => date('d M Y', strtotime($row->awal_registrasi_lomba)))
             ->addColumn('akhir_registrasi_lomba', fn($row) => date('d M Y', strtotime($row->akhir_registrasi_lomba)))
-            ->addColumn('status', function ($row) {
+            ->addColumn('status_verifikasi', function ($row) {
                 return $this->getStatusBadge($row->status_verifikasi);
             })
 

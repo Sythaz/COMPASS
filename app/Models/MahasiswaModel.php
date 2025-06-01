@@ -65,4 +65,16 @@ class MahasiswaModel extends Model
         );
     }
 
+    public function prestasis()
+    {
+        return $this->belongsToMany(
+            PrestasiModel::class,
+            't_prestasi_mahasiswa',
+            'mahasiswa_id',
+            'prestasi_id'
+        )
+            ->withPivot('peran')
+            ->withTimestamps();
+    }
+
 }

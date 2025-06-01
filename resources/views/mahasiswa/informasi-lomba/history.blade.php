@@ -1,7 +1,7 @@
 @extends('layouts.template')
 
-@section('title', 'Informasi Lomba | COMPASS')
-@section('page-title', 'Informasi Lomba')
+@section('title', 'Riwayat Pengajuan Lomba | COMPASS')
+@section('page-title', 'Riwayat Pengajuan Lomba')
 @section('page-description', 'Halaman Daftar Riwayat Lomba yang pernah Diajukan')
 
 @section('content')

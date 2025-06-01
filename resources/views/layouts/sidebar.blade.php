@@ -149,8 +149,8 @@
                         <i class="fas fa-award"></i><span class="nav-text">Prestasi Mahasiswa</span>
                     </a>
                     <ul aria-expanded="false">
-                        {{-- Halaman untuk melihat Daftar Mahasiswa Bimbingan --}}
-                        <li><a href="{{ route('mahasiswa.prestasi.index') }}">Informasi Prestasi</a></li>
+                        {{-- Halaman Informasi Prestasi --}}
+                        <li><a href="{{ route('mhs.prestasi.index') }}">Informasi Prestasi</a></li>
                     </ul>
                 </li>
 
