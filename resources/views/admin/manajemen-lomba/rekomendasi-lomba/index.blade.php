@@ -48,7 +48,8 @@
                                 </div>
                             </div>
                             <div class="col-lg-4 text-right">
-                                <button class="btn btn-primary font-weight-bold" onclick="">
+                                <button class="btn btn-primary font-weight-bold"
+                                    onclick="modalAction('{{ url('/admin/manajemen-lomba/rekomendasi-lomba/tambah_rekomendasi_ajax') }}')">
                                     <i class="fa-solid fa-plus"></i> Rekomendasi Lomba
                                 </button>
                             </div>
@@ -63,7 +64,7 @@
             @foreach ($dataLomba as $lomba)
                 <div class="col-lg-4 col-md-6 lomba-item"
                     data-category="{{ $lomba->kategori->pluck('kategori_id')->join(',') }}"
-                    data-level="{{ $lomba->tingkat_lomba }}" data-name="{{ $lomba->nama_lomba }}">
+                    data-level="{{ $lomba->tingkat_lomba_id }}" data-name="{{ $lomba->nama_lomba }}">
                     <div class="card gradient-1 lomba-card">
                         <div class="card-body position-relative">
                             <div class="mb-3">
@@ -115,10 +116,11 @@
                                             </button>
                                         </div>
                                         <div class="col-6">
-                                            <a href="javascript:void(0)"
+                                            <button
+                                                onclick="modalAction('{{ url('/admin/manajemen-lomba/rekomendasi-lomba/' . $lomba->lomba_id . '/rekomendasi_ajax') }}')"
                                                 class="btn btn-success text-white btn-sm btn-block">
                                                 <i class="fa fa-external-link-alt"></i> Rekomen
-                                            </a>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -162,6 +164,9 @@
 @endpush
 
 @push('js')
+    <!-- Custom show header JS -->
+    <script src="{{ asset('js-custom/header-show-bootstrap5.js') }}"></script>
+
     <script>
         // Fungsi utama untuk filtering lomba
         function filterLomba() {

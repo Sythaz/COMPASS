@@ -128,7 +128,6 @@ class KelolaPrestasiController extends Controller
         $daftarKategori = KategoriModel::where('status_kategori', 'Aktif')->get();
         $daftarPeriode = PeriodeModel::all();
 
-        $kelolaPrestasi = PrestasiModel::findOrFail($id);
         return view('admin.manajemen-prestasi.kelola-prestasi.delete', compact('kelolaPrestasi', 'daftarMahasiswa', 'daftarDosen', 'daftarLomba', 'daftarKategori', 'daftarPeriode'));
     }
 
