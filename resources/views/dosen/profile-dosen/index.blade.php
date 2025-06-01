@@ -49,7 +49,7 @@
                                                             class="img-fluid rounded-circle profile-img">
                                                     @endif
                                                     <h4 class="mt-3 mb-1">{{ $dosen->nama_dosen }}</h4>
-                                                    <p class="text-muted">{{ $dosen->kategori->kategori_nama ?? 'Dosen' }}</p>
+                                                    <p class="text-muted">{{ $dosen->kategori->nama_kategori ?? 'Dosen' }}</p>
                                                 </div>
                                             </div>
                                             <div class="col-md-8">
@@ -76,7 +76,7 @@
                                                             <h5 class="f-w-500">Kategori <span class="pull-right">:</span></h5>
                                                         </div>
                                                         <div class="col-9">
-                                                            <span>{{ $dosen->kategori->kategori_nama ?? '-' }}</span>
+                                                            <span>{{ $dosen->kategori->nama_kategori ?? '-' }}</span>
                                                         </div>
                                                     </div>
                                                     <div class="row mb-3">
@@ -147,7 +147,7 @@
                                                                     <option value="">- Pilih Kategori -</option>
                                                                     @foreach($kategori as $k)
                                                                         <option value="{{ $k->kategori_id }}" {{ $dosen->kategori_id == $k->kategori_id ? 'selected' : '' }}>
-                                                                            {{ $k->kategori_nama }}
+                                                                            {{ $k->nama_kategori }}
                                                                         </option>
                                                                     @endforeach
                                                                 </select>
