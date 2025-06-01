@@ -213,11 +213,13 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             // Rute Rekomendasi Lomba
             Route::get('rekomendasi-lomba', [RekomendasiLombaController::class, 'index'])->name('rekomendasi-lomba.index');
             Route::get('rekomendasi-lomba/{id}/show_ajax', [RekomendasiLombaController::class, 'showAjax']);
+            Route::get('rekomendasi-lomba/{id}/rekomendasi_ajax', [RekomendasiLombaController::class, 'rekomendasiAjax']);
+            Route::get('rekomendasi-lomba/tambah_rekomendasi_ajax', [RekomendasiLombaController::class, 'tambahRekomendasiAjax']);
+            Route::post('rekomendasi-lomba/notifikasi', [RekomendasiLombaController::class, 'notifikasiRekomendasi'])->name('rekomendasi-lomba.notifikasi');
 
             // Rute Verifikasi Pendaftaran Lomba
             Route::get('pendaftaran-lomba', [VerifikasiPendaftaranController::class, 'index'])->name('verifikasi-pendaftaran.index');
             Route::get('pendaftaran-lomba/list', [VerifikasiPendaftaranController::class, 'list'])->name('verifikasi-pendaftaran.list');
-
         });
 
         // MANAJEMEN PRESTASI
@@ -289,7 +291,6 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::get('create', [DataLombaController::class, 'create'])->name('create');
             Route::post('store', [DataLombaController::class, 'store'])->name('store');
         });
-
     });
 
     // ROUTE MAHASISWA
@@ -354,6 +355,5 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::delete('input/{id}', [InputPrestasiController::class, 'destroy'])
                 ->name('mahasiswa.prestasi.destroy');
         });
-
     });
 });
