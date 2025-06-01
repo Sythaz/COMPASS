@@ -42,7 +42,7 @@
 
     <div class="modal-footer">
         <button type="submit" class="btn btn-danger d-flex align-items-center gap-2">
-            <i class="fas fa-trash-alt mr-2"></i>Hapus
+            <i class="fas fa-lock mr-2"></i>Nonaktifkan
         </button>
         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
             <i class="fas fa-times mr-2"></i>Batal

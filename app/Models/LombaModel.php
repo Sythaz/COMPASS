@@ -26,11 +26,11 @@ class LombaModel extends Model
         'img_lomba',
         'status_verifikasi',
         'status_lomba',
+        'alasan_tolak',
     ];
 
     public function kategori(): BelongsToMany
     {
-        // return $this->belongsTo(KategoriModel::class, 'kategori_id','kategori_id');
         return $this->belongsToMany(KategoriModel::class, 't_kategori_lomba', 'lomba_id', 'kategori_id');
     }
 
@@ -44,3 +44,4 @@ class LombaModel extends Model
         return $this->belongsTo(UsersModel::class, 'pengusul_id', 'user_id');
     }
 }
+

@@ -49,4 +49,14 @@ class KategoriModel extends Model
         );
     }
 
+    public function prestasi()
+    {
+        return $this->belongsToMany(
+            PrestasiModel::class,
+            't_kategori_prestasi',
+            'kategori_id',
+            'prestasi_id'
+        );
+    }
+
 }

@@ -42,7 +42,7 @@ class KelolaLombaController extends Controller
                 'status_verifikasi'
             ])
             ->where('status_lomba', 'Aktif')
-            ->whereIn('status_verifikasi', ['Terverifikasi', 'Ditolak'])
+            ->whereIn('status_verifikasi', ['Terverifikasi'])
             ->get();
 
         return DataTables::of($dataKelolaLomba)
@@ -58,9 +58,6 @@ class KelolaLombaController extends Controller
                 switch ($statusLomba) {
                     case 'Terverifikasi':
                         $badge = '<span class="label label-success">Terverifikasi</span>';
-                        break;
-                    case 'Valid':
-                        $badge = '<span class="label label-info">Valid</span>';
                         break;
                     case 'Menunggu':
                         $badge = '<span class="label label-warning">Menunggu</span>';
@@ -185,7 +182,7 @@ class KelolaLombaController extends Controller
             'akhir_registrasi_lomba' => 'required|date|after_or_equal:awal_registrasi_lomba',
             'link_pendaftaran_lomba' => 'required|url',
             'img_lomba' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'status_verifikasi' => 'required|in:Terverifikasi,Valid,Menunggu,Ditolak',
+            'status_verifikasi' => 'required|in:Terverifikasi,Menunggu,Ditolak',
         ]);
 
         if ($validator->fails()) {
@@ -248,7 +245,7 @@ class KelolaLombaController extends Controller
             'akhir_registrasi_lomba' => 'required|date|after_or_equal:awal_registrasi_lomba',
             'link_pendaftaran_lomba' => 'required|url',
             'img_lomba' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'status_verifikasi' => 'required|in:Terverifikasi,Valid,Menunggu,Ditolak',
+            'status_verifikasi' => 'required|in:Terverifikasi,Menunggu,Ditolak',
         ]);
 
         try {
