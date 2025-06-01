@@ -256,7 +256,7 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
         Route::prefix('dosen/profile-dosen')->group(function () {
             Route::get('/', [ProfileDosenController::class, 'index'])->name('dosen.profile.index');
             Route::get('/edit/{id}', [ProfileDosenController::class, 'edit'])->name('dosen.profile.edit');
-            Route::put('/update', [ProfileDosenController::class, 'update'])->name('dosen.profile.update');
+            Route::put('/update/{id}', [ProfileDosenController::class, 'update'])->name('dosen.profile.update');
         });
 
         // Halaman Kelola Bimbingan (Menampilkan Riwayat Prestasi mahasiswa sesuai Mahasiswa yang Di Bimbing)
