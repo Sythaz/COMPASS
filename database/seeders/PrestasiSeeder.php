@@ -115,6 +115,7 @@ class PrestasiSeeder extends Seeder
                 'status_verifikasi' => 'Valid'
             ]
         ];
+
         DB::table('t_prestasi')->insert($data);
     }
 }
