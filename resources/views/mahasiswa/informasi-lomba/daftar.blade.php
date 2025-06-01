@@ -8,6 +8,8 @@
         </button>
     </div>
     <div class="modal-body">
+        {{-- Lomba Tim atau Individu --}}
+        <input type="hidden" id="tipe_lomba" value="{{ $lomba->tipe_lomba }}">
         <div class="form-group">
             <label class="col-form-label">Lomba <span class="text-danger">*</span></label>
             <input type="text" class="form-control" value="{{ $lomba->nama_lomba }}" disabled>
@@ -46,9 +48,6 @@
                 </div>
             </div>
         </div>
-
-        {{-- Lomba Tim atau Individu --}}
-        <input type="hidden" id="tipe_lomba" value="{{ $lomba->tipe_lomba }}">
 
         <div class="form-group">
             <label for="bukti_pendaftaran" class="col-form-label mt-2">
@@ -281,7 +280,7 @@
         });
 
         // Inisialisasi awal saat modal/form dibuka
-        let tipe = $('#tipe_lomba').val();
+        let tipe = $('#tipe_lomba').val().toLowerCase();
 
         if (tipe === 'individu') {
             $('#jumlah_anggota').val(1).prop('readonly', true);
