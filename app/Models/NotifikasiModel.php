@@ -19,6 +19,8 @@ class NotifikasiModel extends Model
         'lomba_id',
         'prestasi_id',
         'status_notifikasi',
+        'created_at',
+        'updated_at',
     ];
 
     public function user()

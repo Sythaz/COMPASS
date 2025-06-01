@@ -29,6 +29,7 @@ use App\Http\Controllers\Mahasiswa\DashboardController as DashboardMahasiswaCont
 use App\Http\Controllers\Mahasiswa\InputPrestasiController;
 use App\Http\Controllers\Mahasiswa\LombaMahasiswaController;
 use App\Http\Controllers\Mahasiswa\PrestasiController;
+use App\Http\Controllers\NotifikasiController;
 
 // Validasi global parameter {id} agar hanya angka
 Route::pattern('id', '[0-9]+');
@@ -54,6 +55,9 @@ Route::get('logout', [AuthController::class, 'logout'])->middleware('auth')->nam
 
 // Route group untuk user yang sudah login
 Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam sini ya!
+    // Notifikasi
+    Route::post('notifikasi/baca_semua_notifikasi', [NotifikasiController::class, 'bacaSemuaNotifikasi'])->name('notifikasi.bacaSemuaNotifikasi');
+    Route::post('notifikasi/tanda_sudah_dibaca_notifikasi/{id}', [NotifikasiController::class, 'tandaiSudahDibacaNotifikasi'])->name('notifikasi.tandaiSudahDibacaNotifikasi');
 
     // ROUTE ADMIN
     Route::middleware('authorize:Admin')->group(function () {

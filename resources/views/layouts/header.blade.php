@@ -87,62 +87,110 @@
                     <li class="icons dropdown">
                         <a href="javascript:void(0)" class="dropdown-toggle icon-dropdown-none" data-toggle="dropdown">
                             <i class="mdi mdi-bell-outline"></i>
-                            <span class="badge gradient-1 badge-pill badge-primary">3</span>
+                            @if ($jumlahBelumDibaca > 0)
+                                <span class="badge gradient-1 badge-pill badge-primary">{{ $jumlahBelumDibaca }}</span>
+                            @endif
                         </a>
-                        <div class="drop-down animated dropdown-menu">
-                            <div class="dropdown-content-heading d-flex justify-content-between">
-                                <span class="">3 New Messages</span>
+                        <div class="drop-down animated dropdown-menu tinggi-notifikasi">
+                            <div class="d-flex justify-content-between px-3">
+                                <span class="font-weight-semi-bold" style="font-size: 1rem">Notifikasi Anda</span>
+                                <div>
+                                    <a class="mr-3 font-weight-semi-bold text-muted" href="javascript:void(0)"
+                                        id="btn-baca-semua">
+                                        <i class="fa-solid fa-check-double" style="font-size: 1rem"></i> Baca Semua
+                                    </a>
+                                    <a class="font-weight-semi-bold text-muted" href="javascript:void(0)">
+                                        <i class="fa-solid fa-envelope-open-text" style="font-size: 1rem"></i> Lihat
+                                    </a>
+                                </div>
                             </div>
-                            <div class="dropdown-content-body">
-                                <ul>
-                                    <li class="notification-unread">
-                                        <a href="javascript:void()">
-                                            <img class="float-left mr-3 avatar-img"
-                                                src="{{ asset('theme/images/avatar/1.jpg') }}" alt="">
-                                            <div class="notification-content">
-                                                <div class="notification-heading">Saiful Islam</div>
-                                                <div class="notification-timestamp">08 Hours ago</div>
-                                                <div class="notification-text">Hi Teddy, Just wanted to let you ...
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li class="notification-unread">
-                                        <a href="javascript:void()">
-                                            <img class="float-left mr-3 avatar-img"
-                                                src="{{ asset('theme/images/avatar/2.jpg') }}" alt="">
-                                            <div class="notification-content">
-                                                <div class="notification-heading">Adam Smith</div>
-                                                <div class="notification-timestamp">08 Hours ago</div>
-                                                <div class="notification-text">Can you do me a favour?</div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void()">
-                                            <img class="float-left mr-3 avatar-img"
-                                                src="{{ asset('theme/images/avatar/3.jpg') }}" alt="">
-                                            <div class="notification-content">
-                                                <div class="notification-heading">Barak Obama</div>
-                                                <div class="notification-timestamp">08 Hours ago</div>
-                                                <div class="notification-text">Hi Teddy, Just wanted to let you ...
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void()">
-                                            <img class="float-left mr-3 avatar-img"
-                                                src="{{ asset('theme/images/avatar/4.jpg') }}" alt="">
-                                            <div class="notification-content">
-                                                <div class="notification-heading">Hilari Clinton</div>
-                                                <div class="notification-timestamp">08 Hours ago</div>
-                                                <div class="notification-text">Hello</div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                </ul>
 
+                            <div class="btn-group btn-group btn-group-toggle px-3" data-toggle="buttons" role="group"
+                                aria-label="Notification filter">
+                                <label
+                                    class="btn btn-outline-light btn-filter-notification font-weight-bold text-secondary active"
+                                    style="border-width: 2px;">
+                                    <input type="radio" name="options" id="lihatSemuaNotifikasi"
+                                        autocomplete="off" checked />
+                                    Semua
+                                </label>
+                                <label
+                                    class="btn btn-outline-light btn-filter-notification font-weight-bold text-secondary"
+                                    style="border-width: 2px;">
+                                    <input type="radio" name="options" id="lihatNotifikasiBelumDibaca"
+                                        autocomplete="off" />
+                                    Belum Dibaca
+                                </label>
+                            </div>
+
+                            <div class="dropdown-content-body">
+                                <ul style="max-height: 60vh; overflow: auto">
+                                    @if ($notifikasi->count() == 0)
+                                        <li class="">
+                                            <p class="text-center text-muted m-0 no-notifikasi">
+                                                Tidak ada notifikasi
+                                            </p>
+                                        </li>
+                                    @else
+                                        @foreach ($notifikasi as $n)
+                                            @php
+                                                $statusKelas =
+                                                    $n->status_notifikasi == 'Belum Dibaca'
+                                                        ? 'belum-dibaca'
+                                                        : 'sudah-dibaca';
+                                            @endphp
+                                            <li class="p-0 hover-bg-light {{ $statusKelas }}">
+                                                <a href="javascript:void()" class="px-1 tandai-sebagai-dibaca"
+                                                    data-id="{{ $n->notifikasi_id }}">
+                                                    <img class="float-left mr-3 avatar-img" style="height: 2.5rem"
+                                                        src="
+                                                        @if ($n->pengirim_role == 'Admin') {{ asset('assets/images/profil/default-profile.png') }}
+                                                        @elseif ($n->pengirim_role == 'Dosen') {{ asset('assets/images/profil/default-profile.png') }}                                                            
+                                                        @elseif ($n->pengirim_role == 'Sistem') {{ asset('assets/images/logo/compass-ungu.svg') }} @endif
+                                                         "
+                                                        alt="">
+                                                    <div class="notification-content mr-0">
+                                                        <div class="d-flex justify-content-between">
+                                                            <div class="font-weight-semi-bold" style="color: black">
+                                                                {{ $n->pengirim_role }} -
+                                                                @if ($n->jenis_notifikasi == 'Rekomendasi')
+                                                                    Rekomendasi Lomba
+                                                                @elseif ($n->jenis_notifikasi == 'Verifikasi Lomba')
+                                                                    Verifikasi Lomba Baru
+                                                                @elseif ($n->jenis_notifikasi == 'Verifikasi Prestasi')
+                                                                    Verifikasi Prestasi
+                                                                @else
+                                                                    {{ $n->jenis_notifikasi }}
+                                                                @endif
+
+                                                            </div>
+                                                            @if ($n->status_notifikasi == 'Belum Dibaca')
+                                                                <i class="fa fa-circle text-primary"></i>
+                                                            @endif
+                                                        </div>
+                                                        <div class="d-flex justify-content-between mt-1 pr-1 text-muted"
+                                                            style="font-size: 0.725rem">
+                                                            <p class="mb-2">
+                                                                {{ date('d F Y', strtotime($n->created_at)) }}
+                                                            </p>
+                                                            <p class="mb-2">
+                                                                {{ \Carbon\Carbon::parse($n->created_at)->diffForHumans() }}
+                                                            </p>
+                                                        </div>
+                                                        <div class="bg-light rounded">
+                                                            <p class="p-2 m-0">
+                                                                {{ $n->pesan_notifikasi }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                            @if (!$loop->last)
+                                                <hr class="m-0">
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                </ul>
                             </div>
                         </div>
                     </li>
@@ -165,7 +213,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="drop-down dropdown-profile dropdown-menu">
+                        <div class="drop-down dropdown-profile dropdown-menu dropdown-menu-validation">
                             <div class="dropdown-content-body">
                                 <ul>
                                     <li>
@@ -194,17 +242,121 @@
         </div>
     </div>
 
-    <style>
-        .logout-text-custom {
-            color: red;
+    {{-- Custom CSS --}}
+    <link href="{{ asset('css-custom/header-custom.css') }}" rel="stylesheet">
+    {{-- Script jQuery --}}
+    <script src="{{ asset('theme/plugins/jquery/jquery.min.js') }}"></script>
+
+    {{-- Script active filter notification --}}
+    <script>
+        // Event handler untuk tombol "Baca Semua"
+        $('#btn-baca-semua').click(function() {
+            // Kirim permintaan AJAX untuk menandai semua notifikasi sebagai dibaca
+            $.ajax({
+                url: '{{ route('notifikasi.bacaSemuaNotifikasi') }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Jika berhasil, ubah semua notifikasi yang belum dibaca menjadi sudah dibaca
+                        $('.belum-dibaca').each(function() {
+                            $(this).removeClass('belum-dibaca').addClass('sudah-dibaca');
+                            $(this).find('.fa-circle').remove(); // Hapus ikon "belum dibaca"
+                        });
+
+                        // Perbarui badge jumlah notifikasi menjadi 0
+                        $('.badge').text('0');
+                    }
+                }
+            });
+        });
+
+        // Event handler saat klik notifikasi
+        $('.tandai-sebagai-dibaca').click(function() {
+            const notifikasiId = $(this).data('id');
+            const $li = $(this).closest('li');
+
+            // Validasi jika notifikasi belum dibaca
+            if ($li.hasClass('belum-dibaca')) {
+                // Kirim permintaan AJAX untuk menandai notifikasi yang di klik sebagai dibaca
+                $.ajax({
+                    url: '{{ route('notifikasi.tandaiSudahDibacaNotifikasi', '') }}' + '/' + notifikasiId,
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Ubah kelas dan hapus indikator belum dibaca
+                            $li.removeClass('belum-dibaca').addClass('sudah-dibaca');
+                            $li.find('.fa-circle').remove(); // hapus ikon belum dibaca
+
+                            // Perbarui badge jumlah notifikasi menjadi berkurang 1
+                            const $badge = $('.dropdown-toggle .badge'); // Target badge notifikasi saja
+                            let currentBadgeCount = parseInt($badge.text());
+
+                            if (!isNaN(currentBadgeCount) && currentBadgeCount > 0) {
+                                $badge.text(currentBadgeCount - 1);
+                            } else {
+                                $badge.remove(); // Hapus badge jika sudah 0
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
+        $(document).ready(function() {
+            // Event handler untuk tombol filter notifikasi
+            $('.btn-filter-notification').click(function() {
+                // Ubah kelas tombol menjadi aktif
+                $('.btn-filter-notification').removeClass('active');
+                $(this).addClass('active');
+
+                const filterId = $(this).find('input').attr('id'); // Dapatkan ID filter
+                // Tampilkan notifikasi berdasarkan filter yang dipilih
+                if (filterId === 'lihatSemuaNotifikasi') {
+                    lihatSemuaNotifikasi();
+                } else if (filterId === 'lihatNotifikasiBelumDibaca') {
+                    lihatNotifikasiBelumDibaca();
+                }
+            });
+        });
+
+        // Fungsi untuk menampilkan semua notifikasi
+        function lihatSemuaNotifikasi() {
+            $('.text-anda-sudah-membaca').remove(); // Hapus text
+
+            $('.belum-dibaca, .sudah-dibaca').show(); // Tampilkan semua notifikasi
+            $('hr').show(); // Tampilkan semua garis pemisah
+
+            // hapus p dengan text-anda-sudah membaca
         }
 
-        .logout-text-custom:hover {
-            color: #7571F9;
-        }
+        // Fungsi untuk menampilkan hanya notifikasi yang belum dibaca
+        function lihatNotifikasiBelumDibaca() {
+            $('.sudah-dibaca').hide(); // Sembunyikan notifikasi yang sudah dibaca
+            $('.belum-dibaca').show(); // Tampilkan notifikasi yang belum dibaca
+            $('hr').hide(); // Sembunyikan semua garis pemisah
 
-        .icon-dropdown-none::after {
-            display: none;
+            $('.text-anda-sudah-membaca').remove(); // Hapus pesan jika sudah ada
+
+            // Jika tidak ada notifikasi yang belum dibaca, tetapi ada notifikasi yang sudah dibaca
+            if ($('.belum-dibaca').length === 0 && $('.sudah-dibaca').length > 0) {
+                // Jika tidak ada notifikasi yang belum dibaca, tampilkan pesan
+                $('.dropdown-menu .dropdown-menu-validation').append(
+                    '<p class="text-center text-anda-sudah-membaca text-muted m-0">Anda sudah membaca semua notifikasi.</p>'
+                );
+            } else {
+                $('.belum-dibaca').each(function(index) {
+                    // Tampilkan garis pemisah kecuali setelah notifikasi terakhir yang belum dibaca
+                    if (index !== $('.belum-dibaca').length - 1) {
+                        $(this).next('hr').show();
+                    }
+                });
+            }
         }
-    </style>
+    </script>
 @endif
