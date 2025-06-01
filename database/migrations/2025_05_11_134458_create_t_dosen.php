@@ -13,7 +13,6 @@ return new class extends Migration {
         Schema::create('t_dosen', function (Blueprint $table) {
             $table->id('dosen_id');
             $table->unsignedBigInteger('user_id')->index();
-            $table->unsignedBigInteger('kategori_id')->index();
             $table->bigInteger('nip_dosen')->unique();
             $table->string('nama_dosen', 255);
             $table->string('img_dosen')->nullable();
@@ -25,7 +24,6 @@ return new class extends Migration {
             $table->timestamps();
 
             $table->foreign('user_id')->references('user_id')->on('t_users');
-            $table->foreign('kategori_id')->references('kategori_id')->on('t_kategori');
         });
     }
 

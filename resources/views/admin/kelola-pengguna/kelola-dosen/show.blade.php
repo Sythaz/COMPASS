@@ -23,7 +23,9 @@
         </tr>
         <tr>
             <th>Bidang</th>
-            <td class="text-start">{{ $dosen->kategori->nama_kategori ?? '-' }}</td>
+            <td class="text-start">
+                {{ $dosen->kategoris->pluck('nama_kategori')->implode(', ') ?: '-' }}
+            </td>
         </tr>
         <tr>
             <th>Jenis Kelamin</th>

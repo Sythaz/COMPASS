@@ -45,6 +45,14 @@
                         value="{{ old('nama_lomba', $kelolaLomba->nama_lomba) }}" required>
                 </div>
 
+                {{-- Nama Pengusul (tidak bisa diedit) --}}
+                <label for="nama_pengusul" class="col-form-label mt-2">Pengusul <span class="text-danger"
+                        style="color: red;">*</span></label>
+                <div class="custom-validation">
+                    <input type="text" class="form-control" name="nama_pengusul" value="{{ $namaPengusul }}"
+                        readonly>
+                </div>
+
                 {{-- Deskripsi Lomba --}}
                 <label for="deskripsi_lomba" class="col-form-label mt-2">Deskripsi Lomba <span class="text-danger"
                         style="color: red;">*</span></label>
@@ -123,9 +131,6 @@
                         <option value="Terverifikasi"
                             {{ old('status_verifikasi', $kelolaLomba->status_verifikasi) == 'Terverifikasi' ? 'selected' : '' }}>
                             Terverifikasi</option>
-                        <option value="Valid"
-                            {{ old('status_verifikasi', $kelolaLomba->status_verifikasi) == 'Valid' ? 'selected' : '' }}>
-                            Valid</option>
                         <option value="Menunggu"
                             {{ old('status_verifikasi', $kelolaLomba->status_verifikasi) == 'Menunggu' ? 'selected' : '' }}>
                             Menunggu</option>

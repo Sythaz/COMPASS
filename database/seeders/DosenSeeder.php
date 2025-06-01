@@ -188,7 +188,7 @@ class DosenSeeder extends Seeder
         $users = DB::table('t_users')
             ->orderBy('user_id')
             ->skip(5) // Lewati 5 user pertama (index 0–4)
-            ->take(count($names)) // Pastikan jumlah sesuai dengan array nama
+            ->take(count($names))
             ->get()
             ->values(); // Reset index
 
@@ -197,7 +197,7 @@ class DosenSeeder extends Seeder
         foreach ($users as $index => $user) {
             $data[] = [
                 'user_id' => $user->user_id,
-                'kategori_id' => rand(1, 18),
+                // HAPUS kategori_id karena pakai many-to-many
                 'nip_dosen' => $user->username, // Ganti nips
                 'nama_dosen' => $names[$index] ?? 'Nama Tidak Diketahui',
                 'img_dosen' => 'profil-default.png',
@@ -208,11 +208,40 @@ class DosenSeeder extends Seeder
             ];
         }
 
+        // Insert dosen tanpa kategori_id
         DB::table('t_dosen')->insert($data);
 
-        // Langkah 2: Update email, no_hp, alamat
-        $dosen = DB::table('t_dosen')->get();
-        foreach ($dosen as $d) {
+        // Ambil dosen yang baru saja diinsert, dan Menambahan kategori (random)
+        $dosensBaru = DB::table('t_dosen')
+            ->whereIn('user_id', $users->pluck('user_id')->toArray())
+            ->get();
+
+        // Insert data kategori ke pivot t_kategori_dosen untuk tiap dosen
+        foreach ($dosensBaru as $dosen) {
+            // Bisa kasih random 1 sampai 3 kategori
+            $jumlahKategori = rand(1, 3);
+            $kategoriIds = [];
+
+            while (count($kategoriIds) < $jumlahKategori) {
+                $randKategori = rand(1, 18);
+                if (!in_array($randKategori, $kategoriIds)) {
+                    $kategoriIds[] = $randKategori;
+                }
+            }
+
+            foreach ($kategoriIds as $kategoriId) {
+                DB::table('t_kategori_dosen')->insert([
+                    'dosen_id' => $dosen->dosen_id,
+                    'kategori_id' => $kategoriId,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+
+        // Update email, no_hp, alamat dosen
+        $dosenAll = DB::table('t_dosen')->get();
+        foreach ($dosenAll as $d) {
             DB::table('t_dosen')
                 ->where('dosen_id', $d->dosen_id)
                 ->update([
@@ -222,6 +251,7 @@ class DosenSeeder extends Seeder
                 ]);
         }
     }
+
 }
 
 

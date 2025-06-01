@@ -63,6 +63,22 @@
         </div>
 
         <div class="form-group mb-3">
+            <label for="kategori_id" class="col-form-label mt-2">Bidang Minat Mahasiswa<span
+                    class="text-danger">*</span></label>
+            <div class="custom-validation">
+                <select name="kategori_id[]" id="kategori_id" class="form-control multiselect-dropdown-kategori"
+                    multiple="multiple">
+                    <option value="">-- Pilih Kategori --</option>
+                    @foreach ($kategoris as $kategori)
+                        <option value="{{ $kategori->kategori_id }}" {{ in_array($kategori->kategori_id, $mahasiswa->kategoris->pluck('kategori_id')->toArray()) ? 'selected' : '' }}>
+                            {{ $kategori->nama_kategori }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group mb-3">
             <label for="angkatan" class="col-form-label">Angkatan</label>
             <input type="number" class="form-control" name="angkatan" id="angkatan"
                 value="{{ old('angkatan', $mahasiswa->angkatan ?? '') }}">
@@ -92,18 +108,6 @@
                 value="{{ old('no_hp', $mahasiswa->no_hp) }}" placeholder="08xxxxxxxxxx">
         </div>
 
-        <div class="form-group mb-3">
-            <label for="level_minbak_id" class="col-form-label">Level Minat Bakat <span
-                    class="text-danger">*</span></label>
-            <select name="level_minbak_id" id="level_minbak_id" class="form-control" required>
-                <option value="">-- Pilih Level Minat Bakat --</option>
-                @foreach ($list_level as $level)
-                    <option value="{{ $level->level_minbak_id }}" {{ old('level_minbak_id', $mahasiswa->level_minbak_id ?? '') == $level->level_minbak_id ? 'selected' : '' }}>
-                        {{ $level->level_minbak }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
 
         <div class="form-group mb-3">
             <label for="username" class="col-form-label">Username <span class="text-danger">*</span></label>
@@ -136,6 +140,51 @@
         </button>
     </div>
 </form>
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<style>
+    .select2-container .select2-selection--multiple {
+        min-height: 45px;
+        border-radius: 0;
+        border: 1px solid #ced4da !important;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        color: #7571F9;
+        background-color: white !important;
+        outline: 2px solid #7571F9 !important;
+        border: none;
+        border-radius: 4px;
+        margin-top: 10px;
+        margin-left: 12px
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+        color: white;
+        background-color: #7571F9;
+    }
+
+    .select2-container .select2-search--inline .select2-search__field {
+        margin-top: 12px;
+        margin-left: 12px;
+    }
+
+    .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+        background-color: #7571F9;
+    }
+</style>
+
+<script>
+    // Memanggil Select2 multiselect
+    $(document).ready(function () {
+        $('.multiselect-dropdown-kategori').select2({
+            width: '100%',
+            placeholder: 'Belum ada kategori terpilih',
+        });
+    });
+</script>
 
 <script>
     // Submit form edit mahasiswa dengan AJAX

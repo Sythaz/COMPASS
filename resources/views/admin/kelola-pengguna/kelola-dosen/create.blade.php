@@ -75,19 +75,18 @@
         </div>
 
         {{-- Pilih Bidang --}}
-        <div class="form-group">
-            <label for="kategori_id" class="col-form-label">Pilih Bidang <span class="text-danger">*</span></label>
-            <div class="custom-validation">
-                <select name="kategori_id" id="kategori_id" class="form-control" required>
-                    <option value="">-- Pilih Bidang --</option>
-                    @foreach($kategori as $k)
-                        <option value="{{ $k->kategori_id }}" {{ (old('kategori_id', $dosen->kategori_id ?? '') == $k->kategori_id) ? 'selected' : '' }}>
-                            {{ $k->nama_kategori }}
-                        </option>
-                    @endforeach
-                </select>
-                <span class="error-text text-danger" id="error-kategori_id"></span>
-            </div>
+        <label for="kategori_id" class="col-form-label mt-2">Bidang Dosen<span class="text-danger"
+                style="color: red;">*</span></label>
+        <div class="custom-validation">
+            <select name="kategori_id[]" id="kategori_id" class="form-control multiselect-dropdown-kategori"
+                multiple="multiple" required>
+                <option value="">-- Pilih Kategori --</option>
+                @foreach ($kategoris as $kategori)
+                    <option value="{{ $kategori->kategori_id }}">
+                        {{ $kategori->nama_kategori }}
+                    </option>
+                @endforeach
+            </select>
         </div>
 
         <input type="hidden" name="role" value="dosen">
@@ -102,7 +101,53 @@
     </div>
 </form>
 
-<!-- Pastikan js-custom/form-validation.js sudah dimuat -->
+<script src="{{ asset('js-custom/form-validation.js') }}"></script>
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<style>
+    .select2-container .select2-selection--multiple {
+        min-height: 45px;
+        border-radius: 0;
+        border: 1px solid #ced4da !important;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        color: #7571F9;
+        background-color: white !important;
+        outline: 2px solid #7571F9 !important;
+        border: none;
+        border-radius: 4px;
+        margin-top: 10px;
+        margin-left: 12px
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+        color: white;
+        background-color: #7571F9;
+    }
+
+    .select2-container .select2-search--inline .select2-search__field {
+        margin-top: 12px;
+        margin-left: 12px;
+    }
+
+    .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+        background-color: #7571F9;
+    }
+</style>
+
+<script>
+    // Memanggil Select2 multiselect
+    $(document).ready(function () {
+        $('.multiselect-dropdown-kategori').select2({
+            width: '100%',
+            placeholder: 'Belum ada kategori terpilih',
+        });
+    });
+</script>
+
 <script src="{{ asset('js-custom/form-validation.js') }}"></script>
 
 <script>
@@ -112,14 +157,14 @@
         {
             nip_dosen: { required: true },
             nama_dosen: { required: true },
-            kategori_id: { required: true },
-            // username: { required: true },
-            // password: { required: true, minlength: 6 },
+            kelamin: { required: true },
+            'kategori_id[]': { required: true },
         },
         {
             nip_dosen: { required: "NIP wajib diisi" },
             nama_dosen: { required: "Nama wajib diisi" },
-            kategori_id: { required: "Kategori wajib dipilih" },
+            kelamin: { required: "Jenis Kelamin wajib dipilih" },
+            'kategori_id[]': { required: "Pilih Minimal 1 Bidang" },
             username: { required: "Username wajib diisi" },
             password: {
                 required: "Password wajib diisi",

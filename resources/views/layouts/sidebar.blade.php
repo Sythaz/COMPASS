@@ -23,7 +23,7 @@
                         <i class="icon-speedometer menu-icon"></i><span class="nav-text">Dashboard</span>
                     </a>
                 </li>
-
+                {{-- Menu Kelola Pengguna --}}
                 <li class="nav-label mt-2">Manajemen Data</li>
                 <li>
                     <a class="has-arrow" href="javascript:void()" aria-expanded="false">
@@ -35,6 +35,7 @@
                         <li><a href="{{ route('mahasiswa.index') }}">Mahasiswa</a></li>
                     </ul>
                 </li>
+                {{-- Menu Manajemen Data --}}
                 <li>
                     <a class="has-arrow" href="javascript:void()" aria-expanded="false">
                         <i class="fas fa-database"></i><span class="nav-text">Master Data</span>
@@ -48,6 +49,7 @@
                     </ul>
                 </li>
 
+                {{-- Menu Manajemen Prestasi --}}
                 <li class="nav-label mt-2">Prestasi & Lomba</li>
                 <li>
                     <a class="has-arrow" href="javascript:void()" aria-expanded="false">
@@ -58,6 +60,8 @@
                         <li><a href="{{ route('verifikasi-prestasi.index') }}">Verifikasi Prestasi</a></li>
                     </ul>
                 </li>
+
+                {{-- Menu Manajemen Lomba --}}
                 <li>
                     <a class="has-arrow" href="javascript:void()" aria-expanded="false">
                         <i class="fa-solid fa-trophy"></i><span class="nav-text">Manajemen Lomba</span>
@@ -65,14 +69,17 @@
                     <ul aria-expanded="false">
                         <li><a href="{{ route('kelola-lomba.index') }}">Kelola Lomba</a></li>
                         <li><a href="{{ route('verifikasi-lomba.index') }}">Verifikasi Lomba</a></li>
-                        <li><a href="javascript:void()">Rekomendasi Lomba</a></li>
+                        <li><a href="{{ route('verifikasi-pendaftaran.index') }}">Verifikasi Pendaftaran</a></li>
+                        <li><a href="{{ route('histori-pengajuan-lomba.index') }}">Histori Pengajuan Lomba</a></li>
+                        <li><a href="{{ route('rekomendasi-lomba.index') }}">Rekomendasi Lomba</a></li>
                     </ul>
                 </li>
 
+                {{-- Log Out --}}
                 <li class="nav-item">
                     <a href="{{ url('/logout') }}">
                         <i class="nav-icon fas fa-arrow-right-from-bracket"></i>
-                        <p>Logout</p>
+                        <span class="nav-text">Log Out</span>
                     </a>
                 </li>
 
@@ -85,16 +92,44 @@
                     </a>
                 </li>
 
+                {{-- Profil Dosen --}}
                 <li>
                     <a href="{{ route('dosen.profile.index') }}">
-                        <i class="fas fa-user-cog"></i><span class="nav-text">Profile Dosen</span>                    
+                        <i class="fas fa-user-cog"></i><span class="nav-text">Profile Dosen</span>
                     </a>
                 </li>
 
+                <li class="nav-label mt-2">Manajemen Data</li>
+                {{-- Manajemen Mahasiswa Bimbingan --}}
+                <li>
+                    <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                        <i class="fas fa-chalkboard-teacher"></i><span class="nav-text">Manajemen Bimbingan</span>
+                    </a>
+                    <ul aria-expanded="false">
+                        {{-- Halaman untuk melihat Daftar Mahasiswa Bimbingan --}}
+                        <li><a href="{{ route('dosen.kelola-bimbingan.index') }}">Kelola Bimbingan</a></li>
+                        {{-- Halaman untuk verifikasi daftar Mahasiswa Bimbingan --}}
+                        <li><a href="{{ route('dosen.verifikasi-bimbingan.index') }}">Verifikasi Bimbingan</a></li>
+                    </ul>
+                </li>
+                {{-- Halaman Lomba --}}
+                <li>
+                    <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                        <i class="fa-solid fa-trophy"></i><span class="nav-text">Manajemen Lomba</span>
+                    </a>
+                    <ul aria-expanded="false">
+                        {{-- Dosen dapat melihat Lomba yang Tersedia dan mengajukan Lomba baru --}}
+                        <li><a href="{{ route('dosen.info-lomba.index') }}">Info Lomba</a></li>
+                        {{-- Halaman untuk melihat Daftar Lomba yang pernah diajukan Dosen --}}
+                        <li><a href="{{ route('dosen.data-lomba.index') }}">Data Lomba</a></li>
+                    </ul>
+                </li>
+
+                {{-- Log Out --}}
                 <li class="nav-item">
                     <a href="{{ url('/logout') }}">
                         <i class="nav-icon fas fa-arrow-right-from-bracket"></i>
-                        <p>Logout</p>
+                        <span class="nav-text">Log Out</span>
                     </a>
                 </li>
 
@@ -106,23 +141,38 @@
                         <i class="icon-speedometer menu-icon"></i><span class="nav-text">Dashboard</span>
                     </a>
                 </li>
-                
-    <li class="nav-label mt-2">Input Data</li>
-    <li>
-        <a href="{{ route('mahasiswa.prestasi.input') }}">
-            <i class="fas fa-edit"></i><span class="nav-text">Input Data Prestasi</span>
-        </a>
-    </li>
-    <li>
-        <a href="{{ route('mahasiswa.lomba.input') }}">
-            <i class="fas fa-trophy"></i><span class="nav-text">Input Data Lomba</span>
-        </a>
-    </li>
+
+                <li class="nav-label mt-2">Prestasi & Lomba</li>
+                {{-- Manajemen Prestasi Mahasiswa --}}
+                <li>
+                    <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                        <i class="fas fa-award"></i><span class="nav-text">Prestasi Mahasiswa</span>
+                    </a>
+                    <ul aria-expanded="false">
+                        {{-- Halaman Informasi Prestasi --}}
+                        <li><a href="{{ route('mhs.prestasi.index') }}">Informasi Prestasi</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                        <i class="fas fa-trophy"></i><span class="nav-text">Informasi Lomba</span>
+                    </a>
+                    <ul aria-expanded="false">
+                        {{-- Mahasiswa dapat melihat Lomba yang Tersedia dan mengajukan Lomba baru --}}
+                        <li><a href="{{ route('mahasiswa.informasi-lomba.index') }}">Lomba</a></li>
+                        {{-- Halaman untuk melihat Daftar Lomba yang pernah diajukan mahasiswa --}}
+                        <li><a href="{{ route('mahasiswa.informasi-lomba.history') }}">Riawayat Pengajuan Lomba</a></li>
+                        {{-- Halaman untuk melihat Daftar Lomba yang pernah diajukan mahasiswa --}}
+                        <li><a href="{{ route('mahasiswa.informasi-lomba.riwayat-pendaftaran') }}">Riawayat Pendaftaran</a>
+                        </li>
+                    </ul>
+                </li>
 
                 <li class="nav-item">
                     <a href="{{ url('/logout') }}">
                         <i class="nav-icon fas fa-arrow-right-from-bracket"></i>
-                        <p>Logout</p>
+                        <span class="nav-text">Log Out</span>
                     </a>
                 </li>
             @endif

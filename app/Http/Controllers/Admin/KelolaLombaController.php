@@ -5,9 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Models\LombaModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\AdminModel;
+use App\Models\DosenModel;
 use App\Models\KategoriLombaModel;
 use App\Models\KategoriModel;
+use App\Models\MahasiswaModel;
 use App\Models\TingkatLombaModel;
+use App\Models\UsersModel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
@@ -38,7 +42,7 @@ class KelolaLombaController extends Controller
                 'status_verifikasi'
             ])
             ->where('status_lomba', 'Aktif')
-            ->whereIn('status_verifikasi', ['Terverifikasi', 'Ditolak'])
+            ->whereIn('status_verifikasi', ['Terverifikasi'])
             ->get();
 
         return DataTables::of($dataKelolaLomba)
@@ -54,9 +58,6 @@ class KelolaLombaController extends Controller
                 switch ($statusLomba) {
                     case 'Terverifikasi':
                         $badge = '<span class="label label-success">Terverifikasi</span>';
-                        break;
-                    case 'Valid':
-                        $badge = '<span class="label label-info">Valid</span>';
                         break;
                     case 'Menunggu':
                         $badge = '<span class="label label-warning">Menunggu</span>';
@@ -85,22 +86,80 @@ class KelolaLombaController extends Controller
     public function showAjax($id)
     {
         $kelolaLomba = LombaModel::with('kategori', 'tingkat_lomba')->findOrFail($id);
-        return view('admin.manajemen-lomba.kelola-lomba.show', compact('kelolaLomba'));
+        $pengusul = $kelolaLomba->pengusul_id;
+        $rolePengusul = UsersModel::where('user_id', $pengusul)->first()->role;
+
+        $namaPengusul = '';
+        switch ($rolePengusul) {
+            case 'Admin':
+                $namaPengusul = AdminModel::where('user_id', $pengusul)->first()->nama_admin;
+                break;
+            case 'Dosen':
+                $namaPengusul = DosenModel::where('user_id', $pengusul)->first()->nama_dosen;
+                break;
+            case 'Mahasiswa':
+                $namaPengusul = MahasiswaModel::where('user_id', $pengusul)->first()->nama_mahasiswa;
+                break;
+
+            default:
+                $namaPengusul = 'Pengusul tidak diketahui';
+                break;
+        }
+        return view('admin.manajemen-lomba.kelola-lomba.show', compact('kelolaLomba', 'namaPengusul'));
     }
 
     public function editAjax($id)
     {
         $kelolaLomba = LombaModel::findOrFail($id);
+        $pengusul = $kelolaLomba->pengusul_id;
+        $rolePengusul = UsersModel::find($pengusul)->getRoleName();
+
+        $namaPengusul = '';
+        switch ($rolePengusul) {
+            case 'Admin':
+                $namaPengusul = AdminModel::where('user_id', $pengusul)->first()->nama_admin;
+                break;
+            case 'Dosen':
+                $namaPengusul = DosenModel::where('user_id', $pengusul)->first()->nama_dosen;
+                break;
+            case 'Mahasiswa':
+                $namaPengusul = MahasiswaModel::where('user_id', $pengusul)->first()->nama_mahasiswa;
+                break;
+
+            default:
+                $namaPengusul = 'Pengusul tidak diketahui';
+                break;
+        }
+
         $daftarKategori = KategoriModel::where('status_kategori', 'Aktif')->get();
         $daftarTingkatLomba = TingkatLombaModel::where('status_tingkat_lomba', 'Aktif')->get();
 
-        return view('admin.manajemen-lomba.kelola-lomba.edit', compact('kelolaLomba', 'daftarKategori', 'daftarTingkatLomba'));
+        return view('admin.manajemen-lomba.kelola-lomba.edit', compact('kelolaLomba', 'daftarKategori', 'daftarTingkatLomba', 'namaPengusul'));
     }
 
     public function deleteAjax($id)
     {
         $kelolaLomba = LombaModel::findOrFail($id);
-        return view('admin.manajemen-lomba.kelola-lomba.delete', compact('kelolaLomba'));
+        $pengusul = $kelolaLomba->pengusul_id;
+        $rolePengusul = UsersModel::where('user_id', $pengusul)->first()->role;
+
+        $namaPengusul = '';
+        switch ($rolePengusul) {
+            case 'Admin':
+                $namaPengusul = AdminModel::where('user_id', $pengusul)->first()->nama_admin;
+                break;
+            case 'Dosen':
+                $namaPengusul = DosenModel::where('user_id', $pengusul)->first()->nama_dosen;
+                break;
+            case 'Mahasiswa':
+                $namaPengusul = MahasiswaModel::where('user_id', $pengusul)->first()->nama_mahasiswa;
+                break;
+
+            default:
+                $namaPengusul = 'Pengusul tidak diketahui';
+                break;
+        }
+        return view('admin.manajemen-lomba.kelola-lomba.delete', compact('kelolaLomba', 'namaPengusul'));
     }
 
     public function create()
@@ -123,7 +182,7 @@ class KelolaLombaController extends Controller
             'akhir_registrasi_lomba' => 'required|date|after_or_equal:awal_registrasi_lomba',
             'link_pendaftaran_lomba' => 'required|url',
             'img_lomba' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'status_verifikasi' => 'required|in:Terverifikasi,Valid,Menunggu,Ditolak',
+            'status_verifikasi' => 'required|in:Terverifikasi,Menunggu,Ditolak',
         ]);
 
         if ($validator->fails()) {
@@ -136,6 +195,9 @@ class KelolaLombaController extends Controller
 
         try {
             $data = $request->except('img_lomba', 'kategori_id');
+
+            // Tambahkan pengusul_id dengan pengusul yang sedang login
+            $data['pengusul_id'] = auth()->user()->user_id;
 
             // Simpan data ke database terlebih dahulu
             $lomba = LombaModel::create($data);
@@ -183,7 +245,7 @@ class KelolaLombaController extends Controller
             'akhir_registrasi_lomba' => 'required|date|after_or_equal:awal_registrasi_lomba',
             'link_pendaftaran_lomba' => 'required|url',
             'img_lomba' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'status_verifikasi' => 'required|in:Terverifikasi,Valid,Menunggu,Ditolak',
+            'status_verifikasi' => 'required|in:Terverifikasi,Menunggu,Ditolak',
         ]);
 
         try {

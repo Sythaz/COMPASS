@@ -175,8 +175,8 @@
 
                     {{-- Card 3 --}}
                     <x-card-home nama="Adinda Mirza Devani" nim="2341720046" role="Backend"
-                        deskripsi="Mahasiswa Politeknik Negeri Malang"
-                        quote="Pengen Mie Ayam...."
+                        deskripsi="Mahasiswa Politeknik Negeri Malang" 
+                        quote="smile, it's free and contagious.."
                         foto="{{ asset('assets/images/card-img/ipung.jpg') }}"
                         link="https://github.com/suckgitariuses/" />
 
@@ -184,15 +184,15 @@
                     <x-card-home nama="Adnan Arju Maulana Pasha" nim="2341720107" role="Frontend"
                         deskripsi="Mahasiswa Politeknik Negeri Malang"
                         quote="Yesterday is history, tomorrow is a mystery, today is a gift."
-                        foto="{{ asset('assets/images/card-img/arnanz.jpg') }}"
+                        foto="{{ asset('assets/images/card-img/arnanz.jpg') }}" 
                         link="https://github.com/Arnanz/" />
 
                     {{-- Card 5 --}}
                     <x-card-home nama="Keisya Nisrina Aulia" nim="2341720146" role="BackEnd"
                         deskripsi="Mahasiswa Politeknik Negeri Malang"
-                        quote="Membangun aplikasi berkualitas dengan antarmuka yang elegan dan performa tinggi."
-                        foto="https://cdn1-production-images-kly.akamaized.net/E2MB-7EF-q6nqQNMNfyMbgxjRJc=/1200x1200/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/3220607/original/002220400_1598510794-9b3ee95069a9d94d80dfcdba43.jpg"
-                        link="https://github.com/Sythaz/" />
+                        quote="Like water in the dessert, its rare."
+                        foto="{{ asset('assets/images/card-img/keshi.jpg') }}"
+                        link="https://github.com/keisyansra/" />
                 </div>
         </section>
         <!-- Time Pengembang Section End -->
@@ -229,6 +229,26 @@
                     $('.dropdown-menu').collapse('toggle');
                 });
 
+                // Tutup dropdown saat klik di luar
+                const dropdownToggles = document.querySelectorAll('.dropdown-toggle-custom');
+                document.addEventListener("click", function(e) {
+                    dropdownToggles.forEach(function(triggerEl) {
+                        var dropdownMenu = triggerEl.nextElementSibling;
+                        if (
+                            dropdownMenu &&
+                            dropdownMenu.classList.contains("dropdown-menu") &&
+                            dropdownMenu.classList.contains("show")
+                        ) {
+                            if (
+                                !triggerEl.contains(e.target) &&
+                                !dropdownMenu.contains(e.target)
+                            ) {
+                                dropdownMenu.classList.remove("show");
+                                triggerEl.setAttribute("aria-expanded", "false");
+                            }
+                        }
+                    });
+                });
             });
 
             // Inisialisasi GSAP

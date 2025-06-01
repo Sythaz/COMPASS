@@ -14,11 +14,10 @@
 
     <div class="modal-body">
         <div class="alert alert-danger">
-            <i class="fas fa-exclamation-triangle fa-lg mr-2"></i>
-            <strong class="alert-heading h4">Apakah anda yakin untuk menghapus data ini?</strong>
+            <strong class="alert-heading h4">Konfirmasi Penonaktifan Data</strong>
             <hr class="my-2">
-            Data User akan tetap tersimpan di database, hanya statusnya yang akan diubah dari "Aktif" menjadi
-            "Nonaktif".
+            Data pengguna akan tetap tersimpan di dalam sistem, namun statusnya akan diubah menjadi
+            <strong>Nonaktif</strong>. Proses ini dapat dibatalkan kapan saja jika diperlukan.
         </div>
 
         <table class="table table-bordered mt-3 mb-0">
@@ -43,7 +42,7 @@
 
     <div class="modal-footer">
         <button type="submit" class="btn btn-danger d-flex align-items-center gap-2">
-            <i class="fas fa-trash-alt mr-2"></i>Hapus
+            <i class="fas fa-lock mr-2"></i>Nonaktifkan
         </button>
         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
             <i class="fas fa-times mr-2"></i>Batal

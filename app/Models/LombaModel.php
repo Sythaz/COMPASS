@@ -14,9 +14,9 @@ class LombaModel extends Model
     protected $table = 't_lomba';
     protected $primaryKey = 'lomba_id';
 
-    protected $fillable = [
-        // 'kategori_id',
+    protected $fillable = [    
         'tingkat_lomba_id',
+        'pengusul_id',
         'nama_lomba',
         'deskripsi_lomba',
         'penyelenggara_lomba',
@@ -26,11 +26,11 @@ class LombaModel extends Model
         'img_lomba',
         'status_verifikasi',
         'status_lomba',
+        'alasan_tolak',
     ];
 
     public function kategori(): BelongsToMany
     {
-        // return $this->belongsTo(KategoriModel::class, 'kategori_id','kategori_id');
         return $this->belongsToMany(KategoriModel::class, 't_kategori_lomba', 'lomba_id', 'kategori_id');
     }
 
@@ -38,4 +38,10 @@ class LombaModel extends Model
     {
         return $this->belongsTo(TingkatLombaModel::class, 'tingkat_lomba_id', 'tingkat_lomba_id');
     }
+    
+    public function pengusul(): BelongsTo
+    {
+        return $this->belongsTo(UsersModel::class, 'pengusul_id', 'user_id');
+    }
 }
+

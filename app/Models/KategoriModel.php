@@ -21,11 +21,42 @@ class KategoriModel extends Model
 
     public function dosens()
     {
-        return $this->hasMany(DosenModel::class, 'kategori_id', 'kategori_id');
+        return $this->belongsToMany(
+            DosenModel::class,
+            't_kategori_dosen',
+            'kategori_id',
+            'dosen_id'
+        );
     }
 
     public function lombas()
     {
-        return $this->belongsToMany(LombaModel::class, 't_lomba_kategori', 'kategori_id', 'lomba_id');
+        return $this->belongsToMany(
+            LombaModel::class,
+            't_lomba_kategori',
+            'kategori_id',
+            'lomba_id'
+        );
     }
+
+    public function mahasiswas()
+    {
+        return $this->belongsToMany(
+            MahasiswaModel::class,
+            't_kategori_mahasiswa',
+            'kategori_id',
+            'mahasiswa_id'
+        );
+    }
+
+    public function prestasi()
+    {
+        return $this->belongsToMany(
+            PrestasiModel::class,
+            't_kategori_prestasi',
+            'kategori_id',
+            'prestasi_id'
+        );
+    }
+
 }

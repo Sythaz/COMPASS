@@ -15,7 +15,6 @@ class DosenModel extends Model
 
     protected $fillable = [
         'user_id',
-        'kategori_id',
         'nip_dosen',
         'nama_dosen',
         'img_dosen',
@@ -28,11 +27,21 @@ class DosenModel extends Model
 
     public function users(): BelongsTo
     {
-        return $this->belongsTo(UsersModel::class, 'user_id', 'user_id');
+        return $this->belongsTo(
+            UsersModel::class,
+            'user_id',
+            'user_id'
+        );
     }
 
-    public function kategori(): BelongsTo
+    public function kategoris()
     {
-        return $this->belongsTo(KategoriModel::class, 'kategori_id', 'kategori_id');
+        return $this->belongsToMany(
+            KategoriModel::class,
+            't_kategori_dosen',
+            'dosen_id',
+            'kategori_id'
+        );
     }
+
 }

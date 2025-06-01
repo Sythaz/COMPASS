@@ -94,6 +94,8 @@
     <!-- Bootstrap Bundle JS (Wajib! agar Modal bisa jalan) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
+    <!-- Custom show header JS -->
+    <script src="{{ asset('js-custom/header-show-bootstrap5.js') }}"></script>
 
     <script>
         const idDataTables = '#tabel-admin';
@@ -133,7 +135,7 @@
                     { data: 'nama_admin', name: 'nama_admin' },
                     { data: 'username', name: 'users.username' },
                     { data: 'status', name: 'status', className: 'text-center' },
-                    { data: 'aksi', name: 'aksi', orderable: false, searchable: false, className: 'text-center', width: '150px' },
+                    { data: 'aksi', name: 'aksi', orderable: false, searchable: false, className: 'text-center', width: '180px' },
                 ],
                 drawCallback: function () {
                     $(".dataTables_wrapper").css({ margin: "0", padding: "0" });

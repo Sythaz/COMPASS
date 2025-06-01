@@ -555,7 +555,6 @@ class MahasiswaSeeder extends Seeder
                 'user_id' => $user->user_id,
                 'prodi_id' => 1,
                 'periode_id' => 1,
-                'level_minbak_id' => rand(1, 4),
                 'nim_mahasiswa' => $user->username, // Nim Sesuai Username
                 'nama_mahasiswa' => isset($names[$index]) ? ucwords(strtolower($names[$index])) : 'Nama Tidak Diketahui',
                 'angkatan' => '2023',
@@ -564,6 +563,7 @@ class MahasiswaSeeder extends Seeder
                 'no_hp' => null,
                 'alamat' => null,
                 'kelamin' => $kelamin[$index] ?? 'Kelamin Tidak Diketahui',
+
             ]);
         }
 
@@ -582,6 +582,31 @@ class MahasiswaSeeder extends Seeder
                     'alamat' => 'Jl. ' . $jalan[array_rand($jalan)] . ' No. ' . rand(1, 15),
                 ]);
         }
+
+        // Menambahkan kategori ke mahasiswa
+        $mahasiswa = DB::table('t_mahasiswa')
+            ->where('angkatan', '2023')
+            ->where('prodi_id', 1)
+            ->get();
+
+        foreach ($mahasiswa as $mhs) {
+            // Tentukan jumlah kategori yang ingin di-assign, random 1 sampai 3
+            $jumlahKategori = rand(1, 3);
+
+            // Ambil array kategori_id unik random dari 1 sampai 18
+            $kategoriIds = collect(range(1, 18))->random($jumlahKategori)->toArray();
+
+            // Insert relasi many-to-many ke tabel pivot t_kategori_mahasiswa
+            foreach ($kategoriIds as $kategoriId) {
+                DB::table('t_kategori_mahasiswa')->insert([
+                    'mahasiswa_id' => $mhs->mahasiswa_id,
+                    'kategori_id' => $kategoriId,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
     }
+
 }
 

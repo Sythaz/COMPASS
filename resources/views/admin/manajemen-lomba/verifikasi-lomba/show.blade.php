@@ -11,6 +11,10 @@
             <td class="text-start">{{ $lomba->nama_lomba }}</td>
         </tr>
         <tr>
+            <th style="width: 30%">Pengusul: </th>
+            <td class="text-start">{{ $namaPengusul }}</td>
+        </tr>
+        <tr>
             <th style="width: 30%">Deskripsi: </th>
             <td class="text-start">{{ $lomba->deskripsi_lomba }}</td>
         </tr>
@@ -50,11 +54,6 @@
                         @case('Menunggu')
                             {{-- Terverifikasi --}}
                             <span class="label label-warning">{{ $lomba->status_verifikasi }}</span>
-                        @break
-
-                        @case('Valid')
-                            {{-- Valid (diverifikasi admin) --}}
-                            <span class="label label-info">{{ $lomba->status_verifikasi }}</span>
                         @break
 
                         @default

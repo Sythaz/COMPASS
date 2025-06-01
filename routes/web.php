@@ -1,6 +1,9 @@
 <?php
 
+use Illuminate\Console\View\Components\Info;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\KelolaMahasiswaController;
 use App\Http\Controllers\Admin\KelolaDosenController;
 use App\Http\Controllers\Admin\KelolaAdminController;
@@ -10,17 +13,22 @@ use App\Http\Controllers\Admin\PeriodeSemesterController;
 use App\Http\Controllers\Admin\ProgramStudiController;
 use App\Http\Controllers\Admin\TingkatLombaController;
 use App\Http\Controllers\Admin\DashboardController as DashboardAdminController;
+use App\Http\Controllers\Admin\HistoriPengajuanLombaController;
 use App\Http\Controllers\Admin\KelolaPrestasiController;
+use App\Http\Controllers\Admin\RekomendasiLombaController;
 use App\Http\Controllers\Admin\VerifikasiLombaController;
 use App\Http\Controllers\Admin\VerifikasiPrestasiController;
+use App\Http\Controllers\Admin\VerifikasiPendaftaranController;
 use App\Http\Controllers\Dosen\DashboardController as DashboardDosenController;
 use App\Http\Controllers\Dosen\ProfileDosenController as ProfileDosenController;
+use App\Http\Controllers\Dosen\InfoLombaController;
+use App\Http\Controllers\Dosen\DataLombaController;
+use App\Http\Controllers\Dosen\KelolaBimbinganController;
+use App\Http\Controllers\Dosen\VerifikasiBimbinganController;
 use App\Http\Controllers\Mahasiswa\DashboardController as DashboardMahasiswaController;
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\Mahasiswa\InputLombaController;
 use App\Http\Controllers\Mahasiswa\InputPrestasiController;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Mahasiswa\LombaMahasiswaController;
+use App\Http\Controllers\Mahasiswa\PrestasiController;
 
 // Validasi global parameter {id} agar hanya angka
 Route::pattern('id', '[0-9]+');
@@ -47,7 +55,7 @@ Route::get('logout', [AuthController::class, 'logout'])->middleware('auth')->nam
 // Route group untuk user yang sudah login
 Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam sini ya!
 
-    // Dashboard admin
+    // ROUTE ADMIN
     Route::middleware('authorize:Admin')->group(function () {
         // Dashboard admin, hanya untuk role admin
         Route::get('/admin', [DashboardAdminController::class, 'index'])->name('admin.dashboard');
@@ -70,7 +78,8 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::post('admin/import', [KelolaAdminController::class, 'import'])->name('admin.import');                   // import
             Route::get('admin/history', [KelolaAdminController::class, 'history'])->name('admin.history');                           // history
             Route::get('admin/list_history', [KelolaAdminController::class, 'list_history'])->name('admin.list_history');            // List history
-            Route::get('admin/history/aktivasi/{id}', [KelolaAdminController::class, 'aktivasi'])->name('admin.history.aktivasi');   // Aktivasi akun kembali
+            Route::get('admin/history/aktivasi/konfirmasi/{id}', [KelolaAdminController::class, 'confirm_aktivasi'])->name('admin.history.aktivasi.konfirmasi');
+            Route::put('admin/history/aktivasi/{id}', [KelolaAdminController::class, 'aktivasi'])->name('admin.history.aktivasi');
             Route::get('admin/history/delete/{id}', [KelolaAdminController::class, 'delete_history'])->name('admin.history.delete'); // Konfirmasi hapus Permanen
             Route::delete('admin/history/destroy/{id}', [KelolaAdminController::class, 'destroy'])->name('admin.history.destroy');   // Hapus Permanen
 
@@ -90,7 +99,8 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::post('dosen/import', [KelolaDosenController::class, 'import'])->name('dosen.import');                   // import excel
             Route::get('dosen/history', [KelolaDosenController::class, 'history'])->name('dosen.history');                           // history
             Route::get('dosen/list_history', [KelolaDosenController::class, 'list_history'])->name('dosen.list_history');            // List history
-            Route::get('dosen/history/aktivasi/{id}', [KelolaDosenController::class, 'aktivasi'])->name('dosen.history.aktivasi');   // Aktivasi akun kembali
+            Route::get('dosen/history/aktivasi/konfirmasi/{id}', [KelolaDosenController::class, 'confirm_aktivasi'])->name('dosen.history.aktivasi.konfirmasi');
+            Route::put('dosen/history/aktivasi/{id}', [KelolaDosenController::class, 'aktivasi'])->name('dosen.history.aktivasi');
             Route::get('dosen/history/delete/{id}', [KelolaDosenController::class, 'delete_history'])->name('dosen.history.delete'); // Konfirmasi hapus Permanen
             Route::delete('dosen/history/destroy/{id}', [KelolaDosenController::class, 'destroy'])->name('dosen.history.destroy');   // Hapus Permanen
 
@@ -110,7 +120,8 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::post('mahasiswa/import', [KelolaMahasiswaController::class, 'import'])->name('mahasiswa.import');                   // import
             Route::get('mahasiswa/history', [KelolaMahasiswaController::class, 'history'])->name('mahasiswa.history');                            // View history
             Route::get('mahasiswa/list_history', [KelolaMahasiswaController::class, 'list_history'])->name('mahasiswa.list_history');             // List history
-            Route::get('mahasiswa/history/aktivasi/{id}', [KelolaMahasiswaController::class, 'aktivasi'])->name('mahasiswa.history.aktivasi');    // Aktivasi akun kembali
+            Route::get('mahasiswa/history/aktivasi/konfirmasi/{id}', [KelolaMahasiswaController::class, 'confirm_aktivasi'])->name('mahasiswa.history.aktivasi.konfirmasi');
+            Route::put('mahasiswa/history/aktivasi/{id}', [KelolaMahasiswaController::class, 'aktivasi'])->name('mahasiswa.history.aktivasi');
             Route::get('mahasiswa/history/delete/{id}', [KelolaMahasiswaController::class, 'delete_history'])->name('mahasiswa.history.delete');  // Konfirmasi hapus Permanen
             Route::delete('mahasiswa/history/destroy/{id}', [KelolaMahasiswaController::class, 'destroy'])->name('mahasiswa.history.destroy');    // Hapus Permanen
         });
@@ -175,6 +186,13 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::put('kelola-lomba/{id}', [KelolaLombaController::class, 'update'])->name('kelola-lomba.update');
             Route::delete('kelola-lomba/{id}', [KelolaLombaController::class, 'destroy'])->name('kelola-lomba.destroy'); // Seharusnya ::delete namun karena menggunakan status maka diganti menjadi ::put
 
+            // Rute Histori Pengajuan Lomba
+            Route::get('histori-pengajuan-lomba', [HistoriPengajuanLombaController::class, 'index'])->name('histori-pengajuan-lomba.index');
+            Route::post('histori-pengajuan-lomba/list', [HistoriPengajuanLombaController::class, 'list'])->name('histori-pengajuan-lomba.list');
+            Route::get('histori-pengajuan-lomba/{id}/show_ajax', [HistoriPengajuanLombaController::class, 'showAjax']);
+            Route::get('histori-pengajuan-lomba/{id}/edit_ajax', [HistoriPengajuanLombaController::class, 'editAjax']);
+            Route::put('histori-pengajuan-lomba/{id}', [HistoriPengajuanLombaController::class, 'update'])->name('histori-pengajuan-lomba.update');
+
             // Rute Verifikasi Lomba
             Route::get('verifikasi-lomba', [VerifikasiLombaController::class, 'index'])->name('verifikasi-lomba.index');
             Route::post('verifikasi-lomba/list', [VerifikasiLombaController::class, 'list'])->name('verifikasi-lomba.list');
@@ -184,6 +202,24 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::put('verifikasi-lomba/verifikasi/{id}', [VerifikasiLombaController::class, 'terimaLomba'])->name('verifikasi-lomba.terimaLomba');
             Route::put('verifikasi-lomba/tolak/{id}', [VerifikasiLombaController::class, 'tolakLomba'])->name('verifikasi-lomba.tolakLomba');
             Route::delete('verifikasi-lomba/{id}', [VerifikasiLombaController::class, 'destroy'])->name('verifikasi-lomba.destroy');
+
+            // Rute Histori Pengajuan Lomba
+            Route::get('histori-pengajuan-lomba', [HistoriPengajuanLombaController::class, 'index'])->name('histori-pengajuan-lomba.index');
+            Route::post('histori-pengajuan-lomba/list', [HistoriPengajuanLombaController::class, 'list'])->name('histori-pengajuan-lomba.list');
+            Route::get('histori-pengajuan-lomba/{id}/show_ajax', [HistoriPengajuanLombaController::class, 'showAjax']);
+            Route::get('histori-pengajuan-lomba/{id}/edit_ajax', [HistoriPengajuanLombaController::class, 'editAjax']);
+            Route::put('histori-pengajuan-lomba/{id}', [HistoriPengajuanLombaController::class, 'update'])->name('histori-pengajuan-lomba.update');
+
+            // Rute Rekomendasi Lomba
+            Route::get('rekomendasi-lomba', [RekomendasiLombaController::class, 'index'])->name('rekomendasi-lomba.index');
+            Route::get('rekomendasi-lomba/{id}/show_ajax', [RekomendasiLombaController::class, 'showAjax']);
+            Route::get('rekomendasi-lomba/{id}/rekomendasi_ajax', [RekomendasiLombaController::class, 'rekomendasiAjax']);
+            Route::get('rekomendasi-lomba/tambah_rekomendasi_ajax', [RekomendasiLombaController::class, 'tambahRekomendasiAjax']);
+            Route::post('rekomendasi-lomba/notifikasi', [RekomendasiLombaController::class, 'notifikasiRekomendasi'])->name('rekomendasi-lomba.notifikasi');
+
+            // Rute Verifikasi Pendaftaran Lomba
+            Route::get('pendaftaran-lomba', [VerifikasiPendaftaranController::class, 'index'])->name('verifikasi-pendaftaran.index');
+            Route::get('pendaftaran-lomba/list', [VerifikasiPendaftaranController::class, 'list'])->name('verifikasi-pendaftaran.list');
         });
 
         // MANAJEMEN PRESTASI
@@ -211,22 +247,89 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
         });
     });
 
-    // Dashboard dosen, hanya untuk role dosen
+    // ROUTE DOSEN
     Route::middleware('authorize:dosen')->group(function () {
-        // Dashboard
+        // Dashboard dosen, hanya untuk role dosen
         Route::get('/Dosen', [DashboardDosenController::class, 'index'])->name('dosen.dashboard');
 
         // Profil Dosen
         Route::prefix('dosen/profile-dosen')->group(function () {
             Route::get('/', [ProfileDosenController::class, 'index'])->name('dosen.profile.index');
             Route::get('/edit/{id}', [ProfileDosenController::class, 'edit'])->name('dosen.profile.edit');
-            Route::put('/update', [ProfileDosenController::class, 'update'])->name('dosen.profile.update');
+            Route::put('/update/{id}', [ProfileDosenController::class, 'update'])->name('dosen.profile.update');
+        });
+
+        // Halaman Kelola Bimbingan (Menampilkan Riwayat Prestasi mahasiswa sesuai Mahasiswa yang Di Bimbing)
+        Route::prefix('dosen/kelola-bimbingan')->group(function () {
+            Route::get('/', [KelolaBimbinganController::class, 'index'])->name('dosen.kelola-bimbingan.index');
+            Route::get('list', [KelolaBimbinganController::class, 'list'])->name('dosen.kelola-bimbingan.list');
+            Route::get('{id}/show_ajax', [KelolaBimbinganController::class, 'showAjax'])->name('dosen.kelola-bimbingan.showAjax');
+        });
+
+        // Halaman Verifikasi Bimbingan
+        Route::prefix('dosen/verifikasi-bimbingan')->group(function () {
+            Route::get('/', [VerifikasiBimbinganController::class, 'index'])->name('dosen.verifikasi-bimbingan.index');
+            Route::get('list', [VerifikasiBimbinganController::class, 'list'])->name('dosen.verifikasi-bimbingan.list');
+            Route::get('{id}/terima_prestasi_ajax', [VerifikasiBimbinganController::class, 'terimaPrestasiAjax'])->name('dosen.terimaPrestasiAjax');
+            Route::get('{id}/tolak_prestasi_ajax', [VerifikasiBimbinganController::class, 'tolakPrestasiAjax'])->name('dosen.tolakPrestasiAjax');
+            Route::put('verifikasi/{id}', [VerifikasiBimbinganController::class, 'terimaPrestasi'])->name('dosen.terimaPrestasi');
+            Route::put('tolak/{id}', [VerifikasiBimbinganController::class, 'tolakPrestasi'])->name('dosen.tolakPrestasi');
+        });
+
+        // Halaman Informasi Lomba (Menampilkan Lomba yang statusnya Aktif Dan Terverifikasi saja)
+        Route::prefix('dosen/info-lomba')->group(function () {
+            Route::get('/', [InfoLombaController::class, 'index'])->name('dosen.info-lomba.index');
+            Route::get('list', [InfoLombaController::class, 'list'])->name('info-lomba.list');
+            Route::get('{id}/show', [InfoLombaController::class, 'showAjax'])->name('info-lomba.show');
+        });
+
+        // Halaman yang menampilkan riwayat Lomba yang pernah diajukan dosen
+        Route::prefix('dosen/data-lomba')->as('dosen.data-lomba.')->group(function () {
+            Route::get('/', [DataLombaController::class, 'index'])->name('index');
+            Route::get('list', [DataLombaController::class, 'list'])->name('list');
+            Route::get('{id}/show', [DataLombaController::class, 'showAjax'])->name('show');
+            Route::get('create', [DataLombaController::class, 'create'])->name('create');
+            Route::post('store', [DataLombaController::class, 'store'])->name('store');
         });
     });
 
-    // Dashboard mahasiswa, hanya untuk role mahasiswa
+    // ROUTE MAHASISWA
     Route::middleware('authorize:mahasiswa')->group(function () {
+        // Dashboard mahasiswa, hanya untuk role mahasiswa
         Route::get('/Mahasiswa', [DashboardMahasiswaController::class, 'index'])->name('mahasiswa.dashboard');
+
+        Route::prefix('mhs/prestasi')->group(function () {
+            Route::get('/', [PrestasiController::class, 'index'])->name('mhs.prestasi.index');
+            Route::get('tambah', [PrestasiController::class, 'create_prestasi'])->name('mhs.prestasi.create');
+            Route::post('simpan', [PrestasiController::class, 'store'])->name('mhs.prestasi.store');
+        });
+
+        // Halaman Informasi Lomba (Menampilkan Lomba yang statusnya Aktif Dan Terverifikasi saja)
+        Route::prefix('mahasiswa/info-lomba')->group(function () {
+            // Halaman utama lomba
+            Route::get('/', [LombaMahasiswaController::class, 'index'])->name('mahasiswa.informasi-lomba.index');
+            Route::get('list', [LombaMahasiswaController::class, 'list'])->name('mahasiswa.informasi-lomba.list');
+            // Halaman riwayat lomba
+            Route::get('history', [LombaMahasiswaController::class, 'history'])->name('mahasiswa.informasi-lomba.history');
+            Route::get('list-history', [LombaMahasiswaController::class, 'list_history'])->name('mahasiswa.informasi-lomba.list-history');
+            // Riwayat Pendaftaran
+            Route::get('riwayat-pendaftaran', [LombaMahasiswaController::class, 'riwayat_pendaftaran'])
+                ->name('mahasiswa.informasi-lomba.riwayat-pendaftaran');
+            Route::get('riwayat-pendaftaran/list', [LombaMahasiswaController::class, 'list_pendaftaran'])
+                ->name('mahasiswa.informasi-lomba.list-pendaftaran');
+            // Detail Pendaftaran
+            Route::get('riwayat-pendaftaran/{id}/detail', [LombaMahasiswaController::class, 'detail_pendaftaran'])
+                ->name('mahasiswa.informasi-lomba.detail-pendaftaran');
+
+            // Aksi 
+            Route::get('{id}/show', [LombaMahasiswaController::class, 'showAjax'])->name('informasi-lomba.show');
+            Route::get('{id}/daftar', [LombaMahasiswaController::class, 'form_daftar'])->name('informasi-lomba.daftar');
+            Route::post('{id}/daftar', [LombaMahasiswaController::class, 'store_pendaftaran'])->name('informasi-lomba.store');
+            Route::get('create', [LombaMahasiswaController::class, 'create'])->name('create-lomba');
+            Route::post('store', [LombaMahasiswaController::class, 'store_lomba'])->name('store-lomba');
+        });
+
+
         // ==== Input Data Prestasi ====
         Route::prefix('prestasi')->group(function () {
             Route::get('input', [InputPrestasiController::class, 'index'])
@@ -252,33 +355,6 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
 
             Route::delete('input/{id}', [InputPrestasiController::class, 'destroy'])
                 ->name('mahasiswa.prestasi.destroy');
-        });
-
-        // ==== Input Data Lomba ====
-        Route::prefix('lomba')->group(function () {
-            Route::get('input', [InputLombaController::class, 'index'])
-                ->name('mahasiswa.lomba.input');
-
-            Route::post('input/list', [InputLombaController::class, 'list'])
-                ->name('mahasiswa.lomba.list');
-
-            Route::get('input/create', [InputLombaController::class, 'create'])
-                ->name('mahasiswa.lomba.create');
-
-            Route::get('input/{id}/show_ajax', [InputLombaController::class, 'showAjax']);
-
-            Route::get('input/{id}/edit_ajax', [InputLombaController::class, 'editAjax']);
-
-            Route::get('input/{id}/delete_ajax', [InputLombaController::class, 'deleteAjax']);
-
-            Route::post('input/store', [InputLombaController::class, 'store'])
-                ->name('mahasiswa.lomba.store');
-
-            Route::put('input/{id}', [InputLombaController::class, 'update'])
-                ->name('mahasiswa.lomba.update');
-
-            Route::delete('input/{id}', [InputLombaController::class, 'destroy'])
-                ->name('mahasiswa.lomba.destroy');
         });
     });
 });
