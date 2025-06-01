@@ -87,7 +87,7 @@
     <script src="{{ asset('theme/plugins/jquery-validation/jquery.validate.min.js') }}"></script>
 
     <!-- Popper JS -->
-    <script src="https://cdn.jsdelivr.net/npm/ @popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 
     <!-- Bootstrap JS Bundle (modal show hide butuh ini)-->
     <script src="{{ asset('theme/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
