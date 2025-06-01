@@ -47,7 +47,6 @@ class PrestasiSeeder extends Seeder
                 'prestasi_id' => 3,
                 'lomba_id' => 2,
                 'dosen_id' => 3,
-
                 'periode_id' => 2,
                 'tanggal_prestasi' => '2025-03-03',
                 'juara_prestasi' => 'Juara 3',
