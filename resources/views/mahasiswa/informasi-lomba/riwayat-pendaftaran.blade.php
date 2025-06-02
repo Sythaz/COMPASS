@@ -104,11 +104,6 @@
         <div class="card-body">
             @if(($pendaftaran->lomba->tipe_lomba ?? '') === 'individu')
                 <!-- Lomba Individu -->
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle mr-2"></i>
-                    <strong>Lomba Individu:</strong> Peserta mendaftar secara individual.
-                </div>
-                
                 <div class="peserta-section bg-light rounded p-3">
                     <div class="form-group mb-0">
                         <label class="col-form-label font-weight-bold">
@@ -120,7 +115,7 @@
                                 disabled>
                             <div class="input-group-append">
                                 <span class="input-group-text bg-success text-white">
-                                    <i class="fas fa-check"></i>
+                                    <i class="fas fa-user-check"></i>
                                 </span>
                             </div>
                         </div>
@@ -184,8 +179,6 @@
                             </div>
                         @endforeach
                     </div>
-                @else
-                    
                 @endif
 
                 <!-- Total Anggota -->
@@ -215,15 +208,16 @@
                 <div class="text-center">
                     <div class="file-preview mb-3">
                         <i class="fas fa-file-image fa-3x text-primary mb-2"></i>
-                        <p class="mb-2">File berhasil diunggah</p>
+                        <p class="mb-2">File berhasil diunggah</p>                       
+            
                     </div>
                     <div class="btn-group">
-                        <a href="{{ asset('storage/' . $pendaftaran->bukti_pendaftaran) }}" 
+                        <a href="{{ asset('uploads/bukti/' . $pendaftaran->bukti_pendaftaran) }}" 
                            target="_blank"
                            class="btn btn-primary">
                             <i class="fas fa-eye mr-2"></i>Lihat Bukti
                         </a>
-                        <a href="{{ asset('storage/' . $pendaftaran->bukti_pendaftaran) }}" 
+                        <a href="{{ asset('uploads/bukti/' . $pendaftaran->bukti_pendaftaran) }}" 
                            download
                            class="btn btn-outline-primary">
                             <i class="fas fa-download mr-2"></i>Unduh
@@ -244,7 +238,6 @@
     <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
         <i class="fas fa-times mr-2"></i>Tutup
     </button>
-    
 </div>
 
 <style>
@@ -287,8 +280,6 @@
 </style>
 
 <script>
-
-    
     // Animasi saat modal dibuka
     $(document).ready(function() {
         $('.card').hide().fadeIn(600);
@@ -296,10 +287,11 @@
         // Tooltip untuk status
         $('[data-toggle="tooltip"]').tooltip();
     });
+    
     // Force hide processing text after any modal operation
-setInterval(function() {
-    if ($('.modal').is(':hidden')) {
-        $('.processing, [class*="processing"]').hide();
-    }
-}, 500);
+    setInterval(function() {
+        if ($('.modal').is(':hidden')) {
+            $('.processing, [class*="processing"]').hide();
+        }
+    }, 500);
 </script>
