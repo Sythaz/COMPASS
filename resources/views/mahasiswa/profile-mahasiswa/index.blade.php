@@ -181,12 +181,12 @@
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="form-group">
-                                                                <label class="form-label">Periode</label>
+                                                                <label class="form-label">Tahun Periode</label>
                                                                 <select name="periode_id" id="periode_id" class="form-control" required>
-                                                                    <option value="">- Pilih Periode -</option>
-                                                                    @foreach($prodi as $p)
-                                                                        <option value="{{ $p->prodi_id }}" {{ $mahasiswa->prodi_id == $p->prodi_id ? 'selected' : '' }}>
-                                                                            {{ $p->nama_prodi }}
+                                                                    <option value="">- Pilih Tahun Periode -</option>
+                                                                    @foreach($periode as $p)
+                                                                        <option value="{{ $p->periode_id }}" {{ $mahasiswa->periode_id == $p->periode_id ? 'selected' : '' }}>
+                                                                            {{ $p->semester_periode }}
                                                                         </option>
                                                                     @endforeach
                                                                 </select>
@@ -435,7 +435,7 @@ $(document).ready(function() {
                 required: "Program studi wajib diisi"
             },
             periode_id: {
-                required: "Periode semester wajib diiisi"
+                required: "Periode semester wajib diisi"
             },
             nim_mahasiswa: {
                 required: "NIM wajib diisi",
