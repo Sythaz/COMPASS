@@ -17,6 +17,50 @@
                         </a>
                     </div>
 
+                    <div class="col-xl-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4 class="card-title">Responsive Images</h4>
+                                        <p class="card-title-desc">Images in Bootstrap are made responsive
+                                            with <code class="highlighter-rouge">.img-fluid</code>. <code
+                                                    class="highlighter-rouge">max-width: 100%;</code> and <code
+                                                    class="highlighter-rouge">height: auto;</code> are applied to
+                                            the image so that it scales with the parent element.</p>
+                                    </div><!-- end card header -->
+                                    
+                                    <div class="card-body">
+                                        <div>
+                                            <img src="assets/images/small/img-2.jpg" class="img-fluid" alt="Responsive image">
+                                        </div>
+                                    </div><!-- end card-body -->
+                                </div><!-- end card -->
+                            </div><!-- end col -->
+
+    @foreach ($lomba as $l)
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4 class="card-title">{{ $l->nama_lomba }}</h4>
+            <p class="card-title-desc">{{ $l->deskripsi_lomba }}</p>
+            <img src="{{ asset('storage/' . $l->img_lomba) }}" 
+                 class="img-fluid rounded-circle profile-img" alt="Gambar Lomba">
+        </div><!-- end card-header -->
+
+        <div class="card-body">
+            <ul class="list-unstyled">
+                <li><strong>Awal Registrasi:</strong> {{ $l->awal_registrasi_lomba}}
+                </li>
+                <li><strong>Link Pendaftaran:</strong> 
+                    <a href="{{ $l->link_pendaftaran_lomba }}" target="_blank">
+                        {{ $l->link_pendaftaran_lomba }}
+                    </a>
+                </li>
+            </ul>
+        </div><!-- end card-body -->
+    </div><!-- end card -->
+@endforeach
+
+
+
                     <div class="table-responsive">
                         <table class="w-100 table table-striped table-bordered custom-datatable" id="tabel-kelola-lomba">
                             <thead>

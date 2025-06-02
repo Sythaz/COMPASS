@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\PeriodeSemesterController;
 use App\Http\Controllers\Admin\ProgramStudiController;
 use App\Http\Controllers\Admin\TingkatLombaController;
 use App\Http\Controllers\Admin\DashboardController as DashboardAdminController;
+use App\Http\Controllers\Admin\ProfileAdminController as ProfileAdminController;
 use App\Http\Controllers\Admin\HistoriPengajuanLombaController;
 use App\Http\Controllers\Admin\KelolaPrestasiController;
 use App\Http\Controllers\Admin\RekomendasiLombaController;
@@ -26,6 +27,7 @@ use App\Http\Controllers\Dosen\DataLombaController;
 use App\Http\Controllers\Dosen\KelolaBimbinganController;
 use App\Http\Controllers\Dosen\VerifikasiBimbinganController;
 use App\Http\Controllers\Mahasiswa\DashboardController as DashboardMahasiswaController;
+use App\Http\Controllers\Mahasiswa\ProfileMahasiswaController as ProfileMahasiswaController;
 use App\Http\Controllers\Mahasiswa\InputPrestasiController;
 use App\Http\Controllers\Mahasiswa\LombaMahasiswaController;
 use App\Http\Controllers\Mahasiswa\PrestasiController;
@@ -63,6 +65,13 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
     Route::middleware('authorize:Admin')->group(function () {
         // Dashboard admin, hanya untuk role admin
         Route::get('/admin', [DashboardAdminController::class, 'index'])->name('admin.dashboard');
+
+        // PROFILE ADMIN
+        Route::prefix('admin/profile-admin')->group(function () {
+            Route::get('/', [ProfileAdminController::class, 'index'])->name('admin.profile.index');
+            Route::get('/edit/{id}', [ProfileAdminController::class, 'edit'])->name('admin.profile.edit');
+            Route::put('/update', [ProfileAdminController::class, 'update'])->name('admin.profile.update');
+        });
 
         // KELOLA USER (ADMIN)
         Route::prefix('admin/kelola-pengguna')->group(function () {
@@ -257,10 +266,10 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
         Route::get('/Dosen', [DashboardDosenController::class, 'index'])->name('dosen.dashboard');
 
         // Profil Dosen
-        Route::prefix('dosen/profile-dosen')->group(function () {
+        Route::prefix('dosen/profile-')->group(function () {
             Route::get('/', [ProfileDosenController::class, 'index'])->name('dosen.profile.index');
             Route::get('/edit/{id}', [ProfileDosenController::class, 'edit'])->name('dosen.profile.edit');
-            Route::put('/update/{id}', [ProfileDosenController::class, 'update'])->name('dosen.profile.update');
+            Route::put('/update', [ProfileDosenController::class, 'update'])->name('dosen.profile.update');
         });
 
         // Halaman Kelola Bimbingan (Menampilkan Riwayat Prestasi mahasiswa sesuai Mahasiswa yang Di Bimbing)
@@ -334,6 +343,12 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::post('{id}/daftar', [LombaMahasiswaController::class, 'store_pendaftaran'])->name('informasi-lomba.store');
             Route::get('create', [LombaMahasiswaController::class, 'create'])->name('create-lomba');
             Route::post('store', [LombaMahasiswaController::class, 'store_lomba'])->name('store-lomba');
+        });
+
+        Route::prefix('mahasiswa/profile-mahasiswa')->group(function () {
+            Route::get('/', [ProfileMahasiswaController::class, 'index'])->name('mahasiswa.profile.index');
+            Route::get('/edit/{id}', [ProfileMahasiswaController::class, 'edit'])->name('mahasiswa.profile.edit');
+            Route::put('/update', [ProfileMahasiswaController::class, 'update'])->name('mahasiswa.profile.update');
         });
     });
 });

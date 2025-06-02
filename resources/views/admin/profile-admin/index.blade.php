@@ -39,8 +39,8 @@
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <div class="profile-photo text-center">
-                                                    @if($dosen->img_dosen)
-                                                        <img src="{{ asset('storage/' . $dosen->img_dosen) }}" 
+                                                    @if($admin->img_admin)
+                                                        <img src="{{ asset('storage/' . $admin->img_admin) }}" 
                                                             alt="Profile Photo" 
                                                             class="img-fluid rounded-circle profile-img">
                                                     @else
@@ -48,9 +48,9 @@
                                                             alt="Default Profile" 
                                                             class="img-fluid rounded-circle profile-img">
                                                     @endif
-                                                    <h4 class="mt-3 mb-1">{{ $dosen->nama_dosen }}</h4>
-                                                    <p class="text-muted">{{ $dosen->prodi->nama_prodi ?? 'dosen' }}</p>
-                                                    <p class="text-muted">{{ $dosen->periode->semester_periode ?? 'dosen' }}</p>
+                                                    <h4 class="mt-3 mb-1">{{ $admin->nama_admin }}</h4>
+                                                    <p class="text-muted">{{ $admin->prodi->nama_prodi ?? 'admin' }}</p>
+                                                    <p class="text-muted">{{ $admin->periode->semester_periode ?? 'admin' }}</p>
                                                 </div>
                                             </div>
                                             <div class="col-md-8">
@@ -61,7 +61,7 @@
                                                             <h5 class="f-w-500">NIP <span class="pull-right">:</span></h5>
                                                         </div>
                                                         <div class="col-9">
-                                                            <span>{{ $dosen->nip_dosen ?? '-' }}</span>
+                                                            <span>{{ $admin->nip_admin ?? '-' }}</span>
                                                         </div>
                                                     </div>
                                                     <div class="row mb-3">
@@ -69,7 +69,7 @@
                                                             <h5 class="f-w-500">Nama Lengkap <span class="pull-right">:</span></h5>
                                                         </div>
                                                         <div class="col-9">
-                                                            <span>{{ $dosen->nama_dosen ?? '-' }}</span>
+                                                            <span>{{ $admin->nama_admin ?? '-' }}</span>
                                                         </div>
                                                     </div>
                                                     <div class="row mb-3">
@@ -77,7 +77,7 @@
                                                             <h5 class="f-w-500">Alamat <span class="pull-right">:</span></h5>
                                                         </div>
                                                         <div class="col-9">
-                                                            <span>{{ $dosen->alamat ?? '-' }}</span>
+                                                            <span>{{ $admin->alamat ?? '-' }}</span>
                                                         </div>
                                                     </div>
                                                     <div class="row mb-3">
@@ -85,7 +85,7 @@
                                                             <h5 class="f-w-500">Email <span class="pull-right">:</span></h5>
                                                         </div>
                                                         <div class="col-9">
-                                                            <span>{{ $dosen->email ?? '-' }}</span>
+                                                            <span>{{ $admin->email ?? '-' }}</span>
                                                         </div>
                                                     </div>
                                                     <div class="row mb-3">
@@ -93,7 +93,7 @@
                                                             <h5 class="f-w-500">No. HP <span class="pull-right">:</span></h5>
                                                         </div>
                                                         <div class="col-9">
-                                                            <span>{{ $dosen->no_hp ?? '-' }}</span>
+                                                            <span>{{ $admin->no_hp ?? '-' }}</span>
                                                         </div>
                                                     </div>
                                                     <div class="row mb-3">
@@ -101,7 +101,7 @@
                                                             <h5 class="f-w-500">Kelamin <span class="pull-right">:</span></h5>
                                                         </div>
                                                         <div class="col-9">
-                                                            <span>{{ $dosen->kelamin ?? '-' }}</span>
+                                                            <span>{{ $admin->kelamin ?? '-' }}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -113,7 +113,7 @@
                                 <!-- Edit Profile Tab -->
                                 <div class="tab-pane fade" id="edit-profile" role="tabpanel">
                                     <div class="pt-4">
-                                        <form id="form-edit" action="{{ url('/dosen/profile-dosen/update') }}" method="POST" enctype="multipart/form-data">
+                                        <form id="form-edit" action="{{ url('/admin/profile-admin/update') }}" method="POST" enctype="multipart/form-data">
                                             @csrf
                                             @method('PUT')
                                             <div class="row">
@@ -121,8 +121,8 @@
                                                     <div class="form-group text-center">
                                                         <label class="form-label">Foto Profil</label>
                                                         <div class="profile-photo-edit">
-                                                            @if($dosen->img_dosen)
-                                                                <img src="{{ asset('storage/' . $dosen->img_dosen) }}" 
+                                                            @if($admin->img_admin)
+                                                                <img src="{{ asset('storage/' . $admin->img_admin) }}" 
                                                                     alt="Current Profile" 
                                                                     class="img-fluid rounded-circle profile-img mb-3">
                                                             @else
@@ -131,53 +131,53 @@
                                                                     class="img-fluid rounded-circle profile-img mb-3">
                                                             @endif
                                                             <div class="custom-file">
-                                                                <input type="file" class="custom-file-input" id="img_dosen" name="img_dosen" accept=".jpeg,.jpg,.png">
-                                                                <label class="custom-file-label" for="img_dosen">Pilih foto baru...</label>
+                                                                <input type="file" class="custom-file-input" id="img_admin" name="img_admin" accept=".jpeg,.jpg,.png">
+                                                                <label class="custom-file-label" for="img_admin">Pilih foto baru...</label>
                                                             </div>
                                                             <small class="form-text text-muted">Format: JPEG/JPG/PNG, Maksimal 2MB</small>
-                                                            <small id="error-img_dosen" class="error-text form-text text-danger"></small>
+                                                            <small id="error-img_admin" class="error-text form-text text-danger"></small>
                                                         </div>
                                                     </div>
                                                 </div>
                                                         <div class="col-md-12">
                                                             <div class="form-group">
                                                                 <label class="form-label">NIP</label>
-                                                                <input value="{{ $dosen->nip_dosen }}" type="text" name="nip_dosen" id="nip_dosen" class="form-control" placeholder="Masukkan NIP" required>
-                                                                <small id="error-nip_dosen" class="error-text form-text text-danger"></small>
+                                                                <input value="{{ $admin->nip_admin }}" type="text" name="nip_admin" id="nip_admin" class="form-control" placeholder="Masukkan NIP" required>
+                                                                <small id="error-nip_admin" class="error-text form-text text-danger"></small>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-12">
                                                             <div class="form-group">
                                                                 <label class="form-label">Nama Lengkap</label>
-                                                                <input value="{{ $dosen->nama_dosen }}" type="text" name="nama_dosen" id="nama_dosen" class="form-control" placeholder="Masukkan nama lengkap" required>
-                                                                <small id="error-nama_dosen" class="error-text form-text text-danger"></small>
+                                                                <input value="{{ $admin->nama_admin }}" type="text" name="nama_admin" id="nama_admin" class="form-control" placeholder="Masukkan nama lengkap" required>
+                                                                <small id="error-nama_admin" class="error-text form-text text-danger"></small>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-12">
                                                             <div class="form-group">
                                                                 <label class="form-label">Alamat</label>
-                                                                <textarea name="alamat" id="alamat" class="form-control" rows="4" placeholder="Masukkan alamat lengkap" required>{{ $dosen->alamat }}</textarea>
+                                                                <textarea name="alamat" id="alamat" class="form-control" rows="4" placeholder="Masukkan alamat lengkap" required>{{ $admin->alamat }}</textarea>
                                                                 <small id="error-alamat" class="error-text form-text text-danger"></small>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label class="form-label">Email</label>
-                                                                <input value="{{ $dosen->email }}" type="email" name="email" id="email" class="form-control" placeholder="Masukkan email" required>
+                                                                <input value="{{ $admin->email }}" type="email" name="email" id="email" class="form-control" placeholder="Masukkan email" required>
                                                                 <small id="error-email" class="error-text form-text text-danger"></small>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label class="form-label">No. HP</label> 
-                                                                <input value="{{ $dosen->no_hp }}" type="text" name="no_hp" id="no_hp" class="form-control" placeholder="Masukkan no HP" required>
+                                                                <input value="{{ $admin->no_hp }}" type="text" name="no_hp" id="no_hp" class="form-control" placeholder="Masukkan no HP" required>
                                                                 <small id="error-no_hp" class="error-text form-text text-danger"></small>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label class="form-label">Kelamin</label> 
-                                                                <input value="{{ $dosen->kelamin }}" type="text" name="kelamin" id="kelamin" class="form-control" placeholder="Masukkan kelamin anda" required>
+                                                                <input value="{{ $admin->kelamin }}" type="text" name="kelamin" id="kelamin" class="form-control" placeholder="Masukkan kelamin anda" required>
                                                                 <small id="error-no_hp" class="error-text form-text text-danger"></small>
                                                             </div>
                                                         </div>
@@ -331,11 +331,11 @@ $(document).ready(function() {
     // Form validation and submission
     $("#form-edit").validate({
         rules: {
-            nip_dosen: {
+            nip_admin: {
                 required: true,
                 minlength: 5
             },
-            nama_dosen: {
+            nama_admin: {
                 required: true,
                 minlength: 3
             },
@@ -354,17 +354,17 @@ $(document).ready(function() {
             kelamin: {
                 required: true
             },
-            img_dosen: {
+            img_admin: {
                 extension: "jpeg|jpg|png",
                 filesize: 2048000
             }
         },
         messages: {
-            nip_dosen: {
+            nip_admin: {
                 required: "NIP wajib diisi",
                 minlength: "Masukkan minimal 5 karakter"
             },
-            nama_dosen: {
+            nama_admin: {
                 required: "Nama lengkap wajib diisi",
                 minlength: "Masukkan minimal 3 karakter"
             },

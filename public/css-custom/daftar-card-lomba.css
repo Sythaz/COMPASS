@@ -18,6 +18,13 @@
     backdrop-filter: blur(10px);
 }
 
+.col-xl-6 {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 auto;
+        flex: 0 0 auto;
+        width: 50%
+    }
+
 @media (max-width: 768px) {
     .lomba-card {
         min-height: auto;

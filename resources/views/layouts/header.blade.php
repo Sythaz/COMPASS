@@ -217,8 +217,15 @@
                             <div class="dropdown-content-body">
                                 <ul>
                                     <li>
-                                        <a href="{{ url('app-profile.html') }}"><i
-                                                class="icon-user"></i><span>Profile</span></a>
+                                        @if (Auth::user()->role === 'Admin')
+                                            <a href="{{ route('admin.profile.index') }}"><i class="icon-user"></i><span>Profile</span></a>
+                                        @elseif (Auth::user()->role === 'Dosen')
+                                            <a href="{{ route('dosen.profile.index') }}"><i class="icon-user"></i><span>Profile</span></a>
+                                        @elseif (Auth::user()->role === 'Mahasiswa')
+                                            <a href="{{ route('mahasiswa.profile.index') }}"><i class="icon-user"></i><span>Profile</span></a>
+                                        @else
+                                            <a href="#"><i class="icon-user"></i><span>Profile</span></a>
+                                        @endif
                                     </li>
                                     <li>
                                         <a href="{{ url('email-inbox.html') }}"><i class="icon-envelope-open"></i>
