@@ -185,10 +185,7 @@
                         @endforeach
                     </div>
                 @else
-                    <div class="alert alert-warning">
-                        <i class="fas fa-exclamation-triangle mr-2"></i>
-                        <strong>Perhatian:</strong> Belum ada anggota tim selain ketua.
-                    </div>
+                    
                 @endif
 
                 <!-- Total Anggota -->
