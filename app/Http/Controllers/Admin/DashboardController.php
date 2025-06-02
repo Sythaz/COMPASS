@@ -78,26 +78,26 @@ class DashboardController extends Controller
             ->get();
 
         // Menampilkan Dominasi Bidang Prestasi Mahasiswa        
-        $dataPieChart = DB::table('t_kategori')     // Ambil semua kategori + hitung jumlah prestasi per kategori
-            ->leftJoin('t_prestasi', 't_kategori.kategori_id', '=', 't_prestasi.kategori_id')
-            ->select(
-                't_kategori.nama_kategori as label',
-                DB::raw('COUNT(t_prestasi.prestasi_id) as total')
-            )
-            ->groupBy('t_kategori.nama_kategori')
-            ->get();
+        // $dataPieChart = DB::table('t_kategori')     // Ambil semua kategori + hitung jumlah prestasi per kategori
+        //     ->leftJoin('t_prestasi', 't_kategori.kategori_id', '=', 't_prestasi.kategori_id')
+        //     ->select(
+        //         't_kategori.nama_kategori as label',
+        //         DB::raw('COUNT(t_prestasi.prestasi_id) as total')
+        //     )
+        //     ->groupBy('t_kategori.nama_kategori')
+        //     ->get();
 
         // Format menjadi array untuk Flot Pie Chart
         $chartDataColors = ['#ff5e5e', '#e62739', '#4CAF50', '#9097c4', '#e1e8f0', '#7571F9', '#FFC107', '#9C27B0', '#03A9F4', '#FF9800', '#E91E63', '#00BCD4', '#CDDC39', '#FFEB3B', '#3F51B5', '#009688', '#FF5722', '#607D8B'];
         $chartPieData = [];
 
-        foreach ($dataPieChart as $index => $item) {
-            $chartPieData[] = [
-                'label' => $item->label,
-                'data' => [[1, $item->total]], // Format Flot: [[urutan, nilai]]
-                'color' => $chartDataColors[$index % count($chartDataColors)] // Loop warna jika lebih banyak kategori
-            ];
-        }
+        // foreach ($dataPieChart as $index => $item) {
+        //     $chartPieData[] = [
+        //         'label' => $item->label,
+        //         'data' => [[1, $item->total]], // Format Flot: [[urutan, nilai]]
+        //         'color' => $chartDataColors[$index % count($chartDataColors)] // Loop warna jika lebih banyak kategori
+        //     ];
+        // }
 
         return view('admin.index', compact('breadcrumb', 'persentaseMhsIkutLomba', 'totalLombaAktif', 'jmlPartisipasiSemingguTerakhir', 'topMahasiswa', 'lombaSedangAktif', 'chartPieData'));
     }

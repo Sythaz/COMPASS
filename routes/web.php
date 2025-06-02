@@ -304,6 +304,8 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
 
         Route::prefix('mhs/prestasi')->group(function () {
             Route::get('/', [PrestasiController::class, 'index'])->name('mhs.prestasi.index');
+            Route::get('list', [PrestasiController::class, 'list'])->name('mhs.prestasi.list');
+            Route::get('{prestasi_id}/detail', [PrestasiController::class, 'show'])->name('mhs.prestasi.show');
             Route::get('tambah', [PrestasiController::class, 'create_prestasi'])->name('mhs.prestasi.create');
             Route::post('simpan', [PrestasiController::class, 'store'])->name('mhs.prestasi.store');
             Route::post('cek-lomba-duplicate', [PrestasiController::class, 'cekLombaDuplicate'])->name('mhs.prestasi.cekLombaDuplicate');

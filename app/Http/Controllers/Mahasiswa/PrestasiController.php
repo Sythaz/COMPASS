@@ -14,6 +14,7 @@ use App\Models\PeriodeModel;
 use App\Models\PrestasiModel;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use Yajra\DataTables\Facades\DataTables;
 
 
 
@@ -26,6 +27,67 @@ class PrestasiController extends Controller
         ];
 
         return view('mahasiswa.prestasi.index', compact('breadcrumb'));
+    }
+
+    private function getStatusBadge($status_verifikasi)
+    {
+        $status = strtolower($status_verifikasi ?? '');
+
+        switch ($status) {
+            case 'terverifikasi':
+                return '<span class="label label-success">' . e(ucwords($status)) . '</span>';
+            case 'valid':
+                return '<span class="label label-info">' . e(ucwords($status)) . '</span>';
+            case 'menunggu':
+                return '<span class="label label-warning">' . e(ucwords($status)) . '</span>';
+            case 'ditolak':
+                return '<span class="label label-danger">' . e(ucwords($status)) . '</span>';
+            default:
+                return '<span class="label label-default">Tidak Diketahui</span>';
+        }
+    }
+    public function list(Request $request)
+    {
+        if ($request->ajax()) {
+            $query = PrestasiModel::with(['lomba', 'dosen'])->select('t_prestasi.*');
+
+            return DataTables::eloquent($query)
+                ->addColumn('nama_lomba', function ($prestasi) {
+                    if ($prestasi->lomba_id) {
+                        return $prestasi->lomba->nama_lomba ?? 'Lomba Tidak Ditemukan';
+                    }
+                    return $prestasi->lomba_lainnya ?? 'Lomba Lainnya';
+                })
+                ->addColumn('dosen_pembimbing', function ($prestasi) {
+                    return $prestasi->dosen ? $prestasi->dosen->nama_dosen : 'Tidak ada';
+                })
+                ->editColumn('tanggal_prestasi', function ($prestasi) {
+                    return \Carbon\Carbon::parse($prestasi->tanggal_prestasi)->format('d-m-Y');
+                })
+                ->editColumn('status_verifikasi', function ($prestasi) {
+                    $status = $prestasi->status_verifikasi ?? 'menunggu';
+                    return $this->getStatusBadge($status);
+                })
+                ->addColumn('aksi', function ($prestasi) {
+                    return '<a href="' . route('mhs.prestasi.show', $prestasi->prestasi_id) . '" class="btn btn-info btn-sm">Detail</a>';
+                })
+                ->rawColumns(['status_verifikasi', 'aksi']) // supaya tombol bisa render html
+                ->make(true);
+        }
+    }
+
+    public function show($prestasi_id)
+    {
+        $prestasi = PrestasiModel::with([
+            'lomba',
+            'dosen',
+            'tingkatLomba',
+            'kategori',
+            'anggota.mahasiswa',
+            'periode'
+        ])->where('prestasi_id', $prestasi_id)->firstOrFail();
+
+        return view('mahasiswa.prestasi.show', compact('prestasi'));
     }
 
     public function create_prestasi()
@@ -52,13 +114,13 @@ class PrestasiController extends Controller
     public function store(Request $request)
     {
         // Validasi user login harus jadi anggota tim
-        // $mahasiswaLoginId = auth()->user()->mahasiswa->mahasiswa_id ?? null;
+        $mahasiswaLoginId = auth()->user()->mahasiswa->mahasiswa_id ?? null;
 
-        // if (!$mahasiswaLoginId || !in_array($mahasiswaLoginId, $request->input('mahasiswa_id', []))) {
-        //     return redirect()->back()
-        //         ->withInput()
-        //         ->withErrors(['mahasiswa_id' => 'Mahasiswa yang login harus menjadi salah satu anggota tim (Ketua atau Anggota).']);
-        // }
+        if (!$mahasiswaLoginId || !in_array($mahasiswaLoginId, $request->input('mahasiswa_id', []))) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['mahasiswa_id' => 'Mahasiswa yang login harus menjadi salah satu anggota tim (Ketua atau Anggota).']);
+        }
 
         // Jika 'lomba_id' adalah 'lainnya', ubah 'jenis_prestasi' ke lowercase
         if ($request->lomba_id === 'lainnya' && $request->has('jenis_prestasi')) {

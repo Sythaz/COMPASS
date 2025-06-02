@@ -18,7 +18,19 @@
                         </a>
                     </div>
 
-                    {{-- (Tabel atau konten lainnya bisa ditambahkan di sini) --}}
+                    {{-- Tambahkan Tabel DataTables di sini --}}
+                    <table class="table table-bordered" id="prestasiTable" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Nama Lomba</th>
+                                <th>Juara</th>
+                                <th>Dosen Pembimbing</th>
+                                <th>Tanggal Prestasi</th>
+                                <th>Status Verifikasi</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                    </table>
 
                     {{-- Modal untuk menampilkan form --}}
                     <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="ajaxModalLabel" aria-hidden="true">
@@ -39,6 +51,7 @@
     <link href="{{ asset('theme/plugins/tables/css/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css-custom/pagination-datatables.css') }}" rel="stylesheet">
 @endpush
+
 @push('js')
     <script src="{{ asset('theme/plugins/tables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('theme/plugins/tables/js/datatable/dataTables.bootstrap4.min.js') }}"></script>
@@ -66,6 +79,23 @@
             $('#ajaxModalContent').html('');
             $('body').removeClass('modal-open');
             $('.modal-backdrop').remove();
+        });
+
+        // Inisialisasi DataTables
+        $(function () {
+            $('#prestasiTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: '{{ route("mhs.prestasi.list") }}',
+                columns: [
+                    { data: 'nama_lomba', name: 'lomba_id' },
+                    { data: 'juara_prestasi', name: 'juara_prestasi' },
+                    { data: 'dosen_pembimbing', name: 'dosen_id' },
+                    { data: 'tanggal_prestasi', name: 'tanggal_prestasi' },
+                    { data: 'status_verifikasi', name: 'status_verifikasi' },
+                    { data: 'aksi', name: 'aksi', orderable: false, searchable: false },
+                ],
+            });
         });
     </script>
 @endpush
