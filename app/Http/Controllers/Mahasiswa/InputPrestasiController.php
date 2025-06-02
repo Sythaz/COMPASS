@@ -21,7 +21,7 @@ class InputPrestasiController extends Controller
             'list' => ['Input Data', 'Input Prestasi']
         ];
 
-        return view('mahasiswa.manajemen-prestasi.index', compact('breadcrumb'));
+        return view('mahasiswa.input-prestasi.index', compact('breadcrumb'));
     }
 
     /**
@@ -41,7 +41,7 @@ class InputPrestasiController extends Controller
             ->addColumn('tahun', fn($row) => $row->tahun ?? '-')
             ->addColumn('peringkat', fn($row) => $row->peringkat ?? '-')
             ->addColumn('aksi', function ($row) {
-                $url = url('mahasiswa/manajemen-prestasi/kelola-prestasi');
+                $url = url('mahasiswa/input-prestasi/kelola-prestasi');
                 $btn = '<button onclick="modalAction(\'' . $url . '/' . $row->prestasi_id . '/show_ajax\')" class="btn btn-info btn-sm">Detail</button> ';
                 $btn .= '<button onclick="modalAction(\'' . $url . '/' . $row->prestasi_id . '/edit_ajax\')" class="btn btn-warning btn-sm">Edit</button> ';
                 $btn .= '<button onclick="modalAction(\'' . $url . '/' . $row->prestasi_id . '/delete_ajax\')" class="btn btn-danger btn-sm">Hapus</button>';
@@ -57,7 +57,7 @@ class InputPrestasiController extends Controller
     public function create()
     {
         $list_lomba = LombaModel::all();
-        return view('mahasiswa.manajemen-prestasi.create', compact('list_lomba'));
+        return view('mahasiswa.input-prestasi.create', compact('list_lomba'));
     }
 
     /**
@@ -66,7 +66,7 @@ class InputPrestasiController extends Controller
     public function showAjax($id)
     {
         $prestasi = PrestasiModel::with(['lomba'])->findOrFail($id);
-        return view('mahasiswa.manajemen-prestasi.show', compact('prestasi'));
+        return view('mahasiswa.input-prestasi.show', compact('prestasi'));
     }
 
     /**
@@ -76,7 +76,7 @@ class InputPrestasiController extends Controller
     {
         $prestasi = PrestasiModel::findOrFail($id);
         $list_lomba = LombaModel::all();
-        return view('mahasiswa.manajemen-prestasi.edit', compact('prestasi', 'list_lomba'));
+        return view('mahasiswa.input-prestasi.edit', compact('prestasi', 'list_lomba'));
     }
 
     /**
@@ -85,7 +85,7 @@ class InputPrestasiController extends Controller
     public function deleteAjax($id)
     {
         $prestasi = PrestasiModel::findOrFail($id);
-        return view('mahasiswa.manajemen-prestasi.delete', compact('prestasi'));
+        return view('mahasiswa.input-prestasi.delete', compact('prestasi'));
     }
 
     /**
