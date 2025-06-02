@@ -245,7 +245,6 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::put('input/{id}', [InputLombaController::class, 'update'])->name('mahasiswa.lomba.update');
             Route::delete('input/{id}', [InputLombaController::class, 'destroy'])->name('mahasiswa.lomba.destroy');
         });
-
         // === Profile Mahasiswa === 
         Route::prefix('mahasiswa/profile-mahasiswa')->group(function () {
             Route::get('/', [ProfileMahasiswaController::class, 'index'])->name('mahasiswa.profile.index');
