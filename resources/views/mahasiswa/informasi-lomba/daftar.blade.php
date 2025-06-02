@@ -8,15 +8,17 @@
         </button>
     </div>
     <div class="modal-body">
-        {{-- Lomba Tim atau Individu --}}
-        <input type="hidden" id="tipe_lomba" value="{{ $lomba->tipe_lomba }}">
         <div class="form-group">
             <label class="col-form-label">Lomba <span class="text-danger">*</span></label>
             <input type="text" class="form-control" value="{{ $lomba->nama_lomba }}" disabled>
             <input type="hidden" name="lomba_id" value="{{ $lomba->lomba_id }}" required>
         </div>
 
-        <div class="form-group">
+        <!-- Lomba Tim atau Individu -->
+        <input type="hidden" id="tipe_lomba" value="{{ $lomba->tipe_lomba }}">
+
+        <!-- Kontrol Jumlah Anggota - Hanya tampil untuk lomba tim -->
+        <div class="form-group" id="kontrol-jumlah" style="display: none;">
             <label for="jumlah_anggota" class="col-form-label mt-2">Jumlah Anggota Tim (termasuk ketua) <span
                     class="text-danger">*</span></label>
             <div class="input-group">
@@ -24,29 +26,23 @@
                     <button type="button" class="btn btn-outline-secondary" id="btn-minus">−</button>
                 </div>
                 <input type="number" id="jumlah_anggota" name="jumlah_anggota" class="form-control text-center" min="1"
-                    max="10" value="1" required readonly>
+                    max="10" value="1" required>
                 <div class="input-group-append">
                     <button type="button" class="btn btn-outline-secondary" id="btn-plus">+</button>
                 </div>
             </div>
-            <small class="form-text text-muted">Masukkan jumlah anggota tim, termasuk ketua</small>
+            <small class="form-text text-muted">Masukkan jumlah anggota tim (minimal 2, maksimal 10)</small>
         </div>
 
+        <!-- Info untuk lomba individu -->
+        <div class="alert alert-info" id="info-individu" style="display: none;">
+            <i class="fas fa-info-circle mr-2"></i>
+            <strong>Lomba Individu:</strong> Anda akan mendaftar sebagai peserta individu.
+        </div>
+
+        <!-- Container untuk form anggota -->
         <div id="anggota-container">
-            <div class="form-group anggota-item">
-                <label for="mahasiswa_id_1" class="col-form-label mt-2">
-                    Ketua Tim <span class="text-danger" style="color: red;">*</span>
-                </label>
-                <div class="custom-validation">
-                    <select name="mahasiswa_id[]" id="mahasiswa_id_1" class="form-control select2" required>
-                        <option value="">-- Pilih Ketua Tim --</option>
-                        @foreach ($daftarMahasiswa as $mhs)
-                            <option value="{{ $mhs->mahasiswa_id }}">{{ $mhs->nim_mahasiswa }} - {{ $mhs->nama_mahasiswa }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
+            <!-- Form anggota akan digenerate di sini -->
         </div>
 
         <div class="form-group">
@@ -130,9 +126,17 @@
     .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
         background-color: #7571F9;
     }
+
+    .anggota-section {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-left: 4px solid #7571F9;
+    }
 </style>
 
-{{-- Memanggil Select2 single select --}}
+<!-- Memanggil Select2 single select -->
 <script>
     $(document).ready(function () {
         $('select.select2:not(.normal)').each(function () {
@@ -146,7 +150,7 @@
 
 <script>
     const opsiMahasiswa = `
-        <option value="">-- Pilih Anggota --</option>
+        <option value="">-- Pilih Mahasiswa --</option>
         @foreach ($daftarMahasiswa as $mhs)
             <option value="{{ $mhs->mahasiswa_id }}">{{ $mhs->nim_mahasiswa }} - {{ $mhs->nama_mahasiswa }}</option>
         @endforeach
@@ -154,6 +158,7 @@
 </script>
 
 <script>
+    // Validasi duplikasi mahasiswa
     $(document).on('change', '.select-mahasiswa', function () {
         let selectedValues = [];
 
@@ -178,24 +183,32 @@
 
 <script>
     $(document).ready(function () {
-        // Inisialisasi awal Select2
-        $('.select-mahasiswa').select2({
-            width: '100%',
-            placeholder: 'Pilih anggota tim',
-        });
-
-        // Fungsi pembaruan anggota tim
-        function updateAnggotaFields(jumlah) {
+        // Fungsi untuk membuat form anggota
+        function createAnggotaForm(jumlah) {
             let container = $('#anggota-container');
             container.empty();
 
             for (let i = 1; i <= jumlah; i++) {
-                let label = (i === 1) ? 'Ketua Tim' : `Anggota ${i}`;
-                let selectId = `mahasiswa_id_${i}`;
+                let label, placeholder;
+                
+                if (jumlah === 1) {
+                    // Untuk lomba individu
+                    label = 'Peserta';
+                    placeholder = 'Pilih peserta';
+                } else {
+                    // Untuk lomba tim
+                    label = (i === 1) ? 'Ketua Tim' : `Anggota ${i}`;
+                    placeholder = (i === 1) ? 'Pilih ketua tim' : 'Pilih anggota tim';
+                }
 
-                let selectHtml = `
-                <div class="form-group anggota-item">
-                    <label for="${selectId}" class="col-form-label mt-2">${label} <span class="text-danger">*</span></label>
+                let selectId = `mahasiswa_id_${i}`;
+                let sectionClass = jumlah > 1 ? 'anggota-section' : '';
+
+                let formHtml = `
+                <div class="form-group anggota-item ${sectionClass}">
+                    <label for="${selectId}" class="col-form-label">
+                        <i class="fas fa-user mr-2"></i>${label} <span class="text-danger">*</span>
+                    </label>
                     <div class="custom-validation">
                         <select name="mahasiswa_id[]" id="${selectId}" class="form-control select-mahasiswa" required>
                             ${opsiMahasiswa}
@@ -203,14 +216,14 @@
                     </div>
                 </div>`;
 
-                container.append(selectHtml);
+                container.append(formHtml);
             }
 
             // Re-inisialisasi Select2
             $('.select-mahasiswa').select2({
                 width: '100%',
-                placeholder: 'Pilih anggota tim',
-                dropdownParent: $('#form-daftar') // agar dropdown tetap tampil di dalam modal
+                placeholder: 'Pilih mahasiswa',
+                dropdownParent: $('#form-daftar')
             });
         }
 
@@ -218,20 +231,17 @@
         $('#btn-plus').click(function () {
             let input = $('#jumlah_anggota');
             let val = parseInt(input.val());
-            let tipe = $('#tipe_lomba').val();
-
-            if (tipe === 'individu') {
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Lomba Individu',
-                    text: 'Tidak dapat menambah anggota untuk lomba individu.',
-                    confirmButtonColor: '#3085d6',
-                });
-                return;
-            }
 
             if (val < 10) {
-                input.val(val + 1).trigger('change');
+                input.val(val + 1);
+                createAnggotaForm(val + 1);
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Maksimal Anggota',
+                    text: 'Jumlah anggota maksimal 10 orang!',
+                    confirmButtonColor: '#3085d6',
+                });
             }
         });
 
@@ -239,20 +249,10 @@
         $('#btn-minus').click(function () {
             let input = $('#jumlah_anggota');
             let val = parseInt(input.val());
-            let tipe = $('#tipe_lomba').val();
-
-            if (tipe === 'individu') {
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Lomba Individu',
-                    text: 'Tidak dapat mengurangi anggota untuk lomba individu.',
-                    confirmButtonColor: '#3085d6',
-                });
-                return;
-            }
 
             if (val > 2) {
-                input.val(val - 1).trigger('change');
+                input.val(val - 1);
+                createAnggotaForm(val - 1);
             } else {
                 Swal.fire({
                     icon: 'warning',
@@ -263,41 +263,67 @@
             }
         });
 
-        // Event: Input jumlah_anggota berubah
-        $('#jumlah_anggota').on('change', function () {
+        // Event: Input jumlah_anggota berubah manual
+        $('#jumlah_anggota').on('input change', function () {
             let jumlah = parseInt($(this).val());
-            let tipe = $('#tipe_lomba').val();
-
-            if (tipe === 'tim') {
-                if (jumlah < 2) jumlah = 2;
-                if (jumlah > 10) jumlah = 10;
-            } else {
-                jumlah = 1;
+            
+            if (isNaN(jumlah) || jumlah < 2) {
+                jumlah = 2;
+            } else if (jumlah > 10) {
+                jumlah = 10;
             }
 
             $(this).val(jumlah);
-            updateAnggotaFields(jumlah);
+            createAnggotaForm(jumlah);
         });
 
-        // Inisialisasi awal saat modal/form dibuka
+        // Inisialisasi berdasarkan tipe lomba
         let tipe = $('#tipe_lomba').val().toLowerCase();
 
         if (tipe === 'individu') {
-            $('#jumlah_anggota').val(1).prop('readonly', true);
-            $('#btn-plus, #btn-minus').attr('disabled', true);
-            updateAnggotaFields(1);
+            // Lomba individu
+            $('#kontrol-jumlah').hide();
+            $('#info-individu').show();
+            $('#jumlah_anggota').val(1);
+            createAnggotaForm(1);
         } else {
-            $('#jumlah_anggota').val(2).prop('readonly', false);
-            $('#btn-plus, #btn-minus').attr('disabled', false);
-            updateAnggotaFields(2);
+            // Lomba tim/kelompok
+            $('#kontrol-jumlah').show();
+            $('#info-individu').hide();
+            $('#jumlah_anggota').val(2);
+            createAnggotaForm(2);
         }
+
+        // Tampilkan informasi tipe lomba di console untuk debugging
+        console.log('Tipe Lomba:', tipe);
     });
 </script>
 
 <script>
     // Submit Form Ajax
     $('#form-daftar').on('submit', function (e) {
-        e.preventDefault(); // Cegah submit default
+        e.preventDefault();
+
+        // Validasi sebelum submit
+        let mahasiswaSelects = $('.select-mahasiswa');
+        let allFilled = true;
+
+        mahasiswaSelects.each(function() {
+            if (!$(this).val()) {
+                allFilled = false;
+                return false;
+            }
+        });
+
+        if (!allFilled) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Form Belum Lengkap',
+                text: 'Mohon pilih semua anggota tim yang diperlukan!',
+                confirmButtonColor: '#3085d6',
+            });
+            return;
+        }
 
         var formData = new FormData(this);
 
@@ -307,6 +333,18 @@
             data: formData,
             contentType: false,
             processData: false,
+            beforeSend: function() {
+                // Tampilkan loading
+                Swal.fire({
+                    title: 'Memproses...',
+                    text: 'Mohon tunggu sebentar',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    willOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            },
             success: function (response) {
                 Swal.fire({
                     icon: 'success',
@@ -314,14 +352,27 @@
                     text: response.message || 'Pendaftaran lomba berhasil disimpan!',
                     confirmButtonColor: '#3085d6',
                 }).then(() => {
-                    location.reload(); // Reload halaman
+                    location.reload();
                 });
             },
             error: function (xhr) {
                 let msg = 'Terjadi kesalahan. Silakan coba lagi.';
-                if (xhr.responseJSON && xhr.responseJSON.message) {
-                    msg = xhr.responseJSON.message;
+                
+                if (xhr.responseJSON) {
+                    if (xhr.responseJSON.message) {
+                        msg = xhr.responseJSON.message;
+                    } else if (xhr.responseJSON.errors) {
+                        let errors = xhr.responseJSON.errors;
+                        let errorMessages = [];
+                        
+                        Object.keys(errors).forEach(function(key) {
+                            errorMessages.push(errors[key][0]);
+                        });
+                        
+                        msg = errorMessages.join('\n');
+                    }
                 }
+                
                 Swal.fire({
                     icon: 'error',
                     title: 'Gagal',
