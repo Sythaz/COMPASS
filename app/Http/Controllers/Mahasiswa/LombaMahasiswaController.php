@@ -21,12 +21,13 @@ class LombaMahasiswaController extends Controller
 {
     public function index()
     {
+        $lomba = LombaModel::where('status_verifikasi', 'Terverifikasi')->get();
         $breadcrumb = (object) [
-            'list' => ['Informasi Lomba', 'Lomba']
-        ];
+        'list' => ['Info Lomba', 'Detail Lomba']];
 
-        return view('mahasiswa.informasi-lomba.index', compact('breadcrumb'));
+        return view('mahasiswa.informasi-lomba.index', compact('lomba','breadcrumb'));
     }
+
 
     public function list(Request $request)
     {

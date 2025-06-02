@@ -1,22 +1,22 @@
 <?php
 
-namespace App\Http\Controllers\Dosen;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\DosenModel;
+use App\Models\AdminModel;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 
-class ProfileDosenController extends Controller
+class ProfileAdminController extends Controller
 {
     public function index()
     {
         $breadcrumb = (object) [
-            'title' => 'Profil Dosen',
-            'list'  => ['Home', 'Profil Dosen']
+            'title' => 'Profil Admin',
+            'list'  => ['Home', 'Profil Admin']
         ];
 
         $page = (object) [
@@ -25,64 +25,64 @@ class ProfileDosenController extends Controller
 
         $activeMenu = 'profil';
 
-        $dosen = DosenModel::with('users')
+        $admin = AdminModel::with('users')
             ->where('user_id', Auth::user()->user_id)
             ->firstOrFail();
 
-        return view('dosen.profile-dosen.index', compact('breadcrumb', 'page', 'activeMenu', 'dosen'));
+        return view('admin.profile-admin.index', compact('breadcrumb', 'page', 'activeMenu', 'admin'));
     }
 
     public function show($id)
     {
-        $dosen = DosenModel::where($id);
+        $admin = AdminModel::where($id);
 
-        return view('dosen.profile-dosen.show', compact('dosen'));
+        return view('admin.profile-admin.show', compact('admin'));
     }
 
     public function edit($id)
     {
-        $dosen = DosenModel::with('users')
+        $admin = AdminModel::with('users')
             ->where('user_id', Auth::user()->user_id)
             ->firstOrFail();
 
-        return view('dosen.profile-dosen.edit', compact('dosen'));
+        return view('admin.profile-admin.edit', compact('admin'));
     }
 
     public function update(Request $request)
     {
         try {
-            $dosen = DosenModel::where('user_id', Auth::user()->user_id)->firstOrFail();
+            $admin = AdminModel::where('user_id', Auth::user()->user_id)->firstOrFail();
 
             $request->validate([
-                'nip_dosen'         => 'required',
-                'nama_dosen'        => 'required',
+                'nip_admin'         => 'required',
+                'nama_admin'        => 'required',
                 'alamat'            => 'required',
                 'email'             => 'required',
                 'no_hp'             => 'required',
                 'kelamin'           => 'required',
-                'img_dosen'         => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
+                'img_admin'     => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
             ]);
 
-            DB::transaction(function () use ($request, $dosen) {
+            DB::transaction(function () use ($request, $mahasiswa) {
                 // Delete old image if new image is uploaded
-                if ($request->hasFile('img_dosen') && $dosen->img_dosen) {
-                    Storage::delete('public/' . $dosen->img_dosen);
+                if ($request->hasFile('img_admin') && $admin->img_admin) {
+                    Storage::delete('public/' . $admin->img_admin);
                 }
-                $dosen->nip_dosen      = $request->nip_dosen;
-                $dosen->nama_dosen     = $request->nama_dosen;
-                $dosen->alamat         = $request->alamat;
-                $dosen->email          = $request->email;
-                $dosen->no_hp          = $request->no_hp;
-                $dosen->kelamin        = $request->kelamin;
+                $admin->nip_admin      = $request->nip_admin;
+                $admin->nama_admin     = $request->nama_admin;
+                $admin->alamat         = $request->alamat;
+                $admin->email          = $request->email;
+                $admin->no_hp          = $request->no_hp;
+                $admin->kelamin        = $request->kelamin;
             
-                if ($request->hasFile('img_dosen')) {
-                    $file = $request->file('img_dosen');
+                if ($request->hasFile('img_admin')) {
+                    $file = $request->file('img_admin');
                     $filename = time() . '_' . $file->getClientOriginalName();
-                    $file->storeAs('public/foto_dosen', $filename);
-                    $dosen->img_dosen = 'foto_dosen/' . $filename;
+                    $file->storeAs('public/foto_admin', $filename);
+                    $admin->img_admin = 'foto_admin/' . $filename;
                 }
 
-                $dosen->save();
+                $admin->save();
             });
 
 
