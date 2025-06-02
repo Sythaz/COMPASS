@@ -39,22 +39,33 @@
     <link href="{{ asset('theme/plugins/tables/css/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css-custom/pagination-datatables.css') }}" rel="stylesheet">
 @endpush
-
 @push('js')
     <script src="{{ asset('theme/plugins/tables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('theme/plugins/tables/js/datatable/dataTables.bootstrap4.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
     <script>
         function modalAction(url) {
+            console.log('modalAction dipanggil dengan url:', url);
+            $('#ajaxModalContent').html('Loading...'); // beri feedback loading
+
             $.get(url)
                 .done(function (res) {
+                    console.log('ajax berhasil, isi modal diisi');
                     $('#ajaxModalContent').html(res);
                     $('#myModal').modal('show');
+                    console.log('modal di-show');
                 })
                 .fail(function () {
+                    console.log('ajax gagal');
                     Swal.fire('Gagal', 'Tidak dapat memuat data dari server.', 'error');
                 });
         }
+
+        $('#myModal').on('hidden.bs.modal', function () {
+            console.log('modal ditutup, konten dibersihkan');
+            $('#ajaxModalContent').html('');
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+        });
     </script>
 @endpush

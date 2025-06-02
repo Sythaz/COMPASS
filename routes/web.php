@@ -306,6 +306,7 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::get('/', [PrestasiController::class, 'index'])->name('mhs.prestasi.index');
             Route::get('tambah', [PrestasiController::class, 'create_prestasi'])->name('mhs.prestasi.create');
             Route::post('simpan', [PrestasiController::class, 'store'])->name('mhs.prestasi.store');
+            Route::post('cek-lomba-duplicate', [PrestasiController::class, 'cekLombaDuplicate'])->name('mhs.prestasi.cekLombaDuplicate');
         });
 
         // Halaman Informasi Lomba (Menampilkan Lomba yang statusnya Aktif Dan Terverifikasi saja)
@@ -331,34 +332,6 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::post('{id}/daftar', [LombaMahasiswaController::class, 'store_pendaftaran'])->name('informasi-lomba.store');
             Route::get('create', [LombaMahasiswaController::class, 'create'])->name('create-lomba');
             Route::post('store', [LombaMahasiswaController::class, 'store_lomba'])->name('store-lomba');
-        });
-
-
-        // ==== Input Data Prestasi ====
-        Route::prefix('prestasi')->group(function () {
-            Route::get('input', [InputPrestasiController::class, 'index'])
-                ->name('mahasiswa.prestasi.input');
-
-            Route::post('input/list', [InputPrestasiController::class, 'list'])
-                ->name('mahasiswa.prestasi.list');
-
-            Route::get('input/create', [InputPrestasiController::class, 'create'])
-                ->name('mahasiswa.prestasi.create');
-
-            Route::get('input/{id}/show_ajax', [InputPrestasiController::class, 'showAjax']);
-
-            Route::get('input/{id}/edit_ajax', [InputPrestasiController::class, 'editAjax']);
-
-            Route::get('input/{id}/delete_ajax', [InputPrestasiController::class, 'deleteAjax']);
-
-            Route::post('input/store', [InputPrestasiController::class, 'store'])
-                ->name('mahasiswa.prestasi.store');
-
-            Route::put('input/{id}', [InputPrestasiController::class, 'update'])
-                ->name('mahasiswa.prestasi.update');
-
-            Route::delete('input/{id}', [InputPrestasiController::class, 'destroy'])
-                ->name('mahasiswa.prestasi.destroy');
         });
     });
 });

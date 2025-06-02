@@ -14,7 +14,7 @@ class LombaModel extends Model
     protected $table = 't_lomba';
     protected $primaryKey = 'lomba_id';
 
-    protected $fillable = [    
+    protected $fillable = [
         'tingkat_lomba_id',
         'pengusul_id',
         'nama_lomba',
@@ -27,6 +27,7 @@ class LombaModel extends Model
         'status_verifikasi',
         'status_lomba',
         'alasan_tolak',
+        'jensi_prestasi',
     ];
 
     public function kategori(): BelongsToMany
@@ -38,7 +39,7 @@ class LombaModel extends Model
     {
         return $this->belongsTo(TingkatLombaModel::class, 'tingkat_lomba_id', 'tingkat_lomba_id');
     }
-    
+
     public function pengusul(): BelongsTo
     {
         return $this->belongsTo(UsersModel::class, 'pengusul_id', 'user_id');

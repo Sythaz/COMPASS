@@ -16,9 +16,10 @@ class PrestasiModel extends Model
     protected $primaryKey = 'prestasi_id';
 
     protected $fillable = [
-        'mahasiswa_id',
         'lomba_id',
+        'lomba_lainnya',
         'dosen_id',
+        'tingkat_lomba_id',
         'periode_id',
         'tanggal_prestasi',
         'juara_prestasi',
