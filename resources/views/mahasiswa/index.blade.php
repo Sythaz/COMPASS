@@ -118,9 +118,6 @@
     <!-- Memanggil Chart Script -->
     <script src="{{ asset('js-custom/charts/mahasiswa/bar-chart.js') }}"></script>
 
-    <!-- Custom show header JS untuk Bootstrap 5 -->
-    <script src="{{ asset('js-custom/header-show-bootstrap5.js') }}"></script>
-
     <!-- Data didefinisikan di view -->
     <script>
         $(document).ready(function() {

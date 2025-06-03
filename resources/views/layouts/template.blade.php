@@ -82,7 +82,7 @@
 
     <!-- jQuery -->
     <script src="{{ asset('theme/plugins/jquery/jquery.min.js') }}"></script>
-    
+
     <!-- jquery-validation -->
     <script src="{{ asset('theme/plugins/jquery-validation/jquery.validate.min.js') }}"></script>
 
@@ -91,6 +91,9 @@
 
     <!-- Bootstrap JS Bundle (modal show hide butuh ini)-->
     <script src="{{ asset('theme/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+    <!-- Custom show header JS -->
+    <script src="{{ asset('js-custom/header-show-bootstrap5.js') }}"></script>
 
     @stack('js')
 </body>
