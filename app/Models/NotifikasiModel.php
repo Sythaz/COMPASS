@@ -27,4 +27,18 @@ class NotifikasiModel extends Model
     {
         return $this->belongsTo(UsersModel::class, 'user_id', 'user_id');
     }
+
+    public function getPengirimNama()
+    {
+        if ($this->pengirim_role === 'Dosen') {
+            $pengirim = DosenModel::where('user_id', $this->pengirim_id)->first();
+            return $pengirim ? $pengirim->nama_dosen : 'Nama Dosen Tidak Ditemukan';
+        } elseif ($this->pengirim_role === 'Admin') {
+            $pengirim = AdminModel::where('user_id', $this->pengirim_id)->first();
+            return $pengirim ? $pengirim->nama_admin : 'Nama Admin Tidak Ditemukan';
+        } elseif ($this->pengirim_role === 'Sistem') {
+            return 'Sistem';
+        }
+        return 'Pengirim Tidak Diketahui';
+    }
 }
