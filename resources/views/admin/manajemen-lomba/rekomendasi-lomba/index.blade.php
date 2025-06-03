@@ -164,9 +164,6 @@
 @endpush
 
 @push('js')
-    <!-- Custom show header JS -->
-    <script src="{{ asset('js-custom/header-show-bootstrap5.js') }}"></script>
-
     <script>
         // Fungsi utama untuk filtering lomba
         function filterLomba() {

@@ -129,9 +129,6 @@
     <script src="{{ asset('js-custom/charts/admin/pie-chart.js') }}"></script>
     <script src="{{ asset('js-custom/charts/admin/line-chart.js') }}"></script>
 
-    <!-- Custom show header -->
-    <script src="{{ asset('js-custom/header-show-bootstrap5.js') }}"></script>
-
     <!-- Menginisialisasi Chart yang dipanggil dari script diatas -->
     <script>
         $(function() {
