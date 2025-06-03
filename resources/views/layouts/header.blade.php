@@ -88,7 +88,7 @@
                         <a href="javascript:void(0)" class="dropdown-toggle icon-dropdown-none" data-toggle="dropdown">
                             <i class="mdi mdi-bell-outline"></i>
                             @if ($jumlahBelumDibaca > 0)
-                                <span class="badge gradient-1 badge-pill badge-primary">{{ $jumlahBelumDibaca }}</span>
+                                <span id="header-notif-count" class="badge gradient-1 badge-pill badge-primary">{{ $jumlahBelumDibaca }}</span>
                             @endif
                         </a>
                         <div class="drop-down animated dropdown-menu tinggi-notifikasi">
@@ -97,9 +97,9 @@
                                 <div>
                                     <a class="mr-3 font-weight-semi-bold text-muted" href="javascript:void(0)"
                                         id="btn-baca-semua">
-                                        <i class="fa-solid fa-check-double" style="font-size: 1rem"></i> Baca Semua
+                                        <i class="fa-solid fa-check-double" style="font-size: 1rem"></i> Tandai Semua Dibaca
                                     </a>
-                                    <a class="font-weight-semi-bold text-muted" href="javascript:void(0)">
+                                    <a class="font-weight-semi-bold text-muted" href="{{ route('notifikasi.index') }}">
                                         <i class="fa-solid fa-envelope-open-text" style="font-size: 1rem"></i> Lihat
                                     </a>
                                 </div>

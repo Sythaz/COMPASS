@@ -58,8 +58,11 @@ Route::get('logout', [AuthController::class, 'logout'])->middleware('auth')->nam
 // Route group untuk user yang sudah login
 Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam sini ya!
     // Notifikasi
+    Route::get('notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi.index');
     Route::post('notifikasi/baca_semua_notifikasi', [NotifikasiController::class, 'bacaSemuaNotifikasi'])->name('notifikasi.bacaSemuaNotifikasi');
-    Route::post('notifikasi/tanda_sudah_dibaca_notifikasi/{id}', [NotifikasiController::class, 'tandaiSudahDibacaNotifikasi'])->name('notifikasi.tandaiSudahDibacaNotifikasi');
+    Route::post('notifikasi/tandai_sudah_dibaca_notifikasi/{id}', [NotifikasiController::class, 'tandaiSudahDibacaNotifikasi'])->name('notifikasi.tandaiSudahDibacaNotifikasi');
+    Route::post('notifikasi/hapus_notifikasi/{id}', [NotifikasiController::class, 'hapusNotifikasi'])->name('notifikasi.hapusNotifikasi');
+    Route::post('notifikasi/hapus_banyak_notifikasi', [NotifikasiController::class, 'hapusBanyakNotifikasi'])->name('notifikasi.hapusBanyakNotifikasi');
 
     // ROUTE ADMIN
     Route::middleware('authorize:Admin')->group(function () {
