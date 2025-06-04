@@ -162,9 +162,9 @@
                         {{-- Mahasiswa dapat melihat Lomba yang Tersedia dan mengajukan Lomba baru --}}
                         <li><a href="{{ route('mahasiswa.informasi-lomba.index') }}">Lomba</a></li>
                         {{-- Halaman untuk melihat Daftar Lomba yang pernah diajukan mahasiswa --}}
-                        <li><a href="{{ route('mahasiswa.informasi-lomba.history') }}">Riawayat Pengajuan Lomba</a></li>
+                        <li><a href="{{ route('mahasiswa.informasi-lomba.history') }}">Riwayat Pengajuan Lomba</a></li>
                         {{-- Halaman untuk melihat Daftar Lomba yang pernah diajukan mahasiswa --}}
-                        <li><a href="{{ route('mahasiswa.informasi-lomba.riwayat-pendaftaran') }}">Riawayat Pendaftaran</a>
+                        <li><a href="{{ route('mahasiswa.informasi-lomba.riwayat-pendaftaran') }}">Riwayat Pendaftaran</a>
                         </li>
                     </ul>
                 </li>

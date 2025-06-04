@@ -60,7 +60,7 @@ class LombaMahasiswaController extends Controller
             ->addColumn('aksi', function ($row) {
                 $btn = '<div class="text-center">';
                 $btn .= '<button style="white-space:nowrap; margin-right: 5px;" onclick="modalAction(\'' . route('informasi-lomba.show', $row->lomba_id) . '\')" class="btn btn-info btn-sm">Detail</button>';
-                $btn .= '<button style="white-space:nowrap;" onclick="modalAction(\'' . route('informasi-lomba.daftar', $row->lomba_id) . '\')" class="btn btn-success btn-sm">Daftar</button>';
+                $btn .= '<button style="white-space:nowrap;" onclick="modalAction(\'' . route('informasi-lomba.daftar', $row->lomba_id) . '\')" class="btn btn-primary btn-sm">Daftar</button>';
                 $btn .= '</div>';
                 return $btn;
             })
