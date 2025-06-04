@@ -7,113 +7,88 @@
 <div class="modal-body">
     <table class="table table-bordered">
         <tr>
-            <th style="width: 30%">NIM: </th>
-            <td class="text-start">{{ $kelolaPrestasi->mahasiswa->nim_mahasiswa }}</td>
+            <th style="width: 30%">Nama Lomba:</th>
+            <td class="text-start">{{ $prestasi->lomba_lainnya ?? 'Lomba tidak tersedia' }}</td>
         </tr>
         <tr>
-            <th style="width: 30%">Mahasiswa: </th>
-            <td class="text-start">{{ $kelolaPrestasi->mahasiswa->nama_mahasiswa }}</td>
+            <th style="width: 30%">Juara:</th>
+            <td class="text-start">{{ $prestasi->juara_prestasi }}</td>
         </tr>
         <tr>
-            <th style="width: 30%">Lomba: </th>
-            <td class="text-start">{{ $kelolaPrestasi->lomba->nama_lomba }}</td>
+            <th style="width: 30%">Dosen Pembimbing:</th>
+            <td class="text-start">{{ $prestasi->dosen->nama_dosen ?? 'Tidak tersedia' }}</td>
         </tr>
         <tr>
-            <th style="width: 30%">Kategori: </th>
-            <td class="text-start">{{ $kelolaPrestasi->kategori->nama_kategori }}</td>
+            <th style="width: 30%">Kategori:</th>
+            <td class="text-start">{{ $prestasi->kategori->nama_kategori ?? 'Tidak tersedia' }}</td>
         </tr>
         <tr>
-            <th style="width: 30%">Jenis Prestasi: </th>
-            <td class="text-start">{{ $kelolaPrestasi->jenis_prestasi }}</td>
+            <th style="width: 30%">Tingkat Lomba:</th>
+            <td class="text-start">{{ $prestasi->tingkat_lomba->nama_tingkat ?? 'Tidak tersedia' }}</td>
         </tr>
         <tr>
-            <th style="width: 30%">Dosen Pembimbing: </th>
-            <td class="text-start">{{ $kelolaPrestasi->dosen->nama_dosen }}</td>
+            <th style="width: 30%">Periode:</th>
+            <td class="text-start">{{ $prestasi->periode->semester_periode ?? 'Tidak tersedia' }}</td>
         </tr>
         <tr>
-            <th style="width: 30%">Periode: </th>
-            <td class="text-start">{{ $kelolaPrestasi->periode->semester_periode }}</td>
+            <th style="width: 30%">Tanggal Prestasi:</th>
+            <td class="text-start">{{ \Carbon\Carbon::parse($prestasi->tanggal_prestasi)->format('d M Y') }}</td>
         </tr>
         <tr>
-            <th style="width: 30%">Tanggal Prestasi: </th>
-            <td class="text-start">{{ $kelolaPrestasi->tanggal_prestasi }}</td>
+            <th style="width: 30%">Status Verifikasi:</th>
+            {{-- Style status_verifikasi ada di controller PrestasiController --}}
+            <td class="text-start">{!! $statusBadge !!}</td>
         </tr>
         <tr>
-            <th style="width: 30%">Juara Prestasi: </th>
-            <td class="text-start">{{ $kelolaPrestasi->juara_prestasi }}</td>
+            <th style="width: 30%">Anggota Tim:</th>
+            <td class="text-start">
+                <ul>
+                    @foreach ($prestasi->mahasiswa as $mhs)
+                        <li>{{ $mhs->nama_mahasiswa }} ({{ $mhs->pivot->peran }})</li>
+                    @endforeach
+                </ul>
+            </td>
         </tr>
         <tr>
             <th style="width: 30%">Gambar Kegiatan:</th>
             <td class="text-start">
-                @if (
-                    !is_null($kelolaPrestasi->img_kegiatan) &&
-                        file_exists(public_path('storage/prestasi/img/' . $kelolaPrestasi->img_kegiatan)))
-                    <a href="{{ asset('storage/prestasi/img/' . $kelolaPrestasi->img_kegiatan) }}"
-                        data-lightbox="prestasi" data-title="Gambar Kegiatan">
-                        <img src="{{ asset('storage/prestasi/img/' . $kelolaPrestasi->img_kegiatan) }}" width="100"
-                            class="d-block mx-auto img-thumbnail" alt="Gambar Kegiatan" style="cursor: zoom-in;" />
+                @if($prestasi->img_kegiatan && file_exists(public_path('storage/img/prestasi/' . $prestasi->img_kegiatan)))
+                    <a href="{{ asset('storage/img/prestasi/' . $prestasi->img_kegiatan) }}" data-lightbox="prestasi"
+                        data-title="Gambar Kegiatan">
+                        <img src="{{ asset('storage/img/prestasi/' . $prestasi->img_kegiatan) }}" width="100"
+                            class="d-block mx-auto img-thumbnail" style="cursor: zoom-in;" alt="Gambar Kegiatan" />
                     </a>
                 @else
-                    <p class="text-center text-muted">Gambar tidak ada atau belum di upload</p>
+                    <p class="text-center text-muted">Gambar belum diupload</p>
                 @endif
             </td>
         </tr>
         <tr>
-            <th style="width: 30%">Bukti Prestasi: </th>
+            <th style="width: 30%">Bukti Prestasi:</th>
             <td class="text-start">
-                @if (
-                    !is_null($kelolaPrestasi->bukti_prestasi) &&
-                        file_exists(public_path('storage/prestasi/bukti/' . $kelolaPrestasi->bukti_prestasi)))
-                    <a class="btn btn-primary"
-                        href="{{ asset('storage/prestasi/bukti/' . $kelolaPrestasi->bukti_prestasi) }}"
-                        target="_blank">
-                        <i class="fa fa-file-alt"></i>
-                        <span class="ml-1">Lihat Bukti</span>
+                @if($prestasi->bukti_prestasi && file_exists(public_path('storage/img/prestasi/' . $prestasi->bukti_prestasi)))
+                    <a href="{{ asset('storage/img/prestasi/' . $prestasi->bukti_prestasi) }}" target="_blank">
+                        Lihat Bukti
                     </a>
                 @else
-                    <p class="text-center text-muted">Bukti tidak ada atau belum di upload</p>
+                    <span class="text-muted">Belum ada bukti prestasi</span>
                 @endif
             </td>
         </tr>
-        <tr>
-            <th style="width: 30%">Surat Tugas: </th>
-            <td class="text-start">
-                @if (
-                    !is_null($kelolaPrestasi->surat_tugas_prestasi) &&
-                        file_exists(public_path('storage/prestasi/surat/' . $kelolaPrestasi->surat_tugas_prestasi)))
-                    <a class="btn btn-primary"
-                        href="{{ asset('storage/prestasi/surat/' . $kelolaPrestasi->surat_tugas_prestasi) }}"
-                        target="_blank">
-                        <i class="fa fa-file-alt"></i>
-                        <span class="ml-1">Lihat Surat Tugas</span>
-                    </a>
-                @else
-                    <p class="text-center text-muted">Surat Tugas tidak ada atau belum di upload</p>
-                @endif
-            </td>
-        </tr>
-        <tr>
-            <th style="width: 30%">Status: </th>
-            <td class="text-start">
-                <span>
-                    @switch($kelolaPrestasi->status_verifikasi)
-                        @case('Terverifikasi')
-                            {{-- Terverifikasi --}}
-                            <span class="label label-success">{{ $kelolaPrestasi->status_verifikasi }}</span>
-                        @break
 
-                        @case('Valid')
-                            {{-- Valid (diverifikasi admin) --}}
-                            <span class="label label-info">{{ $kelolaPrestasi->status_verifikasi }}</span>
-                        @break
-
-                        @default
-                            {{-- Ditolak --}}
-                            <span class="label label-danger">{{ $kelolaPrestasi->status_verifikasi }}</span>
-                    @endswitch
-                </span>
+        <tr>
+            <th style="width: 30%">Surat Tugas Prestasi:</th>
+            <td class="text-start">
+                @if($prestasi->surat_tugas_prestasi && file_exists(public_path('storage/img/prestasi/' . $prestasi->surat_tugas_prestasi)))
+                    <a href="{{ asset('storage/img/prestasi/' . $prestasi->surat_tugas_prestasi) }}" target="_blank">
+                        Lihat Surat Tugas
+                    </a>
+                @else
+                    <span class="text-muted">Belum ada surat tugas prestasi</span>
+                @endif
             </td>
         </tr>
+
     </table>
 </div>
 <div class="modal-footer">
@@ -142,6 +117,5 @@
     }
 </style>
 
-{{-- Library Lightbox untuk membesarkan gambar --}}
-<link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>
