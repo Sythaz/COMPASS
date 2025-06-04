@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\UsersModel;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -72,7 +73,6 @@ class AuthController extends Controller
                     'redirect' => $redirectUrl,
                 ]);
             }
-
         }
 
         if ($request->ajax() || $request->wantsJson()) {
@@ -125,5 +125,77 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('login');
+    }
+
+    public function lupaPassword()
+    {
+        return view('password.index'); // Pastikan view ini sesuai
+    }
+
+    public function postlupaPassword(Request $request)
+    {
+        try {
+            // Validasi input
+            $validator = Validator::make($request->all(), [
+                'username' => 'required|string',
+                'phrase' => 'required|string',
+                'passwordBaru' => 'required|string|min:6',
+                'passwordBaru_confirmation' => 'required|string|same:passwordBaru',
+            ], [
+                'username.required' => 'Username wajib diisi.',
+                'phrase.required' => 'Phrase pemulihan wajib diisi.',
+                'passwordBaru.required' => 'Password baru wajib diisi.',
+                'passwordBaru.min' => 'Password minimal 6 karakter.',
+                'passwordBaru_confirmation.required' => 'Konfirmasi password wajib diisi.',
+                'passwordBaru_confirmation.same' => 'Konfirmasi password tidak sesuai.',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal.',
+                    'msgField' => $validator->errors()->toArray()
+                ], 422);
+            }
+
+            // Cari user berdasarkan username
+            $user = UsersModel::where('username', $request->username)->first();
+
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Username tidak ditemukan.',
+                    'msgField' => [
+                        'username' => ['Username tidak ditemukan.']
+                    ]
+                ], 422);
+            }
+
+            // Validasi phrase pemulihan
+            if ($user->phrase !== $request->phrase) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Phrase pemulihan tidak sesuai.',
+                    'msgField' => [
+                        'phrase' => ['Phrase pemulihan tidak sesuai.']
+                    ]
+                ], 422);
+            }
+
+            // Update password
+            $user->password = bcrypt($request->passwordBaru);
+            $user->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Password berhasil diubah. Silakan login dengan password baru.',
+                'redirect' => route('login'),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan server. Silakan coba lagi.',
+            ], 500);
+        }
     }
 }
