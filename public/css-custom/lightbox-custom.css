@@ -1,0 +1,17 @@
+.lightbox .lb-data {
+    top: 0;
+    bottom: auto;
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.lightbox .lb-data .lb-caption {
+    color: #fff;
+    padding: 10px;
+    font-size: 16px;
+    text-align: center;
+}
+
+.lightbox .lb-close {
+    top: 10px;
+    right: 10px;
+}
