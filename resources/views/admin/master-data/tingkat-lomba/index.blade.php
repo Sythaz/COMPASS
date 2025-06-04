@@ -18,21 +18,6 @@
                                 <i class="fa-solid fa-plus"></i>
                                 <strong>Tambah Data</strong>
                             </a>
-                            <a href="javascript:void(0)" class="ml-2 btn btn-primary">
-                                <i class="fa-solid fa-file-import"></i>
-                                <strong> Impor Data</strong>
-                            </a>
-                        </div>
-                        <div class="col-6 text-right">
-                            <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-outline-primary dropdown-toggle"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i
-                                        class="fa-solid fa-file-export"></i> <strong>Menu Ekspor </strong></button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#">Ekspor Data ke XLSX</a>
-                                    <a class="dropdown-item" href="#">Ekspor Data ke PDF</a>
-                                </div>
-                            </div>
                         </div>
                     </div>
                     <div class="table-responsive">
