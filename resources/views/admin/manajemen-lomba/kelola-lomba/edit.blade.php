@@ -337,28 +337,10 @@
         );
     </script>
 
-    {{-- Style untuk Lightbox untuk membesarkan gambar --}}
-    <style>
-        .lightbox .lb-data {
-            top: 0;
-            bottom: auto;
-            background: rgba(0, 0, 0, 0.7);
-        }
-
-        .lightbox .lb-data .lb-caption {
-            color: #fff;
-            padding: 10px;
-            font-size: 16px;
-            text-align: center;
-        }
-
-        .lightbox .lb-close {
-            top: 10px;
-            right: 10px;
-        }
-    </style>
-
     {{-- Library Lightbox untuk membesarkan gambar --}}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>
+    
+    {{-- Memanggil Custom Lightbox --}}
+    <link href="{{ asset('css-custom/lightbox-custom.css') }}" rel="stylesheet">
 @endif
