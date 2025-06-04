@@ -9,128 +9,102 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <table id="tabel-kelola-bimbingan" class="table table-bordered table-striped">
+                    {{-- Tambahkan Tabel DataTables di sini --}}
+                    <table class="table table-bordered" id="prestasiTable" style="width:100%">
                         <thead>
                             <tr>
-                                <th>No</th>
-                                <th>NIM</th>
-                                <th>Nama Mahasiswa</th>
                                 <th>Nama Lomba</th>
-                                <th>Kategori</th>
-                                <th>Semester</th>
-                                <th>Status</th>
+                                <th>Juara</th>
+                                <th>Dosen Pembimbing</th>
+                                <th>Tanggal Prestasi</th>
+                                <th>Status Verifikasi</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
-                        <tbody></tbody>
                     </table>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Modal Bootstrap Kosong untuk AJAX content -->
-    <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content" id="ajaxModalContent">
-                <!-- Konten modal akan di-load via AJAX -->
+                    {{-- Modal untuk menampilkan form --}}
+                    <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="ajaxModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content" id="ajaxModalContent">
+                                {{-- Konten modal akan dimuat lewat Ajax --}}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
     </div>
 @endsection
 
 @push('css')
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <link href="{{ asset('theme/plugins/tables/css/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css-custom/pagination-datatables.css') }}" rel="stylesheet">
 @endpush
 
 @push('js')
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="{{ asset('theme/plugins/tables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('theme/plugins/tables/js/datatable/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
-        $(document).ready(function () {
-            const idDataTables = '#tabel-kelola-bimbingan';
+        function modalAction(url) {
+            console.log('modalAction dipanggil dengan url:', url);
+            $('#ajaxModalContent').html('Loading...'); // beri feedback loading
 
-            const dataTables = $(idDataTables).DataTable({
-                pagingType: "simple_numbers",
-                language: {
-                    lengthMenu: "Tampilkan _MENU_ entri",
-                    paginate: {
-                        first: "Pertama",
-                        previous: "Sebelum",
-                        next: "Lanjut",
-                        last: "Terakhir",
-                    },
-                    search: "Cari:",
-                    info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
-                    emptyTable: "Belum ada mahasiswa bimbingan.",
-                },
-                serverSide: true,
+            $.get(url)
+                .done(function (res) {
+                    console.log('ajax berhasil, isi modal diisi');
+                    $('#ajaxModalContent').html(res);
+                    $('#myModal').modal('show');
+                    console.log('modal di-show');
+                })
+                .fail(function () {
+                    console.log('ajax gagal');
+                    Swal.fire('Gagal', 'Tidak dapat memuat data dari server.', 'error');
+                });
+        }
+
+        $('#myModal').on('hidden.bs.modal', function () {
+            console.log('modal ditutup, konten dibersihkan');
+            $('#ajaxModalContent').html('');
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+        });
+
+        // Inisialisasi DataTables
+        $(function () {
+            $('#prestasiTable').DataTable({
                 processing: true,
-                autoWidth: false,
-                responsive: true,
-                ajax: {
-                    url: "{{ route('dosen.kelola-bimbingan.list') }}",
-                    type: "GET"
-                },
+                serverSide: true,
+                ajax: '{{ route("dosen.kelola-bimbingan.list") }}',
                 columns: [
-                    { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-                    { data: 'nim_mahasiswa', name: 'mahasiswa.nim_mahasiswa' },
-                    { data: 'nama_mahasiswa', name: 'mahasiswa.nama_mahasiswa' },
-                    { data: 'nama_lomba', name: 'lomba.nama_lomba' },
-                    { data: 'nama_kategori', name: 'kategori.nama_kategori' },
-                    { data: 'semester_periode', name: 'periode.semester_periode' },
-                    { data: 'status_verifikasi', name: 'status_verifikasi', className: 'text-center' },
-                    { data: 'aksi', name: 'aksi', orderable: false, searchable: false, className: 'text-center' }
+                    { data: 'nama_lomba', name: 'lomba_id' },
+                    { data: 'juara_prestasi', name: 'juara_prestasi' },
+                    { data: 'dosen_pembimbing', name: 'dosen_id' },
+                    { data: 'tanggal_prestasi', name: 'tanggal_prestasi' },
+                    { data: 'status_verifikasi', name: 'status_verifikasi' },
+                    { data: 'aksi', name: 'aksi', orderable: false, searchable: false },
                 ],
-                scrollX: true,
-                drawCallback: function () {
-                    $(".dataTables_wrapper").css({ margin: "0", padding: "0" });
-                    $(".dataTables_paginate .pagination").addClass("justify-content-end");
-                    $(".dataTables_paginate .paginate_button")
-                        .removeClass("paginate_button")
-                        .addClass("page-item");
-                    $(".dataTables_paginate .paginate_button a")
-                        .addClass("page-link")
-                        .css("border-radius", "5px");
-                    $(".dataTables_paginate .paginate_button.previous a").text("Sebelum");
-                    $(".dataTables_paginate .paginate_button.next a").text("Lanjut");
-                    $(".dataTables_paginate .paginate_button.first a").text("Pertama");
-                    $(".dataTables_paginate .paginate_button.last a").text("Terakhir");
-
-                    $(idDataTables + '_length select').css({
-                        width: "auto", height: "auto", "border-radius": "5px", border: "1px solid #ced4da",
-                    });
-                    $(idDataTables + '_filter input').css({
-                        height: "auto", "border-radius": "5px", border: "1px solid #ced4da",
-                    });
-                    $(idDataTables + '_wrapper .table-bordered').css({
-                        "border-top-left-radius": "5px",
-                        "border-top-right-radius": "5px",
-                    });
-                    $(idDataTables + '_wrapper .dataTables_scrollBody table').css({
-                        "border-top-left-radius": "0px",
-                        "border-top-right-radius": "0px",
-                        "border-bottom-left-radius": "5px",
-                        "border-bottom-right-radius": "5px",
-                    });
-                }
-            });
-
-            window.modalAction = function (url) {
-                $.get(url)
-                    .done(function (res) {
-                        $('#ajaxModalContent').html(res);
-                        $('#myModal').modal('show');
-                    })
-                    .fail(function () {
-                        Swal.fire('Gagal', 'Tidak dapat memuat data dari server.', 'error');
-                    });
-            };
-
-            // Optional reload trigger
-            $(idDataTables).on('change', function () {
-                dataTables.ajax.reload();
             });
         });
+
+        function modalDetailPrestasi(url) {
+            $('#ajaxModalContent').html('Loading...');
+
+            $.get(url)
+                .done(function (res) {
+                    $('#ajaxModalContent').html(res);
+                    $('#myModal').modal('show');
+                })
+                .fail(function () {
+                    Swal.fire('Gagal', 'Tidak dapat memuat data dari server.', 'error');
+                });
+        }
+        $(document).on('click', '.btn-detail-prestasi', function () {
+            var url = $(this).data('url');
+            modalDetailPrestasi(url);
+        });
+
     </script>
 @endpush

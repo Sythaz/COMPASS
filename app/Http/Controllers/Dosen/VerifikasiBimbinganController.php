@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\PrestasiModel;
-use App\Models\DosenModel;
+use Illuminate\Support\Facades\Auth;
+
 
 class VerifikasiBimbinganController extends Controller
 {
@@ -19,68 +20,63 @@ class VerifikasiBimbinganController extends Controller
         return view('dosen.verifikasi-bimbingan.index', compact('breadcrumb'));
     }
 
-    public function list(Request $request)
+    private function getStatusBadge($status_verifikasi)
     {
-        if ($request->ajax()) {
-            // Ambil dosen yang sedang login
-            $dosen = auth()->user()->dosen;
+        $status = strtolower($status_verifikasi ?? '');
 
-            // Cek apakah dosen ditemukan
-            if (!$dosen) {
-                return response()->json(['message' => 'Dosen tidak ditemukan'], 403);
-            }
-
-            // Ambil data prestasi hanya milik mahasiswa yang dibimbing oleh dosen ini, dan statusnya "Menunggu"
-            $data = PrestasiModel::with([
-                'mahasiswa:mahasiswa_id,nim_mahasiswa,nama_mahasiswa',
-                'lomba:lomba_id,nama_lomba',
-                'kategori:kategori_id,nama_kategori',
-                'periode:periode_id,semester_periode'
-            ])
-                ->select('prestasi_id', 'mahasiswa_id', 'lomba_id', 'kategori_id', 'dosen_id', 'periode_id', 'jenis_prestasi', 'tanggal_prestasi', 'juara_prestasi', 'status_verifikasi')
-                ->where('dosen_id', $dosen->dosen_id)
-                ->where('status_verifikasi', 'Menunggu')
-                ->get();
-
-            return DataTables::of($data)
-                ->addIndexColumn()
-                ->addColumn('nim_mahasiswa', fn($row) => $row->mahasiswa?->nim_mahasiswa ?? '-')
-                ->addColumn('nama_mahasiswa', fn($row) => $row->mahasiswa?->nama_mahasiswa ?? '-')
-                ->addColumn('nama_lomba', fn($row) => $row->lomba?->nama_lomba ?? '-')
-                ->addColumn('nama_kategori', fn($row) => $row->kategori?->nama_kategori ?? '-')
-                ->addColumn('semester_periode', fn($row) => $row->periode?->semester_periode ?? '-')
-                ->addColumn('status_verifikasi', function ($row) {
-                    $status = $row->status_verifikasi;
-                    switch ($status) {
-                        case 'Terverifikasi':
-                            $badge = '<span class="label label-success">Terverifikasi</span>';
-                            break;
-                        case 'Valid':
-                            $badge = '<span class="label label-info">Valid</span>';
-                            break;
-                        case 'Menunggu':
-                            $badge = '<span class="label label-warning">Menunggu</span>';
-                            break;
-                        case 'Ditolak':
-                            $badge = '<span class="label label-danger">Ditolak</span>';
-                            break;
-                        default:
-                            $badge = '<span class="label label-secondary">Tidak Diketahui</span>';
-                            break;
-                    }
-                    return $badge;
-                })
-                ->addColumn('aksi', function ($row) {
-                    $btn = '<div class="d-flex justify-content-center">';
-                    $btn .= '<button onclick="modalAction(\'' . route('dosen.kelola-bimbingan.showAjax', $row->prestasi_id) . '\')" class="btn btn-info btn-sm">Detail</button>';
-                    $btn .= '<button onclick="modalAction(\'' . route('dosen.terimaPrestasiAjax', $row->prestasi_id) . '\')" class="btn btn-success btn-sm mx-2">Terima</button>';
-                    $btn .= '<button onclick="modalAction(\'' . route('dosen.tolakPrestasiAjax', $row->prestasi_id) . '\')" class="btn btn-danger btn-sm">Tolak</button>';
-                    return $btn;
-                })
-                ->rawColumns(['status_verifikasi', 'aksi'])
-                ->make(true);
+        switch ($status) {
+            case 'terverifikasi':
+                return '<span class="label label-success">' . e(ucwords($status)) . '</span>';
+            case 'valid':
+                return '<span class="label label-info">' . e(ucwords($status)) . '</span>';
+            case 'menunggu':
+                return '<span class="label label-warning">' . e(ucwords($status)) . '</span>';
+            case 'ditolak':
+                return '<span class="label label-danger">' . e(ucwords($status)) . '</span>';
+            default:
+                return '<span class="label label-default">Tidak Diketahui</span>';
         }
     }
+
+    public function list(Request $request)
+    {
+        // Ambil ID dosen dari user yang login
+        $dosen = Auth::user()->dosen;
+
+        if (!$dosen) {
+            abort(403, 'Akses ditolak. Anda bukan dosen.');
+        }
+
+        $dosenId = $dosen->dosen_id;
+
+        // Ambil semua prestasi yang dibimbing oleh dosen yang login dengan status_verifikasi = 'Menunggu'
+        $data = PrestasiModel::with(['lomba', 'dosen'])
+            ->where('dosen_id', $dosenId)
+            ->where('status_verifikasi', 'Menunggu')   // <-- Filter hanya yang status menunggu
+            ->select('t_prestasi.*');
+
+        return DataTables::of($data)
+            ->addColumn('nama_lomba', function ($row) {
+                return $row->lomba->nama_lomba ?? $row->lomba_lainnya ?? '-';
+            })
+            ->addColumn('dosen_pembimbing', function ($row) {
+                return $row->dosen->nama_dosen ?? '<span class="text-muted">Belum ada</span>';
+            })
+            ->editColumn('status_verifikasi', function ($prestasi) {
+                $status = $prestasi->status_verifikasi ?? 'menunggu';
+                return $this->getStatusBadge($status); // Tetap gunakan method privat di controller
+            })
+            ->addColumn('aksi', function ($row) {
+                $btn = '<div class="d-flex justify-content-center">';
+                $btn .= '<button onclick="modalAction(\'' . route('dosen.kelola-bimbingan.showAjax', $row->prestasi_id) . '\')" class="btn btn-info btn-sm">Detail</button>';
+                $btn .= '<button onclick="modalAction(\'' . route('dosen.terimaPrestasiAjax', $row->prestasi_id) . '\')" class="btn btn-success btn-sm mx-2">Terima</button>';
+                $btn .= '<button onclick="modalAction(\'' . route('dosen.tolakPrestasiAjax', $row->prestasi_id) . '\')" class="btn btn-danger btn-sm">Tolak</button>';
+                return $btn;
+            })
+            ->rawColumns(['dosen_pembimbing', 'status_verifikasi', 'aksi'])
+            ->make(true);
+    }
+
 
     public function terimaPrestasiAjax($id)
     {
