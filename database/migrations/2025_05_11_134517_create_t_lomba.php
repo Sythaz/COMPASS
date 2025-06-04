@@ -21,9 +21,11 @@ return new class extends Migration {
             $table->date('akhir_registrasi_lomba');
             $table->string('link_pendaftaran_lomba', 255);
             $table->string('img_lomba')->nullable();
+            $table->enum('tipe_lomba', ['Individu', 'Tim'])->default('Individu');
+            $table->enum('lokasi_lomba', ['Online', 'Offline Dalam Kota', 'Offline Luar Kota', 'Hybrid']);
+            $table->enum('biaya_lomba', ['Tanpa Biaya', 'Dengan Biaya']);
             $table->enum('status_verifikasi', ['Ditolak', 'Menunggu', 'Terverifikasi']);
             $table->string('alasan_tolak')->nullable();
-            $table->enum('tipe_lomba', ['Individu', 'Tim'])->default('Individu');
             $table->enum('status_lomba', ['Aktif', 'Nonaktif']);
             $table->timestamps();
 

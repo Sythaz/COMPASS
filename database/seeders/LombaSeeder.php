@@ -26,6 +26,9 @@ class LombaSeeder extends Seeder
                 'akhir_registrasi_lomba' => Carbon::parse('2025-06-30'),
                 'link_pendaftaran_lomba' => 'https://contoh-lomba.com/daftar',
                 'img_lomba' => 'webdev2025.png',
+                'tipe_lomba' => 'Individu',
+                'lokasi_lomba' => 'Offline Dalam Kota',
+                'biaya_lomba' => 'Dengan Biaya',
                 'status_verifikasi' => 'Terverifikasi',
                 'status_lomba' => 'Aktif'
             ],
@@ -40,6 +43,9 @@ class LombaSeeder extends Seeder
                 'akhir_registrasi_lomba' => Carbon::parse('2025-06-30'),
                 'link_pendaftaran_lomba' => 'https://contoh-lomba.com/daftar',
                 'img_lomba' => 'IoTChallenge2025.png',
+                'tipe_lomba' => 'Individu',
+                'lokasi_lomba' => 'Offline Dalam Kota',
+                'biaya_lomba' => 'Tanpa Biaya',
                 'status_verifikasi' => 'Menunggu',
                 'status_lomba' => 'Aktif'
             ],
@@ -54,6 +60,9 @@ class LombaSeeder extends Seeder
                 'akhir_registrasi_lomba' => Carbon::parse('2025-06-30'),
                 'link_pendaftaran_lomba' => 'https://contoh-lomba.com/daftar',
                 'img_lomba' => 'WSASEAN2025.png',
+                'tipe_lomba' => 'Individu',
+                'lokasi_lomba' => 'Offline Dalam Kota',
+                'biaya_lomba' => 'Dengan Biaya',
                 'status_verifikasi' => 'Terverifikasi',
                 'status_lomba' => 'Aktif'
             ],
@@ -67,8 +76,10 @@ class LombaSeeder extends Seeder
                 'awal_registrasi_lomba' => Carbon::parse('2025-02-21'),
                 'akhir_registrasi_lomba' => Carbon::parse('2025-06-30'),
                 'link_pendaftaran_lomba' => 'https://contoh-lomba.com/daftar',
-
                 'img_lomba' => 'MobileApp2025.png',
+                'tipe_lomba' => 'Individu',
+                'lokasi_lomba' => 'Offline Dalam Kota',
+                'biaya_lomba' => 'Dengan Biaya',
                 'status_verifikasi' => 'Ditolak',
                 'status_lomba' => 'Aktif'
             ],
@@ -83,6 +94,9 @@ class LombaSeeder extends Seeder
                 'akhir_registrasi_lomba' => Carbon::parse('2025-07-15'),
                 'link_pendaftaran_lomba' => 'https://contoh-lomba.com/daftar',
                 'img_lomba' => 'GameDev2025.png',
+                'tipe_lomba' => 'Individu',
+                'lokasi_lomba' => 'Offline Dalam Kota',
+                'biaya_lomba' => 'Dengan Biaya',
                 'status_verifikasi' => 'Ditolak',
                 'status_lomba' => 'Aktif'
             ]
