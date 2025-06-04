@@ -19,11 +19,12 @@ function customFormValidation(formId, rules, messages, successCallback) {
             rules: rules,
             messages: messages,
             submitHandler: function (form) {
-              var formData = new FormData(form);
+                const validator = $(formId).validate(); // Mendapatkan objek validator
+                var formData = new FormData(form); // Buat objek FormData
+
                 $.ajax({
                     url: form.action,
                     type: form.method,
-                    // data: $(form).serialize(),
                     data: formData,
                     contentType: false,
                     processData: false,
@@ -35,24 +36,94 @@ function customFormValidation(formId, rules, messages, successCallback) {
                     error: function (xhr) {
                         let errorMessage = "Terjadi kesalahan pada server.";
 
+                        // 422 - Validasi gagal
+                        // 422 - Validasi gagal
+                        if (xhr.status === 422 && xhr.responseJSON) {
+                            const response = xhr.responseJSON;
+
+                            if (response.errors) {
+                                const errors = {};
+
+                                console.log(
+                                    "Field dari Laravel:",
+                                    Object.keys(response.errors)
+                                );
+                                console.log(
+                                    "Field dari form:",
+                                    $(formId)
+                                        .find("[name]")
+                                        .map((i, e) => e.name)
+                                        .get()
+                                );
+
+                                $.each(
+                                    response.errors,
+                                    function (field, messages) {
+                                        errors[field] = messages[0];
+                                    }
+                                );
+
+                                validator.showErrors(errors);
+                            }
+
+                            Swal.fire({
+                                icon: "error",
+                                title: "Validasi Gagal",
+                                text:
+                                    response.message ||
+                                    "Beberapa input tidak valid.",
+                            });
+
+                            return;
+                        }
+
+                        // 403 - Akses ditolak
                         if (xhr.status === 403) {
                             if (xhr.responseJSON && xhr.responseJSON.message) {
                                 errorMessage = xhr.responseJSON.message;
                             } else if (xhr.responseText) {
                                 try {
                                     let parsed = JSON.parse(xhr.responseText);
-                                    errorMessage = parsed.message || errorMessage;
-                                } catch (e) {
-                                    // jika gagal parse, tetap gunakan pesan default
-                                }
+                                    errorMessage =
+                                        parsed.message || errorMessage;
+                                } catch (e) {}
                             }
+
+                            Swal.fire({
+                                icon: "error",
+                                title: "Akses Ditolak",
+                                text: errorMessage,
+                            });
+
+                            return;
                         }
 
-                        Swal.fire(
-                            "Error",
-                            errorMessage,
-                            "error"
-                        );
+                        // 404 - URL tidak ditemukan
+                        if (xhr.status === 404) {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Tidak Ditemukan",
+                                text: "Halaman atau endpoint tidak ditemukan (404).",
+                            });
+                            return;
+                        }
+
+                        // 500 - Server Error
+                        if (xhr.status === 500) {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Server Error",
+                                text: "Terjadi kesalahan internal pada server.",
+                            });
+                            return;
+                        }
+
+                        // Error lainya
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: errorMessage,
+                        });
                     },
                 });
                 return false;
@@ -70,5 +141,4 @@ function customFormValidation(formId, rules, messages, successCallback) {
             },
         });
     });
-    
 }
