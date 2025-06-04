@@ -50,6 +50,10 @@ Route::middleware('guest')->group(function () {
     Route::get('register', [AuthController::class, 'register'])->name('register');
     Route::post('login', [AuthController::class, 'postlogin'])->name('login');
     Route::post('register', [AuthController::class, 'postregister']); // Untuk Register jika ada
+
+    // Halaman lupa password
+    Route::get('/lupa-password', [AuthController::class, 'lupaPassword'])->name('lupa-password');
+    Route::post('/lupa-password', [AuthController::class, 'postlupaPassword'])->name('post-lupa-password');
 });
 
 // Route logout hanya untuk yang sudah login
