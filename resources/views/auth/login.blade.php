@@ -52,7 +52,7 @@
                             </div>
 
                             <div class="mb-3">
-                                <a href="" class="text-primary">Lupa password?</a>
+                                <a href="{{ route('lupa-password') }}" class="text-primary">Lupa password?</a>
                             </div>
 
                             <div class="d-grid mb-4">
