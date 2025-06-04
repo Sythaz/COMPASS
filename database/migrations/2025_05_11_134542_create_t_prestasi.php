@@ -16,17 +16,20 @@ return new class extends Migration {
             $table->string('lomba_lainnya')->nullable();
             $table->unsignedBigInteger('dosen_id')->nullable()->index();
             $table->unsignedBigInteger('tingkat_lomba_id')->nullable()->index();
-            $table->unsignedBigInteger('periode_id')->nullable()->index(); // ubah jadi nullable
-            $table->date('tanggal_prestasi')->nullable(); // ubah jadi nullable
-            $table->string('juara_prestasi', 255)->nullable(); // ubah jadi nullable
+            $table->unsignedBigInteger('periode_id')->nullable()->index();
+            $table->date('tanggal_prestasi')->nullable();
+            $table->string('juara_prestasi', 255)->nullable();
             $table->enum('jenis_prestasi', ['Individu', 'Tim'])->nullable()->index();
             $table->string('img_kegiatan')->nullable();
             $table->string('bukti_prestasi')->nullable();
             $table->string('surat_tugas_prestasi')->nullable();
-            $table->enum('status_prestasi', ['Aktif', 'Tidak Aktif'])->nullable(); // ubah jadi nullable
-            $table->enum('status_verifikasi', ['Ditolak', 'Menunggu', 'Valid', 'Terverifikasi'])->nullable(); // ubah jadi nullable
+            $table->enum('status_prestasi', ['Aktif', 'Tidak Aktif'])->nullable()->index()->default('Aktif');
+            $table->enum('status_verifikasi', ['Ditolak', 'Menunggu', 'Valid', 'Terverifikasi'])->nullable()->index()->default('Menunggu');
+            $table->unsignedBigInteger('kategori_id')->nullable()->index();
             $table->timestamps();
 
+            // Relasi
+            $table->foreign('kategori_id')->references('kategori_id')->on('t_kategori')->nullOnDelete();
             $table->foreign('lomba_id')->references('lomba_id')->on('t_lomba')->nullOnDelete();
             $table->foreign('dosen_id')->references('dosen_id')->on('t_dosen')->nullOnDelete();
             $table->foreign('periode_id')->references('periode_id')->on('t_periode')->nullOnDelete();

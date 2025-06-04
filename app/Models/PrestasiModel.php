@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-
 class PrestasiModel extends Model
 {
     use HasFactory;
@@ -19,6 +18,7 @@ class PrestasiModel extends Model
         'lomba_id',
         'lomba_lainnya',
         'dosen_id',
+        'kategori_id',
         'tingkat_lomba_id',
         'periode_id',
         'tanggal_prestasi',
@@ -59,13 +59,21 @@ class PrestasiModel extends Model
         );
     }
 
-    public function kategori(): BelongsToMany
+    public function kategori(): BelongsTo
     {
-        return $this->belongsToMany(
+        return $this->belongsTo(
             KategoriModel::class,
-            't_kategori_prestasi',
-            'prestasi_id',
+            'kategori_id',
             'kategori_id'
+        );
+    }
+
+    public function tingkat_lomba(): BelongsTo
+    {
+        return $this->belongsTo(
+            TingkatLombaModel::class,
+            'tingkat_lomba_id',
+            'tingkat_lomba_id'
         );
     }
 
@@ -77,5 +85,4 @@ class PrestasiModel extends Model
             'periode_id'
         );
     }
-
 }

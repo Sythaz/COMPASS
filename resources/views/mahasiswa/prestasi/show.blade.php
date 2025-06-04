@@ -1,143 +1,121 @@
-{{-- Modal Detail Prestasi --}}
-<div class="modal fade" id="modalDetailPrestasi" tabindex="-1" role="dialog" aria-labelledby="modalDetailPrestasiLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
-        <div class="modal-content">
-
-            <div class="modal-header bg-primary rounded">
-                <h5 class="modal-title text-white" id="modalDetailPrestasiLabel">
-                    <i class="fas fa-trophy mr-2"></i>Detail Prestasi
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-
-            <div class="modal-body">
-                {{-- Nama Lomba --}}
-                <div class="form-group">
-                    <label class="col-form-label font-weight-bold">Nama Lomba</label>
-                    <input type="text" class="form-control"
-                        value="{{ $prestasi->lomba_id === 'lainnya' ? $prestasi->lomba_lainnya : ($prestasi->lomba->nama_lomba ?? '-') }}"
-                        readonly>
-                </div>
-
-                {{-- Dosen Pembimbing --}}
-                <div class="form-group">
-                    <label class="col-form-label font-weight-bold">Dosen Pembimbing</label>
-                    <input type="text" class="form-control"
-                        value="{{ $prestasi->dosen ? $prestasi->dosen->nama_dosen : '-' }}" readonly>
-                </div>
-
-                {{-- Tingkat Lomba --}}
-                <div class="form-group">
-                    <label class="col-form-label font-weight-bold">Tingkat Lomba</label>
-                    <input type="text" class="form-control" value="{{ $prestasi->tingkatLomba->nama_tingkat ?? '-' }}"
-                        readonly>
-                </div>
-
-                {{-- Kategori Lomba --}}
-                <div class="form-group">
-                    <label class="col-form-label font-weight-bold">Kategori Lomba</label>
-                    <input type="text" class="form-control"
-                        value="{{ $prestasi->kategori->pluck('nama_kategori')->implode(', ') ?? '-' }}" readonly>
-                </div>
-
-                {{-- Tipe Prestasi --}}
-                <div class="form-group">
-                    <label class="col-form-label font-weight-bold">Tipe Prestasi</label>
-                    <input type="text" class="form-control" value="{{ ucfirst($prestasi->jenis_prestasi) ?? '-' }}"
-                        readonly>
-                </div>
-
-                {{-- Jumlah Anggota --}}
-                <div class="form-group">
-                    <label class="col-form-label font-weight-bold">Jumlah Anggota</label>
-                    <input type="number" class="form-control" value="{{ $prestasi->anggota->count() ?? 0 }}" readonly>
-                </div>
-
-                {{-- Daftar Anggota --}}
-                <div class="form-group">
-                    <label class="col-form-label font-weight-bold">Anggota Tim</label>
-                    @if($prestasi->anggota->count() > 0)
-                        <ul class="list-group">
-                            @foreach($prestasi->anggota as $anggota)
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    {{ $anggota->nama_mahasiswa }}
-                                    <span
-                                        class="badge badge-primary badge-pill">{{ $anggota->pivot->peran ?? 'Anggota' }}</span>
-                                </li>
-                            @endforeach
-                        </ul>
-                    @else
-                        <p class="text-muted">Tidak ada anggota</p>
-                    @endif
-                </div>
-
-                {{-- Tanggal Prestasi --}}
-                <div class="form-group">
-                    <label class="col-form-label font-weight-bold">Tanggal Prestasi</label>
-                    <input type="date" class="form-control"
-                        value="{{ optional($prestasi->tanggal_prestasi)->format('Y-m-d') }}" readonly>
-                </div>
-
-                {{-- Juara Prestasi --}}
-                <div class="form-group">
-                    <label class="col-form-label font-weight-bold">Juara Prestasi</label>
-                    <input type="text" class="form-control" value="{{ $prestasi->juara_prestasi ?? '-' }}" readonly>
-                </div>
-
-                {{-- Periode --}}
-                <div class="form-group">
-                    <label class="col-form-label font-weight-bold">Periode</label>
-                    <input type="text" class="form-control" value="{{ $prestasi->periode->semester_periode ?? '-' }}"
-                        readonly>
-                </div>
-
-                {{-- Gambar Kegiatan --}}
-                <div class="form-group">
-                    <label class="col-form-label font-weight-bold">Gambar Kegiatan</label>
-                    @if($prestasi->img_kegiatan)
-                        <img src="{{ asset('storage/' . $prestasi->img_kegiatan) }}" alt="Gambar Kegiatan"
-                            class="img-fluid rounded">
-                    @else
-                        <p class="text-muted">Tidak ada gambar</p>
-                    @endif
-                </div>
-
-                {{-- Bukti Prestasi --}}
-                <div class="form-group">
-                    <label class="col-form-label font-weight-bold">Bukti Prestasi</label>
-                    @if($prestasi->bukti_prestasi)
-                        <a href="{{ asset('storage/' . $prestasi->bukti_prestasi) }}" target="_blank"
-                            class="btn btn-sm btn-outline-primary">
-                            <i class="fas fa-file-download mr-1"></i> Lihat Bukti
-                        </a>
-                    @else
-                        <p class="text-muted">Tidak ada bukti</p>
-                    @endif
-                </div>
-
-                {{-- Surat Tugas Prestasi --}}
-                <div class="form-group">
-                    <label class="col-form-label font-weight-bold">Surat Tugas Prestasi</label>
-                    @if($prestasi->surat_tugas_prestasi)
-                        <a href="{{ asset('storage/' . $prestasi->surat_tugas_prestasi) }}" target="_blank"
-                            class="btn btn-sm btn-outline-primary">
-                            <i class="fas fa-file-download mr-1"></i> Lihat Surat Tugas
-                        </a>
-                    @else
-                        <p class="text-muted">Tidak ada surat tugas</p>
-                    @endif
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
-                    <i class="fas fa-times mr-2"></i>Tutup
-                </button>
-            </div>
-
-        </div>
-    </div>
+<div class="modal-header bg-primary rounded">
+    <h5 class="modal-title text-white">Detail Prestasi</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
 </div>
+<div class="modal-body">
+    <table class="table table-bordered">
+        <tr>
+            <th style="width: 30%">Nama Lomba:</th>
+            <td class="text-start">{{ $prestasi->lomba_lainnya ?? 'Lomba tidak tersedia' }}</td>
+        </tr>
+        <tr>
+            <th style="width: 30%">Juara:</th>
+            <td class="text-start">{{ $prestasi->juara_prestasi }}</td>
+        </tr>
+        <tr>
+            <th style="width: 30%">Dosen Pembimbing:</th>
+            <td class="text-start">{{ $prestasi->dosen->nama_dosen ?? 'Tidak tersedia' }}</td>
+        </tr>
+        <tr>
+            <th style="width: 30%">Kategori:</th>
+            <td class="text-start">{{ $prestasi->kategori->nama_kategori ?? 'Tidak tersedia' }}</td>
+        </tr>
+        <tr>
+            <th style="width: 30%">Tingkat Lomba:</th>
+            <td class="text-start">{{ $prestasi->tingkat_lomba->nama_tingkat ?? 'Tidak tersedia' }}</td>
+        </tr>
+        <tr>
+            <th style="width: 30%">Periode:</th>
+            <td class="text-start">{{ $prestasi->periode->semester_periode ?? 'Tidak tersedia' }}</td>
+        </tr>
+        <tr>
+            <th style="width: 30%">Tanggal Prestasi:</th>
+            <td class="text-start">{{ \Carbon\Carbon::parse($prestasi->tanggal_prestasi)->format('d M Y') }}</td>
+        </tr>
+        <tr>
+            <th style="width: 30%">Status Verifikasi:</th>
+            {{-- Style status_verifikasi ada di controller PrestasiController --}}
+            <td class="text-start">{!! $statusBadge !!}</td>
+        </tr>
+        <tr>
+            <th style="width: 30%">Anggota Tim:</th>
+            <td class="text-start">
+                <ul>
+                    @foreach ($prestasi->mahasiswa as $mhs)
+                        <li>{{ $mhs->nama_mahasiswa }} ({{ $mhs->pivot->peran }})</li>
+                    @endforeach
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <th style="width: 30%">Gambar Kegiatan:</th>
+            <td class="text-start">
+                @if($prestasi->img_kegiatan && file_exists(public_path('storage/img/prestasi/' . $prestasi->img_kegiatan)))
+                    <a href="{{ asset('storage/img/prestasi/' . $prestasi->img_kegiatan) }}" data-lightbox="prestasi"
+                        data-title="Gambar Kegiatan">
+                        <img src="{{ asset('storage/img/prestasi/' . $prestasi->img_kegiatan) }}" width="100"
+                            class="d-block mx-auto img-thumbnail" style="cursor: zoom-in;" alt="Gambar Kegiatan" />
+                    </a>
+                @else
+                    <p class="text-center text-muted">Gambar belum diupload</p>
+                @endif
+            </td>
+        </tr>
+        <tr>
+            <th style="width: 30%">Bukti Prestasi:</th>
+            <td class="text-start">
+                @if($prestasi->bukti_prestasi && file_exists(public_path('storage/img/prestasi/' . $prestasi->bukti_prestasi)))
+                    <a href="{{ asset('storage/img/prestasi/' . $prestasi->bukti_prestasi) }}" target="_blank">
+                        Lihat Bukti
+                    </a>
+                @else
+                    <span class="text-muted">Belum ada bukti prestasi</span>
+                @endif
+            </td>
+        </tr>
+
+        <tr>
+            <th style="width: 30%">Surat Tugas Prestasi:</th>
+            <td class="text-start">
+                @if($prestasi->surat_tugas_prestasi && file_exists(public_path('storage/img/prestasi/' . $prestasi->surat_tugas_prestasi)))
+                    <a href="{{ asset('storage/img/prestasi/' . $prestasi->surat_tugas_prestasi) }}" target="_blank">
+                        Lihat Surat Tugas
+                    </a>
+                @else
+                    <span class="text-muted">Belum ada surat tugas prestasi</span>
+                @endif
+            </td>
+        </tr>
+
+    </table>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+        <i class="fas fa-times"></i> Tutup
+    </button>
+</div>
+
+<style>
+    .lightbox .lb-data {
+        top: 0;
+        bottom: auto;
+        background: rgba(0, 0, 0, 0.7);
+    }
+
+    .lightbox .lb-data .lb-caption {
+        color: #fff;
+        padding: 10px;
+        font-size: 16px;
+        text-align: center;
+    }
+
+    .lightbox .lb-close {
+        top: 10px;
+        right: 10px;
+    }
+</style>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>

@@ -97,5 +97,23 @@
                 ],
             });
         });
+
+        function modalDetailPrestasi(url) {
+            $('#ajaxModalContent').html('Loading...');
+
+            $.get(url)
+                .done(function (res) {
+                    $('#ajaxModalContent').html(res);
+                    $('#myModal').modal('show');
+                })
+                .fail(function () {
+                    Swal.fire('Gagal', 'Tidak dapat memuat data dari server.', 'error');
+                });
+        }
+        $(document).on('click', '.btn-detail-prestasi', function () {
+            var url = $(this).data('url');
+            modalDetailPrestasi(url);
+        });
+
     </script>
 @endpush

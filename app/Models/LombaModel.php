@@ -30,7 +30,6 @@ class LombaModel extends Model
         'status_verifikasi',
         'status_lomba',
         'alasan_tolak',
-        'jensi_prestasi',
     ];
 
     public function kategori(): BelongsToMany
