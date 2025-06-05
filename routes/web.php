@@ -240,6 +240,7 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             // Rute Verifikasi Pendaftaran Lomba
             Route::get('pendaftaran-lomba', [VerifikasiPendaftaranController::class, 'index'])->name('verifikasi-pendaftaran.index');
             Route::get('pendaftaran-lomba/list', [VerifikasiPendaftaranController::class, 'list'])->name('verifikasi-pendaftaran.list');
+            Route::get('pendaftaran-lomba/show/{id}', [VerifikasiPendaftaranController::class, 'detail_pendaftaran'])->name('verifikasi-pendaftaran.show');
         });
 
         // MANAJEMEN PRESTASI
