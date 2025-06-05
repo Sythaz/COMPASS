@@ -145,17 +145,17 @@
                         }
                     });
                 } else {
-                    // Clear previous error messages
+                    // Hapus pesan kesalahan sebelumnya
                     $('.error-text').text('');
 
-                    // Display field-specific errors if available
+                    // Tampilkan pesan kesalahan spesifik jika ada
                     if (response.msgField) {
                         $.each(response.msgField, function(prefix, val) {
                             $('#error-' + prefix).text(val[0]);
                         });
                     }
 
-                    // Show general error message
+                    // Tampilkan pesan kesalahan umum
                     Swal.fire({
                         icon: 'error',
                         title: 'Terjadi Kesalahan',

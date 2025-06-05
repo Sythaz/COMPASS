@@ -34,7 +34,6 @@
     <script src="{{ asset('theme/js/settings.js') }}"></script>
     <script src="{{ asset('theme/js/gleek.js') }}"></script>
     <script src="{{ asset('theme/js/styleSwitcher.js') }}"></script>
-    <script src="{{ asset('theme/js/dashboard/dashboard-1.js') }}"></script>
 
     <!-- jQuery -->
     <script src="{{ asset('theme/plugins/jquery/jquery.min.js') }}"></script>
@@ -44,7 +43,6 @@
     <!-- Custom form validation -->
     <script src="{{ asset('js-custom/form-validation.js') }}"></script>
 
-    <script src="./js/dashboard/dashboard-1.js"></script>
     @stack('js')
 </body>
 
