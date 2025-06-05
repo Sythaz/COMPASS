@@ -26,20 +26,21 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="col-form-label font-weight-bold">Kategori</label>
-                        <input type="text" class="form-control" 
-                            value="{{ $lomba->kategori->pluck('nama_kategori')->join(', ') ?: 'Tidak Diketahui' }}" 
+                        <input type="text" class="form-control"
+                            value="{{ $lomba->kategori->pluck('nama_kategori')->join(', ') ?: 'Tidak Diketahui' }}"
                             disabled>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="col-form-label font-weight-bold">Tingkat</label>
-                        <input type="text" class="form-control" value="{{ $lomba->tingkat_lomba->nama_tingkat }}" disabled>
+                        <input type="text" class="form-control" value="{{ $lomba->tingkat_lomba->nama_tingkat }}"
+                            disabled>
                     </div>
                 </div>
             </div>
@@ -51,6 +52,16 @@
                         <input type="text" class="form-control" value="{{ $lomba->penyelenggara_lomba }}" disabled>
                     </div>
                 </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-form-label font-weight-bold">Tipe Lomba</label>
+                        <input type="text" class="form-control" value="{{ $lomba->tipe_lomba }}" disabled>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="col-form-label font-weight-bold">Status</label>
@@ -84,7 +95,8 @@
                     <div class="form-group">
                         <label class="col-form-label font-weight-bold">Awal Registrasi</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" value="{{ $lomba->awal_registrasi_lomba }}" disabled>
+                            <input type="text" class="form-control" value="{{ $lomba->awal_registrasi_lomba }}"
+                                disabled>
                             <div class="input-group-append">
                                 <span class="input-group-text bg-success text-white">
                                     <i class="fas fa-play"></i>
@@ -97,7 +109,8 @@
                     <div class="form-group">
                         <label class="col-form-label font-weight-bold">Akhir Registrasi</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" value="{{ $lomba->akhir_registrasi_lomba }}" disabled>
+                            <input type="text" class="form-control" value="{{ $lomba->akhir_registrasi_lomba }}"
+                                disabled>
                             <div class="input-group-append">
                                 <span class="input-group-text bg-danger text-white">
                                     <i class="fas fa-stop"></i>
@@ -133,21 +146,17 @@
                     <div class="file-preview mb-3">
                         <a href="{{ asset('storage/img/lomba/' . $lomba->img_lomba) }}" data-lightbox="lomba"
                             data-title="Poster Lomba - {{ $lomba->nama_lomba }}">
-                            <img src="{{ asset('storage/img/lomba/' . $lomba->img_lomba) }}" 
-                                 class="img-thumbnail" 
-                                 style="max-width: 300px; cursor: zoom-in;" 
-                                 alt="Poster Lomba" />
+                            <img src="{{ asset('storage/img/lomba/' . $lomba->img_lomba) }}" class="img-thumbnail"
+                                style="max-width: 300px; cursor: zoom-in;" alt="Poster Lomba" />
                         </a>
                     </div>
                     <div class="btn-group">
-                        <a href="{{ asset('storage/img/lomba/' . $lomba->img_lomba) }}" 
-                           target="_blank"
-                           class="btn btn-primary">
+                        <a href="{{ asset('storage/img/lomba/' . $lomba->img_lomba) }}" target="_blank"
+                            class="btn btn-primary">
                             <i class="fas fa-eye mr-2"></i>Lihat Poster
                         </a>
-                        <a href="{{ asset('storage/img/lomba/' . $lomba->img_lomba) }}" 
-                           download
-                           class="btn btn-outline-primary">
+                        <a href="{{ asset('storage/img/lomba/' . $lomba->img_lomba) }}" download
+                            class="btn btn-outline-primary">
                             <i class="fas fa-download mr-2"></i>Unduh
                         </a>
                     </div>
@@ -175,12 +184,12 @@
         border-radius: 8px;
         background-color: #f8f9fa;
     }
-    
+
     .card-header h6 {
         color: #495057;
         font-weight: 600;
     }
-    
+
     .lightbox .lb-data {
         top: 0;
         bottom: auto;
@@ -210,15 +219,15 @@
 
 <script>
     // Animasi saat modal dibuka
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('.card').hide().fadeIn(600);
-        
+
         // Tooltip untuk status
         $('[data-toggle="tooltip"]').tooltip();
     });
-    
+
     // Force hide processing text after any modal operation
-    setInterval(function() {
+    setInterval(function () {
         if ($('.modal').is(':hidden')) {
             $('.processing, [class*="processing"]').hide();
         }

@@ -19,15 +19,17 @@
                     </div>
 
                     {{-- Tambahkan Tabel DataTables di sini --}}
-                    <table class="table table-bordered" id="prestasiTable" style="width:100%">
+                    <table class="w-100 table table-striped table-bordered custom-datatable" id="prestasiTable"
+                        style="width:100%">
                         <thead>
                             <tr>
+                                <th class="text-center">No</th>
                                 <th>Nama Lomba</th>
-                                <th>Juara</th>
+                                <th class="text-center">Juara</th>
                                 <th>Dosen Pembimbing</th>
-                                <th>Tanggal Prestasi</th>
-                                <th>Status Verifikasi</th>
-                                <th>Aksi</th>
+                                <th class="text-center">Tanggal Prestasi</th>
+                                <th class="text-center">Status Verifikasi</th>
+                                <th class="text-center">Aksi</th>
                             </tr>
                         </thead>
                     </table>
@@ -88,12 +90,13 @@
                 serverSide: true,
                 ajax: '{{ route("mhs.prestasi.list") }}',
                 columns: [
+                    { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
                     { data: 'nama_lomba', name: 'lomba_id' },
-                    { data: 'juara_prestasi', name: 'juara_prestasi' },
+                    { data: 'juara_prestasi', name: 'juara_prestasi', class: 'text-center' },
                     { data: 'dosen_pembimbing', name: 'dosen_id' },
-                    { data: 'tanggal_prestasi', name: 'tanggal_prestasi' },
-                    { data: 'status_verifikasi', name: 'status_verifikasi' },
-                    { data: 'aksi', name: 'aksi', orderable: false, searchable: false },
+                    { data: 'tanggal_prestasi', name: 'tanggal_prestasi', class: 'text-center' },
+                    { data: 'status_verifikasi', name: 'status_verifikasi', class: 'text-center' },
+                    { data: 'aksi', name: 'aksi', orderable: false, searchable: false, class: 'text-center' },
                 ],
             });
         });

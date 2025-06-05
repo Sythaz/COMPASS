@@ -6,7 +6,7 @@
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
-    
+
     <div class="modal-body">
         <!-- Informasi Dasar Lomba -->
         <div class="card mb-3">
@@ -17,7 +17,8 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="nama_lomba" class="col-form-label font-weight-bold">Nama Lomba <span class="text-danger">*</span></label>
+                            <label for="nama_lomba" class="col-form-label font-weight-bold">Nama Lomba <span
+                                    class="text-danger">*</span></label>
                             <div class="custom-validation">
                                 <div class="input-group">
                                     <input type="text" class="form-control" name="nama_lomba" required>
@@ -32,7 +33,8 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="penyelenggara_lomba" class="col-form-label font-weight-bold">Penyelenggara Lomba <span class="text-danger">*</span></label>
+                            <label for="penyelenggara_lomba" class="col-form-label font-weight-bold">Penyelenggara Lomba
+                                <span class="text-danger">*</span></label>
                             <div class="custom-validation">
                                 <div class="input-group">
                                     <input type="text" class="form-control" name="penyelenggara_lomba" required>
@@ -48,10 +50,12 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="deskripsi_lomba" class="col-form-label font-weight-bold">Deskripsi Lomba <span class="text-danger">*</span></label>
+                    <label for="deskripsi_lomba" class="col-form-label font-weight-bold">Deskripsi Lomba <span
+                            class="text-danger">*</span></label>
                     <div class="custom-validation">
                         <div class="input-group">
-                            <textarea name="deskripsi_lomba" id="deskripsi_lomba" class="form-control" rows="3" required></textarea>
+                            <textarea name="deskripsi_lomba" id="deskripsi_lomba" class="form-control" rows="3"
+                                required></textarea>
                             <div class="input-group-append align-self-start">
                                 <span class="input-group-text bg-secondary text-white">
                                     <i class="fas fa-align-left"></i>
@@ -64,10 +68,11 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="kategori_id" class="col-form-label font-weight-bold">Kategori Lomba <span class="text-danger">*</span></label>
+                            <label for="kategori_id" class="col-form-label font-weight-bold">Kategori Lomba <span
+                                    class="text-danger">*</span></label>
                             <div class="custom-validation">
-                                <select name="kategori_id[]" id="kategori_id" class="form-control multiselect-dropdown-kategori"
-                                    multiple="multiple" required>
+                                <select name="kategori_id[]" id="kategori_id"
+                                    class="form-control multiselect-dropdown-kategori" multiple="multiple" required>
                                     <option value="">-- Pilih Kategori --</option>
                                     @foreach ($daftarKategori as $kategori)
                                         <option value="{{ $kategori->kategori_id }}">
@@ -76,14 +81,35 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="tingkat_lomba_id" class="col-form-label font-weight-bold">Tingkat Lomba <span class="text-danger">*</span></label>
+
+
+                            <label for="tipe_lomba_id" class="col-form-label font-weight-bold">Tipe Lomba <span
+                                    class="text-danger">*</span></label>
                             <div class="custom-validation">
                                 <div class="input-group">
-                                    <select name="tingkat_lomba_id" id="tingkat_lomba_id" class="form-control" required>
+                                    <select name="tipe_lomba" id="tipe_lomba_id" class="form-control select2" required>
+                                        <option value="">-- Pilih Tipe --</option>
+                                        <option value="Individu">Individu</option>
+                                        <option value="Tim">Tim</option>
+                                    </select>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text bg-warning text-dark">
+                                            <i class="fas fa-layer-group"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="tingkat_lomba_id" class="col-form-label font-weight-bold">Tingkat Lomba <span
+                                    class="text-danger">*</span></label>
+                            <div class="custom-validation">
+                                <div class="input-group">
+                                    <select name="tingkat_lomba_id" id="tingkat_lomba_id" class="form-control select2"
+                                        required>
                                         <option value="">-- Pilih Tingkat --</option>
                                         @foreach ($daftarTingkatLomba as $tingkat_lomba)
                                             <option value="{{ $tingkat_lomba->tingkat_lomba_id }}">
@@ -113,10 +139,12 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="awal_registrasi_lomba" class="col-form-label font-weight-bold">Awal Registrasi Lomba <span class="text-danger">*</span></label>
+                            <label for="awal_registrasi_lomba" class="col-form-label font-weight-bold">Awal Registrasi
+                                Lomba <span class="text-danger">*</span></label>
                             <div class="custom-validation">
                                 <div class="input-group">
-                                    <input type="date" class="form-control" name="awal_registrasi_lomba" id="awal_registrasi_lomba" required>
+                                    <input type="date" class="form-control" name="awal_registrasi_lomba"
+                                        id="awal_registrasi_lomba" required>
                                     <div class="input-group-append">
                                         <span class="input-group-text bg-success text-white">
                                             <i class="fas fa-calendar-plus"></i>
@@ -128,10 +156,12 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="akhir_registrasi_lomba" class="col-form-label font-weight-bold">Akhir Registrasi Lomba <span class="text-danger">*</span></label>
+                            <label for="akhir_registrasi_lomba" class="col-form-label font-weight-bold">Akhir Registrasi
+                                Lomba <span class="text-danger">*</span></label>
                             <div class="custom-validation">
                                 <div class="input-group">
-                                    <input type="date" class="form-control" name="akhir_registrasi_lomba" id="akhir_registrasi_lomba" required>
+                                    <input type="date" class="form-control" name="akhir_registrasi_lomba"
+                                        id="akhir_registrasi_lomba" required>
                                     <div class="input-group-append">
                                         <span class="input-group-text bg-danger text-white">
                                             <i class="fas fa-calendar-times"></i>
@@ -144,10 +174,12 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="link_pendaftaran_lomba" class="col-form-label font-weight-bold">Link Pendaftaran Lomba <span class="text-danger">*</span></label>
+                    <label for="link_pendaftaran_lomba" class="col-form-label font-weight-bold">Link Pendaftaran Lomba
+                        <span class="text-danger">*</span></label>
                     <div class="custom-validation">
                         <div class="input-group">
-                            <input type="text" class="form-control" name="link_pendaftaran_lomba" value="https://" required>
+                            <input type="text" class="form-control" name="link_pendaftaran_lomba" value="https://"
+                                required>
                             <div class="input-group-append">
                                 <span class="input-group-text bg-primary text-white">
                                     <i class="fas fa-link"></i>
@@ -166,7 +198,8 @@
             </div>
             <div class="card-body">
                 <div class="form-group mb-0">
-                    <label for="img_lomba" class="col-form-label font-weight-bold">Gambar Poster Lomba <small>(Maksimal 2MB)</small></label>
+                    <label for="img_lomba" class="col-form-label font-weight-bold">Gambar Poster Lomba <small>(Maksimal
+                            2MB)</small></label>
                     <div class="custom-validation">
                         <div class="input-group mt-1">
                             <div class="custom-file">
@@ -290,6 +323,9 @@
         kategori_id: {
             required: true,
         },
+        tipe_lomba_id: {
+            required: true,
+        },
         tingkat_lomba_id: {
             required: true,
         },
@@ -324,6 +360,9 @@
         },
         kategori_id: {
             required: "Kategori wajib diisi",
+        },
+        tipe_lomba_id: {
+            required: "Tipe Lomba wajib diisi",
         },
         tingkat_lomba_id: {
             required: "Tingkat Lomba wajib diisi",

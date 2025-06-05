@@ -23,9 +23,10 @@ class LombaMahasiswaController extends Controller
     {
         $lomba = LombaModel::where('status_verifikasi', 'Terverifikasi')->get();
         $breadcrumb = (object) [
-        'list' => ['Info Lomba', 'Detail Lomba']];
+            'list' => ['Info Lomba', 'Detail Lomba']
+        ];
 
-        return view('mahasiswa.informasi-lomba.index', compact('lomba','breadcrumb'));
+        return view('mahasiswa.informasi-lomba.index', compact('lomba', 'breadcrumb'));
     }
 
 
@@ -92,6 +93,7 @@ class LombaMahasiswaController extends Controller
         $lomba = LombaModel::with('kategori', 'tingkat_lomba')->findOrFail($id);
         $pengusul = $lomba->pengusul_id;
         $rolePengusul = UsersModel::where('user_id', $pengusul)->first()->role;
+        $tipeLomba = $lomba->tipe_lomba;
 
         $namaPengusul = '';
         switch ($rolePengusul) {
@@ -115,7 +117,7 @@ class LombaMahasiswaController extends Controller
             'list' => ['Info Lomba', 'Detail Lomba']
         ];
 
-        return view('mahasiswa.informasi-lomba.show', compact('lomba', 'namaPengusul', 'breadcrumb', 'badgeStatus'));
+        return view('mahasiswa.informasi-lomba.show', compact('lomba', 'namaPengusul', 'breadcrumb', 'badgeStatus', 'tipeLomba'));
     }
 
     public function form_daftar($id)
@@ -199,6 +201,11 @@ class LombaMahasiswaController extends Controller
 
     public function store_lomba(Request $request)
     {
+        // Normalisasi case tipe_lomba ke kapital awal
+        $request->merge([
+            'tipe_lomba' => ucfirst(strtolower($request->tipe_lomba)),
+        ]);
+
         // Validasi data yang dikirimkan (hapus status_verifikasi)
         $validator = Validator::make($request->all(), [
             'nama_lomba' => 'required',
@@ -210,6 +217,7 @@ class LombaMahasiswaController extends Controller
             'akhir_registrasi_lomba' => 'required|date|after_or_equal:awal_registrasi_lomba',
             'link_pendaftaran_lomba' => 'required|url',
             'img_lomba' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'tipe_lomba' => 'required|in:Individu,Tim',
         ]);
 
         if ($validator->fails()) {
