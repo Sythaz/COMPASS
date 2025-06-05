@@ -44,31 +44,42 @@ class VerifikasiPrestasiController extends Controller
     public function list(Request $request)
     {
         $data = PrestasiModel::with(['lomba', 'dosen', 'mahasiswa'])
-            ->select('t_prestasi.*');
+            ->select('t_prestasi.*')
+            ->where(function ($query) {
+                $query->where('status_verifikasi', 'valid') // tampilkan yang valid
+                    ->orWhere(function ($subQuery) {
+                        $subQuery->where('status_verifikasi', 'menunggu')
+                            ->whereNull('dosen_id'); // tampilkan menunggu jika belum punya dosen
+                    });
+            });
 
         return DataTables::of($data)
+            ->addIndexColumn()
             ->addColumn('nama_lomba', function ($row) {
-                return $row->lomba->nama_lomba ?? $row->lomba_lainnya ?? '-';
+                return optional($row->lomba)->nama_lomba ?? $row->lomba_lainnya ?? '-';
             })
             ->addColumn('dosen_pembimbing', function ($row) {
-                return $row->dosen->nama_dosen ?? '<span class="text-muted">Belum ada</span>';
+                return optional($row->dosen)->nama_dosen ?? '<span class="text-muted">Tidak ada</span>';
             })
             ->addColumn('ketua_mahasiswa', function ($row) {
                 $ketua = $row->mahasiswa->first(function ($m) {
                     return strtolower($m->pivot->peran) === 'ketua';
                 });
-                return $ketua->nama_mahasiswa ?? '<span class="text-muted">Belum ada</span>';
+                return optional($ketua)->nama_mahasiswa ?? '<span class="text-muted">Belum ada</span>';
             })
             ->addColumn('jenis_prestasi', function ($row) {
                 return $row->jenis_prestasi ?? '-';
             })
             ->editColumn('status_verifikasi', function ($prestasi) {
+                // Tetap gunakan status asli (karena query sudah disaring sebelumnya)
                 $status = $prestasi->status_verifikasi ?? 'menunggu';
                 return $this->getStatusBadge($status);
             })
             ->addColumn('aksi', function ($row) {
                 $btn = '<div class="d-flex justify-content-center">';
                 $btn .= '<button onclick="modalAction(\'' . route('verifikasi-prestasi.showAjax', $row->prestasi_id) . '\')" class="btn btn-info btn-sm">Detail</button>';
+                $btn .= '<button onclick="modalAction(\'' . route('verifikasi-prestasi.terimaPrestasiAjax', $row->prestasi_id) . '\')" class="btn btn-success btn-sm mx-2">Terima</button>';
+                $btn .= '<button onclick="modalAction(\'' . route('verifikasi-prestasi.tolakPrestasiAjax', $row->prestasi_id) . '\')" class="btn btn-danger btn-sm">Tolak</button>';
                 $btn .= '</div>';
                 return $btn;
             })

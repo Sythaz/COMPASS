@@ -24,6 +24,7 @@
                     <table class="table table-bordered" id="prestasiTable" style="width:100%">
                         <thead>
                             <tr>
+                                <th style="width: 1px; white-space: nowrap;">No</th>
                                 <th>Mahasiswa</th>
                                 <th>Nama Lomba</th>
                                 <th>Jenis</th>
@@ -60,44 +61,23 @@
     <script src="{{ asset('theme/plugins/tables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('theme/plugins/tables/js/datatable/dataTables.bootstrap4.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script>
-        function modalAction(url) {
-            console.log('modalAction dipanggil dengan url:', url);
-            $('#ajaxModalContent').html('Loading...'); // beri feedback loading
+        var prestasiTable;
 
-            $.get(url)
-                .done(function (res) {
-                    console.log('ajax berhasil, isi modal diisi');
-                    $('#ajaxModalContent').html(res);
-                    $('#myModal').modal('show');
-                    console.log('modal di-show');
-                })
-                .fail(function () {
-                    console.log('ajax gagal');
-                    Swal.fire('Gagal', 'Tidak dapat memuat data dari server.', 'error');
-                });
-        }
-
-        $('#myModal').on('hidden.bs.modal', function () {
-            console.log('modal ditutup, konten dibersihkan');
-            $('#ajaxModalContent').html('');
-            $('body').removeClass('modal-open');
-            $('.modal-backdrop').remove();
-        });
-
-        // Inisialisasi DataTables
         $(function () {
-            $('#prestasiTable').DataTable({
+            prestasiTable = $('#prestasiTable').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
                     url: '{{ route("verifikasi-prestasi.list") }}',
                     type: 'POST',
                     headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'  // Kirim token CSRF
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     }
                 },
                 columns: [
+                    { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
                     { data: 'ketua_mahasiswa', name: 'ketua_mahasiswa' },
                     { data: 'nama_lomba', name: 'lomba_id' },
                     { data: 'jenis_prestasi', name: 'jenis_prestasi' },
@@ -110,9 +90,8 @@
             });
         });
 
-        function modalDetailPrestasi(url) {
+        function modalAction(url) {
             $('#ajaxModalContent').html('Loading...');
-
             $.get(url)
                 .done(function (res) {
                     $('#ajaxModalContent').html(res);
@@ -122,10 +101,35 @@
                     Swal.fire('Gagal', 'Tidak dapat memuat data dari server.', 'error');
                 });
         }
-        $(document).on('click', '.btn-detail-prestasi', function () {
-            var url = $(this).data('url');
-            modalDetailPrestasi(url);
+
+        // Bersihkan modal saat ditutup
+        $('#myModal').on('hidden.bs.modal', function () {
+            $('#ajaxModalContent').html('');
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
         });
 
+        // Submit form verifikasi (terima/tolak) via AJAX
+        $(document).on('submit', '#form-verifikasi', function (e) {
+            e.preventDefault();
+            var $form = $(this);
+            var url = $form.attr('action');
+            var method = $form.find('input[name="_method"]').val() || $form.attr('method');
+            var data = $form.serialize();
+
+            $.ajax({
+                url: url,
+                type: method,
+                data: data,
+                success: function (response) {
+                    $('#myModal').modal('hide');
+                    Swal.fire('Berhasil', 'Verifikasi prestasi berhasil.', 'success');
+                    prestasiTable.ajax.reload(null, false); // reload data tanpa reset paging
+                },
+                error: function (xhr) {
+                    Swal.fire('Gagal', 'Terjadi kesalahan saat verifikasi.', 'error');
+                }
+            });
+        });
     </script>
 @endpush

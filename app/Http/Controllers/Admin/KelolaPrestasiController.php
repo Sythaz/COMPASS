@@ -48,6 +48,7 @@ class KelolaPrestasiController extends Controller
             ->select('t_prestasi.*');
 
         return DataTables::of($data)
+            ->addIndexColumn()
             ->addColumn('nama_lomba', function ($row) {
                 return $row->lomba->nama_lomba ?? $row->lomba_lainnya ?? '-';
             })

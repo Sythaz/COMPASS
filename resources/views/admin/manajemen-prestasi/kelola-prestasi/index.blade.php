@@ -24,6 +24,7 @@
                     <table class="table table-bordered" id="prestasiTable" style="width:100%">
                         <thead>
                             <tr>
+                                <th style="width: 1px; white-space: nowrap;">No</th>
                                 <th>Mahasiswa</th>
                                 <th>Nama Lomba</th>
                                 <th>Jenis</th>
@@ -98,6 +99,7 @@
                     }
                 },
                 columns: [
+                    { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
                     { data: 'ketua_mahasiswa', name: 'ketua_mahasiswa' },
                     { data: 'nama_lomba', name: 'lomba_id' },
                     { data: 'jenis_prestasi', name: 'jenis_prestasi' },

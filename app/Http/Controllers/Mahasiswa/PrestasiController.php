@@ -116,7 +116,7 @@ class PrestasiController extends Controller
         $validated = $request->validate([
             'lomba_id' => 'nullable|required_without:lomba_lainnya|exists:t_lomba,lomba_id',
             'lomba_lainnya' => 'nullable|required_without:lomba_id|string|max:255',
-            'dosen_id' => 'required|exists:t_dosen,dosen_id',
+            'dosen_id' => 'nullable|exists:t_dosen,dosen_id',
             'kategori_id' => 'required|exists:t_kategori,kategori_id',
             'periode_id' => 'required|exists:t_periode,periode_id',
             'tanggal_prestasi' => 'required|date',

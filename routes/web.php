@@ -259,8 +259,8 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::get('verifikasi-prestasi', [VerifikasiPrestasiController::class, 'index'])->name('verifikasi-prestasi.index');
             Route::post('verifikasi-prestasi/list', [VerifikasiPrestasiController::class, 'list'])->name('verifikasi-prestasi.list');
             Route::get('verifikasi-prestasi/{id}/show_ajax', [VerifikasiPrestasiController::class, 'showAjax'])->name('verifikasi-prestasi.showAjax');
-            Route::get('verifikasi-prestasi/{id}/terima_prestasi_ajax', [VerifikasiPrestasiController::class, 'terimaPrestasiAjax']);
-            Route::get('verifikasi-prestasi/{id}/tolak_prestasi_ajax', [VerifikasiPrestasiController::class, 'tolakPrestasiAjax']);
+            Route::get('verifikasi-prestasi/{id}/terima_prestasi_ajax', [VerifikasiPrestasiController::class, 'terimaPrestasiAjax'])->name('verifikasi-prestasi.terimaPrestasiAjax');
+            Route::get('verifikasi-prestasi/{id}/tolak_prestasi_ajax', [VerifikasiPrestasiController::class, 'tolakPrestasiAjax'])->name('verifikasi-prestasi.tolakPrestasiAjax');
             Route::put('verifikasi-prestasi/verifikasi/{id}', [VerifikasiPrestasiController::class, 'terimaPrestasi'])->name('verifikasi-prestasi.terimaPrestasi');
             Route::put('verifikasi-prestasi/tolak/{id}', [VerifikasiPrestasiController::class, 'tolakPrestasi'])->name('verifikasi-prestasi.tolakPrestasi');
             Route::delete('verifikasi-prestasi/{id}', [VerifikasiPrestasiController::class, 'destroy'])->name('verifikasi-prestasi.destroy');

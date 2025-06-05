@@ -31,7 +31,6 @@ class KelolaLombaController extends Controller
     public function list(Request $request)
     {
         // Mengambil data dari database
-        // $dataKelolaLomba = LombaModel::select(['lomba_id', 'nama_lomba', 't_kategori.nama_kategori as kategori', 't_tingkat_lomba.nama_tingkat as tingkat_lomba', 'awal_registrasi_lomba', 'akhir_registrasi_lomba', 'status_verifikasi'])->join('t_kategori', 't_lomba.kategori_id', '=', 't_kategori.kategori_id')->join('t_tingkat_lomba', 't_lomba.tingkat_lomba_id', '=', 't_tingkat_lomba.tingkat_lomba_id')->get();
         $dataKelolaLomba = LombaModel::with(['kategori', 'tingkat_lomba'])
             ->select([
                 'lomba_id',
