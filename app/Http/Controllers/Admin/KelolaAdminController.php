@@ -29,9 +29,14 @@ class KelolaAdminController extends Controller
 
     public function list(Request $request)
     {
+        $currentAdminId = auth()->user()->admin->admin_id ?? null; // Mendapatkan ID admin yang sedang login
+
         $data = AdminModel::with('users')
             ->select('admin_id', 'user_id', 'nip_admin', 'nama_admin', 'email', 'status')
             ->where('status', 'Aktif') // Hanya menampilkan admin Aktif
+            ->when($currentAdminId, function ($query, $currentAdminId) {
+                return $query->where('admin_id', '!=', $currentAdminId);
+            }) // Kecuali admin yang sedang login
             ->get();
 
         return DataTables::of($data)
