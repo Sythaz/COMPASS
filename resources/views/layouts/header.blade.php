@@ -88,7 +88,8 @@
                         <a href="javascript:void(0)" class="dropdown-toggle icon-dropdown-none" data-toggle="dropdown">
                             <i class="mdi mdi-bell-outline"></i>
                             @if ($jumlahBelumDibaca > 0)
-                                <span id="header-notif-count" class="badge gradient-1 badge-pill badge-primary">{{ $jumlahBelumDibaca }}</span>
+                                <span id="header-notif-count"
+                                    class="badge gradient-1 badge-pill badge-primary">{{ $jumlahBelumDibaca }}</span>
                             @endif
                         </a>
                         <div class="drop-down animated dropdown-menu tinggi-notifikasi">
@@ -97,7 +98,8 @@
                                 <div>
                                     <a class="mr-3 font-weight-semi-bold text-muted" href="javascript:void(0)"
                                         id="btn-baca-semua">
-                                        <i class="fa-solid fa-check-double" style="font-size: 1rem"></i> Tandai Semua Dibaca
+                                        <i class="fa-solid fa-check-double" style="font-size: 1rem"></i> Tandai Semua
+                                        Dibaca
                                     </a>
                                     <a class="font-weight-semi-bold text-muted" href="{{ route('notifikasi.index') }}">
                                         <i class="fa-solid fa-envelope-open-text" style="font-size: 1rem"></i> Lihat
@@ -218,22 +220,18 @@
                                 <ul>
                                     <li>
                                         @if (Auth::user()->role === 'Admin')
-                                            <a href="{{ route('admin.profile.index') }}"><i class="icon-user"></i><span>Profile</span></a>
+                                            <a href="{{ route('admin.profile.index') }}"><i
+                                                    class="icon-user"></i><span>Profile</span></a>
                                         @elseif (Auth::user()->role === 'Dosen')
-                                            <a href="{{ route('dosen.profile.index') }}"><i class="icon-user"></i><span>Profile</span></a>
+                                            <a href="{{ route('dosen.profile.index') }}"><i
+                                                    class="icon-user"></i><span>Profile</span></a>
                                         @elseif (Auth::user()->role === 'Mahasiswa')
-                                            <a href="{{ route('mahasiswa.profile.index') }}"><i class="icon-user"></i><span>Profile</span></a>
+                                            <a href="{{ route('mahasiswa.profile.index') }}"><i
+                                                    class="icon-user"></i><span>Profile</span></a>
                                         @else
                                             <a href="#"><i class="icon-user"></i><span>Profile</span></a>
                                         @endif
                                     </li>
-                                    <li>
-                                        <a href="{{ url('email-inbox.html') }}"><i class="icon-envelope-open"></i>
-                                            <span>Inbox</span>
-                                            <div class="badge gradient-1 badge-pill badge-primary">3</div>
-                                        </a>
-                                    </li>
-
                                     <hr class="my-2">
                                     <li>
                                         <a href="{{ route('logout') }}" class="dropdown-item-logout"><i

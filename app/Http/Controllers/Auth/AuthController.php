@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\UsersModel;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -183,7 +184,7 @@ class AuthController extends Controller
             }
 
             // Update password
-            $user->password = bcrypt($request->passwordBaru);
+            $user->password = Hash::make($request->passwordBaru);
             $user->save();
 
             return response()->json([
