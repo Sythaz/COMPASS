@@ -32,6 +32,7 @@ use App\Http\Controllers\Mahasiswa\InputPrestasiController;
 use App\Http\Controllers\Mahasiswa\LombaMahasiswaController;
 use App\Http\Controllers\Mahasiswa\PrestasiController;
 use App\Http\Controllers\NotifikasiController;
+use App\Http\Controllers\PrometheeRekomendasiController;
 
 // Validasi global parameter {id} agar hanya angka
 Route::pattern('id', '[0-9]+');
