@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\DataLombaController;
+use App\Http\Controllers\PrometheeRekomendasiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,3 +21,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/data-lomba/{id}', [DataLombaController::class, 'dataLomba'])->name('data-lomba');
+
+Route::post('/rekomendasi', [PrometheeRekomendasiController::class, 'calculate']);
+Route::get('/rekomendasi/test', function () {
+    $controller = new PrometheeRekomendasiController();
+    return $controller->calculateTest();
+});
