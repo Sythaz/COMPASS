@@ -78,6 +78,8 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::get('/', [ProfileAdminController::class, 'index'])->name('admin.profile.index');
             Route::get('/edit/{id}', [ProfileAdminController::class, 'edit'])->name('admin.profile.edit');
             Route::put('/update', [ProfileAdminController::class, 'update'])->name('admin.profile.update');
+            Route::post('/cek-username', [ProfileAdminController::class, 'cekUsername'])->name('admin.profile.cek-username');
+            Route::post('/ubah-password', [ProfileAdminController::class, 'changePassword'])->name('ubah-password');
         });
 
         // KELOLA USER (ADMIN)

@@ -75,13 +75,13 @@ class UsersModel extends Authenticatable
 
         // Ambil data img dari database sesuai role
         switch ($this->role) {
-            case 'admin':
+            case 'admin' || 'Admin':
                 $img = AdminModel::find($this->user_id)->img_admin;
                 break;
-            case 'dosen':
+            case 'dosen' || 'Dosen':
                 $img = DosenModel::find($this->user_id)->img_dosen;
                 break;
-            case 'mahasiswa':
+            case 'mahasiswa' || 'Mahasiswa':
                 $img = MahasiswaModel::find($this->user_id)->img_mahasiswa;
                 break;
             default:
