@@ -277,10 +277,12 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
         Route::get('/Dosen', [DashboardDosenController::class, 'index'])->name('dosen.dashboard');
 
         // Profil Dosen
-        Route::prefix('dosen/profile-')->group(function () {
+        Route::prefix('dosen/profile-dosen')->group(function () {
             Route::get('/', [ProfileDosenController::class, 'index'])->name('dosen.profile.index');
             Route::get('/edit/{id}', [ProfileDosenController::class, 'edit'])->name('dosen.profile.edit');
             Route::put('/update', [ProfileDosenController::class, 'update'])->name('dosen.profile.update');
+            Route::post('/cek-username', [ProfileDosenController::class, 'cekUsername'])->name('dosen.profile.cek-username');
+            Route::post('/ubah-password', [ProfileDosenController::class, 'changePassword'])->name('ubah-password');
         });
 
         // Halaman Kelola Bimbingan (Menampilkan Riwayat Prestasi mahasiswa sesuai Mahasiswa yang Di Bimbing)

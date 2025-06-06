@@ -92,13 +92,6 @@
                     </a>
                 </li>
 
-                {{-- Profil Dosen --}}
-                <li>
-                    <a href="{{ route('dosen.profile.index') }}">
-                        <i class="fas fa-user-cog"></i><span class="nav-text">Profile Dosen</span>
-                    </a>
-                </li>
-
                 <li class="nav-label mt-2">Manajemen Data</li>
                 {{-- Manajemen Mahasiswa Bimbingan --}}
                 <li>

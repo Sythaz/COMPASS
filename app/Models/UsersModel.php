@@ -70,25 +70,24 @@ class UsersModel extends Authenticatable
     }
 
     public function getProfile(): string
-    {
-        $img = '';
+{
+    $img = 'default-profile.png';
 
-        // Ambil data img dari database sesuai role
-        switch ($this->role) {
-            case 'admin' || 'Admin':
-                $img = AdminModel::find($this->user_id)->img_admin;
-                break;
-            case 'dosen' || 'Dosen':
-                $img = DosenModel::find($this->user_id)->img_dosen;
-                break;
-            case 'mahasiswa' || 'Mahasiswa':
-                $img = MahasiswaModel::find($this->user_id)->img_mahasiswa;
-                break;
-            default:
-                $img = 'default-profile.png';
-        }
-        return $img;
+    switch (strtolower($this->role)) {
+        case 'admin':
+            $img = AdminModel::where('user_id', $this->user_id)->first()?->img_admin ?? $img;
+            break;
+        case 'dosen':
+            $img = DosenModel::where('user_id', $this->user_id)->first()?->img_dosen ?? $img;
+            break;
+        case 'mahasiswa':
+            $img = MahasiswaModel::where('user_id', $this->user_id)->first()?->img_mahasiswa ?? $img;
+            break;
     }
+
+    return $img;
+}
+
 
     /**
      * Mendapatkan nama role pengguna
