@@ -29,6 +29,7 @@ class PrestasiModel extends Model
         'surat_tugas_prestasi',
         'status_prestasi',
         'status_verifikasi',
+        'alasan_tolak',
     ];
 
     public function mahasiswa(): BelongsToMany

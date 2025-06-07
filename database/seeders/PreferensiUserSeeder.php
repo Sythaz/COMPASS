@@ -17,77 +17,55 @@ class PreferensiUserSeeder extends Seeder
         DB::table('t_preferensi_user')->truncate();
 
         // Contoh preferensi untuk user_id = 1
-        $userId = 1;
+        $mahasiswaId = 1;
+        $userId = 88;
 
-        // Preferensi bidang
-        $this->createPreferensi($userId, 'bidang', 'Data Science', 1);
-        $this->createPreferensi($userId, 'bidang', 'UI/UX', 2);
-        $this->createPreferensi($userId, 'bidang', 'Software Development', 3);
-
-        // Preferensi tingkat
-        $this->createPreferensi($userId, 'tingkat', 'Nasional', 1);
-        $this->createPreferensi($userId, 'tingkat', 'Internasional', 2);
-        $this->createPreferensi($userId, 'tingkat', 'Regional', 3);
-
-        // Preferensi penyelenggara
-        $this->createPreferensi($userId, 'penyelenggara', 'Institusi', 1);
-        $this->createPreferensi($userId, 'penyelenggara', 'Kampus', 2);
-        $this->createPreferensi($userId, 'penyelenggara', 'Komunitas', 3);
-
-        // Preferensi deadline
-        $this->createPreferensi($userId, 'deadline', '≥30 hari', 1);
-        $this->createPreferensi($userId, 'deadline', '29 - 23 hari', 2);
-        $this->createPreferensi($userId, 'deadline', '22 - 16 hari', 3);
-
-        // Preferensi lokasi
-        $this->createPreferensi($userId, 'lokasi', 'Online', 1);
-        $this->createPreferensi($userId, 'lokasi', 'Hybrid', 2);
-        $this->createPreferensi($userId, 'lokasi', 'Offline dalam kota', 3);
-
-        // Preferensi biaya
-        $this->createPreferensi($userId, 'biaya', 'Tanpa biaya', 1);
-        $this->createPreferensi($userId, 'biaya', 'Dengan Biaya', 2);
-
-        // Contoh preferensi untuk user_id = 2 (dengan prioritas berbeda)
-        $userId = 2;
-
-        // Preferensi bidang
-        $this->createPreferensi($userId, 'bidang', 'UI/UX', 1);
-        $this->createPreferensi($userId, 'bidang', 'Game Dev', 2);
-        $this->createPreferensi($userId, 'bidang', 'Software Development', 3);
+        // Preferensi bidang (Maksimal 5 preferensi bidang)
+        $this->createPreferensi($userId, $mahasiswaId, 'bidang', 'Web Development', 1);
+        $this->createPreferensi($userId, $mahasiswaId, 'bidang', 'Mobile App Development', 2);
+        $this->createPreferensi($userId, $mahasiswaId, 'bidang', 'Cybersecurity', 3);
+        $this->createPreferensi($userId, $mahasiswaId, 'bidang', 'Data Science', 4);
+        $this->createPreferensi($userId, $mahasiswaId, 'bidang', 'Internet of Things', 5);
 
         // Preferensi tingkat
-        $this->createPreferensi($userId, 'tingkat', 'Internasional', 1);
-        $this->createPreferensi($userId, 'tingkat', 'Nasional', 2);
-        $this->createPreferensi($userId, 'tingkat', 'Regional', 3);
+        $this->createPreferensi($userId, $mahasiswaId, 'tingkat', 'Internasional', 1);
+        $this->createPreferensi($userId, $mahasiswaId, 'tingkat', 'Nasional', 2);
+        $this->createPreferensi($userId, $mahasiswaId, 'tingkat', 'Provinsi', 3);
+        $this->createPreferensi($userId, $mahasiswaId, 'tingkat', 'Kabupaten', 4);
+        $this->createPreferensi($userId, $mahasiswaId, 'tingkat', 'Kota', 5);
+        $this->createPreferensi($userId, $mahasiswaId, 'tingkat', 'Universitas', 6);
 
         // Preferensi penyelenggara
-        $this->createPreferensi($userId, 'penyelenggara', 'Kampus', 1);
-        $this->createPreferensi($userId, 'penyelenggara', 'Institusi', 2);
-        $this->createPreferensi($userId, 'penyelenggara', 'Komunitas', 3);
+        $this->createPreferensi($userId, $mahasiswaId, 'penyelenggara', 'Institusi', 1);
+        $this->createPreferensi($userId, $mahasiswaId, 'penyelenggara', 'Kampus', 2);
+        $this->createPreferensi($userId, $mahasiswaId, 'penyelenggara', 'Komunitas', 3);
 
-        // Preferensi deadline
-        $this->createPreferensi($userId, 'deadline', '29 - 23 hari', 1);
-        $this->createPreferensi($userId, 'deadline', '≥30 hari', 2);
-        $this->createPreferensi($userId, 'deadline', '22 - 16 hari', 3);
+        // Preferensi deadline (Tidak usah karena deadline adalah preferensi tetap)
+        // $this->createPreferensi($userId, $mahasiswaId, 'deadline', '≥30 hari', 1);
+        // $this->createPreferensi($userId, $mahasiswaId, 'deadline', '29-23 hari', 2);
+        // $this->createPreferensi($userId, $mahasiswaId, 'deadline', '22-16 hari', 3);
+        // $this->createPreferensi($userId, $mahasiswaId, 'deadline', '15-9 hari', 4);
+        // $this->createPreferensi($userId, $mahasiswaId, 'deadline', '≤8 hari', 5);
 
         // Preferensi lokasi
-        $this->createPreferensi($userId, 'lokasi', 'Offline dalam kota', 1);
-        $this->createPreferensi($userId, 'lokasi', 'Online', 2);
-        $this->createPreferensi($userId, 'lokasi', 'Hybrid', 3);
+        $this->createPreferensi($userId, $mahasiswaId, 'lokasi', 'Offline Dalam Kota', 1);
+        $this->createPreferensi($userId, $mahasiswaId, 'lokasi', 'Online', 2);
+        $this->createPreferensi($userId, $mahasiswaId, 'lokasi', 'Hybrid', 3);
+        $this->createPreferensi($userId, $mahasiswaId, 'lokasi', 'Offline Luar Kota', 4);
 
         // Preferensi biaya
-        $this->createPreferensi($userId, 'biaya', 'Tanpa biaya', 1);
-        $this->createPreferensi($userId, 'biaya', 'Dengan Biaya', 2);
+        $this->createPreferensi($userId, $mahasiswaId, 'biaya', 'Tanpa biaya', 1);
+        $this->createPreferensi($userId, $mahasiswaId, 'biaya', 'Dengan Biaya', 2);
     }
 
     /**
      * Membuat preferensi user
      */
-    private function createPreferensi($userId, $kriteria, $nilai, $prioritas)
+    private function createPreferensi($userId, $mahasiswaId, $kriteria, $nilai, $prioritas)
     {
         PreferensiUserModel::create([
             'user_id' => $userId,
+            'mahasiswa_id' => $mahasiswaId,
             'kriteria' => $kriteria,
             'nilai' => $nilai,
             'prioritas' => $prioritas

@@ -26,6 +26,7 @@ return new class extends Migration {
             $table->enum('status_prestasi', ['Aktif', 'Tidak Aktif'])->nullable()->index()->default('Aktif');
             $table->enum('status_verifikasi', ['Ditolak', 'Menunggu', 'Valid', 'Terverifikasi'])->nullable()->index()->default('Menunggu');
             $table->unsignedBigInteger('kategori_id')->nullable()->index();
+            $table->string('alasan_tolak')->nullable();
             $table->timestamps();
 
             // Relasi
