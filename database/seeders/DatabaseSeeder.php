@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             RekomPesertaLombaSeeder::class, // 15
             LaporanPrestasiSeeder::class,   // 16
             NotifikasiSeeder::class,        // 17
+            PreferensiUserSeeder::class,    // 18
         ]);
     }
 }
