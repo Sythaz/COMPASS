@@ -25,7 +25,7 @@ class PrometheeRekomendasiController extends Controller
             ->get();
 
         // Ambil semua preferensi user yang sedang login
-        $preferensiAll = PreferensiUserModel::where('user_id', 88)
+        $preferensiAll = PreferensiUserModel::where('user_id', auth()->id())
             ->orderBy('prioritas')
             ->get();
 
@@ -67,6 +67,115 @@ class PrometheeRekomendasiController extends Controller
                     $this->getBiayaScore($lomba, $preferensiBiaya, $totalCountBiaya),
                 ],
             ];
+        }
+    }
+
+    public function laporan()
+    {
+        $breadcrumb = (object) [
+            'list' => ['Manajemen Lomba', 'Laporan Promethee']
+        ];
+
+        // Validasi, jika user belum memiliki preferensi, kirim ke dashboard
+        if (PreferensiUserModel::where('user_id', auth()->id())->doesntExist()) {
+            return redirect()->route('mahasiswa.profile.index');
+        }
+
+        try {
+            // Hitung semua data yang diperlukan
+            $preferenceIndices = $this->calculatePreferenceIndices();
+            [$leavingFlow, $enteringFlow] = $this->calculateOutrankingFlows($preferenceIndices);
+            $results = $this->calculateNetFlowAndRank($leavingFlow, $enteringFlow);
+
+            // Siapkan data kriteria dengan informasi lengkap
+            $criteriaData = [];
+            foreach ($this->criteria as $index => $criterion) {
+                $criteriaData[] = [
+                    'id' => $criterion['id'],
+                    'name' => $criterion['name'],
+                    'type' => $criterion['type'],
+                    'weight' => $criterion['weight']
+                ];
+            }
+
+            // Siapkan data nilai keputusan (matriks keputusan)
+            $decisionMatrix = [];
+            foreach ($this->alternatif as $alternative) {
+                $row = [
+                    'id' => $alternative['id'],
+                    'name' => $alternative['name'],
+                    'values' => []
+                ];
+
+                for ($i = 0; $i < count($alternative['values']); $i++) {
+                    $row['values'][$this->criteria[$i]['id']] = $alternative['values'][$i];
+                }
+
+                $decisionMatrix[] = $row;
+            }
+
+            // Siapkan data perhitungan preferensi antar alternatif (untuk setiap kriteria)
+            $criteriaPreferences = [];
+            $n = count($this->alternatif);
+
+            foreach ($this->criteria as $criteriaIndex => $criterion) {
+                $criteriaPreferences[$criterion['id']] = [];
+
+                for ($i = 0; $i < $n; $i++) {
+                    $a = $this->alternatif[$i];
+
+                    for ($j = 0; $j < $n; $j++) {
+                        $b = $this->alternatif[$j];
+
+                        if ($i === $j) {
+                            $preference = 0;
+                        } else {
+                            $valA = $a['values'][$criteriaIndex];
+                            $valB = $b['values'][$criteriaIndex];
+
+                            $difference = $valA - $valB;
+
+                            if ($criterion['type'] === 'cost') {
+                                $difference = -$difference;
+                            }
+
+                            $preference = $this->calculateSinglePreference($difference, $criterion['preference_function']);
+                        }
+
+                        $criteriaPreferences[$criterion['id']][$a['id']][$b['id']] = $preference;
+                    }
+                }
+            }
+
+            // Siapkan data indeks preferensi multikriteria (Q matrix - weighted preferences)
+            $weightedPreferences = [];
+            foreach ($this->criteria as $criteriaIndex => $criterion) {
+                $weightedPreferences[$criterion['id']] = [];
+
+                foreach ($criteriaPreferences[$criterion['id']] as $aId => $preferences) {
+                    foreach ($preferences as $bId => $preference) {
+                        $weightedPreferences[$criterion['id']][$aId][$bId] = $preference * $criterion['weight'];
+                    }
+                }
+            }
+
+            // Siapkan data untuk view
+            $data = [
+                'criteria' => $criteriaData,
+                'alternatif' => $this->alternatif,
+                'decision_matrix' => $decisionMatrix,
+                'criteria_preferences' => $criteriaPreferences,
+                'weighted_preferences' => $weightedPreferences,
+                'preference_indices' => $preferenceIndices,
+                'leaving_flow' => $leavingFlow,
+                'entering_flow' => $enteringFlow,
+                'results' => $results,
+                'weights' => $this->getWeights()
+            ];
+
+            return view('admin.manajemen-lomba.kelola-lomba.laporan', compact('breadcrumb', 'data'));
+        } catch (\Exception $e) {
+            return back()->with('error', 'Terjadi kesalahan saat menghitung laporan: ' . $e->getMessage());
         }
     }
 
@@ -208,7 +317,7 @@ class PrometheeRekomendasiController extends Controller
             'id' => 'C5',
             'name' => 'Lokasi',
             'type' => 'cost',
-            'weight' => 0.20,
+            'weight' => 0.30,
             'dynamic_group' => 'lokasi',
             'preference_function' => 'usual'
         ],
@@ -216,7 +325,7 @@ class PrometheeRekomendasiController extends Controller
             'id' => 'C6',
             'name' => 'Biaya',
             'type' => 'benefit',
-            'weight' => 0.20,
+            'weight' => 0.10,
             'dynamic_group' => 'biaya',
             'preference_function' => 'usual'
         ]

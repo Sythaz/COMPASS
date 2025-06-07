@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\MahasiswaModel;
 use App\Models\ProdiModel;
 use App\Models\PeriodeModel;
+use App\Models\PreferensiUserModel;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -25,6 +26,12 @@ class ProfileMahasiswaController extends Controller
             'title' => 'Profil Saya'
         ];
 
+
+        $preferensi = true;
+        if (PreferensiUserModel::where('user_id', auth()->id())->doesntExist()) {
+            $preferensi = false;
+        }
+
         $activeMenu = 'profil';
 
         $mahasiswa = MahasiswaModel::with('users', 'prodi', 'periode')
@@ -34,7 +41,7 @@ class ProfileMahasiswaController extends Controller
         $prodi   = ProdiModel::all();
         $periode = PeriodeModel::all();
 
-        return view('mahasiswa.profile-mahasiswa.index', compact('breadcrumb', 'page', 'activeMenu', 'mahasiswa', 'prodi', 'periode'));
+        return view('mahasiswa.profile-mahasiswa.index', compact('breadcrumb', 'preferensi','page', 'activeMenu', 'mahasiswa', 'prodi', 'periode'));
     }
 
     public function show($id)
@@ -89,7 +96,7 @@ class ProfileMahasiswaController extends Controller
                 $mahasiswa->email          = $request->email;
                 $mahasiswa->no_hp          = $request->no_hp;
                 $mahasiswa->kelamin        = $request->kelamin;
-            
+
                 if ($request->hasFile('img_mahasiswa')) {
                     $file = $request->file('img_mahasiswa');
                     $filename = time() . '_' . $file->getClientOriginalName();
@@ -105,14 +112,12 @@ class ProfileMahasiswaController extends Controller
                 'success' => 'true',
                 'message' => 'Profil Anda Berhasil Diperbarui'
             ]);
-
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Data yang Anda masukkan tidak valid',
                 'msgField' => $e->errors()
             ], 422);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,

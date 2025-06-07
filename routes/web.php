@@ -324,6 +324,9 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
         // Dashboard mahasiswa, hanya untuk role mahasiswa
         Route::get('/Mahasiswa', [DashboardMahasiswaController::class, 'index'])->name('mahasiswa.dashboard');
 
+        // Rute Laporan Promethee
+        Route::get('laporan', [PrometheeRekomendasiController::class, 'laporan'])->name('laporan-promethee');
+
         Route::prefix('mhs/prestasi')->group(function () {
             Route::get('/', [PrestasiController::class, 'index'])->name('mhs.prestasi.index');
             Route::get('list', [PrestasiController::class, 'list'])->name('mhs.prestasi.list');
