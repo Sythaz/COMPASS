@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('tingkat_lomba_id')->index();
             $table->longtext('deskripsi_lomba');
             $table->string('penyelenggara_lomba', 255);
+            $table->enum('jenis_penyelenggara_lomba', ['Institusi', 'Kampus', 'Komunitas']);
             $table->date('awal_registrasi_lomba');
             $table->date('akhir_registrasi_lomba');
             $table->string('link_pendaftaran_lomba', 255);

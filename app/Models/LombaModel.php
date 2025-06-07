@@ -20,6 +20,7 @@ class LombaModel extends Model
         'nama_lomba',
         'deskripsi_lomba',
         'penyelenggara_lomba',
+        'jenis_penyelenggara_lomba',
         'awal_registrasi_lomba',
         'akhir_registrasi_lomba',
         'link_pendaftaran_lomba',
