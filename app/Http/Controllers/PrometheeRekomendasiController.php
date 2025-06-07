@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LombaModel;
+use App\Models\PreferensiUserModel;
+use App\Models\TingkatLombaModel;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
@@ -10,58 +14,159 @@ class PrometheeRekomendasiController extends Controller
     /**
      * Data lomba (alternatif) dengan nilai preferensi untuk setiap kriteria
      */
-    private array $alternatif = [
-        [
-            'id' => 'A1',
-            'name' => 'Gemastik Data Mining',
-            'values' => [4, 4, 5, 4, 5, 5]
-        ],
-        [
-            'id' => 'A2',
-            'name' => 'UI/UX Challenge',
-            'values' => [4, 4, 5, 3, 4, 3]
-        ],
-        [
-            'id' => 'A3',
-            'name' => 'Hackathon Merdeka',
-            'values' => [3, 4, 3, 5, 3, 3]
-        ],
-        [
-            'id' => 'A4',
-            'name' => 'Data Science Competition',
-            'values' => [2, 2, 1, 2, 4, 5]
-        ],
-        [
-            'id' => 'A5',
-            'name' => 'Game Development Challenge',
-            'values' => [5, 1, 3, 1, 5, 5]
-        ],
-        [
-            'id' => 'A6',
-            'name' => 'Regional Data Analysis',
-            'values' => [4, 3, 3, 4, 4, 3]
-        ],
-        [
-            'id' => 'A7',
-            'name' => 'International App Challenge',
-            'values' => [3, 2, 1, 2, 2, 5]
-        ],
-        [
-            'id' => 'A8',
-            'name' => 'Local UI Design Contest',
-            'values' => [2, 1, 5, 5, 2, 3]
-        ],
-        [
-            'id' => 'A9',
-            'name' => 'Mobile Game Competition',
-            'values' => [5, 2, 3, 1, 3, 5]
-        ],
-        [
-            'id' => 'A10',
-            'name' => 'Web Development Contest',
-            'values' => [2, 1, 5, 1, 5, 3]
-        ],
-    ];
+    private $alternatif = [];
+
+    public function __construct()
+    {
+        // Ambil semua lomba yang aktif dan terverifikasi, beserta relasi kategorinya
+        $lombas = LombaModel::with('kategori')
+            ->where('status_lomba', 'Aktif')
+            ->where('status_verifikasi', 'Terverifikasi')
+            ->get();
+
+        // Ambil semua preferensi user yang sedang login
+        $preferensiAll = PreferensiUserModel::where('user_id', 88)
+            ->orderBy('prioritas')
+            ->get();
+
+        $preferensiBidang = $preferensiAll
+            ->where('kriteria', 'bidang')
+            ->pluck('nilai', 'prioritas');
+        $totalCountBidangLomba = $preferensiAll->where('kriteria', 'bidang')->count();
+
+        $preferensiTingkat = $preferensiAll
+            ->where('kriteria', 'tingkat')
+            ->pluck('nilai', 'prioritas');
+        $totalCountTingkatLomba = TingkatLombaModel::count();
+
+        $preferensiReputasiPenyelenggara = $preferensiAll
+            ->where('kriteria', 'penyelenggara')
+            ->pluck('nilai', 'prioritas');
+        $totalCountReputasiPenyelenggara = $preferensiAll->where('kriteria', 'penyelenggara')->count();
+
+        $preferensiLokasi = $preferensiAll
+            ->where('kriteria', 'lokasi')
+            ->pluck('nilai', 'prioritas');
+        $totalCountLokasi = $preferensiAll->where('kriteria', 'lokasi')->count();
+
+        $preferensiBiaya = $preferensiAll
+            ->where('kriteria', 'biaya')
+            ->pluck('nilai', 'prioritas');
+        $totalCountBiaya = $preferensiAll->where('kriteria', 'biaya')->count();
+
+        foreach ($lombas as $lomba) {
+            $this->alternatif[] = [
+                'id' => $lomba->lomba_id,
+                'name' => $lomba->nama_lomba,
+                'values' => [
+                    $this->getBidangScore($lomba, $preferensiBidang, $totalCountBidangLomba),
+                    $this->getTingkatScore($lomba, $preferensiTingkat, $totalCountTingkatLomba),
+                    $this->getReputasiPenyelenggaraScore($lomba, $preferensiReputasiPenyelenggara, $totalCountReputasiPenyelenggara),
+                    $this->getDeadlineScore($lomba),
+                    $this->getLokasiScore($lomba, $preferensiLokasi, $totalCountLokasi),
+                    $this->getBiayaScore($lomba, $preferensiBiaya, $totalCountBiaya),
+                ],
+            ];
+        }
+    }
+
+    // Fungsi untuk menghitung skor bidang lomba
+    private function getBidangScore($lomba, $preferensiBidang, $totalCountBidangLomba): float
+    {
+        if ($totalCountBidangLomba === 0) return 0;
+
+        $maxScore = 5.0;
+        $step = $maxScore / $totalCountBidangLomba;
+
+        foreach ($lomba->kategori as $kategori) {
+            foreach ($preferensiBidang as $prioritas => $nilaiPreferensi) {
+                if (strcasecmp($kategori->nama_kategori, $nilaiPreferensi) === 0) {
+                    return $maxScore - $step * ($prioritas - 1);
+                }
+            }
+        }
+
+        return 0;
+    }
+
+
+    // Fungsi untuk menghitung skor tingkat lomba
+    private function getTingkatScore($lomba, $preferensiTingkat, $totalCountTingkatLomba): float
+    {
+        if ($totalCountTingkatLomba === 0) return 0;
+
+        foreach ($preferensiTingkat as $prioritas => $nilaiPreferensi) {
+            if (strcasecmp($lomba->tingkat_lomba->nama_tingkat, $nilaiPreferensi) == 0) {
+                $maxScore = 5.0;
+                $step = $maxScore / $totalCountTingkatLomba;
+                return $maxScore - ($step * ($prioritas - 1));
+            }
+        }
+
+        return 0;
+    }
+
+    // Fungsi untuk menghitung skor reputasi penyelenggara
+    private function getReputasiPenyelenggaraScore($lomba, $preferensiReputasiPenyelenggara, $totalCountReputasiPenyelenggara): float
+    {
+        if ($totalCountReputasiPenyelenggara === 0) return 0;
+
+        $maxScore = 5.0;
+        $step = $maxScore / $totalCountReputasiPenyelenggara;
+
+        foreach ($preferensiReputasiPenyelenggara as $prioritas => $nilaiPreferensi) {
+            if (strcasecmp($lomba->jenis_penyelenggara_lomba, $nilaiPreferensi) === 0) {
+                return $maxScore - $step * ($prioritas - 1);
+            }
+        }
+
+        return 0;
+    }
+
+    // Fungsi untuk menghitung skor deadline
+    private function getDeadlineScore($lomba): float
+    {
+        $hariTersisa = Carbon::today()->diffInDays(Carbon::parse($lomba->akhir_registrasi_lomba)->startOfDay(), false);
+
+        if ($hariTersisa <= 0) return 0.0;
+        elseif ($hariTersisa <= 8) return 1.0;
+        elseif ($hariTersisa <= 15) return 2.0;
+        elseif ($hariTersisa <= 22) return 3.0;
+        elseif ($hariTersisa <= 29) return 4.0;
+        else return 5.0;
+    }
+
+    // Fungsi untuk menghitung skor lokasi
+    private function getLokasiScore($lomba, $preferensiLokasi, $totalCountLokasi): float
+    {
+        if ($totalCountLokasi === 0) return 0;
+        $maxScore = 5.0;
+        $step = $maxScore / $totalCountLokasi;
+
+        foreach ($preferensiLokasi as $prioritas => $nilaiPreferensi) {
+            if (strcasecmp($lomba->lokasi_lomba, $nilaiPreferensi) === 0) {
+                return $maxScore - $step * ($prioritas - 1);
+            }
+        }
+
+        return 0;
+    }
+
+    // Fungsi untuk menghitung skor biaya
+    private function getBiayaScore($lomba, $preferensiBiaya, $totalCountBiaya): float
+    {
+        if ($totalCountBiaya === 0) return 0;
+        $maxScore = 5.0;
+        $step = $maxScore / $totalCountBiaya;
+
+        foreach ($preferensiBiaya as $prioritas => $nilaiPreferensi) {
+            if (strcasecmp($lomba->biaya_lomba, $nilaiPreferensi) === 0) {
+                return $maxScore - $step * ($prioritas - 1);
+            }
+        }
+
+        return 0;
+    }
 
     /**
      * Informasi kriteria dengan bobot tetap sesuai nilai default
@@ -71,7 +176,7 @@ class PrometheeRekomendasiController extends Controller
             'id' => 'C1',
             'name' => 'Kesesuaian Bidang Kompetisi',
             'type' => 'benefit',
-            'weight' => 0.10,
+            'weight' => 0.25,
             'dynamic_group' => 'bidang',
             'preference_function' => 'usual'
         ],
@@ -103,7 +208,7 @@ class PrometheeRekomendasiController extends Controller
             'id' => 'C5',
             'name' => 'Lokasi',
             'type' => 'cost',
-            'weight' => 0.35,
+            'weight' => 0.20,
             'dynamic_group' => 'lokasi',
             'preference_function' => 'usual'
         ],
@@ -125,32 +230,6 @@ class PrometheeRekomendasiController extends Controller
      */
     public function calculate(Request $request): JsonResponse
     {
-        // Ambil preferensi pengguna dari request
-        $userPreferences = $request->all();
-
-        // Jika tidak ada preferensi, gunakan default
-        if (empty($userPreferences)) {
-            $userPreferences = [
-                'bidang_priority' => [
-                    'Data Science' => 1,
-                    'Data Analys' => 2,
-                    'UI/UX' => 3,
-                    'Software Development' => 4,
-                    'Game Dev' => 5
-                ],
-                'lokasi_priority' => [
-                    'Online' => 1,
-                    'Offline dalam kota' => 2,
-                    'Hybrid' => 3,
-                    'Offline luar kota' => 4
-                ],
-                'biaya_priority' => [
-                    'Tanpa biaya' => 1,
-                    'Dengan Biaya' => 2
-                ]
-            ];
-        }
-
         // Hitung indeks preferensi untuk setiap pasangan alternatif
         $preferenceIndices = $this->calculatePreferenceIndices();
 
@@ -163,6 +242,7 @@ class PrometheeRekomendasiController extends Controller
         // Siapkan data untuk response
         $response = [
             'message' => 'Rekomendasi lomba berhasil dihitung',
+            'alternatif' => $this->alternatif,
             'weights' => $this->getWeights(),
             'preference_indices' => $preferenceIndices,
             'leaving_flow' => $leavingFlow,
