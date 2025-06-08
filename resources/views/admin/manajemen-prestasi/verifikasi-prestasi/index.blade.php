@@ -32,7 +32,7 @@
                                 <th>Dosen Pembimbing</th>
                                 <th>Tanggal Prestasi</th>
                                 <th>Status Verifikasi</th>
-                                <th>Aksi</th>
+                                <th class="text-center">Aksi</th>
                             </tr>
                         </thead>
                     </table>
@@ -84,7 +84,7 @@
                     { data: 'juara_prestasi', name: 'juara_prestasi' },
                     { data: 'dosen_pembimbing', name: 'dosen_id' },
                     { data: 'tanggal_prestasi', name: 'tanggal_prestasi' },
-                    { data: 'status_verifikasi', name: 'status_verifikasi' },
+                    { data: 'status_verifikasi', name: 'status_verifikasi',className: 'text-center' },
                     { data: 'aksi', name: 'aksi', orderable: false, searchable: false },
                 ],
             });

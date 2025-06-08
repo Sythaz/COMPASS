@@ -253,8 +253,8 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::post('kelola-prestasi/list', [KelolaPrestasiController::class, 'list'])->name('kelola-prestasi.list');
             Route::get('kelola-prestasi/create', [KelolaPrestasiController::class, 'create'])->name('kelola-prestasi.create');
             Route::get('kelola-prestasi/{id}/show_ajax', [KelolaPrestasiController::class, 'showAjax'])->name('kelola-prestasi.showAjax');
-            Route::get('kelola-prestasi/{id}/edit_ajax', [KelolaPrestasiController::class, 'editAjax']);
-            Route::get('kelola-prestasi/{id}/delete_ajax', [KelolaPrestasiController::class, 'deleteAjax']);
+            Route::get('kelola-prestasi/{id}/edit_ajax', [KelolaPrestasiController::class, 'editAjax'])->name('kelola-prestasi.editAjax');
+            Route::get('kelola-prestasi/{id}/delete_ajax', [KelolaPrestasiController::class, 'deleteAjax'])->name('kelola-prestasi.deleteAjax');
             Route::post('kelola-prestasi/store', [KelolaPrestasiController::class, 'store'])->name('kelola-prestasi.store');
             Route::put('kelola-prestasi/{id}', [KelolaPrestasiController::class, 'update'])->name('kelola-prestasi.update');
             Route::delete('kelola-prestasi/{id}', [KelolaPrestasiController::class, 'destroy'])->name('kelola-prestasi.destroy');

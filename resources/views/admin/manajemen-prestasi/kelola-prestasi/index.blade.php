@@ -14,14 +14,16 @@
 
                     {{-- Tombol Tambah Data --}}
                     <div class="mb-3">
-                        <a onclick="modalAction('{{ route('mhs.prestasi.create') }}')" class="btn btn-primary text-white">
+                        <a onclick="modalAction('{{ route('kelola-prestasi.create') }}')"
+                            class="btn btn-primary text-white">
                             <i class="fa-solid fa-plus"></i>
                             <strong>Tambah Data</strong>
                         </a>
                     </div>
 
                     {{-- Tambahkan Tabel DataTables di sini --}}
-                    <table class="table table-bordered" id="prestasiTable" style="width:100%">
+                    <table class="w-100 table table-striped table-bordered custom-datatable" id="prestasiTable"
+                        style="width:100%">
                         <thead>
                             <tr>
                                 <th style="width: 1px; white-space: nowrap;">No</th>
@@ -102,12 +104,12 @@
                     { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
                     { data: 'ketua_mahasiswa', name: 'ketua_mahasiswa' },
                     { data: 'nama_lomba', name: 'lomba_id' },
-                    { data: 'jenis_prestasi', name: 'jenis_prestasi' },
-                    { data: 'juara_prestasi', name: 'juara_prestasi' },
+                    { data: 'jenis_prestasi', name: 'jenis_prestasi', className: 'text-center' },
+                    { data: 'juara_prestasi', name: 'juara_prestasi', className: 'text-center' },
                     { data: 'dosen_pembimbing', name: 'dosen_id' },
-                    { data: 'tanggal_prestasi', name: 'tanggal_prestasi' },
-                    { data: 'status_verifikasi', name: 'status_verifikasi' },
-                    { data: 'aksi', name: 'aksi', orderable: false, searchable: false },
+                    { data: 'tanggal_prestasi', name: 'tanggal_prestasi', className: 'text-center' },
+                    { data: 'status_verifikasi', name: 'status_verifikasi', className: 'text-center' },
+                    { data: 'aksi', name: 'aksi', orderable: false, searchable: false, className: 'text-center' },
                 ],
             });
         });

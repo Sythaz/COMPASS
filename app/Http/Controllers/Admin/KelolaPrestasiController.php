@@ -10,6 +10,7 @@ use App\Models\LombaModel;
 use App\Models\MahasiswaModel;
 use App\Models\PeriodeModel;
 use App\Models\PrestasiModel;
+use App\Models\TingkatLombaModel;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
@@ -69,8 +70,10 @@ class KelolaPrestasiController extends Controller
                 return $this->getStatusBadge($status);
             })
             ->addColumn('aksi', function ($row) {
-                $btn = '<div class="d-flex justify-content-center">';
+                $btn = '<div class="d-flex justify-content-center" style="gap: 0.5rem;">';
                 $btn .= '<button onclick="modalAction(\'' . route('kelola-prestasi.showAjax', $row->prestasi_id) . '\')" class="btn btn-info btn-sm">Detail</button>';
+                $btn .= '<button onclick="modalAction(\'' . route('kelola-prestasi.editAjax', $row->prestasi_id) . '\')" class="btn btn-warning btn-sm">Edit</button>';
+                $btn .= '<button onclick="modalAction(\'' . route('kelola-prestasi.deleteAjax', $row->prestasi_id) . '\')" class="btn btn-danger btn-sm">Hapus</button>';
                 $btn .= '</div>';
                 return $btn;
             })
@@ -89,162 +92,187 @@ class KelolaPrestasiController extends Controller
 
     public function editAjax($id)
     {
-        $kelolaPrestasi = PrestasiModel::findOrFail($id);
-        // Load data tambahan untuk dropdown di form edit
-        $daftarMahasiswa = MahasiswaModel::where('status', 'Aktif')->get();
-        $daftarDosen = DosenModel::where('status', 'Aktif')->get();
-        $daftarLomba = LombaModel::where('status_lomba', 'Aktif')->get();
-        $daftarKategori = KategoriModel::where('status_kategori', 'Aktif')->get();
-        $daftarPeriode = PeriodeModel::all();
+        $prestasi = PrestasiModel::with('mahasiswa')->findOrFail($id);
 
-        return view('admin.manajemen-prestasi.kelola-prestasi.edit', compact('kelolaPrestasi', 'daftarMahasiswa', 'daftarLomba', 'daftarKategori', 'daftarDosen', 'daftarPeriode'));
+        // Ambil daftar data pendukung, misal dosen, kategori, periode, lomba, dll
+        $daftarDosen = DosenModel::all();
+        $daftarKategori = KategoriModel::all();
+        $daftarPeriode = PeriodeModel::all();
+        $daftarLomba = LombaModel::all();
+        $daftarTingkatLomba = TingkatLombaModel::all();
+        $daftarMahasiswa = MahasiswaModel::all();
+
+        // Data mahasiswa yang terkait (untuk form anggota tim)
+        $anggotaTim = $prestasi->mahasiswa->map(function ($mhs) {
+            return [
+                'mahasiswa_id' => $mhs->pivot->mahasiswa_id,
+                'nama' => $mhs->nama_mahasiswa,
+                'peran' => $mhs->pivot->peran,
+            ];
+        });
+
+        return view('admin.manajemen-prestasi.kelola-prestasi.edit', compact(
+            'prestasi',
+            'daftarDosen',
+            'daftarKategori',
+            'daftarPeriode',
+            'daftarLomba',
+            'daftarTingkatLomba',
+            'anggotaTim',
+            'daftarMahasiswa'
+        ));
     }
-
-    public function deleteAjax($id)
+    public function update(Request $request, $id)
     {
-        $kelolaPrestasi = PrestasiModel::findOrFail($id);
-        // Load data tambahan untuk dropdown di form edit
-        $daftarMahasiswa = MahasiswaModel::where('status', 'Aktif')->get();
-        $daftarDosen = DosenModel::where('status', 'Aktif')->get();
-        $daftarLomba = LombaModel::where('status_lomba', 'Aktif')->get();
-        $daftarKategori = KategoriModel::where('status_kategori', 'Aktif')->get();
-        $daftarPeriode = PeriodeModel::all();
+        $prestasi = PrestasiModel::findOrFail($id);
 
-        return view('admin.manajemen-prestasi.kelola-prestasi.delete', compact('kelolaPrestasi', 'daftarMahasiswa', 'daftarDosen', 'daftarLomba', 'daftarKategori', 'daftarPeriode'));
+        if ($request->input('lomba_id') === 'lainnya') {
+            $request->merge(['lomba_id' => null]);
+        }
+
+        // Validasi dengan enum dari DB (hardcode nilai enum di validasi)
+        $validated = $request->validate([
+            'lomba_id' => 'nullable|required_without:lomba_lainnya|exists:t_lomba,lomba_id',
+            'lomba_lainnya' => 'nullable|required_without:lomba_id|string|max:255',
+            'dosen_id' => 'nullable|exists:t_dosen,dosen_id',
+            'kategori_id' => 'required|exists:t_kategori,kategori_id',
+            'periode_id' => 'required|exists:t_periode,periode_id',
+            'tanggal_prestasi' => 'required|date',
+            'juara_prestasi' => 'required|string|max:255',
+            'jenis_prestasi' => 'nullable|string|max:255',
+            'tingkat_lomba_id' => 'nullable|exists:t_tingkat_lomba,tingkat_lomba_id',
+
+            // Enum status_verifikasi, hardcode sesuai enum di DB
+            'status_verifikasi' => 'required|string|in:Ditolak,Valid,Menunggu,Terverifikasi',
+
+            // alasan_tolak boleh kosong
+            'alasan_tolak' => 'nullable|string|max:1000',
+        ]);
+
+        if (!empty($validated['lomba_id'])) {
+            $lomba = LombaModel::with('tingkat_lomba')->find($validated['lomba_id']);
+            if ($lomba) {
+                if (empty($validated['tingkat_lomba_id']) && $lomba->tingkat_lomba) {
+                    $validated['tingkat_lomba_id'] = $lomba->tingkat_lomba->tingkat_lomba_id;
+                }
+                if (empty($validated['jenis_prestasi'])) {
+                    $validated['jenis_prestasi'] = $lomba->tipe_lomba;
+                }
+            }
+            $validated['lomba_lainnya'] = null;
+        } else {
+            $validated['lomba_id'] = null;
+        }
+
+        $prestasi->update($validated);
+
+        if ($request->filled('mahasiswa_id')) {
+            $mahasiswaIds = $request->input('mahasiswa_id');
+            $pivotData = [];
+            foreach ($mahasiswaIds as $index => $id) {
+                $pivotData[$id] = [
+                    'peran' => $index === 0 ? 'Ketua' : 'Anggota'
+                ];
+            }
+            $prestasi->mahasiswa()->sync($pivotData);
+        } else {
+            $prestasi->mahasiswa()->detach();
+        }
     }
 
     public function create()
     {
+        $daftarLomba = LombaModel::with('tingkat_lomba')
+            ->where('status_lomba', 'Aktif')
+            ->get();
         $daftarMahasiswa = MahasiswaModel::where('status', 'Aktif')->get();
-        $daftarLomba = LombaModel::where('status_lomba', 'Aktif')->get();
         $daftarKategori = KategoriModel::where('status_kategori', 'Aktif')->get();
         $daftarDosen = DosenModel::where('status', 'Aktif')->get();
         $daftarPeriode = PeriodeModel::all();
+        $daftarTingkatLomba = TingkatLombaModel::all(); // Ambil data tingkat lomba dari DB
 
         return view('admin.manajemen-prestasi.kelola-prestasi.create', compact(
             'daftarMahasiswa',
             'daftarLomba',
             'daftarKategori',
             'daftarDosen',
-            'daftarPeriode'
+            'daftarPeriode',
+            'daftarTingkatLomba'
         ));
     }
 
     public function store(Request $request)
     {
-        // Validasi input
+        // Manipulasi data sebelum validasi
+        if ($request->input('lomba_id') === 'lainnya') {
+            $request->merge(['lomba_id' => null]);
+        }
+        // Validasi input utama dengan aturan required_without agar salah satu wajib diisi
         $validated = $request->validate([
-            'mahasiswa_id' => 'required|exists:t_mahasiswa,mahasiswa_id',
-            'lomba_id' => 'required|exists:t_lomba,lomba_id',
+            'lomba_id' => 'nullable|required_without:lomba_lainnya|exists:t_lomba,lomba_id',
+            'lomba_lainnya' => 'nullable|required_without:lomba_id|string|max:255',
             'dosen_id' => 'nullable|exists:t_dosen,dosen_id',
             'kategori_id' => 'required|exists:t_kategori,kategori_id',
             'periode_id' => 'required|exists:t_periode,periode_id',
             'tanggal_prestasi' => 'required|date',
-            'juara_prestasi' => 'required|string|max:50',
-            'jenis_prestasi' => 'required|string',
-            'img_kegiatan' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'bukti_prestasi' => 'nullable|mimes:pdf|max:2048',
-            'surat_tugas_prestasi' => 'nullable|mimes:pdf|max:2048',
-            'status_verifikasi' => 'required|in:Terverifikasi,Valid,Menunggu,Ditolak',
+            'juara_prestasi' => 'required|string|max:255',
+            'jenis_prestasi' => 'nullable|string|max:255',
+            'tingkat_lomba_id' => 'nullable|exists:t_tingkat_lomba,tingkat_lomba_id',
         ]);
 
-        try {
-            // Simpan prestasi
-            $prestasi = PrestasiModel::create($validated);
-
-            // Upload file jika ada
-            if ($request->hasFile('img_kegiatan')) {
-                $originalFilename = $request->file('img_kegiatan')->getClientOriginalName();
-                $filename = 'img-prestasi/' . $prestasi->prestasi_id . '-' . time() . '-' . $originalFilename;
-                $request->file('img_kegiatan')->storeAs('public/prestasi/img-prestasi', $filename);
-                $prestasi->update(['img_kegiatan' => $filename]);
+        // Jika user pilih lomba dari daftar (lomba_id), isi otomatis tingkat_lomba_id dan jenis_prestasi
+        if (!empty($validated['lomba_id'])) {
+            $lomba = LombaModel::with('tingkat_lomba')->find($validated['lomba_id']);
+            if ($lomba) {
+                // Isi tingkat lomba jika kosong
+                if (empty($validated['tingkat_lomba_id']) && $lomba->tingkat_lomba) {
+                    $validated['tingkat_lomba_id'] = $lomba->tingkat_lomba->tingkat_lomba_id;
+                }
+                // Isi jenis prestasi jika kosong
+                if (empty($validated['jenis_prestasi'])) {
+                    $validated['jenis_prestasi'] = $lomba->tipe_lomba;
+                }
             }
 
-            if ($request->hasFile('bukti_prestasi')) {
-                $filename = 'bukti_' . $prestasi->prestasi_id . '.pdf';
-                $request->file('bukti_prestasi')->storeAs('public/prestasi/bukti', $filename);
-                $prestasi->update(['bukti_prestasi' => $filename]);
-            }
-
-            if ($request->hasFile('surat_tugas_prestasi')) {
-                $filename = 'surat_' . $prestasi->prestasi_id . '.pdf';
-                $request->file('surat_tugas_prestasi')->storeAs('public/prestasi/surat', $filename);
-                $prestasi->update(['surat_tugas_prestasi' => $filename]);
-            }
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Data prestasi berhasil ditambahkan.'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal menyimpan data: ' . $e->getMessage()
-            ], 500);
+            // Kosongkan lomba_lainnya supaya tidak duplikasi data
+            $validated['lomba_lainnya'] = null;
+        } else {
+            // Jika input lomba_lainnya manual, pastikan lomba_id di-set null
+            $validated['lomba_id'] = null;
         }
+
+        // Simpan data ke tabel prestasi
+        $prestasi = PrestasiModel::create($validated);
+
+        // Jika ada input mahasiswa_id (array), simpan relasi ke pivot dengan peran Ketua dan Anggota
+        if ($request->filled('mahasiswa_id')) {
+            $mahasiswaIds = $request->input('mahasiswa_id');
+            $pivotData = [];
+            foreach ($mahasiswaIds as $index => $id) {
+                $pivotData[$id] = [
+                    'peran' => $index === 0 ? 'Ketua' : 'Anggota'
+                ];
+            }
+            $prestasi->mahasiswa()->sync($pivotData);
+        }
+
+        return redirect()->back()->with('success', 'Data prestasi berhasil disimpan.');
     }
 
-    public function update(Request $request, $id)
+    public function deleteAjax($id)
     {
-        $prestasi = PrestasiModel::findOrFail($id);
+        $prestasi = PrestasiModel::with(['lomba', 'kategori', 'dosen', 'periode', 'tingkat_lomba', 'mahasiswa'])->findOrFail($id);
 
-        $validated = $request->validate([
-            'mahasiswa_id' => 'required|exists:t_mahasiswa,mahasiswa_id',
-            'lomba_id' => 'required|exists:t_lomba,lomba_id',
-            'kategori_id' => 'required|exists:t_kategori,kategori_id',
-            'jenis_prestasi' => 'required|string',
-            'dosen_id' => 'required|exists:t_dosen,dosen_id',
-            'periode_id' => 'required|exists:t_periode,periode_id',
-            'tanggal_prestasi' => 'required|date',
-            'juara_prestasi' => 'required|string|max:50',
-            'img_kegiatan' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'bukti_prestasi' => 'nullable|mimes:pdf|max:2048',
-            'surat_tugas_prestasi' => 'nullable|mimes:pdf|max:2048',
-            'status_verifikasi' => 'required|in:Terverifikasi,Valid,Menunggu,Ditolak',
-        ]);
-
-        try {
-            // Update data utama
-            $prestasi->update($validated);
-
-            // Upload file baru jika ada
-            if ($request->hasFile('img_kegiatan')) {
-                $filename = 'img_' . $prestasi->prestasi_id . '.' . $request->file('img_kegiatan')->getClientOriginalExtension();
-                $request->file('img_kegiatan')->storeAs('public/prestasi/img', $filename);
-                $prestasi->update(['img_kegiatan' => $filename]);
-            }
-
-            if ($request->hasFile('bukti_prestasi')) {
-                $originalFilename = $request->file('bukti_prestasi')->getClientOriginalName();
-                $filename = 'bukti_' . $prestasi->prestasi_id . '_' . time() . '_' . $originalFilename;
-                $request->file('bukti_prestasi')->storeAs('public/prestasi/bukti', $filename);
-                $prestasi->update(['bukti_prestasi' => $filename]);
-            }
-
-            if ($request->hasFile('surat_tugas_prestasi')) {
-                $originalFilename = $request->file('surat_tugas_prestasi')->getClientOriginalName();
-                $filename = 'surat_' . $prestasi->prestasi_id . '_' . time() . '_' . $originalFilename;
-                $request->file('surat_tugas_prestasi')->storeAs('public/prestasi/surat', $filename);
-                $prestasi->update(['surat_tugas_prestasi' => $filename]);
-            }
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Data prestasi berhasil diperbarui.'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal memperbarui data: ' . $e->getMessage()
-            ], 500);
-        }
+        return view('admin.manajemen-prestasi.kelola-prestasi.delete', compact('prestasi'));
     }
 
     public function destroy($id)
     {
         try {
             $laporanPrestasi = LaporanPrestasiModel::where('prestasi_id', $id)->first();
-            $laporanPrestasi->delete();
+            if ($laporanPrestasi) {
+                $laporanPrestasi->delete();
+            }
 
             $prestasi = PrestasiModel::findOrFail($id);
             $prestasi->delete();
@@ -260,4 +288,5 @@ class KelolaPrestasiController extends Controller
             ], 500);
         }
     }
+
 }
