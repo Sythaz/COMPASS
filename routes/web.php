@@ -366,7 +366,7 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::get('/edit/{id}', [ProfileMahasiswaController::class, 'edit'])->name('mahasiswa.profile.edit');
             Route::put('/update', [ProfileMahasiswaController::class, 'update'])->name('mahasiswa.profile.update');
             Route::post('/cek-username', [ProfileMahasiswaController::class, 'cekUsername'])->name('mahasiswa.profile.cek-username');
-            Route::post('/ubah-password', [ProfileMahasiswaController::class, 'changePassword'])->name('ubah-password');
+            Route::post('/ubah-password', [ProfileMahasiswaController::class, 'changePassword'])->name('ubah-password-mahasiswa');
         });
     });
 });
