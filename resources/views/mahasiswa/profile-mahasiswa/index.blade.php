@@ -334,6 +334,24 @@
     <script src="{{ asset('js-custom/form-validation.js') }}"></script>
 
     <script>
+        $(document).ready(function() {
+            // Toastr untuk menampilkan notifikasi jika preferensi belum lengkap
+            toastr.options = {
+                closeButton: true,
+                positionClass: "toast-bottom-full-width",
+                timeOut: "5000",
+                hideDuration: "1000",
+                showMethod: "fadeIn",
+                hideMethod: "fadeOut"
+            };
+
+            @if ($preferensi == false)
+                toastr.error(
+                    "Anda belum mengisi preferensi secara lengkap. Silakan pergi ke halaman profil untuk mengisi preferensi.",
+                    "Peringatan");
+            @endif
+        });
+
         // Toggle password visibility
         $('#toggleNewPassword').click(function() {
             const passwordInput = $('#new_password');
