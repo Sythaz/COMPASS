@@ -44,8 +44,9 @@
                             <div class="dropdown">
                                 <a href="javascript:void(0)" class="d-flex align-items-center dropdown-toggle-custom"
                                     id="dropdownUser" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <img src="{{ auth()->user()->getProfile() && Storage::exists('storage/img/profile' . auth()->user()->getProfile()) ? asset('storage/img/profile' . auth()->user()->getProfile()) : asset('assets/images/profil/default-profile.png') }}"
-                                        class="rounded-circle" width="40" height="40" alt="Foto Profil">
+                                    <img src="{{ auth()->user()->getProfile() && Storage::exists('public/img/profile/' . auth()->user()->getProfile()) ? asset('storage/img/profile/' . auth()->user()->getProfile()) : asset('assets/images/profil/default-profile.png') }}"
+                                        class="rounded-circle" width="40" style="object-fit: cover" height="40"
+                                        alt="Foto Profil">
                                     <div class="ml-2 text-left">
                                         <div class="font-weight-bold text-white">
                                             {{ Str::limit(auth()->user()->getName() ?? 'User', 12) }}
@@ -55,8 +56,19 @@
                                     </div>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownUser">
-                                    <a href="javascript:void(0)" class="dropdown-item"><i
-                                            class="icon-user mr-2"></i><span>Profil Saya</span></a>
+                                    @if (Auth::user()->role === 'Admin')
+                                        <a href="{{ route('admin.profile.index') }}" class="dropdown-item"><i
+                                                class="icon-user mr-2"></i><span>Profil Saya</span></a>
+                                    @elseif (Auth::user()->role === 'Dosen')
+                                        <a href="{{ route('dosen.profile.index') }}" class="dropdown-item"><i
+                                                class="icon-user mr-2"></i><span>Profil Saya</span></a>
+                                    @elseif (Auth::user()->role === 'Mahasiswa')
+                                        <a href="{{ route('mahasiswa.profile.index') }}" class="dropdown-item"><i
+                                                class="icon-user mr-2"></i><span>Profil Saya</span></a>
+                                    @else
+                                        <a href="#" class="dropdown-item"><i class="icon-user mr-2"></i><span>Profil Saya</span></a>
+                                    @endif
+                                    <hr class="my-2">
                                     <a href="{{ route('logout') }}" class="dropdown-item-logout"><i
                                             class="icon-key mr-2"></i><span>Logout</span></a>
                                 </div>
@@ -107,8 +119,8 @@
                                 </div>
                             </div>
 
-                            <div class="btn-group btn-group btn-group-toggle px-3" data-toggle="buttons" role="group"
-                                aria-label="Notification filter">
+                            <div class="btn-group btn-group btn-group-toggle px-3" data-toggle="buttons"
+                                role="group" aria-label="Notification filter">
                                 <label
                                     class="btn btn-outline-light btn-filter-notification font-weight-bold text-secondary active"
                                     style="border-width: 2px;">
@@ -202,8 +214,11 @@
                             <div class="row justify-content-center align-items-center">
                                 <div class="position-relative">
                                     <span class="activity active"></span>
-                                    <img src="{{ auth()->user()->getProfile() && Storage::exists('storage/img/profile' . auth()->user()->getProfile()) ? asset('storage/img/profile' . auth()->user()->getProfile()) : asset('assets/images/profil/default-profile.png') }}"
-                                        class="rounded-circle" width="40" height="40" alt="Foto Profil">
+                                    <img src="{{ auth()->user()->getProfile() && Storage::exists('public/img/profile/' . auth()->user()->getProfile())
+                                        ? asset('storage/img/profile/' . auth()->user()->getProfile())
+                                        : asset('assets/images/profil/default-profile.png') }}"
+                                        class="rounded-circle" style="object-fit: cover" width="40"
+                                        height="40" alt="Foto Profil">
                                 </div>
                                 <div class="ml-2 text-left">
                                     <div class="font-weight-bold text-black d-block" style="line-height: 1.2">
@@ -221,15 +236,15 @@
                                     <li>
                                         @if (Auth::user()->role === 'Admin')
                                             <a href="{{ route('admin.profile.index') }}"><i
-                                                    class="icon-user"></i><span>Profile</span></a>
+                                                    class="icon-user"></i><span>Profil Saya</span></a>
                                         @elseif (Auth::user()->role === 'Dosen')
                                             <a href="{{ route('dosen.profile.index') }}"><i
-                                                    class="icon-user"></i><span>Profile</span></a>
+                                                    class="icon-user"></i><span>Profil Saya</span></a>
                                         @elseif (Auth::user()->role === 'Mahasiswa')
                                             <a href="{{ route('mahasiswa.profile.index') }}"><i
-                                                    class="icon-user"></i><span>Profile</span></a>
+                                                    class="icon-user"></i><span>Profil Saya</span></a>
                                         @else
-                                            <a href="#"><i class="icon-user"></i><span>Profile</span></a>
+                                            <a href="#"><i class="icon-user"></i><span>Profil Saya</span></a>
                                         @endif
                                     </li>
                                     <hr class="my-2">
