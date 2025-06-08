@@ -67,7 +67,7 @@
                                             <span class="info-value">{{ $admin->email ?? 'Email Tidak Diketahui' }}</span>
                                         </div>
                                         <div class="info-item">
-                                            <span class="info-label">Kelamin</span>
+                                            <span class="info-label">Jenis Kelamin</span>
                                             <span class="info-value">
                                                 {{ $admin->kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}
                                             </span>
@@ -137,7 +137,7 @@
                                         </div>
 
                                         <div class="form-group custom-validation">
-                                            <label for="kelamin">Kelamin <span class="text-danger">*</span></label>
+                                            <label for="kelamin">Jenis Kelamin<span class="text-danger">*</span></label>
                                             <select class="form-control @error('kelamin') is-invalid @enderror"
                                                 id="kelamin" name="kelamin" required>
                                                 <option value="P"
