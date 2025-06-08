@@ -137,7 +137,7 @@
                                         </div>
 
                                         <div class="form-group custom-validation">
-                                            <label for="kelamin">Jenis Kelamin <span class="text-danger">*</span></label>
+                                            <label for="kelamin">Jenis Kelamin<span class="text-danger">*</span></label>
                                             <select class="form-control @error('kelamin') is-invalid @enderror"
                                                 id="kelamin" name="kelamin" required>
                                                 <option value="P"
