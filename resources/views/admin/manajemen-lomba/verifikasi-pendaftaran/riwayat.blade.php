@@ -1,8 +1,8 @@
 @extends('layouts.template')
 
-@section('title', 'Verifikasi Pendaftaran Lomba | COMPASS')
-@section('page-title', 'Verifikasi Pendaftaran Lomba')
-@section('page-description', 'Halaman Verifikasi Pendaftaran Lomba')
+@section('title', 'Riwayat Pendaftaran Lomba | COMPASS')
+@section('page-title', 'Riwayat Pendaftaran Lomba')
+@section('page-description', 'Halaman Riwayat Pendaftaran Lomba')
 
 @section('content')
     <div class="row">
@@ -25,10 +25,11 @@
                                         XLSX</a>
                                     <a class="dropdown-item" href="{{ route('admin.export_pdf') }}">Ekspor Data ke PDF</a>
                                 </div>
-
-                                <a href="{{ route('riwayat-pendaftaran.index') }}" class="ml-2 btn btn-primary text-white">
-                                    <i class="fa fa-clock-rotate-left"></i>
-                                    <strong> Riwayat</strong>
+                                {{-- Kembali ke index --}}
+                                <a href="{{ route('verifikasi-pendaftaran.index') }}"
+                                    class="ml-2 btn btn-primary text-white">
+                                    <i class="fa-solid fa-circle-arrow-left"></i>
+                                    <strong> Kembali</strong>
                                 </a>
                             </div>
                         </div>
@@ -80,7 +81,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: '{{ route('verifikasi-pendaftaran.list') }}',
+                    url: '{{ route('riwayat-pendaftaran.list') }}',
                     type: 'GET',
                 },
                 columns: [{
