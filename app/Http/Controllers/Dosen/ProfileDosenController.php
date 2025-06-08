@@ -116,7 +116,7 @@ class ProfileDosenController extends Controller
                 'phrase.required'                       => 'Phrase pemulihan wajib diisi.',
                 'passwordBaru.required'                 => 'Password baru wajib diisi.',
                 'passwordBaru.min'                      => 'Password minimal 6 karakter.',
-                'passwordbaru_confirmation.required'    => 'Konfirmasi password wajib diisi.',
+                'passwordBaru_confirmation.required'    => 'Konfirmasi password wajib diisi.',
                 'passwordBaru_confirmation.same'        => 'Konfirmasi password tidak sesuai.',
             ]);
 
