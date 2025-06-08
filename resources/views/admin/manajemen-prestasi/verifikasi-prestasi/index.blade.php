@@ -14,7 +14,7 @@
 
                     {{-- Tombol Tambah Data --}}
                     <div class="mb-3">
-                        <a onclick="modalAction('{{ route('mhs.prestasi.create') }}')" class="btn btn-primary text-white">
+                        <a onclick="modalAction('{{ route('kelola-prestasi.create') }}')" class="btn btn-primary text-white">
                             <i class="fa-solid fa-plus"></i>
                             <strong>Tambah Data</strong>
                         </a>
@@ -38,7 +38,8 @@
                     </table>
 
                     {{-- Modal untuk menampilkan form --}}
-                    <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="ajaxModalLabel" aria-hidden="true">
+                    <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="ajaxModalLabel"
+                        aria-hidden="true">
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content" id="ajaxModalContent">
                                 {{-- Konten modal akan dimuat lewat Ajax --}}
@@ -65,27 +66,58 @@
     <script>
         var prestasiTable;
 
-        $(function () {
+        $(function() {
             prestasiTable = $('#prestasiTable').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: '{{ route("verifikasi-prestasi.list") }}',
+                    url: '{{ route('verifikasi-prestasi.list') }}',
                     type: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     }
                 },
-                columns: [
-                    { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-                    { data: 'ketua_mahasiswa', name: 'ketua_mahasiswa' },
-                    { data: 'nama_lomba', name: 'lomba_id' },
-                    { data: 'jenis_prestasi', name: 'jenis_prestasi' },
-                    { data: 'juara_prestasi', name: 'juara_prestasi' },
-                    { data: 'dosen_pembimbing', name: 'dosen_id' },
-                    { data: 'tanggal_prestasi', name: 'tanggal_prestasi' },
-                    { data: 'status_verifikasi', name: 'status_verifikasi',className: 'text-center' },
-                    { data: 'aksi', name: 'aksi', orderable: false, searchable: false },
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'ketua_mahasiswa',
+                        name: 'ketua_mahasiswa'
+                    },
+                    {
+                        data: 'nama_lomba',
+                        name: 'lomba_id'
+                    },
+                    {
+                        data: 'jenis_prestasi',
+                        name: 'jenis_prestasi'
+                    },
+                    {
+                        data: 'juara_prestasi',
+                        name: 'juara_prestasi'
+                    },
+                    {
+                        data: 'dosen_pembimbing',
+                        name: 'dosen_id'
+                    },
+                    {
+                        data: 'tanggal_prestasi',
+                        name: 'tanggal_prestasi'
+                    },
+                    {
+                        data: 'status_verifikasi',
+                        name: 'status_verifikasi',
+                        className: 'text-center'
+                    },
+                    {
+                        data: 'aksi',
+                        name: 'aksi',
+                        orderable: false,
+                        searchable: false
+                    },
                 ],
             });
         });
@@ -93,24 +125,24 @@
         function modalAction(url) {
             $('#ajaxModalContent').html('Loading...');
             $.get(url)
-                .done(function (res) {
+                .done(function(res) {
                     $('#ajaxModalContent').html(res);
                     $('#myModal').modal('show');
                 })
-                .fail(function () {
+                .fail(function() {
                     Swal.fire('Gagal', 'Tidak dapat memuat data dari server.', 'error');
                 });
         }
 
         // Bersihkan modal saat ditutup
-        $('#myModal').on('hidden.bs.modal', function () {
+        $('#myModal').on('hidden.bs.modal', function() {
             $('#ajaxModalContent').html('');
             $('body').removeClass('modal-open');
             $('.modal-backdrop').remove();
         });
 
         // Submit form verifikasi (terima/tolak) via AJAX
-        $(document).on('submit', '#form-verifikasi', function (e) {
+        $(document).on('submit', '#form-verifikasi', function(e) {
             e.preventDefault();
             var $form = $(this);
             var url = $form.attr('action');
@@ -121,12 +153,12 @@
                 url: url,
                 type: method,
                 data: data,
-                success: function (response) {
+                success: function(response) {
                     $('#myModal').modal('hide');
                     Swal.fire('Berhasil', 'Verifikasi prestasi berhasil.', 'success');
                     prestasiTable.ajax.reload(null, false); // reload data tanpa reset paging
                 },
-                error: function (xhr) {
+                error: function(xhr) {
                     Swal.fire('Gagal', 'Terjadi kesalahan saat verifikasi.', 'error');
                 }
             });

@@ -518,7 +518,6 @@
 </script>
 
 <script>
-    // Cegah pilihan mahasiswa yang sama secara langsung
     $(document).on('change', '.anggota-select', function() {
         const selectedVals = $('.anggota-select').map(function() {
             return $(this).val();
@@ -536,8 +535,9 @@
             $(this).val('').trigger('change'); // kosongkan input duplikat
         }
     });
-    // Event delegation karena form muncul secara dinamis
-    $(document).on('submit', '#form-prestasi', function(e) {
+
+    // Unbind dulu sebelum bind, supaya event submit tidak double
+    $(document).off('submit', '#form-prestasi').on('submit', '#form-prestasi', function(e) {
         e.preventDefault();
 
         let form = $(this);
@@ -563,9 +563,8 @@
                     text: response.message || 'Data prestasi berhasil diperbarui'
                 });
 
-                $('#myModal').modal('hide'); // <-- tutup modal yang benar
-                $('#prestasiTable').DataTable().ajax.reload(null,
-                    false); // reload data tabel tanpa reset paging
+                $('#myModal').modal('hide');
+                $('#prestasiTable').DataTable().ajax.reload(null, false);
             },
             error: function(xhr) {
                 let msg = 'Terjadi kesalahan';

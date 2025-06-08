@@ -288,7 +288,7 @@
                 $('#kategori_id').html('');
                 kategoriJson.forEach(item => {
                     $('#kategori_id').append(
-                    `<option value="${item.id}">${item.text}</option>`);
+                        `<option value="${item.id}">${item.text}</option>`);
                 });
                 $('#kategori_id').val('').trigger('change');
 
@@ -477,6 +477,9 @@
         function submitPrestasiForm() {
             var form = $('#form-prestasi')[0];
             var formData = new FormData(form);
+            var submitBtn = $('#form-prestasi button[type="submit"]');
+
+            submitBtn.prop('disabled', true); // Disable tombol submit
 
             $.ajax({
                 url: $(form).attr('action'),
@@ -506,6 +509,7 @@
                         text: msg,
                         confirmButtonColor: '#d33',
                     });
+                    submitBtn.prop('disabled', false); // Enable kembali tombol submit jika error
                 }
             });
         }
