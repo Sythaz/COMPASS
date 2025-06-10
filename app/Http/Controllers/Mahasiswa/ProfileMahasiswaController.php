@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
+use App\Models\KategoriModel;
 use App\Models\MahasiswaModel;
 use App\Models\ProdiModel;
 use App\Models\PeriodeModel;
 use App\Models\PreferensiUserModel;
+use App\Models\TingkatLombaModel;
 use App\Models\UsersModel;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
@@ -43,7 +45,38 @@ class ProfileMahasiswaController extends Controller
         $prodi   = ProdiModel::all();
         $periode = PeriodeModel::all();
 
-        return view('mahasiswa.profile-mahasiswa.index', compact('breadcrumb', 'preferensi', 'page', 'activeMenu', 'mahasiswa', 'prodi', 'periode'));
+        $daftarKategori = KategoriModel::all();
+
+        $daftarTingkat = TingkatLombaModel::all();
+        $dataPreferensi = PreferensiUserModel::where('user_id', auth()->id())
+            ->get()
+            ->groupBy('kriteria')
+            ->mapWithKeys(function ($item, $key) {
+                return [$key => $item->keyBy('prioritas')];
+            });
+
+        $dataPreferensiBidang = $dataPreferensi['bidang'] ?? collect();
+        $dataPreferensiTingkat = $dataPreferensi['tingkat'] ?? collect();
+        $dataPreferensiPenyelenggara = $dataPreferensi['penyelenggara'] ?? collect();
+        $dataPreferensiLokasi = $dataPreferensi['lokasi'] ?? collect();
+        $dataPreferensiBiaya = $dataPreferensi['biaya'] ?? collect();
+
+        return view('mahasiswa.profile-mahasiswa.index', compact(
+            'breadcrumb',
+            'daftarKategori',
+            'daftarTingkat',
+            'preferensi',
+            'dataPreferensiBidang',
+            'dataPreferensiTingkat',
+            'dataPreferensiPenyelenggara',
+            'dataPreferensiLokasi',
+            'dataPreferensiBiaya',
+            'page',
+            'activeMenu',
+            'mahasiswa',
+            'prodi',
+            'periode'
+        ));
     }
 
     public function update(Request $request)
@@ -61,7 +94,7 @@ class ProfileMahasiswaController extends Controller
                 'email'             => 'required|email|unique:t_mahasiswa,email,' . $mahasiswa->mahasiswa_id . ',mahasiswa_id',
                 'no_hp'             => 'required|numeric|unique:t_mahasiswa,no_hp,' . $mahasiswa->mahasiswa_id . ',mahasiswa_id',
                 'kelamin'           => 'required|in:L,P',
-                'img_profile'       => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // ✅ Sesuaikan nama field
+                'img_profile'       => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
                 'username'          => 'nullable|string|unique:t_users,username,' . $mahasiswa->user_id . ',user_id',
             ]);
 
@@ -127,8 +160,158 @@ class ProfileMahasiswaController extends Controller
         $username = $request->input('username');
         $exists   = UsersModel::where('username', $username)->exists();
 
-        // harus mengembalikan string 'true' atau 'false', bukan JSON
         return response($exists ? 'false' : 'true');
+    }
+
+    public function storePreferensi(Request $request)
+    {
+        try {
+            // Validation rules
+            $rules = [
+                'bidang1_id' => 'required|exists:t_kategori,kategori_id',
+                'bidang2_id' => 'nullable|exists:t_kategori,kategori_id',
+                'bidang3_id' => 'nullable|exists:t_kategori,kategori_id',
+                'bidang4_id' => 'nullable|exists:t_kategori,kategori_id',
+                'bidang5_id' => 'nullable|exists:t_kategori,kategori_id',
+            ];
+
+            // Validation tingkat lomba
+            $daftarTingkatCount = TingkatLombaModel::count();
+            for ($i = 1; $i <= $daftarTingkatCount; $i++) {
+                $rules["tingkat_lomba{$i}_id"] = 'required|exists:t_tingkat_lomba,tingkat_lomba_id';
+            }
+
+            // Validation jenis penyelenggara
+            for ($i = 1; $i <= 3; $i++) {
+                $rules["jenis_penyelenggara{$i}_id"] = 'required|in:Institusi,Kampus,Komunitas';
+            }
+
+            // Validation lokasi
+            for ($i = 1; $i <= 4; $i++) {
+                $rules["lokasi{$i}_id"] = 'required|in:Offline Dalam Kota,Offline Luar Kota,Online,Hybrid';
+            }
+
+            // Validation biaya
+            for ($i = 1; $i <= 2; $i++) {
+                $rules["biaya{$i}_id"] = 'required|in:Tanpa Biaya,Dengan Biaya';
+            }
+
+            $request->validate($rules);
+
+            $user = Auth::user();
+            $mahasiswa = $user->mahasiswa;
+
+            // Hapus preferensi lama jika ada
+            DB::table('t_preferensi_user')
+                ->where('user_id', $user->user_id)
+                ->where('mahasiswa_id', $mahasiswa->mahasiswa_id)
+                ->delete();
+
+            $preferensiData = [];
+
+            // Memasukkan preferensi bidang ke array untuk insert nanti
+            for ($i = 1; $i <= 5; $i++) {
+                $bidangId = $request->input("bidang{$i}_id");
+                if ($bidangId) {
+                    $kategori = DB::table('t_kategori')->where('kategori_id', $bidangId)->first();
+                    $preferensiData[] = [
+                        'user_id' => $user->user_id,
+                        'mahasiswa_id' => $mahasiswa->mahasiswa_id,
+                        'kriteria' => 'bidang',
+                        'nilai' => $kategori->nama_kategori,
+                        'prioritas' => $i,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+            }
+
+            // Memasukkan preferensi tingkat ke array untuk insert nanti
+            for ($i = 1; $i <= $daftarTingkatCount; $i++) { // sesuaikan dengan jumlah tingkat
+                $tingkatId = $request->input("tingkat_lomba{$i}_id");
+                if ($tingkatId) {
+                    $tingkat = DB::table('t_tingkat_lomba')->where('tingkat_lomba_id', $tingkatId)->first();
+                    $preferensiData[] = [
+                        'user_id' => $user->user_id,
+                        'mahasiswa_id' => $mahasiswa->mahasiswa_id,
+                        'kriteria' => 'tingkat',
+                        'nilai' => $tingkat->nama_tingkat,
+                        'prioritas' => $i,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+            }
+
+            // Memasukkan preferensi penyelenggara ke array untuk insert nanti
+            for ($i = 1; $i <= 3; $i++) {
+                $penyelenggaraValue = $request->input("jenis_penyelenggara{$i}_id");
+                if ($penyelenggaraValue) {
+                    $preferensiData[] = [
+                        'user_id' => $user->user_id,
+                        'mahasiswa_id' => $mahasiswa->mahasiswa_id,
+                        'kriteria' => 'penyelenggara',
+                        'nilai' => $penyelenggaraValue,
+                        'prioritas' => $i,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+            }
+
+            // Memasukkan preferensi lokasi ke array untuk insert nanti
+            for ($i = 1; $i <= 4; $i++) {
+                $lokasiValue = $request->input("lokasi{$i}_id");
+                if ($lokasiValue) {
+                    $preferensiData[] = [
+                        'user_id' => $user->user_id,
+                        'mahasiswa_id' => $mahasiswa->mahasiswa_id,
+                        'kriteria' => 'lokasi',
+                        'nilai' => $lokasiValue,
+                        'prioritas' => $i,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+            }
+
+            // Memasukkan preferensi biaya ke array untuk insert nanti
+            for ($i = 1; $i <= 2; $i++) {
+                $biayaValue = $request->input("biaya{$i}_id");
+                if ($biayaValue) {
+                    $preferensiData[] = [
+                        'user_id' => $user->user_id,
+                        'mahasiswa_id' => $mahasiswa->mahasiswa_id,
+                        'kriteria' => 'biaya',
+                        'nilai' => $biayaValue,
+                        'prioritas' => $i,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+            }
+
+            // Insert data array preferensi user ke database
+            DB::table('t_preferensi_user')->insert($preferensiData);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Preferensi berhasil disimpan.',
+                'redirect' => route('mahasiswa.profile.index')
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data tidak valid.',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat menyimpan preferensi.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function changePassword(Request $request)

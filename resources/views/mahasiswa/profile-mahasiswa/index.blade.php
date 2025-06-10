@@ -26,6 +26,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" id="edit-preferensi-tab" data-toggle="tab" href="#edit-preferensi"
+                                role="tab" aria-controls="edit-preferensi" aria-selected="false">
+                                <i class="fas fa-sliders-h"></i> Edit Preferensi
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" id="change-password-tab" data-toggle="tab" href="#change-password"
                                 role="tab" aria-controls="change-password" aria-selected="false">
                                 <i class="fas fa-lock"></i> Ubah Password
@@ -229,7 +235,201 @@
                             </div>
                         </div>
 
-                        <!-- Edit Profile -->
+                        <!-- Edit Preferensi Tab -->
+                        <div class="tab-pane fade" id="edit-preferensi" role="tabpanel"
+                            aria-labelledby="edit-preferensi-tab">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <form id="formEditPreferensi" action="{{ route('mahasiswa.profile.preferensi') }}"
+                                        method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        @method('PUT')
+
+                                        {{-- Bidang Minat --}}
+                                        <div class="form-group">
+                                            <label for="bidang_id">Bidang Minat <span class="text-danger">*</span></label>
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                <div class="mt-3 custom-validation">
+                                                    <select name="bidang{{ $i }}_id"
+                                                        id="bidang{{ $i }}_id" class="form-control select2"
+                                                        {{ $i == 1 ? 'required' : '' }}>
+                                                        <option value="">-- Pilih Bidang Minat #{{ $i }}
+                                                            --
+                                                        </option>
+                                                        @php
+                                                            $preferensiBidang = $dataPreferensiBidang->get($i);
+                                                            $selectedKategori = $preferensiBidang
+                                                                ? $preferensiBidang->nilai
+                                                                : old("bidang{$i}_id");
+                                                        @endphp
+                                                        @foreach ($daftarKategori->keyBy('nama_kategori') as $kategori)
+                                                            <option value="{{ $kategori->kategori_id }}"
+                                                                {{ $selectedKategori == $kategori->nama_kategori ? 'selected' : '' }}>
+                                                                {{ $kategori->nama_kategori }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+
+                                                    <!-- Tombol Hapus -->
+                                                    <button type="button" class="btn btn-danger btn ml-2 remove-select"
+                                                        data-target="bidang{{ $i }}_id">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            @endfor
+                                        </div>
+
+                                        {{-- Tingkat Lomba --}}
+                                        <div class="form-group">
+                                            <label for="tingkat_lomba_id">Tingkat Lomba <span
+                                                    class="text-danger">*</span></label>
+                                            @for ($i = 1; $i <= count($daftarTingkat); $i++)
+                                                <div class="mt-3 custom-validation">
+                                                    <select name="tingkat_lomba{{ $i }}_id"
+                                                        id="tingkat_lomba{{ $i }}_id"
+                                                        class="form-control select2" required>
+                                                        <option value="">-- Pilih Tingkat Lomba #{{ $i }}
+                                                            --
+                                                        </option>
+                                                        @foreach ($daftarTingkat as $tingkat)
+                                                            @php
+                                                                $preferensiTingkat = $dataPreferensiTingkat->get($i);
+                                                                $isSelected =
+                                                                    $preferensiTingkat &&
+                                                                    $preferensiTingkat->nilai == $tingkat->nama_tingkat;
+                                                            @endphp
+                                                            <option value="{{ $tingkat->tingkat_lomba_id }}"
+                                                                {{ $isSelected ? 'selected' : '' }}>
+                                                                {{ $tingkat->nama_tingkat }}</option>
+                                                        @endforeach
+                                                    </select>
+
+                                                    <!-- Tombol Hapus -->
+                                                    <button type="button" class="btn btn-danger btn ml-2 remove-select"
+                                                        data-target="bidang{{ $i }}_id">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            @endfor
+                                        </div>
+
+                                        {{-- Jenis Penyelenggara Lomba --}}
+                                        <div class="form-group">
+                                            <label for="jenis_penyelenggara_id">Jenis Penyelenggara Lomba <span
+                                                    class="text-danger">*</span></label>
+                                            @for ($i = 1; $i <= 3; $i++)
+                                                <div class="mt-3 custom-validation">
+                                                    <select name="jenis_penyelenggara{{ $i }}_id"
+                                                        id="jenis_penyelenggara{{ $i }}_id"
+                                                        class="form-control select2" required>
+                                                        <option value="">-- Pilih Jenis Penyelenggara Lomba
+                                                            #{{ $i }} --
+                                                        </option>
+                                                        @php
+                                                            $preferensiPenyelenggara = $dataPreferensiPenyelenggara->get(
+                                                                $i,
+                                                            );
+                                                            $daftarJenisPenyelenggara = [
+                                                                'Institusi',
+                                                                'Kampus',
+                                                                'Komunitas',
+                                                            ];
+                                                        @endphp
+                                                        @foreach ($daftarJenisPenyelenggara as $jenis)
+                                                            <option value="{{ $jenis }}"
+                                                                {{ $preferensiPenyelenggara && $preferensiPenyelenggara->nilai == $jenis ? 'selected' : '' }}>
+                                                                {{ $jenis }}</option>
+                                                        @endforeach
+                                                    </select>
+
+                                                    <!-- Tombol Hapus -->
+                                                    <button type="button" class="btn btn-danger btn ml-2 remove-select"
+                                                        data-target="bidang{{ $i }}_id">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            @endfor
+                                        </div>
+
+                                        {{-- Lokasi --}}
+                                        <div class="form-group">
+                                            <label for="">Lokasi Lomba <span class="text-danger">*</span></label>
+                                            @for ($i = 1; $i <= 4; $i++)
+                                                <div class="mt-3 custom-validation">
+                                                    <select name="lokasi{{ $i }}_id"
+                                                        id="lokasi{{ $i }}_id" class="form-control select2"
+                                                        required>
+                                                        <option value="">-- Pilih Lokasi Lomba #{{ $i }}
+                                                            --
+                                                        </option>
+                                                        @php
+                                                            $preferensiLokasi = $dataPreferensiLokasi->get($i);
+                                                            $daftarLokasi = [
+                                                                'Offline Dalam Kota',
+                                                                'Online',
+                                                                'Hybrid',
+                                                                'Offline Luar Kota',
+                                                            ];
+                                                        @endphp
+                                                        @foreach ($daftarLokasi as $lokasi)
+                                                            <option value="{{ $lokasi }}"
+                                                                {{ $preferensiLokasi && $preferensiLokasi->nilai == $lokasi ? 'selected' : '' }}>
+                                                                {{ $lokasi }}</option>
+                                                        @endforeach
+                                                    </select>
+
+                                                    <!-- Tombol Hapus -->
+                                                    <button type="button" class="btn btn-danger btn ml-2 remove-select"
+                                                        data-target="bidang{{ $i }}_id">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            @endfor
+                                        </div>
+
+                                        {{-- Biaya --}}
+                                        <div class="form-group">
+                                            <label for="biaya{{ $i }}_id">Biaya Lomba <span
+                                                    class="text-danger">*</span></label>
+                                            @for ($i = 1; $i <= 2; $i++)
+                                                <div class="mt-3 custom-validation">
+                                                    <select name="biaya{{ $i }}_id"
+                                                        id="biaya{{ $i }}_id" class="form-control select2"
+                                                        required>
+                                                        <option value="">-- Pilih Biaya Lomba #{{ $i }}
+                                                            --
+                                                        </option>
+                                                        @php
+                                                            $preferensiBiaya = $dataPreferensiBiaya->get($i);
+                                                            $daftarBiaya = ['Tanpa Biaya', 'Dengan Biaya'];
+                                                        @endphp
+                                                        @foreach ($daftarBiaya as $biaya)
+                                                            <option value="{{ $biaya }}"
+                                                                {{ $preferensiBiaya && $preferensiBiaya->nilai == $biaya ? 'selected' : '' }}>
+                                                                {{ $biaya }}</option>
+                                                        @endforeach
+                                                    </select>
+
+                                                    <!-- Tombol Hapus -->
+                                                    <button type="button" class="btn btn-danger btn ml-2 remove-select"
+                                                        data-target="bidang{{ $i }}_id">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            @endfor
+                                        </div>
+
+                                        <div class="form-group mb-0">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-save"></i> Simpan Perubahan
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lupa password & ganti phrase -->
                         <div class="tab-pane fade" id="change-password" role="tabpanel"
                             aria-labelledby="change-password-tab">
                             <div class="row">
@@ -324,6 +524,12 @@
 
     {{-- Toastr CSS --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+    <!-- Script Select2 (Dropdown Multiselect/Search) -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+
+    {{-- Memanggil Custom CSS Select2 --}}
+    <link href="{{ asset('css-custom/select2-custom.css') }}" rel="stylesheet">
 @endpush
 
 @push('js')
@@ -332,8 +538,197 @@
 
     <!-- Memanggil Fungsi Form Validation Custom -->
     <script src="{{ asset('js-custom/form-validation.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
+        // Form Edit Preferensi Validation
+        $(document).ready(function() {
+            // Menghapus value input select
+            $('.remove-select').on('click', function() {
+                const targetId = $(this).data('target');
+                $('#' + targetId).val('').trigger('change');
+            });
+
+            // Initialize Select2
+            for (let i = 1; i <= 5; i++) {
+                $(`#bidang${i}_id`).select2({
+                    placeholder: `-- Pilih Bidang Minat #${i} --`,
+                    width: '80%',
+                    allowClear: true
+                });
+            }
+
+            // Assuming daftarTingkat count is 6, adjust as needed
+            for (let i = 1; i <= 6; i++) {
+                $(`#tingkat_lomba${i}_id`).select2({
+                    placeholder: `-- Pilih Tingkat Lomba #${i} --`,
+                    width: '80%',
+                    allowClear: false
+                });
+            }
+
+            for (let i = 1; i <= 3; i++) {
+                $(`#jenis_penyelenggara${i}_id`).select2({
+                    placeholder: `-- Pilih Jenis Penyelenggara #${i} --`,
+                    width: '80%',
+                    allowClear: false
+                });
+            }
+
+            for (let i = 1; i <= 4; i++) {
+                $(`#lokasi${i}_id`).select2({
+                    placeholder: `-- Pilih Lokasi #${i} --`,
+                    width: '80%',
+                    allowClear: false
+                });
+            }
+
+            for (let i = 1; i <= 2; i++) {
+                $(`#biaya${i}_id`).select2({
+                    placeholder: `-- Pilih Biaya #${i} --`,
+                    width: '80%',
+                    allowClear: false
+                });
+            }
+
+            // Custom form validation
+            let validationRules = {
+                'bidang1_id': {
+                    required: true
+                }
+            };
+
+            let validationMessages = {
+                'bidang1_id': {
+                    required: "Bidang minat #1 wajib diisi"
+                }
+            };
+
+            // Add validation for bidang 2-5 (optional)
+            for (let i = 2; i <= 5; i++) {
+                validationMessages[`bidang${i}_id`] = {
+                    required: `Bidang minat #${i} wajib diisi`
+                };
+            }
+
+            // Add validation for tingkat lomba (all required)
+            for (let i = 1; i <= 6; i++) {
+                validationRules[`tingkat_lomba${i}_id`] = {
+                    required: true
+                };
+                validationMessages[`tingkat_lomba${i}_id`] = {
+                    required: `Tingkat Lomba #${i} wajib diisi`
+                };
+            }
+
+            // Add validation for jenis penyelenggara (all required)
+            for (let i = 1; i <= 3; i++) {
+                validationRules[`jenis_penyelenggara${i}_id`] = {
+                    required: true
+                };
+                validationMessages[`jenis_penyelenggara${i}_id`] = {
+                    required: `Jenis Penyelenggara #${i} wajib diisi`
+                };
+            }
+
+            // Add validation for lokasi (all required)
+            for (let i = 1; i <= 4; i++) {
+                validationRules[`lokasi${i}_id`] = {
+                    required: true
+                };
+                validationMessages[`lokasi${i}_id`] = {
+                    required: `Lokasi #${i} wajib diisi`
+                };
+            }
+
+            // Add validation for biaya (all required)
+            for (let i = 1; i <= 2; i++) {
+                validationRules[`biaya${i}_id`] = {
+                    required: true
+                };
+                validationMessages[`biaya${i}_id`] = {
+                    required: `Biaya #${i} wajib diisi`
+                };
+            }
+
+            // Apply custom validation
+            customFormValidation(
+                "#formEditPreferensi",
+                validationRules,
+                validationMessages,
+                function(response, form) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: response.message,
+                            showConfirmButton: true,
+                            timer: 3000
+                        }).then(function() {
+                            if (response.redirect) {
+                                window.location.href = response.redirect;
+                            } else {
+                                location.reload();
+                            }
+                        });
+                    } else {
+                        let errorMessage = response.message || 'Gagal menyimpan preferensi';
+
+                        // Show validation errors if available
+                        if (response.errors) {
+                            let errorList = '';
+                            Object.keys(response.errors).forEach(function(key) {
+                                errorList += '• ' + response.errors[key][0] + '\n';
+                            });
+                            errorMessage += '\n\nDetail Error:\n' + errorList;
+                        }
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Terjadi Kesalahan',
+                            text: errorMessage,
+                            showConfirmButton: true
+                        });
+                    }
+                }
+            );
+
+            // Add change event handlers to prevent duplicate selections
+            function handleDuplicateSelection(selectType, maxCount) {
+                for (let i = 1; i <= maxCount; i++) {
+                    $(`#${selectType}${i}_id`).on('change', function() {
+                        let selectedValue = $(this).val();
+                        if (selectedValue) {
+                            // Check for duplicates in other selects of same type
+                            for (let j = 1; j <= maxCount; j++) {
+                                if (i !== j) {
+                                    let otherSelect = $(`#${selectType}${j}_id`);
+                                    if (otherSelect.val() === selectedValue) {
+                                        // Show warning and clear the duplicate
+                                        Swal.fire({
+                                            icon: 'warning',
+                                            title: 'Duplikasi Terdeteksi',
+                                            text: 'Pilihan ini sudah dipilih di prioritas lain. Silakan pilih opsi yang berbeda.',
+                                            showConfirmButton: true
+                                        });
+                                        $(this).val('').trigger('change');
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+
+            // Apply duplicate checking for each category
+            handleDuplicateSelection('bidang', 5);
+            handleDuplicateSelection('tingkat_lomba', 6);
+            handleDuplicateSelection('jenis_penyelenggara', 3);
+            handleDuplicateSelection('lokasi', 4);
+            handleDuplicateSelection('biaya', 2);
+        });
+
         $(document).ready(function() {
             // Toastr untuk menampilkan notifikasi jika preferensi belum lengkap
             toastr.options = {

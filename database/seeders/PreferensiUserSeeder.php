@@ -54,7 +54,7 @@ class PreferensiUserSeeder extends Seeder
         $this->createPreferensi($userId, $mahasiswaId, 'lokasi', 'Offline Luar Kota', 4);
 
         // Preferensi biaya
-        $this->createPreferensi($userId, $mahasiswaId, 'biaya', 'Tanpa biaya', 1);
+        $this->createPreferensi($userId, $mahasiswaId, 'biaya', 'Tanpa Biaya', 1);
         $this->createPreferensi($userId, $mahasiswaId, 'biaya', 'Dengan Biaya', 2);
     }
 

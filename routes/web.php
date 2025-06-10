@@ -325,7 +325,9 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
         Route::get('/Mahasiswa', [DashboardMahasiswaController::class, 'index'])->name('mahasiswa.dashboard');
 
         // Rute Laporan Promethee
-        Route::get('laporan', [PrometheeRekomendasiController::class, 'laporan'])->name('laporan-promethee');
+        Route::prefix('mahasiswa/promethee')->group(function () {
+            Route::get('laporan', [PrometheeRekomendasiController::class, 'laporan'])->name('laporan-promethee');
+        });
 
         Route::prefix('mhs/prestasi')->group(function () {
             Route::get('/', [PrestasiController::class, 'index'])->name('mhs.prestasi.index');
@@ -367,6 +369,7 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::put('/update', [ProfileMahasiswaController::class, 'update'])->name('mahasiswa.profile.update');
             Route::post('/cek-username', [ProfileMahasiswaController::class, 'cekUsername'])->name('mahasiswa.profile.cek-username');
             Route::post('/ubah-password', [ProfileMahasiswaController::class, 'changePassword'])->name('ubah-password-mahasiswa');
+            Route::put('/preferensi', [ProfileMahasiswaController::class, 'storePreferensi'])->name('mahasiswa.profile.preferensi');
         });
     });
 });
