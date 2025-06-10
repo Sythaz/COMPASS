@@ -239,7 +239,7 @@
                                             @endif
                                             <strong>{{ $result['rank'] }}</strong>
                                         </td>
-                                        <td><strong>A{{ $loop->iteration }}</strong></td>
+                                        <td><strong>A{{ $result['id'] }}</strong></td>
                                         <td>
                                             {{ $result['name'] }}
                                             @if ($loop->first)
