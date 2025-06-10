@@ -161,6 +161,9 @@
 @push('css')
     {{-- Custom CSS untuk daftar lomba --}}
     <link href="{{ asset('css-custom/daftar-card-lomba.css') }}" rel="stylesheet">
+
+    {{-- Custom CSS untuk tab --}}
+    <link href="{{ asset('css-custom/tab-custom.css') }}" rel="stylesheet">
 @endpush
 
 @push('js')

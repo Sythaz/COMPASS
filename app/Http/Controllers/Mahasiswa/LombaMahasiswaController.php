@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\PrometheeRekomendasiController;
 use Illuminate\Http\Request;
 use App\Models\LombaModel;
 use Yajra\DataTables\Facades\DataTables;
@@ -16,17 +17,75 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\KategoriModel;
 use App\Models\TingkatLombaModel;
 use App\Models\KategoriLombaModel;
+use App\Models\PreferensiUserModel;
+use Illuminate\Support\Facades\Log;
 
 class LombaMahasiswaController extends Controller
 {
     public function index()
     {
-        $lomba = LombaModel::where('status_verifikasi', 'Terverifikasi')->get();
         $breadcrumb = (object) [
+            'title' => 'Info Lomba',
             'list' => ['Info Lomba', 'Detail Lomba']
         ];
 
-        return view('mahasiswa.informasi-lomba.index', compact('lomba', 'breadcrumb'));
+        $dataLomba = LombaModel::with(['kategori', 'tingkat_lomba'])
+            ->select([
+                'lomba_id',
+                'nama_lomba',
+                'penyelenggara_lomba',
+                'tingkat_lomba_id',
+                'awal_registrasi_lomba',
+                'akhir_registrasi_lomba',
+                'lokasi_lomba',
+                'tipe_lomba',
+            ])
+            ->where('status_lomba', 'Aktif')
+            ->whereIn('status_verifikasi', ['Terverifikasi'])
+            ->where('akhir_registrasi_lomba', '>=', now())
+            ->get();
+
+        $daftarKategori = KategoriModel::where('status_kategori', 'Aktif')->get();
+        $daftarTingkatLomba = TingkatLombaModel::where('status_tingkat_lomba', 'Aktif')->get();
+
+        // Cek apakah user punya preferensi
+        $cekUserPreferensi = PreferensiUserModel::where('user_id', auth()->id())->exists();
+
+        $rekomendasiLomba = collect(); // Default kosong
+
+        if ($cekUserPreferensi) {
+            try {
+                $promethee = new PrometheeRekomendasiController();
+                $response = $promethee->calculate(request()); // Mengembalikan JsonResponse
+                $responseData = $response->getData(); // Ambil data PHP object
+
+                if (!empty($responseData->results)) {
+                    // Ambil lomba_id yang sudah diurutkan
+                    $lombaIds = collect($responseData->results)->pluck('id')->toArray();
+
+                    // Ambil data lomba dari database sesuai urutan rekomendasi
+                    $rekomendasiLomba = LombaModel::with(['kategori', 'tingkat_lomba'])
+                        ->whereIn('lomba_id', $lombaIds)
+                        ->orderByRaw("FIELD(lomba_id, " . implode(',', $lombaIds) . ")")
+                        ->get();
+                }
+            } catch (\Exception $e) {
+                Log::error('Gagal memuat rekomendasi lomba: ' . $e->getMessage());
+            }
+        }
+
+        // Data tambahan untuk filter
+        $daftarKategori = KategoriModel::where('status_kategori', 'Aktif')->get();
+        $daftarTingkatLomba = TingkatLombaModel::where('status_tingkat_lomba', 'Aktif')->get();
+
+        return view('mahasiswa.informasi-lomba.index', compact(
+            'breadcrumb',
+            'dataLomba',
+            'daftarKategori',
+            'daftarTingkatLomba',
+            'rekomendasiLomba',
+            'cekUserPreferensi'
+        ));
     }
 
 
@@ -374,5 +433,4 @@ class LombaMahasiswaController extends Controller
 
         return view('mahasiswa.informasi-lomba.riwayat-pendaftaran', compact('pendaftaran'));
     }
-
 }

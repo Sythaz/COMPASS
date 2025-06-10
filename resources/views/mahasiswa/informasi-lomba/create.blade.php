@@ -13,7 +13,7 @@
             <div class="card-header bg-light">
                 <h6 class="mb-0"><i class="fas fa-info-circle mr-2"></i>Informasi Dasar Lomba</h6>
             </div>
-            <div class="card-body">
+            <div class="card-body p-3">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -53,15 +53,8 @@
                     <label for="deskripsi_lomba" class="col-form-label font-weight-bold">Deskripsi Lomba <span
                             class="text-danger">*</span></label>
                     <div class="custom-validation">
-                        <div class="input-group">
-                            <textarea name="deskripsi_lomba" id="deskripsi_lomba" class="form-control" rows="3"
-                                required></textarea>
-                            <div class="input-group-append align-self-start">
-                                <span class="input-group-text bg-secondary text-white">
-                                    <i class="fas fa-align-left"></i>
-                                </span>
-                            </div>
-                        </div>
+                        <textarea name="deskripsi_lomba" id="deskripsi_lomba" class="form-control" rows="3"
+                            required></textarea>
                     </div>
                 </div>
 
@@ -135,7 +128,7 @@
             <div class="card-header bg-light">
                 <h6 class="mb-0"><i class="fas fa-calendar-alt mr-2"></i>Informasi Registrasi</h6>
             </div>
-            <div class="card-body">
+            <div class="card-body p-3">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -196,7 +189,7 @@
             <div class="card-header bg-light">
                 <h6 class="mb-0"><i class="fas fa-image mr-2"></i>Gambar Poster Lomba</h6>
             </div>
-            <div class="card-body">
+            <div class="card-body p-3">
                 <div class="form-group mb-0">
                     <label for="img_lomba" class="col-form-label font-weight-bold">Gambar Poster Lomba <small>(Maksimal
                             2MB)</small></label>
