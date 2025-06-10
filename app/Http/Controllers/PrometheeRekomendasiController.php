@@ -687,4 +687,108 @@ class PrometheeRekomendasiController extends Controller
 
         return $details;
     }
+
+    // Untuk rekomendasi lomba tiap mahasiswa
+    /**
+     * Load preferensi dari user tertentu dan bangun data alternatif hanya dengan satu lomba baru
+     *
+     * @param int $user_id
+     * @param LombaModel $lombaBaru
+     */
+    public function loadPreferensiByUser(int $user_id, LombaModel $lombaBaru): void
+    {
+        // Reset alternatif sebelumnya
+        $this->alternatif = [];
+
+        // Ambil semua preferensi user berdasarkan user_id
+        $preferensiAll = PreferensiUserModel::where('user_id', $user_id)
+            ->orderBy('prioritas')
+            ->get();
+
+        if ($preferensiAll->isEmpty()) {
+            return; // User tidak punya preferensi
+        }
+
+        // Pisahkan preferensi per kriteria
+        $preferensiBidang = $preferensiAll->where('kriteria', 'bidang')->pluck('nilai', 'prioritas');
+        $totalCountBidangLomba = $preferensiBidang->count();
+
+        $preferensiTingkat = $preferensiAll->where('kriteria', 'tingkat')->pluck('nilai', 'prioritas');
+        $totalCountTingkatLomba = TingkatLombaModel::count();
+
+        $preferensiReputasiPenyelenggara = $preferensiAll->where('kriteria', 'penyelenggara')->pluck('nilai', 'prioritas');
+        $totalCountReputasiPenyelenggara = $preferensiReputasiPenyelenggara->count();
+
+        $preferensiLokasi = $preferensiAll->where('kriteria', 'lokasi')->pluck('nilai', 'prioritas');
+        $totalCountLokasi = $preferensiLokasi->count();
+
+        $preferensiBiaya = $preferensiAll->where('kriteria', 'biaya')->pluck('nilai', 'prioritas');
+        $totalCountBiaya = $preferensiBiaya->count();
+
+        // Hanya tambahkan lomba baru sebagai satu-satunya alternatif
+        $this->alternatif[] = [
+            'id' => $lombaBaru->lomba_id,
+            'name' => $lombaBaru->nama_lomba,
+            'values' => [
+                $this->getBidangScore($lombaBaru, $preferensiBidang, $totalCountBidangLomba),
+                $this->getTingkatScore($lombaBaru, $preferensiTingkat, $totalCountTingkatLomba),
+                $this->getReputasiPenyelenggaraScore($lombaBaru, $preferensiReputasiPenyelenggara, $totalCountReputasiPenyelenggara),
+                $this->getDeadlineScore($lombaBaru),
+                $this->getLokasiScore($lombaBaru, $preferensiLokasi, $totalCountLokasi),
+                $this->getBiayaScore($lombaBaru, $preferensiBiaya, $totalCountBiaya),
+            ],
+        ];
+    }
+
+    /**
+     * Hitung net flow untuk satu lomba baru berdasarkan preferensi user tertentu
+     *
+     * @param LombaModel $lombaBaru
+     * @param int $user_id
+     * @return array
+     */
+    public function calculateNetFlowForSingleLomba(LombaModel $lombaBaru, int $user_id): array
+    {
+        try {
+            // Muat preferensi user dan bangun data alternatif (hanya satu lomba)
+            $this->loadPreferensiByUser($user_id, $lombaBaru);
+
+            if (empty($this->alternatif)) {
+                return [
+                    'user_id' => $user_id,
+                    'meets_threshold' => false,
+                    'reason' => 'User tidak memiliki preferensi atau lomba tidak sesuai'
+                ];
+            }
+
+            // Karena hanya ada satu alternatif, tidak ada outranking ke alternatif lain
+            // Maka net_flow = leaving_flow - entering_flow = 0 - 0 = 0
+            // Namun kita bisa buat logika khusus jika hanya ada satu lomba
+
+            $alternative = $this->alternatif[0];
+            $netFlow = 0.0;
+
+            // Contoh logika custom: jika skor keseluruhan > threshold
+            $totalScore = array_sum($alternative['values']);
+            $maxPossibleScore = count($this->criteria) * 5;
+            $scoreRatio = $totalScore / $maxPossibleScore;
+
+            // Threshold: jika skor rata-rata > 3 → net flow asumsi = scoreRatio - 0.5
+            $netFlow = $scoreRatio - 0.5;
+
+            $meetsThreshold = $netFlow >= 0.2;
+
+            return [
+                'user_id' => $user_id,
+                'net_flow' => round($netFlow, 4),
+                'meets_threshold' => $meetsThreshold
+            ];
+        } catch (\Exception $e) {
+            return [
+                'user_id' => $user_id,
+                'meets_threshold' => false,
+                'error' => $e->getMessage()
+            ];
+        }
+    }
 }
