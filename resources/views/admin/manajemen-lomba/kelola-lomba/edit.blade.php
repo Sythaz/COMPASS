@@ -43,7 +43,8 @@
                         <label for="nama_lomba" class="col-form-label">Nama Lomba <span class="text-danger"
                                 style="color: red;">*</span></label>
                         <div class="custom-validation">
-                            <input type="text" class="form-control" name="nama_lomba" required>
+                            <input type="text" class="form-control" name="nama_lomba"
+                                value="{{ old('nama_lomba', $kelolaLomba->nama_lomba) }}" required>
                         </div>
                     </div>
 
@@ -52,7 +53,8 @@
                         <label for="penyelenggara_lomba" class="col-form-label">Penyelenggara Lomba <span
                                 class="text-danger" style="color: red;">*</span></label>
                         <div class="custom-validation">
-                            <input type="text" class="form-control" name="penyelenggara_lomba" required>
+                            <input type="text" class="form-control" name="penyelenggara_lomba"
+                                value="{{ old('penyelenggara_lomba', $kelolaLomba->penyelenggara_lomba) }}" required>
                         </div>
                     </div>
                 </div>
@@ -63,7 +65,7 @@
                         <label for="deskripsi_lomba" class="col-form-label">Deskripsi Lomba <span class="text-danger"
                                 style="color: red;">*</span></label>
                         <div class="custom-validation">
-                            <textarea name="deskripsi_lomba" id="deskripsi_lomba" class="form-control" rows="3" required></textarea>
+                            <textarea name="deskripsi_lomba" id="deskripsi_lomba" class="form-control" rows="3" required>{{ old('deskripsi_lomba', $kelolaLomba->deskripsi_lomba) }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -78,7 +80,8 @@
                                 class="form-control multiselect-dropdown-kategori" multiple="multiple" required>
                                 <option value="">-- Pilih Kategori --</option>
                                 @foreach ($daftarKategori as $kategori)
-                                    <option value="{{ $kategori->kategori_id }}">
+                                    <option value="{{ $kategori->kategori_id }}"
+                                        {{ collect(old('kategori_id', $kelolaLomba->kategori->pluck('kategori_id')))->contains($kategori->kategori_id) ? 'selected' : '' }}>
                                         {{ $kategori->nama_kategori }}
                                     </option>
                                 @endforeach
@@ -94,7 +97,8 @@
                             <select name="tingkat_lomba_id" id="tingkat_lomba_id" class="form-control" required>
                                 <option value="">-- Pilih Tingkat --</option>
                                 @foreach ($daftarTingkatLomba as $tingkat_lomba)
-                                    <option value="{{ $tingkat_lomba->tingkat_lomba_id }}">
+                                    <option value="{{ $tingkat_lomba->tingkat_lomba_id }}"
+                                        {{ old('tingkat_lomba_id', $kelolaLomba->tingkat_lomba_id) == $tingkat_lomba->tingkat_lomba_id ? 'selected' : '' }}>
                                         {{ $tingkat_lomba->nama_tingkat }}
                                     </option>
                                 @endforeach
@@ -110,7 +114,9 @@
                                 class="text-danger" style="color: red;">*</span></label>
                         <div class="custom-validation">
                             <input type="date" class="form-control" name="awal_registrasi_lomba"
-                                id="awal_registrasi_lomba" required>
+                                id="awal_registrasi_lomba"
+                                value="{{ old('awal_registrasi_lomba', $kelolaLomba->awal_registrasi_lomba) }}"
+                                required>
                         </div>
                     </div>
 
@@ -119,7 +125,9 @@
                                 class="text-danger" style="color: red;">*</span></label>
                         <div class="custom-validation">
                             <input type="date" class="form-control" name="akhir_registrasi_lomba"
-                                id="akhir_registrasi_lomba" required>
+                                id="akhir_registrasi_lomba"
+                                value="{{ old('akhir_registrasi_lomba', $kelolaLomba->akhir_registrasi_lomba) }}"
+                                required>
                         </div>
                     </div>
                 </div>
@@ -136,7 +144,7 @@
                                 </span>
                             </div>
                             <input type="text" class="form-control" name="link_pendaftaran_lomba"
-                                value="https://" required>
+                                value="{{ old('link_pendaftaran_lomba', $kelolaLomba->link_pendaftaran_lomba) }}" required>
                         </div>
                     </div>
 
@@ -146,9 +154,18 @@
                                 style="color: red;">*</span></label>
                         <div class="custom-validation">
                             <select name="status_verifikasi" id="status_verifikasi" class="form-control" required>
-                                <option value="Terverifikasi">Terverifikasi</option>
-                                <option value="Menunggu">Menunggu</option>
-                                <option value="Ditolak">Ditolak</option>
+                                <option value="Terverifikasi"
+                                    {{ old('status_verifikasi', $kelolaLomba->status_verifikasi) == 'Terverifikasi' ? 'selected' : '' }}>
+                                    Terverifikasi
+                                </option>
+                                <option value="Menunggu"
+                                    {{ old('status_verifikasi', $kelolaLomba->status_verifikasi) == 'Menunggu' ? 'selected' : '' }}>
+                                    Menunggu
+                                </option>
+                                <option value="Ditolak"
+                                    {{ old('status_verifikasi', $kelolaLomba->status_verifikasi) == 'Ditolak' ? 'selected' : '' }}>
+                                    Ditolak
+                                </option>
                             </select>
                         </div>
                     </div>
@@ -164,13 +181,18 @@
                                 <div class="custom-file">
                                     <input type="file" class="custom-file-input" name="img_lomba"
                                         accept=".png, .jpg, .jpeg"
-                                        onchange="$('#img_lomba_label').text(this.files[0].name)" nullable>
-                                    <label class="custom-file-label" id="img_lomba_label" for="img_lomba">Pilih
-                                        File</label>
+                                        onchange="$('#img_lomba_label').text(this.files[0] ? this.files[0].name : '{{ $kelolaLomba->img_lomba ? basename($kelolaLomba->img_lomba) : 'Pilih File' }}')"
+                                        nullable>
+                                    <label class="custom-file-label" id="img_lomba_label" for="img_lomba">
+                                        {{ $kelolaLomba->img_lomba ? basename($kelolaLomba->img_lomba) : 'Pilih File' }}
+                                    </label>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                        @if ($kelolaLomba->img_lomba)
+                            <small class="text-muted">File saat ini: <a href="{{ asset($kelolaLomba->img_lomba) }}"
+                                    target="_blank">{{ basename($kelolaLomba->img_lomba) }}</a></small>
+                        @endif
                 </div>
             </div>
         </div>
@@ -340,7 +362,7 @@
     {{-- Library Lightbox untuk membesarkan gambar --}}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>
-    
+
     {{-- Memanggil Custom Lightbox --}}
     <link href="{{ asset('css-custom/lightbox-custom.css') }}" rel="stylesheet">
 @endif
