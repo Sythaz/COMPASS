@@ -70,23 +70,23 @@ class UsersModel extends Authenticatable
     }
 
     public function getProfile(): string
-{
-    $img = 'default-profile.png';
+    {
+        $img = 'default-profile.png';
 
-    switch (strtolower($this->role)) {
-        case 'admin':
-            $img = AdminModel::where('user_id', $this->user_id)->first()?->img_admin ?? $img;
-            break;
-        case 'dosen':
-            $img = DosenModel::where('user_id', $this->user_id)->first()?->img_dosen ?? $img;
-            break;
-        case 'mahasiswa':
-            $img = MahasiswaModel::where('user_id', $this->user_id)->first()?->img_mahasiswa ?? $img;
-            break;
+        switch (strtolower($this->role)) {
+            case 'admin':
+                $img = AdminModel::where('user_id', $this->user_id)->first()?->img_admin ?? $img;
+                break;
+            case 'dosen':
+                $img = DosenModel::where('user_id', $this->user_id)->first()?->img_dosen ?? $img;
+                break;
+            case 'mahasiswa':
+                $img = MahasiswaModel::where('user_id', $this->user_id)->first()?->img_mahasiswa ?? $img;
+                break;
+        }
+
+        return $img;
     }
-
-    return $img;
-}
 
 
     /**
