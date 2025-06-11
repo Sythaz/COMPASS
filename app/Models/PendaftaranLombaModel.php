@@ -18,6 +18,8 @@ class PendaftaranLombaModel extends Model
         'mahasiswa_id', // ketua tim
         'lomba_id',
         'bukti_pendaftaran',
+        'status_pendaftaran',
+        'alasan_tolak',
     ];
 
     /**
