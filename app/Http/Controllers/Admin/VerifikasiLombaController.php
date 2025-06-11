@@ -3,14 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\PrometheeRekomendasiController;
 use App\Models\AdminModel;
 use App\Models\DosenModel;
 use App\Models\KategoriModel;
 use Illuminate\Http\Request;
 use App\Models\LombaModel;
 use App\Models\MahasiswaModel;
+use App\Models\NotifikasiModel;
+use App\Models\PreferensiUserModel;
 use App\Models\TingkatLombaModel;
 use App\Models\UsersModel;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 
 class VerifikasiLombaController extends Controller
@@ -161,9 +165,34 @@ class VerifikasiLombaController extends Controller
             // Update status_verifikasi menjadi Terverifikasi
             $lomba->update(['status_verifikasi' => 'Terverifikasi']);
 
+            $userIds = PreferensiUserModel::distinct('user_id')->pluck('user_id');
+
+            $results = [];
+            foreach ($userIds as $userId) {
+                $prometheeController = new PrometheeRekomendasiController();
+                $result = $prometheeController->calculateNetFlowForSingleLomba($lomba, $userId);
+
+                $pesanNotifikasi = sprintf(
+                    "Anda direkomendasikan oleh Sistem untuk mengikuti lomba '%s'. Silakan periksa informasi lomba lebih lanjut jika berminat.",
+                    $lomba->nama_lomba
+                );
+
+                if ($result['meets_threshold']) {
+                    NotifikasiModel::create([
+                        'user_id' => $userId,
+                        'pengirim_role' => 'Sistem',
+                        'lomba_id' => $lomba->lomba_id,
+                        'jenis_notifikasi' => 'Rekomendasi',
+                        'pesan_notifikasi' => $pesanNotifikasi
+                    ]);
+                }
+
+                $results[] = $result;
+            }
+
             return response()->json([
                 'success' => true,
-                'message' => 'Lomba berhasil diterima dan diverifikasi.'
+                'message' => 'Lomba berhasil diterima dan diverifikasi.',
             ]);
         } catch (\Exception $e) {
             return response()->json([

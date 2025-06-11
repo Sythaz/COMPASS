@@ -5,13 +5,16 @@ namespace App\Http\Controllers\Admin;
 use App\Models\LombaModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\PrometheeRekomendasiController;
 use App\Models\AdminModel;
 use App\Models\DosenModel;
 use App\Models\KategoriLombaModel;
 use App\Models\KategoriModel;
 use App\Models\MahasiswaModel;
+use App\Models\PreferensiUserModel;
 use App\Models\TingkatLombaModel;
 use App\Models\UsersModel;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
@@ -219,9 +222,22 @@ class KelolaLombaController extends Controller
                 $lomba->update(['img_lomba' => $filename]);
             }
 
+            if ($request->input('status_verifikasi') === 'Terverifikasi') {
+                // Ambil semua user_id yang sudah mengisi preferensi
+                $userIds = PreferensiUserModel::distinct('user_id')->pluck('user_id');
+
+                $results = [];
+                foreach ($userIds as $userId) {
+                    $prometheeController = new PrometheeRekomendasiController();
+                    $result = $prometheeController->calculateNetFlowForSingleLomba($lomba, $userId);
+                    $results[] = $result;
+                }
+            }
+
             return response()->json([
                 'success' => true,
-                'message' => 'Data berhasil ditambahkan'
+                'message' => 'Data berhasil ditambahkan',
+                'threshold_results' => $results
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -277,9 +293,23 @@ class KelolaLombaController extends Controller
                 $lomba->update(['img_lomba' => $filename]);
             }
 
+
+            if ($request->input('status_verifikasi') === 'Terverifikasi') {
+                // Ambil semua user_id yang sudah mengisi preferensi
+                $userIds = PreferensiUserModel::distinct('user_id')->pluck('user_id');
+
+                $results = [];
+                foreach ($userIds as $userId) {
+                    $prometheeController = new PrometheeRekomendasiController();
+                    $result = $prometheeController->calculateNetFlowForSingleLomba($lomba, $userId);
+                    $results[] = $result;
+                }
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'Data berhasil diperbarui.',
+                'threshold_results' => $results
             ]);
         } catch (\Exception $e) {
             return response()->json([

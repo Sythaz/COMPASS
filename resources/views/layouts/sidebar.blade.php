@@ -152,10 +152,6 @@
                         <i class="fas fa-trophy"></i><span class="nav-text">Informasi Lomba</span>
                     </a>
                     <ul aria-expanded="false">
-                        {{-- Laporan Promethee untuk melihat rekomendasi Lomba --}}
-                        <li>
-                            <a href="{{ route('laporan-promethee') }}">Tampilkan Laporan Rekomendasi</a>
-                        </li>
                         {{-- Mahasiswa dapat melihat Lomba yang Tersedia dan mengajukan Lomba baru --}}
                         <li><a href="{{ route('mahasiswa.informasi-lomba.index') }}">Lomba</a></li>
                         {{-- Halaman untuk melihat Daftar Lomba yang pernah diajukan mahasiswa --}}
@@ -163,7 +159,11 @@
                         </li>
                         {{-- Halaman untuk melihat Daftar Lomba yang pernah diajukan mahasiswa --}}
                         <li><a href="{{ route('mahasiswa.informasi-lomba.riwayat-pendaftaran') }}">Riwayat
-                                Pendaftaran</a>
+                            Pendaftaran</a>
+                        </li>
+                        {{-- Laporan Promethee untuk melihat rekomendasi Lomba --}}
+                        <li>
+                            <a href="{{ route('laporan-promethee') }}">Perhitungan Promethee</a>
                         </li>
                     </ul>
                 </li>

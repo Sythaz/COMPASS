@@ -54,8 +54,48 @@ class PreferensiUserSeeder extends Seeder
         $this->createPreferensi($userId, $mahasiswaId, 'lokasi', 'Offline Luar Kota', 4);
 
         // Preferensi biaya
-        $this->createPreferensi($userId, $mahasiswaId, 'biaya', 'Tanpa biaya', 1);
+        $this->createPreferensi($userId, $mahasiswaId, 'biaya', 'Tanpa Biaya', 1);
         $this->createPreferensi($userId, $mahasiswaId, 'biaya', 'Dengan Biaya', 2);
+
+        $mahasiswaId2 = 2;
+        $userId2 = 89;
+
+        // Preferensi bidang (Maksimal 5 preferensi bidang)
+        $this->createPreferensi($userId2, $mahasiswaId2, 'bidang', 'Mobile App Development', 1);
+        $this->createPreferensi($userId2, $mahasiswaId2, 'bidang', 'Web Development', 2);
+        $this->createPreferensi($userId2, $mahasiswaId2, 'bidang', 'Cybersecurity', 3);
+        $this->createPreferensi($userId2, $mahasiswaId2, 'bidang', 'Internet of Things', 4);
+        $this->createPreferensi($userId2, $mahasiswaId2, 'bidang', 'Data Science', 5);
+
+        // Preferensi tingkat
+        $this->createPreferensi($userId2, $mahasiswaId2, 'tingkat', 'Nasional', 1);
+        $this->createPreferensi($userId2, $mahasiswaId2, 'tingkat', 'Internasional', 2);
+        $this->createPreferensi($userId2, $mahasiswaId2, 'tingkat', 'Provinsi', 3);
+        $this->createPreferensi($userId2, $mahasiswaId2, 'tingkat', 'Kabupaten', 4);
+        $this->createPreferensi($userId2, $mahasiswaId2, 'tingkat', 'Kota', 5);
+        $this->createPreferensi($userId2, $mahasiswaId2, 'tingkat', 'Universitas', 6);
+
+        // Preferensi penyelenggara
+        $this->createPreferensi($userId2, $mahasiswaId2, 'penyelenggara', 'Institusi', 1);
+        $this->createPreferensi($userId2, $mahasiswaId2, 'penyelenggara', 'Kampus', 2);
+        $this->createPreferensi($userId2, $mahasiswaId2, 'penyelenggara', 'Komunitas', 3);
+
+        // Preferensi deadline (Tidak usah karena deadline adalah preferensi tetap)
+        // $this->createPreferensi($userId2, $mahasiswaId2, 'deadline', '≥30 hari', 1);
+        // $this->createPreferensi($userId2, $mahasiswaId2, 'deadline', '29-23 hari', 2);
+        // $this->createPreferensi($userId2, $mahasiswaId2, 'deadline', '22-16 hari', 3);
+        // $this->createPreferensi($userId2, $mahasiswaId2, 'deadline', '15-9 hari', 4);
+        // $this->createPreferensi($userId2, $mahasiswaId2, 'deadline', '≤8 hari', 5);
+
+        // Preferensi lokasi
+        $this->createPreferensi($userId2, $mahasiswaId2, 'lokasi', 'Online', 1);
+        $this->createPreferensi($userId2, $mahasiswaId2, 'lokasi', 'Hybrid', 2);
+        $this->createPreferensi($userId2, $mahasiswaId2, 'lokasi', 'Offline Luar Kota', 3);
+        $this->createPreferensi($userId2, $mahasiswaId2, 'lokasi', 'Offline Dalam Kota', 4);
+
+        // Preferensi biaya
+        $this->createPreferensi($userId2, $mahasiswaId2, 'biaya', 'Tanpa Biaya', 1);
+        $this->createPreferensi($userId2, $mahasiswaId2, 'biaya', 'Dengan Biaya', 2);
     }
 
     /**

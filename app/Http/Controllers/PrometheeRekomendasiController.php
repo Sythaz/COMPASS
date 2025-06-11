@@ -18,6 +18,61 @@ class PrometheeRekomendasiController extends Controller
 
     public function __construct()
     {
+        // // Ambil semua lomba yang aktif dan terverifikasi, beserta relasi kategorinya
+        // $lombas = LombaModel::with('kategori')
+        //     ->where('status_lomba', 'Aktif')
+        //     ->where('status_verifikasi', 'Terverifikasi')
+        //     ->get();
+
+        // // Ambil semua preferensi user yang sedang login
+        // $preferensiAll = PreferensiUserModel::where('user_id', auth()->user())
+        //     ->orderBy('prioritas')
+        //     ->get();
+
+
+        // $preferensiBidang = $preferensiAll
+        //     ->where('kriteria', 'bidang')
+        //     ->pluck('nilai', 'prioritas');
+        // $totalCountBidangLomba = $preferensiAll->where('kriteria', 'bidang')->count();
+
+        // $preferensiTingkat = $preferensiAll
+        //     ->where('kriteria', 'tingkat')
+        //     ->pluck('nilai', 'prioritas');
+        // $totalCountTingkatLomba = TingkatLombaModel::count();
+
+        // $preferensiReputasiPenyelenggara = $preferensiAll
+        //     ->where('kriteria', 'penyelenggara')
+        //     ->pluck('nilai', 'prioritas');
+        // $totalCountReputasiPenyelenggara = $preferensiAll->where('kriteria', 'penyelenggara')->count();
+
+        // $preferensiLokasi = $preferensiAll
+        //     ->where('kriteria', 'lokasi')
+        //     ->pluck('nilai', 'prioritas');
+        // $totalCountLokasi = $preferensiAll->where('kriteria', 'lokasi')->count();
+
+        // $preferensiBiaya = $preferensiAll
+        //     ->where('kriteria', 'biaya')
+        //     ->pluck('nilai', 'prioritas');
+        // $totalCountBiaya = $preferensiAll->where('kriteria', 'biaya')->count();
+
+        // foreach ($lombas as $lomba) {
+        //     $this->alternatif[] = [
+        //         'id' => $lomba->lomba_id,
+        //         'name' => $lomba->nama_lomba,
+        //         'values' => [
+        //             $this->getBidangScore($lomba, $preferensiBidang, $totalCountBidangLomba),
+        //             $this->getTingkatScore($lomba, $preferensiTingkat, $totalCountTingkatLomba),
+        //             $this->getReputasiPenyelenggaraScore($lomba, $preferensiReputasiPenyelenggara, $totalCountReputasiPenyelenggara),
+        //             $this->getDeadlineScore($lomba),
+        //             $this->getLokasiScore($lomba, $preferensiLokasi, $totalCountLokasi),
+        //             $this->getBiayaScore($lomba, $preferensiBiaya, $totalCountBiaya),
+        //         ],
+        //     ];
+        // }
+    }
+
+    public function loadPreferensi()
+    {
         // Ambil semua lomba yang aktif dan terverifikasi, beserta relasi kategorinya
         $lombas = LombaModel::with('kategori')
             ->where('status_lomba', 'Aktif')
@@ -25,9 +80,11 @@ class PrometheeRekomendasiController extends Controller
             ->get();
 
         // Ambil semua preferensi user yang sedang login
-        $preferensiAll = PreferensiUserModel::where('user_id', auth()->id())
+        $user = auth()->user();
+        $preferensiAll = PreferensiUserModel::where('user_id', $user->user_id)
             ->orderBy('prioritas')
             ->get();
+
 
         $preferensiBidang = $preferensiAll
             ->where('kriteria', 'bidang')
@@ -80,6 +137,8 @@ class PrometheeRekomendasiController extends Controller
         if (PreferensiUserModel::where('user_id', auth()->id())->doesntExist()) {
             return redirect()->route('mahasiswa.profile.index');
         }
+
+        $this->loadPreferensi();
 
         try {
             // Hitung semua data yang diperlukan
@@ -173,7 +232,7 @@ class PrometheeRekomendasiController extends Controller
                 'weights' => $this->getWeights()
             ];
 
-            return view('admin.manajemen-lomba.kelola-lomba.laporan', compact('breadcrumb', 'data'));
+            return view('mahasiswa.laporan', compact('breadcrumb', 'data'));
         } catch (\Exception $e) {
             return back()->with('error', 'Terjadi kesalahan saat menghitung laporan: ' . $e->getMessage());
         }
@@ -339,6 +398,9 @@ class PrometheeRekomendasiController extends Controller
      */
     public function calculate(Request $request): JsonResponse
     {
+        // Untuk json ubah di loadpreferensi menjadi angka bukan auth->user_id, karena tidak bisa dibaca auth jika didalam PostMan
+        $this->loadPreferensi();
+
         // Hitung indeks preferensi untuk setiap pasangan alternatif
         $preferenceIndices = $this->calculatePreferenceIndices();
 
@@ -624,5 +686,109 @@ class PrometheeRekomendasiController extends Controller
         }
 
         return $details;
+    }
+
+    // Untuk rekomendasi lomba tiap mahasiswa
+    /**
+     * Load preferensi dari user tertentu dan bangun data alternatif hanya dengan satu lomba baru
+     *
+     * @param int $user_id
+     * @param LombaModel $lombaBaru
+     */
+    public function loadPreferensiByUser(int $user_id, LombaModel $lombaBaru): void
+    {
+        // Reset alternatif sebelumnya
+        $this->alternatif = [];
+
+        // Ambil semua preferensi user berdasarkan user_id
+        $preferensiAll = PreferensiUserModel::where('user_id', $user_id)
+            ->orderBy('prioritas')
+            ->get();
+
+        if ($preferensiAll->isEmpty()) {
+            return; // User tidak punya preferensi
+        }
+
+        // Pisahkan preferensi per kriteria
+        $preferensiBidang = $preferensiAll->where('kriteria', 'bidang')->pluck('nilai', 'prioritas');
+        $totalCountBidangLomba = $preferensiBidang->count();
+
+        $preferensiTingkat = $preferensiAll->where('kriteria', 'tingkat')->pluck('nilai', 'prioritas');
+        $totalCountTingkatLomba = TingkatLombaModel::count();
+
+        $preferensiReputasiPenyelenggara = $preferensiAll->where('kriteria', 'penyelenggara')->pluck('nilai', 'prioritas');
+        $totalCountReputasiPenyelenggara = $preferensiReputasiPenyelenggara->count();
+
+        $preferensiLokasi = $preferensiAll->where('kriteria', 'lokasi')->pluck('nilai', 'prioritas');
+        $totalCountLokasi = $preferensiLokasi->count();
+
+        $preferensiBiaya = $preferensiAll->where('kriteria', 'biaya')->pluck('nilai', 'prioritas');
+        $totalCountBiaya = $preferensiBiaya->count();
+
+        // Hanya tambahkan lomba baru sebagai satu-satunya alternatif
+        $this->alternatif[] = [
+            'id' => $lombaBaru->lomba_id,
+            'name' => $lombaBaru->nama_lomba,
+            'values' => [
+                $this->getBidangScore($lombaBaru, $preferensiBidang, $totalCountBidangLomba),
+                $this->getTingkatScore($lombaBaru, $preferensiTingkat, $totalCountTingkatLomba),
+                $this->getReputasiPenyelenggaraScore($lombaBaru, $preferensiReputasiPenyelenggara, $totalCountReputasiPenyelenggara),
+                $this->getDeadlineScore($lombaBaru),
+                $this->getLokasiScore($lombaBaru, $preferensiLokasi, $totalCountLokasi),
+                $this->getBiayaScore($lombaBaru, $preferensiBiaya, $totalCountBiaya),
+            ],
+        ];
+    }
+
+    /**
+     * Hitung net flow untuk satu lomba baru berdasarkan preferensi user tertentu
+     *
+     * @param LombaModel $lombaBaru
+     * @param int $user_id
+     * @return array
+     */
+    public function calculateNetFlowForSingleLomba(LombaModel $lombaBaru, int $user_id): array
+    {
+        try {
+            // Muat preferensi user dan bangun data alternatif (hanya satu lomba)
+            $this->loadPreferensiByUser($user_id, $lombaBaru);
+
+            if (empty($this->alternatif)) {
+                return [
+                    'user_id' => $user_id,
+                    'meets_threshold' => false,
+                    'reason' => 'User tidak memiliki preferensi atau lomba tidak sesuai'
+                ];
+            }
+
+            // Karena hanya ada satu alternatif, tidak ada outranking ke alternatif lain
+            // Maka net_flow = leaving_flow - entering_flow = 0 - 0 = 0
+            // Namun kita bisa buat logika khusus jika hanya ada satu lomba
+
+            $alternative = $this->alternatif[0];
+            $netFlow = 0.0;
+
+            // Contoh logika custom: jika skor keseluruhan > threshold
+            $totalScore = array_sum($alternative['values']);
+            $maxPossibleScore = count($this->criteria) * 5;
+            $scoreRatio = $totalScore / $maxPossibleScore;
+
+            // Threshold: jika skor rata-rata > 3 → net flow asumsi = scoreRatio - 0.5
+            $netFlow = $scoreRatio - 0.5;
+
+            $meetsThreshold = $netFlow >= 0.2;
+
+            return [
+                'user_id' => $user_id,
+                'net_flow' => round($netFlow, 4),
+                'meets_threshold' => $meetsThreshold
+            ];
+        } catch (\Exception $e) {
+            return [
+                'user_id' => $user_id,
+                'meets_threshold' => false,
+                'error' => $e->getMessage()
+            ];
+        }
     }
 }
