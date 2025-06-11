@@ -86,13 +86,13 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
         // KELOLA USER (ADMIN)
         Route::prefix('admin/kelola-pengguna')->group(function () {
             // Rute Kelola Admin
-            Route::get('admin', [KelolaAdminController::class, 'index'])->name('admin.index');             // Halaman utama list Admin           
-            Route::get('admin/list', [KelolaAdminController::class, 'list'])->name('admin.list');          // DataTable list Admin  
+            Route::get('admin', [KelolaAdminController::class, 'index'])->name('admin.index');             // Halaman utama list Admin
+            Route::get('admin/list', [KelolaAdminController::class, 'list'])->name('admin.list');          // DataTable list Admin
             Route::get('admin/create', [KelolaAdminController::class, 'create'])->name('admin.create');    // Modal actions Create
             Route::get('admin/{id}/show_ajax', [KelolaAdminController::class, 'showAjax']);                      // Show modal actions
             Route::get('admin/{id}/edit_ajax', [KelolaAdminController::class, 'editAjax']);                      // Edit modal actions
             Route::get('admin/{id}/delete_ajax', [KelolaAdminController::class, 'deleteAjax']);                  // Delete modal actions
-            Route::post('admin/store', [KelolaAdminController::class, 'store'])->name('admin.store');      // Store 
+            Route::post('admin/store', [KelolaAdminController::class, 'store'])->name('admin.store');      // Store
             Route::put('admin/{id}', [KelolaAdminController::class, 'update'])->name('admin.update');      // update
             Route::delete('admin/{id}', [KelolaAdminController::class, 'nonAktif'])->name('admin.nonAktif'); //delete
             Route::get('admin/export_excel', [KelolaAdminController::class, 'export_excel'])->name('admin.export_excel');  // export excel
@@ -246,6 +246,11 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::get('pendaftaran-lomba/show/{id}', [VerifikasiPendaftaranController::class, 'detail_pendaftaran'])->name('verifikasi-pendaftaran.show');
             Route::get('riwayat-pendaftaran-lomba', [VerifikasiPendaftaranController::class, 'riwayat_index'])->name('riwayat-pendaftaran.index');
             Route::get('riwayat-pendaftaran-lomba/list', [VerifikasiPendaftaranController::class, 'riwayat_list'])->name('riwayat-pendaftaran.list');
+            // Tambahan untuk tombol Terima dan Tolak
+            Route::get('pendaftaran-lomba/{id}/terima', [VerifikasiPendaftaranController::class, 'terimaView'])->name('verifikasi-pendaftaran.terima_view');
+            Route::post('pendaftaran-lomba/{id}/terima', [VerifikasiPendaftaranController::class, 'terima'])->name('verifikasi-pendaftaran.terima');
+            Route::get('pendaftaran-lomba/{id}/tolak', [VerifikasiPendaftaranController::class, 'tolakView'])->name('verifikasi-pendaftaran.tolak_view');
+            Route::post('pendaftaran-lomba/{id}/tolak', [VerifikasiPendaftaranController::class, 'tolak'])->name('verifikasi-pendaftaran.tolak');
         });
 
         // MANAJEMEN PRESTASI
@@ -362,7 +367,7 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::get('riwayat-pendaftaran/{id}/detail', [LombaMahasiswaController::class, 'detail_pendaftaran'])
                 ->name('mahasiswa.informasi-lomba.detail-pendaftaran');
 
-            // Aksi 
+            // Aksi
             Route::get('{id}/show', [LombaMahasiswaController::class, 'showAjax'])->name('informasi-lomba.show');
             Route::get('{id}/daftar', [LombaMahasiswaController::class, 'form_daftar'])->name('informasi-lomba.daftar');
             Route::post('{id}/daftar', [LombaMahasiswaController::class, 'store_pendaftaran'])->name('informasi-lomba.store');

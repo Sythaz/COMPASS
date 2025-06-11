@@ -58,9 +58,13 @@ class VerifikasiPendaftaranController extends Controller
             })
 
             ->addColumn('aksi', function ($row) {
-                return '<button style="white-space:nowrap" onclick="modalAction(\'' . route('verifikasi-pendaftaran.show', $row->pendaftaran_id) . '\')" class="btn btn-info btn-sm">Detail</button>';
+                $btn = '<div class="d-flex justify-content-center">';
+                $btn .= '<button style="white-space:nowrap" onclick="modalAction(\'' . route('verifikasi-pendaftaran.show', $row->pendaftaran_id) . '\')" class="btn btn-info btn-sm">Detail</button>';
+                $btn .= '<button style="white-space:nowrap" onclick="modalAction(\'' . route('verifikasi-pendaftaran.terima_view', $row->pendaftaran_id) . '\')" class="btn text-white btn-success btn-sm mx-2">Terima</button>';
+                $btn .= '<button style="white-space:nowrap" onclick="modalAction(\'' . route('verifikasi-pendaftaran.tolak_view', $row->pendaftaran_id) . '\')" class="btn btn-danger btn-sm">Tolak</button>';
+                $btn .= '</div>';
+                return $btn;
             })
-
 
             ->rawColumns(['status_verifikasi', 'aksi'])
             ->make(true);
@@ -115,4 +119,40 @@ class VerifikasiPendaftaranController extends Controller
 
         return view('admin.manajemen-lomba.verifikasi-pendaftaran.show', compact('pendaftaran'));
     }
+
+    public function terimaView($id)
+    {
+        $pendaftaran = PendaftaranLombaModel::findOrFail($id);
+        return view('admin.manajemen-lomba.verifikasi-pendaftaran.terima', compact('pendaftaran'));
+    }
+
+    public function tolakView($id)
+    {
+        $pendaftaran = PendaftaranLombaModel::findOrFail($id);
+        return view('admin.manajemen-lomba.verifikasi-pendaftaran.tolak', compact('pendaftaran'));
+    }
+
+    public function terima(Request $request, $id)
+    {
+        $pendaftaran = PendaftaranLombaModel::findOrFail($id);
+        $pendaftaran->status_pendaftaran = 'Terverifikasi';
+        $pendaftaran->save();
+
+        return response()->json(['message' => 'Pendaftaran berhasil diterima.']);
+    }
+
+    public function tolak(Request $request, $id)
+    {
+        $request->validate([
+            'alasan_tolak' => 'required|string|max:255',
+        ]);
+
+        $pendaftaran = PendaftaranLombaModel::findOrFail($id);
+        $pendaftaran->status_pendaftaran = 'Ditolak';
+        $pendaftaran->alasan_tolak = $request->alasan_tolak;
+        $pendaftaran->save();
+
+        return response()->json(['message' => 'Pendaftaran berhasil ditolak.']);
+    }
+
 }
