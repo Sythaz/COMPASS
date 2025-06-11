@@ -53,7 +53,7 @@ class KelolaLombaController extends Controller
         }
 
         return DataTables::eloquent($dataKelolaLomba)
-            ->addIndexColumn() // <--- ini penting
+            ->addIndexColumn()
             ->addColumn('kategori', function ($row) {
                 return $row->kategori->pluck('nama_kategori')->join(', ') ?: 'Tidak Diketahui';
             })
