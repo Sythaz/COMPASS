@@ -283,10 +283,6 @@
 @endpush
 
 @push('js')
-    <script src="{{ asset('theme/plugins/tables/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('theme/plugins/tables/js/datatable/dataTables.bootstrap4.min.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
     <script>
         function filterLomba() {
             const category = $('#categoryFilter').val()?.toLowerCase(); // Ambil nilai kategori

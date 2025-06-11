@@ -8,7 +8,10 @@ use App\Models\LombaModel;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\AdminModel;
 use App\Models\DosenModel;
+use App\Models\KategoriModel;
 use App\Models\MahasiswaModel;
+use App\Models\NotifikasiModel;
+use App\Models\TingkatLombaModel;
 use App\Models\UsersModel;
 
 class InfoLombaController extends Controller
@@ -16,45 +19,30 @@ class InfoLombaController extends Controller
     public function index()
     {
         $breadcrumb = (object) [
-            'list' => ['Manajemen Lomba', 'Info Lomba']
+            'list' => ['Manajemen Lomba', 'Informasi Lomba']
         ];
 
-        return view('dosen.info-lomba.index', compact('breadcrumb'));
-    }
-
-    public function list(Request $request)
-    {
-        // Ambil data lomba yang status_lomba = 'Aktif' dan status_verifikasi = 'Terverifikasi' saja
-        $dataKelolaLomba = LombaModel::with(['kategori', 'tingkat_lomba'])
+        $dataLomba = LombaModel::with(['kategori', 'tingkat_lomba'])
+            ->select([
+                'lomba_id',
+                'nama_lomba',
+                'penyelenggara_lomba',
+                'tingkat_lomba_id',
+                'awal_registrasi_lomba',
+                'akhir_registrasi_lomba',
+                'lokasi_lomba',
+                'tipe_lomba',
+            ])
             ->where('status_lomba', 'Aktif')
-            ->where('status_verifikasi', 'Terverifikasi') // hanya Terverifikasi
+            ->whereIn('status_verifikasi', ['Terverifikasi'])
+            ->where('akhir_registrasi_lomba', '>=', now())
             ->get();
 
-        return DataTables::of($dataKelolaLomba)
-            ->addIndexColumn()
-            ->addColumn('kategori', function ($row) {
-                return $row->kategori->pluck('nama_kategori')->join(', ') ?: 'Tidak Diketahui';
-            })
-            ->addColumn('tingkat_lomba', function ($row) {
-                return $row->tingkat_lomba->nama_tingkat ?? '-';
-            })
-            ->addColumn('status_verifikasi', function ($row) {
-                // Tampilkan status_lomba (yang pasti "Aktif" sesuai kondisi)
-                $status = $row->status_lomba;
-                if ($status === 'Aktif') {
-                    return '<span class="label label-success">Aktif</span>';
-                }
-                // Jika ingin fallback, tapi seharusnya gak perlu karena filter di query
-                return '<span class="label label-secondary">Tidak Diketahui</span>';
-            })
-            ->addColumn('aksi', function ($row) {
-                $btn = '<div class="text-center">';
-                $btn .= '<button style="white-space:nowrap" onclick="modalAction(\'' . route('info-lomba.show', $row->lomba_id) . '\')" class="btn btn-info btn-sm">Detail</button>';
-                $btn .= '</div>';
-                return $btn;
-            })
-            ->rawColumns(['aksi', 'status_verifikasi'])
-            ->make(true);
+        // Data tambahan untuk filter
+        $daftarKategori = KategoriModel::where('status_kategori', 'Aktif')->get();
+        $daftarTingkatLomba = TingkatLombaModel::where('status_tingkat_lomba', 'Aktif')->get();
+
+        return view('dosen.info-lomba.index', compact('breadcrumb', 'dataLomba', 'daftarKategori', 'daftarTingkatLomba'));
     }
 
     // Tambahkan method private untuk membuat badge status
@@ -101,10 +89,67 @@ class InfoLombaController extends Controller
         $badgeStatus = $this->getStatusBadge($lomba->status_verifikasi);
 
         $breadcrumb = (object) [
-            'list' => ['Info Lomba', 'Detail Lomba']
+            'list' => ['Informasi Lomba', 'Detail Lomba']
         ];
 
         return view('dosen.info-lomba.show', compact('lomba', 'namaPengusul', 'breadcrumb', 'badgeStatus'));
     }
 
+    public function tambahRekomendasiAjax()
+    {
+        $lomba = LombaModel::with('kategori', 'tingkat_lomba')->get();
+        $daftarMahasiswa = MahasiswaModel::where('status', 'Aktif')->get();
+        $daftarKategori = KategoriModel::where('status_kategori', 'Aktif')->get();
+        $daftarTingkatLomba = TingkatLombaModel::where('status_tingkat_lomba', 'Aktif')->get();
+
+        return view('dosen.info-lomba.tambah-rekomendasi', compact('lomba', 'daftarMahasiswa', 'daftarKategori', 'daftarTingkatLomba'));
+    }
+
+    public function rekomendasiAjax($id)
+    {
+        $lomba = LombaModel::with('kategori', 'tingkat_lomba')->findOrFail($id);
+        $daftarMahasiswa = MahasiswaModel::where('status', 'Aktif')->get();
+        $daftarKategori = KategoriModel::where('status_kategori', 'Aktif')->get();
+
+        return view('dosen.info-lomba.show-rekomendasi', compact('lomba', 'daftarMahasiswa', 'daftarKategori'));
+    }
+
+    public function notifikasiRekomendasi(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:t_users,user_id',
+            'lomba_id' => 'required|exists:t_lomba,lomba_id',
+            'pesan_notifikasi' => 'nullable|string'
+        ]);
+
+        $user = UsersModel::findOrFail($request->user_id);
+        $lomba = LombaModel::findOrFail($request->lomba_id);
+        $pesanNotifikasi = $request->pesan_notifikasi ?? sprintf(
+            "Anda direkomendasikan oleh %s '%s' untuk mengikuti lomba '%s'. Silakan periksa informasi lomba lebih lanjut jika berminat.",
+            ucfirst(strtolower(auth()->user()->getRole())) == 'dosen' ? 'Dosen' : 'Admin',
+            auth()->user()->getName(),
+            $lomba->nama_lomba
+        );
+
+        // Cek apakah notifikasi sudah pernah terkirim untuk lomba ini kepada user ini
+        $cekNotif = NotifikasiModel::where('user_id', $user->user_id)
+            ->where('lomba_id', $lomba->lomba_id)
+            ->where('jenis_notifikasi', 'Rekomendasi')
+            ->exists();
+
+        if ($cekNotif) {
+            return response()->json(['success' => false, 'message' => 'Notifikasi sudah pernah terkirim untuk lomba ini kepada user ini.']);
+        }
+
+        $notifikasi = NotifikasiModel::create([
+            'user_id' => $user->user_id,
+            'pengirim_id' => auth()->id(),
+            'pengirim_role' => auth()->user()->getRole(),
+            'lomba_id' => $lomba->lomba_id,
+            'jenis_notifikasi' => 'Rekomendasi',
+            'pesan_notifikasi' => $pesanNotifikasi
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Notifikasi berhasil dikirim kepada mahasiswa.']);
+    }
 }

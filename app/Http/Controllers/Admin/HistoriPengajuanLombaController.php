@@ -22,25 +22,36 @@ class HistoriPengajuanLombaController extends Controller
             'list' => ['Manajemen Lomba', 'Histori Pengajuan Lomba']
         ];
 
-        return view('admin.manajemen-lomba.histori-pengajuan-lomba.index', compact('breadcrumb'));
+        // Data untuk dropdown kategori dan tingkat lomba
+        $daftarKategori = KategoriModel::where('status_kategori', 'Aktif')->get();
+        $daftarTingkatLomba = TingkatLombaModel::where('status_tingkat_lomba', 'Aktif')->get();
+
+        return view('admin.manajemen-lomba.histori-pengajuan-lomba.index', compact('breadcrumb', 'daftarKategori', 'daftarTingkatLomba'));
     }
 
     public function list(Request $request)
     {
         $data = LombaModel::with('kategori', 'tingkat_lomba')
-            ->select([
-                'lomba_id',
-                'nama_lomba',
-                'tingkat_lomba_id',
-                'penyelenggara_lomba',
-                'awal_registrasi_lomba',
-                'akhir_registrasi_lomba',
-                'status_verifikasi'
-            ])
-            ->where('pengusul_id', auth()->id())
-            ->get();
+            ->selectRaw('t_lomba.*, null as DT_RowIndex')
+            ->where('pengusul_id', auth()->id());
 
-        return DataTables::of($data)
+        if ($request->kategori) {
+            $data->whereHas('kategori', function ($q) use ($request) {
+                $q->where('t_kategori.kategori_id', $request->kategori);
+            });
+        }
+
+        if ($request->tingkat) {
+            $data->where('tingkat_lomba_id', $request->tingkat);
+        }
+
+        $statusList = ['Terverifikasi', 'Menunggu', 'Ditolak'];
+        if (in_array($request->status_verifikasi, $statusList)) {
+            $data->where('status_verifikasi', $request->status_verifikasi);
+        }
+
+
+        return DataTables::eloquent($data)
             ->addIndexColumn()
             ->addColumn('nama_tingkat', function ($row) {
                 return $row->tingkat_lomba?->nama_tingkat ?? '-';

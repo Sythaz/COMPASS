@@ -11,6 +11,44 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col">
+                            <div class="d-flex">
+                                <!-- Dropdown Filter dan Tombol Reset -->
+                                <div class="d-flex gap-2">
+                                    <select id="filter-kategori" class="form-control mr-2"
+                                        style="border-radius: 8px; height: 40px;" name="kategori">
+                                        <option value="">Filter Kategori</option>
+                                        @foreach ($daftarKategori as $kategori)
+                                            <option value="{{ $kategori->kategori_id }}">{{ $kategori->nama_kategori }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+
+                                    <select id="filter-tingkat" class="form-control mr-2"
+                                        style="border-radius: 8px; height: 40px;" name="tingkat">
+                                        <option value="">Filter Tingkat</option>
+                                        @foreach ($daftarTingkatLomba as $tingkatLomba)
+                                            <option value="{{ $tingkatLomba->tingkat_lomba_id }}">
+                                                {{ $tingkatLomba->nama_tingkat }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+
+                                    <select id="filter-status" class="form-control mr-2"
+                                        style="border-radius: 8px; height: 40px;" name="status">
+                                        <option value="">Filter Status</option>
+                                        <option value="Terverifikasi">Terverifikasi</option>
+                                        <option value="Menunggu">Menunggu</option>
+                                        <option value="Ditolak">Ditolak</option>
+                                    </select>
+
+                                    <button class="btn btn-secondary" onclick="resetFilter()">Reset Filter</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="table-responsive">
                         <table class="w-100 table table-striped table-bordered custom-datatable"
                             id="tabel-histori-pengajuan-lomba">
@@ -66,13 +104,14 @@
 
     <script>
         var idDataTables = '#tabel-histori-pengajuan-lomba';
+        var table;
 
         $(document).ready(function() {
             // Dropdown tidak bisa di buka langsung sehingga perlu dipanggil
             $('.dropdown-toggle').dropdown();
 
             // DataTables
-            $(idDataTables).DataTable({
+            table = $(idDataTables).DataTable({
                 // Styling untuk pagination (Jangan diubah)
                 pagingType: "simple_numbers",
                 language: {
@@ -95,6 +134,12 @@
                     type: "POST",
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    // Untuk filter kategori, tingkat lomba dan status verifikasi
+                    data: function(data) {
+                        data.kategori = $('#filter-kategori').val();
+                        data.tingkat = $('#filter-tingkat').val();
+                        data.status_verifikasi = $('#filter-status').val();
                     }
                 },
                 columns: [{
@@ -184,6 +229,11 @@
                     });
                 }
             });
+
+            // Reload saat filter berubah
+            $('#filter-kategori, #filter-tingkat, #filter-status').on('change', function() {
+                table.ajax.reload();
+            });
         });
 
         // Fungsi untuk menampilkan modal
@@ -196,6 +246,13 @@
                 .fail(function() {
                     Swal.fire('Gagal', 'Tidak dapat memuat data dari server.', 'error');
                 });
+        }
+
+        function resetFilter() {
+            $('#filter-kategori').val('').trigger('change');
+            $('#filter-tingkat').val('').trigger('change');
+            $('#filter-status').val('').trigger('change');
+            table.ajax.reload();
         }
 
         // Fungsi untuk reload dataTables

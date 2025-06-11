@@ -309,6 +309,11 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::get('/', [InfoLombaController::class, 'index'])->name('dosen.info-lomba.index');
             Route::get('list', [InfoLombaController::class, 'list'])->name('info-lomba.list');
             Route::get('{id}/show', [InfoLombaController::class, 'showAjax'])->name('info-lomba.show');
+
+            // Rekomendasi
+            Route::get('rekomendasi-lomba/{id}/rekomendasi_ajax', [InfoLombaController::class, 'rekomendasiAjax']);
+            Route::get('rekomendasi-lomba/tambah_rekomendasi_ajax', [InfoLombaController::class, 'tambahRekomendasiAjax'])->name('info-lomba.tambah-rekomendasi-ajax');
+            Route::post('rekomendasi-lomba/notifikasi', [InfoLombaController::class, 'notifikasiRekomendasi'])->name('info-lomba.rekomendasi-lomba.notifikasi');
         });
 
         // Halaman yang menampilkan riwayat Lomba yang pernah diajukan dosen
