@@ -21,7 +21,6 @@ use Yajra\DataTables\Facades\DataTables;
 
 class KelolaLombaController extends Controller
 {
-
     public function index()
     {
         $breadcrumb = (object) [
@@ -293,6 +292,7 @@ class KelolaLombaController extends Controller
                 $lomba->update(['img_lomba' => $filename]);
             }
 
+            $results = null; // inisialisasi dulu supaya tidak undefined
 
             if ($request->input('status_verifikasi') === 'Terverifikasi') {
                 // Ambil semua user_id yang sudah mengisi preferensi
@@ -306,11 +306,18 @@ class KelolaLombaController extends Controller
                 }
             }
 
-            return response()->json([
+            // Buat respons dinamis
+            $response = [
                 'success' => true,
-                'message' => 'Data berhasil diperbarui.',
-                'threshold_results' => $results
-            ]);
+                'message' => 'Data berhasil diperbarui.'
+            ];
+
+            // Hanya tambahkan threshold_results jika statusnya Terverifikasi
+            if ($results !== null) {
+                $response['threshold_results'] = $results;
+            }
+            return response()->json($response);
+
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,

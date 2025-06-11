@@ -12,11 +12,11 @@ class VerifikasiPendaftaranController extends Controller
     protected function getStatusBadge($status)
     {
         switch ($status) {
-            case 'valid':
+            case 'Terverifikasi':
                 return '<span class="label label-success">Terverifikasi</span>';
-            case 'menunggu':
+            case 'Menunggu':
                 return '<span class="label label-warning">Menunggu</span>';
-            case 'ditolak':
+            case 'Ditolak':
                 return '<span class="label label-danger">Ditolak</span>';
             default:
                 return '<span class="label label-default">Tidak Diketahui</span>';
@@ -53,7 +53,7 @@ class VerifikasiPendaftaranController extends Controller
                 return $row->created_at ? $row->created_at->format('d-m-Y') : '-';
             })
             ->editColumn('status_verifikasi', function ($prestasi) {
-                $status = $prestasi->status_verifikasi ?? 'menunggu';
+                $status = $prestasi->status_pendaftaran ?? '';
                 return $this->getStatusBadge($status);
             })
 
@@ -95,7 +95,7 @@ class VerifikasiPendaftaranController extends Controller
                 return $row->created_at ? $row->created_at->format('d-m-Y') : '-';
             })
             ->editColumn('status_verifikasi', function ($prestasi) {
-                $status = $prestasi->status_verifikasi ?? 'menunggu';
+                $status = $prestasi->status_pendaftaran ?? '';
                 return $this->getStatusBadge($status);
             })
 

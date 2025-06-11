@@ -27,7 +27,7 @@
                             <input type="text" class="form-control"
                                 value="{{ ucfirst($pendaftaran->lomba->tipe_lomba ?? '-') }}" disabled>
                             <div class="input-group-append">
-                                @if(($pendaftaran->lomba->tipe_lomba ?? '') === 'individu')
+                                @if (($pendaftaran->lomba->tipe_lomba ?? '') === 'individu')
                                     <span class="input-group-text bg-success text-white">
                                         <i class="fas fa-user"></i>
                                     </span>
@@ -48,20 +48,20 @@
                         <label class="col-form-label font-weight-bold">Status Pendaftaran</label>
                         <div class="input-group">
                             <input type="text" class="form-control"
-                                value="{{ ucfirst($pendaftaran->status ?? 'Pending') }}" disabled>
+                                value="{{ ucfirst($pendaftaran->status_pendaftaran ?? '') }}" disabled>
                             <div class="input-group-append">
                                 @php
-                                    $status = $pendaftaran->status ?? 'pending';
+                                    $status = $pendaftaran->status_pendaftaran ?? '';
                                     $statusClass = '';
                                     $statusIcon = '';
 
                                     switch (strtolower($status)) {
-                                        case 'approved':
-                                        case 'diterima':
+                                        case 'Terverifikasi':
+                                        case 'terverifikasi':
                                             $statusClass = 'bg-success';
                                             $statusIcon = 'fas fa-check';
                                             break;
-                                        case 'rejected':
+                                        case 'Ditolak':
                                         case 'ditolak':
                                             $statusClass = 'bg-danger';
                                             $statusIcon = 'fas fa-times';
@@ -87,6 +87,27 @@
                     </div>
                 </div>
             </div>
+
+            {{-- Menampilkan Alasan jika pendaftaran Lomba ditolak  --}}
+            @if ($pendaftaran->status_pendaftaran === 'Nonaktif' || !empty($pendaftaran->alasan_tolak))
+                <div class="mt-3">
+                    {{-- <h5 class="font-weight-bold mb-3">Informasi Status Pendaftaran</h5> --}}
+
+                    @if ($pendaftaran->status_pendaftaran === 'Nonaktif')
+                        <div class="form-group">
+                            <label class="col-form-label font-weight-bold">Status</label>
+                            <input type="text" class="form-control" value="Terhapus" disabled>
+                        </div>
+                    @endif
+
+                    @if (!empty($pendaftaran->alasan_tolak))
+                        <div class="form-group">
+                            <label class="col-form-label font-weight-bold">Alasan Penolakan</label>
+                            <textarea class="form-control" rows="3" disabled>{{ $pendaftaran->alasan_tolak }}</textarea>
+                        </div>
+                    @endif
+                </div>
+            @endif
         </div>
     </div>
 
@@ -94,7 +115,7 @@
     <div class="card mb-3">
         <div class="card-header bg-light">
             <h6 class="mb-0">
-                @if(($pendaftaran->lomba->tipe_lomba ?? '') === 'individu')
+                @if (($pendaftaran->lomba->tipe_lomba ?? '') === 'individu')
                     <i class="fas fa-user mr-2"></i>Informasi Peserta
                 @else
                     <i class="fas fa-users mr-2"></i>Informasi Tim
@@ -105,7 +126,7 @@
             </h6>
         </div>
         <div class="card-body">
-            @if(($pendaftaran->lomba->tipe_lomba ?? '') === 'individu')
+            @if (($pendaftaran->lomba->tipe_lomba ?? '') === 'individu')
                 <!-- Lomba Individu -->
                 <div class="peserta-section bg-light rounded p-3">
                     <div class="form-group mb-0">
@@ -128,9 +149,10 @@
                 <!-- Lomba Tim -->
                 @php
                     $anggotaTim = $pendaftaran->anggota ?? collect();
-                    $ketuaTim = $anggotaTim->where('pivot.is_ketua', true)->first() ??
-                        $anggotaTim->where('mahasiswa_id', $pendaftaran->mahasiswa_id)->first() ??
-                        $pendaftaran->mahasiswa;
+                    $ketuaTim =
+                        $anggotaTim->where('pivot.is_ketua', true)->first() ??
+                        ($anggotaTim->where('mahasiswa_id', $pendaftaran->mahasiswa_id)->first() ??
+                            $pendaftaran->mahasiswa);
 
                     $anggotaLainnya = $anggotaTim->where('mahasiswa_id', '!=', $ketuaTim->mahasiswa_id ?? 0);
                 @endphp
@@ -155,7 +177,7 @@
                 </div>
 
                 <!-- Anggota Tim -->
-                @if($anggotaLainnya->count() > 0)
+                @if ($anggotaLainnya->count() > 0)
                     <div class="anggota-section">
                         <h6 class="mb-3">
                             <i class="fas fa-users mr-2"></i>Anggota Tim
@@ -284,7 +306,7 @@
 
 <script>
     // Animasi saat modal dibuka
-    $(document).ready(function () {
+    $(document).ready(function() {
         $('.card').hide().fadeIn(600);
 
         // Tooltip untuk status
@@ -292,7 +314,7 @@
     });
 
     // Force hide processing text after any modal operation
-    setInterval(function () {
+    setInterval(function() {
         if ($('.modal').is(':hidden')) {
             $('.processing, [class*="processing"]').hide();
         }

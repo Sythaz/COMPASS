@@ -16,16 +16,18 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="col-form-label font-weight-bold">Nama Lomba</label>
-                        <input type="text" class="form-control" value="{{ $pendaftaran->lomba->nama_lomba ?? '-' }}" disabled>
+                        <input type="text" class="form-control" value="{{ $pendaftaran->lomba->nama_lomba ?? '-' }}"
+                            disabled>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="col-form-label font-weight-bold">Tipe Lomba</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" value="{{ ucfirst($pendaftaran->lomba->tipe_lomba ?? '-') }}" disabled>
+                            <input type="text" class="form-control"
+                                value="{{ ucfirst($pendaftaran->lomba->tipe_lomba ?? '-') }}" disabled>
                             <div class="input-group-append">
-                                @if(($pendaftaran->lomba->tipe_lomba ?? '') === 'individu')
+                                @if (($pendaftaran->lomba->tipe_lomba ?? '') === 'individu')
                                     <span class="input-group-text bg-success text-white">
                                         <i class="fas fa-user"></i>
                                     </span>
@@ -39,26 +41,27 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="col-form-label font-weight-bold">Status Pendaftaran</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" value="{{ ucfirst($pendaftaran->status ?? 'Pending') }}" disabled>
+                            <input type="text" class="form-control"
+                                value="{{ ucfirst($pendaftaran->status_pendaftaran ?? '') }}" disabled>
                             <div class="input-group-append">
                                 @php
-                                    $status = $pendaftaran->status ?? 'pending';
+                                    $status = $pendaftaran->status_pendaftaran ?? '';
                                     $statusClass = '';
                                     $statusIcon = '';
-                                    
-                                    switch(strtolower($status)) {
-                                        case 'approved':
-                                        case 'diterima':
+
+                                    switch (strtolower($status)) {
+                                        case 'Terverifikasi':
+                                        case 'terverifikasi':
                                             $statusClass = 'bg-success';
                                             $statusIcon = 'fas fa-check';
                                             break;
-                                        case 'rejected':
+                                        case 'Ditolak':
                                         case 'ditolak':
                                             $statusClass = 'bg-danger';
                                             $statusIcon = 'fas fa-times';
@@ -84,6 +87,26 @@
                     </div>
                 </div>
             </div>
+            {{-- Menampilkan Alasan jika pendaftaran Lomba ditolak  --}}
+            @if ($pendaftaran->status_pendaftaran === 'Nonaktif' || !empty($pendaftaran->alasan_tolak))
+                <div class="mt-3">
+                    {{-- <h5 class="font-weight-bold mb-3">Informasi Status Pendaftaran</h5> --}}
+
+                    @if ($pendaftaran->status_pendaftaran === 'Nonaktif')
+                        <div class="form-group">
+                            <label class="col-form-label font-weight-bold">Status</label>
+                            <input type="text" class="form-control" value="Terhapus" disabled>
+                        </div>
+                    @endif
+
+                    @if (!empty($pendaftaran->alasan_tolak))
+                        <div class="form-group">
+                            <label class="col-form-label font-weight-bold">Alasan Penolakan</label>
+                            <textarea class="form-control" rows="3" disabled>{{ $pendaftaran->alasan_tolak }}</textarea>
+                        </div>
+                    @endif
+                </div>
+            @endif
         </div>
     </div>
 
@@ -91,7 +114,7 @@
     <div class="card mb-3">
         <div class="card-header bg-light">
             <h6 class="mb-0">
-                @if(($pendaftaran->lomba->tipe_lomba ?? '') === 'individu')
+                @if (($pendaftaran->lomba->tipe_lomba ?? '') === 'individu')
                     <i class="fas fa-user mr-2"></i>Informasi Peserta
                 @else
                     <i class="fas fa-users mr-2"></i>Informasi Tim
@@ -102,7 +125,7 @@
             </h6>
         </div>
         <div class="card-body">
-            @if(($pendaftaran->lomba->tipe_lomba ?? '') === 'individu')
+            @if (($pendaftaran->lomba->tipe_lomba ?? '') === 'individu')
                 <!-- Lomba Individu -->
                 <div class="peserta-section bg-light rounded p-3">
                     <div class="form-group mb-0">
@@ -110,8 +133,8 @@
                             <i class="fas fa-user mr-2"></i>Peserta
                         </label>
                         <div class="input-group">
-                            <input type="text" class="form-control" 
-                                value="{{ $pendaftaran->mahasiswa->nim_mahasiswa ?? '-' }} - {{ $pendaftaran->mahasiswa->nama_mahasiswa ?? '-' }}" 
+                            <input type="text" class="form-control"
+                                value="{{ $pendaftaran->mahasiswa->nim_mahasiswa ?? '-' }} - {{ $pendaftaran->mahasiswa->nama_mahasiswa ?? '-' }}"
                                 disabled>
                             <div class="input-group-append">
                                 <span class="input-group-text bg-success text-white">
@@ -125,13 +148,14 @@
                 <!-- Lomba Tim -->
                 @php
                     $anggotaTim = $pendaftaran->anggota ?? collect();
-                    $ketuaTim = $anggotaTim->where('pivot.is_ketua', true)->first() ?? 
-                               $anggotaTim->where('mahasiswa_id', $pendaftaran->mahasiswa_id)->first() ??
-                               $pendaftaran->mahasiswa;
-                    
+                    $ketuaTim =
+                        $anggotaTim->where('pivot.is_ketua', true)->first() ??
+                        ($anggotaTim->where('mahasiswa_id', $pendaftaran->mahasiswa_id)->first() ??
+                            $pendaftaran->mahasiswa);
+
                     $anggotaLainnya = $anggotaTim->where('mahasiswa_id', '!=', $ketuaTim->mahasiswa_id ?? 0);
                 @endphp
-                
+
                 <!-- Ketua Tim -->
                 <div class="ketua-section bg-primary bg-opacity-10 rounded p-3 mb-3">
                     <div class="form-group mb-0">
@@ -139,8 +163,8 @@
                             <i class="fas fa-crown mr-2 text-warning"></i>Ketua Tim
                         </label>
                         <div class="input-group">
-                            <input type="text" class="form-control font-weight-bold" 
-                                value="{{ $ketuaTim->nim_mahasiswa ?? '-' }} - {{ $ketuaTim->nama_mahasiswa ?? '-' }}" 
+                            <input type="text" class="form-control font-weight-bold"
+                                value="{{ $ketuaTim->nim_mahasiswa ?? '-' }} - {{ $ketuaTim->nama_mahasiswa ?? '-' }}"
                                 disabled>
                             <div class="input-group-append">
                                 <span class="input-group-text bg-warning text-dark">
@@ -152,13 +176,13 @@
                 </div>
 
                 <!-- Anggota Tim -->
-                @if($anggotaLainnya->count() > 0)
+                @if ($anggotaLainnya->count() > 0)
                     <div class="anggota-section">
                         <h6 class="mb-3">
                             <i class="fas fa-users mr-2"></i>Anggota Tim
                             <span class="badge badge-secondary">{{ $anggotaLainnya->count() }} orang</span>
                         </h6>
-                        
+
                         @foreach ($anggotaLainnya as $index => $anggota)
                             <div class="anggota-item bg-light rounded p-3 mb-2">
                                 <div class="form-group mb-0">
@@ -166,8 +190,8 @@
                                         <i class="fas fa-user mr-2"></i>Anggota {{ $index + 1 }}
                                     </label>
                                     <div class="input-group">
-                                        <input type="text" class="form-control" 
-                                            value="{{ $anggota->nim_mahasiswa ?? '-' }} - {{ $anggota->nama_mahasiswa ?? '-' }}" 
+                                        <input type="text" class="form-control"
+                                            value="{{ $anggota->nim_mahasiswa ?? '-' }} - {{ $anggota->nama_mahasiswa ?? '-' }}"
                                             disabled>
                                         <div class="input-group-append">
                                             <span class="input-group-text bg-info text-white">
@@ -208,18 +232,16 @@
                 <div class="text-center">
                     <div class="file-preview mb-3">
                         <i class="fas fa-file-image fa-3x text-primary mb-2"></i>
-                        <p class="mb-2">File berhasil diunggah</p>                       
-            
+                        <p class="mb-2">File berhasil diunggah</p>
+
                     </div>
                     <div class="btn-group">
-                        <a href="{{ asset('uploads/bukti/' . $pendaftaran->bukti_pendaftaran) }}" 
-                           target="_blank"
-                           class="btn btn-primary">
+                        <a href="{{ asset('uploads/bukti/' . $pendaftaran->bukti_pendaftaran) }}" target="_blank"
+                            class="btn btn-primary">
                             <i class="fas fa-eye mr-2"></i>Lihat Bukti
                         </a>
-                        <a href="{{ asset('uploads/bukti/' . $pendaftaran->bukti_pendaftaran) }}" 
-                           download
-                           class="btn btn-outline-primary">
+                        <a href="{{ asset('uploads/bukti/' . $pendaftaran->bukti_pendaftaran) }}" download
+                            class="btn btn-outline-primary">
                             <i class="fas fa-download mr-2"></i>Unduh
                         </a>
                     </div>
@@ -241,39 +263,41 @@
 </div>
 
 <style>
-    .peserta-section, .ketua-section, .anggota-item {
+    .peserta-section,
+    .ketua-section,
+    .anggota-item {
         border-left: 4px solid #7571F9;
     }
-    
+
     .ketua-section {
         border-left-color: #ffc107 !important;
     }
-    
+
     .anggota-item {
         border-left-color: #17a2b8 !important;
     }
-    
+
     .badge-lg {
         font-size: 1rem;
         padding: 0.5rem 0.75rem;
     }
-    
+
     .bg-opacity-10 {
         background-color: rgba(117, 113, 249, 0.1) !important;
     }
-    
+
     .file-preview {
         padding: 20px;
         border: 2px dashed #dee2e6;
         border-radius: 8px;
         background-color: #f8f9fa;
     }
-    
+
     .card-header h6 {
         color: #495057;
         font-weight: 600;
     }
-    
+
     .total-anggota {
         border: 1px solid #dee2e6;
     }
@@ -283,11 +307,11 @@
     // Animasi saat modal dibuka
     $(document).ready(function() {
         $('.card').hide().fadeIn(600);
-        
+
         // Tooltip untuk status
         $('[data-toggle="tooltip"]').tooltip();
     });
-    
+
     // Force hide processing text after any modal operation
     setInterval(function() {
         if ($('.modal').is(':hidden')) {

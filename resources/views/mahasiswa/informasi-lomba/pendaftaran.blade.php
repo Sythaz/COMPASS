@@ -17,9 +17,9 @@
                                     <th>Nama Lomba</th>
                                     <th>Tingkat</th>
                                     <th>Kategori</th>
-                                    <th>Tipe Lomba</th>
-                                    <th>Tanggal</th>
-                                    <th>Status</th>
+                                    <th class="text-center">Tipe Lomba</th>
+                                    <th class="text-center">Tanggal</th>
+                                    <th class="text-center">Status</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -50,19 +50,44 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
-        $(function () {
+        $(function() {
             $('#tabel-kelola-lomba').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: '{{ route("mahasiswa.informasi-lomba.list-pendaftaran") }}',
-                columns: [
-                    { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-                    { data: 'nama_lomba', name: 'nama_lomba' },
-                    { data: 'tingkat_lomba', name: 'tingkat_lomba' },
-                    { data: 'kategori', name: 'kategori' },
-                    { data: 'tipe_lomba', name: 'tipe_lomba' },
-                    { data: 'tanggal', name: 'tanggal' },
-                    { data: 'status', name: 'status' },
+                ajax: '{{ route('mahasiswa.informasi-lomba.list-pendaftaran') }}',
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'nama_lomba',
+                        name: 'nama_lomba'
+                    },
+                    {
+                        data: 'tingkat_lomba',
+                        name: 'tingkat_lomba'
+                    },
+                    {
+                        data: 'kategori',
+                        name: 'kategori'
+                    },
+                    {
+                        data: 'tipe_lomba',
+                        name: 'tipe_lomba',
+                        className: 'text-center'
+                    },
+                    {
+                        data: 'tanggal',
+                        name: 'tanggal',
+                        className: 'text-center'
+                    },
+                    {
+                        data: 'status',
+                        name: 'status',
+                        className: 'text-center'
+                    },
                     {
                         data: 'aksi',
                         name: 'aksi',
@@ -77,11 +102,11 @@
 
         function modalAction(url) {
             $.get(url)
-                .done(function (res) {
+                .done(function(res) {
                     $('#ajaxModalContent').html(res);
                     $('#myModal').modal('show');
                 })
-                .fail(function () {
+                .fail(function() {
                     Swal.fire('Gagal', 'Tidak dapat memuat data dari server.', 'error');
                 });
         }
