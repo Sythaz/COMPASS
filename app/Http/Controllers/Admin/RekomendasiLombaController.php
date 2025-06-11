@@ -77,7 +77,8 @@ class RekomendasiLombaController extends Controller
         $user = UsersModel::findOrFail($request->user_id);
         $lomba = LombaModel::findOrFail($request->lomba_id);
         $pesanNotifikasi = $request->pesan_notifikasi ?? sprintf(
-            "Anda direkomendasikan oleh Admin '%s' untuk mengikuti lomba '%s'. Silakan periksa informasi lomba lebih lanjut jika berminat.",
+            "Anda direkomendasikan oleh %s '%s' untuk mengikuti lomba '%s'. Silakan periksa informasi lomba lebih lanjut jika berminat.",
+            ucfirst(strtolower(auth()->user()->getRole())) == 'dosen' ? 'Dosen' : 'Admin',
             auth()->user()->getName(),
             $lomba->nama_lomba
         );

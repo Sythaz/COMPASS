@@ -112,9 +112,9 @@
                     </a>
                     <ul aria-expanded="false">
                         {{-- Dosen dapat melihat Lomba yang Tersedia dan mengajukan Lomba baru --}}
-                        <li><a href="{{ route('dosen.info-lomba.index') }}">Info Lomba</a></li>
+                        <li><a href="{{ route('dosen.info-lomba.index') }}">Informasi Lomba</a></li>
                         {{-- Halaman untuk melihat Daftar Lomba yang pernah diajukan Dosen --}}
-                        <li><a href="{{ route('dosen.data-lomba.index') }}">Data Lomba</a></li>
+                        <li><a href="{{ route('dosen.data-lomba.index') }}">Riwayat Pengajuan Lomba</a></li>
                     </ul>
                 </li>
 
@@ -153,13 +153,13 @@
                     </a>
                     <ul aria-expanded="false">
                         {{-- Mahasiswa dapat melihat Lomba yang Tersedia dan mengajukan Lomba baru --}}
-                        <li><a href="{{ route('mahasiswa.informasi-lomba.index') }}">Lomba</a></li>
+                        <li><a href="{{ route('mahasiswa.informasi-lomba.index') }}">Informasi Lomba</a></li>
                         {{-- Halaman untuk melihat Daftar Lomba yang pernah diajukan mahasiswa --}}
                         <li><a href="{{ route('mahasiswa.informasi-lomba.history') }}">Riwayat Pengajuan Lomba</a>
                         </li>
                         {{-- Halaman untuk melihat Daftar Lomba yang pernah diajukan mahasiswa --}}
                         <li><a href="{{ route('mahasiswa.informasi-lomba.riwayat-pendaftaran') }}">Riwayat
-                            Pendaftaran</a>
+                                Pendaftaran</a>
                         </li>
                         {{-- Laporan Promethee untuk melihat rekomendasi Lomba --}}
                         <li>
@@ -168,12 +168,12 @@
                     </ul>
                 </li>
 
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a href="{{ url('/logout') }}">
                         <i class="nav-icon fas fa-arrow-right-from-bracket"></i>
                         <span class="nav-text">Log Out</span>
                     </a>
-                </li>
+                </li> --}}
             @endif
 
         </ul>
