@@ -25,8 +25,8 @@ class LombaMahasiswaController extends Controller
     public function index()
     {
         $breadcrumb = (object) [
-            'title' => 'Info Lomba',
-            'list' => ['Info Lomba', 'Detail Lomba']
+            'title' => 'Informasi Lomba',
+            'list' => ['Informasi Lomba', 'Detail Lomba']
         ];
 
         $dataLomba = LombaModel::with(['kategori', 'tingkat_lomba'])
@@ -87,47 +87,6 @@ class LombaMahasiswaController extends Controller
             'cekUserPreferensi'
         ));
     }
-
-
-    public function list(Request $request)
-    {
-        // Ambil data lomba yang status_lomba = 'Aktif' dan status_verifikasi = 'Terverifikasi' saja
-        $dataKelolaLomba = LombaModel::with(['kategori', 'tingkat_lomba'])
-            ->where('status_lomba', 'Aktif')
-            ->where('status_verifikasi', 'Terverifikasi') // hanya Terverifikasi
-            ->get();
-
-        return DataTables::of($dataKelolaLomba)
-            ->addIndexColumn()
-            // ->addColumn('kategori', function ($row) {
-            //     return $row->kategori->pluck('nama_kategori')->join(', ') ?: 'Tidak Diketahui';
-            // })
-            ->addColumn('tingkat_lomba', function ($row) {
-                return $row->tingkat_lomba->nama_tingkat ?? '-';
-            })
-            ->addColumn('tipe_lomba', function ($row) {
-                return ucfirst($row->tipe_lomba) ?? '-';
-            })
-            ->addColumn('status_verifikasi', function ($row) {
-                // Tampilkan status_lomba (yang pasti "Aktif" sesuai kondisi)
-                $status = $row->status_lomba;
-                if ($status === 'Aktif') {
-                    return '<span class="label label-success">Aktif</span>';
-                }
-                // Jika ingin fallback, tapi seharusnya gak perlu karena filter di query
-                return '<span class="label label-secondary">Tidak Diketahui</span>';
-            })
-            ->addColumn('aksi', function ($row) {
-                $btn = '<div class="text-center">';
-                $btn .= '<button style="white-space:nowrap; margin-right: 5px;" onclick="modalAction(\'' . route('informasi-lomba.show', $row->lomba_id) . '\')" class="btn btn-info btn-sm">Detail</button>';
-                $btn .= '<button style="white-space:nowrap;" onclick="modalAction(\'' . route('informasi-lomba.daftar', $row->lomba_id) . '\')" class="btn btn-primary btn-sm">Daftar</button>';
-                $btn .= '</div>';
-                return $btn;
-            })
-            ->rawColumns(['aksi', 'status_verifikasi'])
-            ->make(true);
-    }
-
     // Tambahkan method private untuk membuat badge status
     private function getStatusBadge($status_verifikasi)
     {
@@ -173,7 +132,7 @@ class LombaMahasiswaController extends Controller
         $badgeStatus = $this->getStatusBadge($lomba->status_verifikasi);
 
         $breadcrumb = (object) [
-            'list' => ['Info Lomba', 'Detail Lomba']
+            'list' => ['Informasi Lomba', 'Detail Lomba']
         ];
 
         return view('mahasiswa.informasi-lomba.show', compact('lomba', 'namaPengusul', 'breadcrumb', 'badgeStatus', 'tipeLomba'));
@@ -186,7 +145,7 @@ class LombaMahasiswaController extends Controller
         $daftarMahasiswa = MahasiswaModel::all();
 
         $breadcrumb = (object) [
-            'list' => ['Info Lomba', 'Daftar Lomba']
+            'list' => ['Informasi Lomba', 'Daftar Lomba']
         ];
 
         return view('mahasiswa.informasi-lomba.daftar', compact('lomba', 'daftarMahasiswa', 'breadcrumb'));

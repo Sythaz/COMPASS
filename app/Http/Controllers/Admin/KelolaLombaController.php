@@ -27,26 +27,31 @@ class KelolaLombaController extends Controller
             'list' => ['Manajemen Lomba', 'Kelola Lomba']
         ];
 
-        return view('admin.manajemen-lomba.kelola-lomba.index', compact('breadcrumb'));
+        // Data untuk dropdown kategori dan tingkat lomba
+        $daftarKategori = KategoriModel::where('status_kategori', 'Aktif')->get();
+        $daftarTingkatLomba = TingkatLombaModel::where('status_tingkat_lomba', 'Aktif')->get();
+
+        return view('admin.manajemen-lomba.kelola-lomba.index', compact('breadcrumb', 'daftarKategori', 'daftarTingkatLomba'));
     }
 
     public function list(Request $request)
     {
-        // Mengambil data dari database
         $dataKelolaLomba = LombaModel::with(['kategori', 'tingkat_lomba'])
-            ->select([
-                'lomba_id',
-                'nama_lomba',
-                'tingkat_lomba_id',
-                'awal_registrasi_lomba',
-                'akhir_registrasi_lomba',
-                'status_verifikasi'
-            ])
+            ->selectRaw('t_lomba.*, null as DT_RowIndex')
             ->where('status_lomba', 'Aktif')
-            ->whereIn('status_verifikasi', ['Terverifikasi'])
-            ->get();
+            ->whereIn('status_verifikasi', ['Terverifikasi']);
 
-        return DataTables::of($dataKelolaLomba)
+        if ($request->kategori) {
+            $dataKelolaLomba->whereHas('kategori', function ($q) use ($request) {
+                $q->where('t_kategori.kategori_id', $request->kategori);
+            });
+        }
+
+        if ($request->tingkat) {
+            $dataKelolaLomba->where('tingkat_lomba_id', $request->tingkat);
+        }
+
+        return DataTables::eloquent($dataKelolaLomba)
             ->addIndexColumn()
             ->addColumn('kategori', function ($row) {
                 return $row->kategori->pluck('nama_kategori')->join(', ') ?: 'Tidak Diketahui';
@@ -55,32 +60,26 @@ class KelolaLombaController extends Controller
                 return $row->tingkat_lomba->nama_tingkat ?? '-';
             })
             ->addColumn('status_verifikasi', function ($row) {
-                $statusLomba = $row->status_verifikasi;
-                switch ($statusLomba) {
+                switch ($row->status_verifikasi) {
                     case 'Terverifikasi':
-                        $badge = '<span class="label label-success">Terverifikasi</span>';
-                        break;
+                        return '<span class="label label-success">Terverifikasi</span>';
                     case 'Menunggu':
-                        $badge = '<span class="label label-warning">Menunggu</span>';
-                        break;
+                        return '<span class="label label-warning">Menunggu</span>';
                     case 'Ditolak':
-                        $badge = '<span class="label label-danger">Ditolak</span>';
-                        break;
+                        return '<span class="label label-danger">Ditolak</span>';
                     default:
-                        $badge = '<span class="label label-secondary">Tidak Diketahui</span>';
-                        break;
+                        return '<span class="label label-secondary">Tidak Diketahui</span>';
                 }
-                return $badge;
             })
             ->addColumn('aksi', function ($row) {
                 $btn = '<div class="d-flex justify-content-center">';
-                $btn .= '<button style="white-space:nowrap" onclick="modalAction(\'' . url('/admin/manajemen-lomba/kelola-lomba/' . $row->lomba_id . '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button>';
-                $btn .= '<button style="white-space:nowrap" onclick="modalAction(\'' . url('/admin/manajemen-lomba/kelola-lomba/' . $row->lomba_id . '/edit_ajax') . '\')" class="btn btn-warning btn-sm mx-2">Edit</button>';
-                $btn .= '<button style="white-space:nowrap" onclick="modalAction(\'' . url('/admin/manajemen-lomba/kelola-lomba/' . $row->lomba_id . '/delete_ajax') . '\')" class="btn btn-danger btn-sm">Hapus</button>';
+                $btn .= '<button onclick="modalAction(\'' . url('/admin/manajemen-lomba/kelola-lomba/' . $row->lomba_id . '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button>';
+                $btn .= '<button onclick="modalAction(\'' . url('/admin/manajemen-lomba/kelola-lomba/' . $row->lomba_id . '/edit_ajax') . '\')" class="btn btn-warning btn-sm mx-2">Edit</button>';
+                $btn .= '<button onclick="modalAction(\'' . url('/admin/manajemen-lomba/kelola-lomba/' . $row->lomba_id . '/delete_ajax') . '\')" class="btn btn-danger btn-sm">Hapus</button>';
                 $btn .= '</div>';
                 return $btn;
             })
-            ->rawColumns(['aksi', 'status_verifikasi'])
+            ->rawColumns(['status_verifikasi', 'aksi'])
             ->make(true);
     }
 
@@ -325,7 +324,6 @@ class KelolaLombaController extends Controller
             ], 500);
         }
     }
-
 
     public function destroy($id)
     {
