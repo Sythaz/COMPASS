@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dosen;
 
 use App\Http\Controllers\Controller;
+use App\Models\KategoriModel;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\PrestasiModel;
@@ -14,10 +15,18 @@ class KelolaBimbinganController extends Controller
     public function index()
     {
         $breadcrumb = (object) [
-            'list' => ['Manajemen Mahasiswa Bimbingan']
+            'list' => ['Manajemen Bimbingan', 'Kelola Bimbingan']
+
         ];
 
-        return view('dosen.kelola-bimbingan.index', compact('breadcrumb'));
+        // Data untuk dropdown kategori dan tahun prestasi
+        $daftarKategori = KategoriModel::where('status_kategori', 'Aktif')->get();
+        $daftarTahun = PrestasiModel::selectRaw('YEAR(tanggal_prestasi) as tahun')
+            ->distinct()
+            ->orderBy('tahun', 'desc')
+            ->pluck('tahun');
+
+        return view('dosen.kelola-bimbingan.index', compact('breadcrumb', 'daftarKategori', 'daftarTahun'));
     }
 
     private function getStatusBadge($status_verifikasi)
@@ -37,6 +46,7 @@ class KelolaBimbinganController extends Controller
                 return '<span class="label label-default">Tidak Diketahui</span>';
         }
     }
+
     public function list(Request $request)
     {
         // Ambil ID dosen dari user yang login
@@ -51,14 +61,36 @@ class KelolaBimbinganController extends Controller
         // Ambil semua prestasi yang dibimbing oleh dosen yang login
         $data = PrestasiModel::with(['lomba', 'dosen'])
             ->where('dosen_id', $dosenId)
+            ->where('status_verifikasi', 'Terverifikasi')
             ->select('t_prestasi.*');
 
-        return DataTables::of($data)
+        if ($request->kategori) {
+            $data->whereHas('kategori', function ($q) use ($request) {
+                $q->where('t_kategori.kategori_id', $request->kategori);
+            });
+        }
+
+        if ($request->tahun) {
+            $data->whereBetween('tanggal_prestasi', [
+                "{$request->tahun}-01-01",
+                "{$request->tahun}-12-31"
+            ]);
+        }
+
+        return DataTables::eloquent($data)
+            ->addIndexColumn()
             ->addColumn('nama_lomba', function ($row) {
                 return $row->lomba->nama_lomba ?? $row->lomba_lainnya ?? '-';
             })
-            ->addColumn('dosen_pembimbing', function ($row) {
-                return $row->dosen->nama_dosen ?? '<span class="text-muted">Belum ada</span>';
+            ->addColumn('nama_peserta', function ($row) {
+                $output = '';
+                foreach ($row->mahasiswa as $mhs) {
+                    $output .= '<li>' . e($mhs->nama_mahasiswa) . ' (' . e($mhs->pivot->peran) . ')</li>';
+                }
+                return $output ?: '<span class="text-muted">Belum ada anggota</span>';
+            })
+            ->editColumn('tanggal_prestasi', function ($row) {
+                return date('d M Y', strtotime($row->tanggal_prestasi));
             })
             ->editColumn('status_verifikasi', function ($prestasi) {
                 $status = $prestasi->status_verifikasi ?? 'menunggu';
@@ -70,8 +102,7 @@ class KelolaBimbinganController extends Controller
                 $btn .= '</div>';
                 return $btn;
             })
-
-            ->rawColumns(['dosen_pembimbing', 'status_verifikasi', 'aksi'])
+            ->rawColumns(['nama_peserta', 'status_verifikasi', 'aksi'])
             ->make(true);
     }
 
@@ -84,5 +115,4 @@ class KelolaBimbinganController extends Controller
 
         return view('dosen.kelola-bimbingan.show', compact('prestasi', 'statusBadge'))->render();
     }
-
 }

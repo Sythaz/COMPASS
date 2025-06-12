@@ -44,7 +44,7 @@
                                         @endforeach
                                     </select>
 
-                                    <button class="btn btn-secondary" onclick="resetFilter()">Reset Filter</button>
+                                    <button class="btn btn-secondary text-white" onclick="resetFilter()">Reset Filter</button>
                                 </div>
                             </div>
                         </div>
