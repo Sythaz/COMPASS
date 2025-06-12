@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
             LaporanPrestasiSeeder::class,   // 16
             NotifikasiSeeder::class,        // 17
             PreferensiUserSeeder::class,    // 18
+            PreferensiDosenSeeder::class,   // 19
         ]);
     }
 }
