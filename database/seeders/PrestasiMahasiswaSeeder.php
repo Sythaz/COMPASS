@@ -25,7 +25,7 @@ class PrestasiMahasiswaSeeder extends Seeder
             // Prestasi 2 (Juara 2 - Individu)
             [
                 'prestasi_id' => 2,
-                'mahasiswa_id' => 1,
+                'mahasiswa_id' => 2,
                 'peran' => 'Ketua',
             ],
 
@@ -36,25 +36,10 @@ class PrestasiMahasiswaSeeder extends Seeder
                 'peran' => 'Ketua',
             ],
 
-            // Prestasi 4 (Juara 4 - Individu)
-            [
-                'prestasi_id' => 4,
-                'mahasiswa_id' => 3,
-                'peran' => 'Ketua',
-            ],
-
-            // Prestasi 5 (Juara 2 - Individu)
-            [
-                'prestasi_id' => 5,
-                'mahasiswa_id' => 4,
-                'peran' => 'Ketua',
-            ],
-
             // ================= PRESTASI TIM =================
-            // Prestasi 6 (Juara 5 - Tim) - Status Ditolak
             [
                 'prestasi_id' => 6,
-                'mahasiswa_id' => 5,
+                'mahasiswa_id' => 1,
                 'peran' => 'Ketua',
             ],
             [
@@ -73,25 +58,22 @@ class PrestasiMahasiswaSeeder extends Seeder
                 'peran' => 'Anggota',
             ],
 
-            // Prestasi 7 (Juara 5 - Tim) - Status Valid
             [
-                'prestasi_id' => 7,
-                'mahasiswa_id' => 6,
+                'prestasi_id' => 5,
+                'mahasiswa_id' => 1,
                 'peran' => 'Ketua',
             ],
             [
-                'prestasi_id' => 7,
-                'mahasiswa_id' => 104,
+                'prestasi_id' => 5,
+                'mahasiswa_id' => 2,
                 'peran' => 'Anggota',
             ],
             [
-                'prestasi_id' => 7,
+                'prestasi_id' => 5,
                 'mahasiswa_id' => 105,
                 'peran' => 'Anggota',
             ],
 
-            // ================= TAMBAHAN UNTUK SHOWCASE =================
-            // Contoh mahasiswa dengan banyak prestasi (sebagai anggota)
             [
                 'prestasi_id' => 1,
                 'mahasiswa_id' => 106,
@@ -103,27 +85,19 @@ class PrestasiMahasiswaSeeder extends Seeder
                 'peran' => 'Anggota',
             ],
 
-            // Contoh tim besar (5 anggota)
             [
-                'prestasi_id' => 6,
-                'mahasiswa_id' => 107,
-                'peran' => 'Anggota',
+                'prestasi_id' => 4,
+                'mahasiswa_id' => 1,
+                'peran' => 'Ketua',
             ],
             [
-                'prestasi_id' => 6,
-                'mahasiswa_id' => 108,
-                'peran' => 'Anggota',
-            ],
-
-            // Contoh untuk filter status
-            [
-                'prestasi_id' => 4, // Status Menunggu
-                'mahasiswa_id' => 109,
-                'peran' => 'Anggota',
-            ],
-            [
-                'prestasi_id' => 5, // Status Menunggu
+                'prestasi_id' => 4,
                 'mahasiswa_id' => 110,
+                'peran' => 'Anggota',
+            ],
+            [
+                'prestasi_id' => 4,
+                'mahasiswa_id' => 57,
                 'peran' => 'Anggota',
             ],
         ]);
