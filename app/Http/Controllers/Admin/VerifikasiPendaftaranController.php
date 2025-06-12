@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\PendaftaranLombaModel;
+use App\Models\LombaModel;
+use App\Models\MahasiswaModel;
 
 class VerifikasiPendaftaranController extends Controller
 {
@@ -104,9 +106,13 @@ class VerifikasiPendaftaranController extends Controller
             })
 
             ->addColumn('aksi', function ($row) {
-                return '<button style="white-space:nowrap" onclick="modalAction(\'' . route('verifikasi-pendaftaran.show', $row->pendaftaran_id) . '\')" class="btn btn-info btn-sm">Detail</button>';
+                $btn = '<div class="d-flex justify-content-center">';
+                $btn .= '<button onclick="modalAction(\'' . route('verifikasi-pendaftaran.show', $row->pendaftaran_id) . '\')" class="btn btn-info btn-sm">Detail</button>';
+                $btn .= '<button onclick="modalAction(\'' . route('verifikasi-pendaftaran.edit', $row->pendaftaran_id) . '\')" class="btn btn-warning btn-sm mx-2">Edit</button>';
+                $btn .= '<button onclick="modalAction(\'' . route('verifikasi-pendaftaran.hapus', $row->pendaftaran_id) . '\')" class="btn btn-danger btn-sm">Hapus</button>';
+                $btn .= '</div>';
+                return $btn;
             })
-
 
             ->rawColumns(['status_verifikasi', 'aksi'])
             ->make(true);
@@ -154,5 +160,92 @@ class VerifikasiPendaftaranController extends Controller
 
         return response()->json(['message' => 'Pendaftaran berhasil ditolak.']);
     }
+
+    public function edit($id)
+    {
+        $pendaftaran = PendaftaranLombaModel::with(['lomba', 'mahasiswa', 'anggota'])->findOrFail($id);
+        $daftarLomba = LombaModel::where('status_lomba', 'Aktif')->get();
+        $daftarMahasiswa = MahasiswaModel::all();
+
+        return view('admin.manajemen-lomba.verifikasi-pendaftaran.edit', compact(
+            'pendaftaran',
+            'daftarLomba',
+            'daftarMahasiswa'
+        ));
+    }
+
+    public function update_pendaftaran(Request $request, $id)
+    {
+        $request->validate([
+            'lomba_id' => 'required|exists:t_lomba,lomba_id',
+            'mahasiswa_id' => 'required|array|min:1',
+            'mahasiswa_id.*' => 'required|exists:t_mahasiswa,mahasiswa_id',
+            'status_pendaftaran' => 'required|in:Menunggu,Terverifikasi,Ditolak',
+            'bukti_pendaftaran' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+        ]);
+
+        $anggotaTim = collect($request->mahasiswa_id)->unique()->values()->toArray();
+
+        $pendaftaran = PendaftaranLombaModel::findOrFail($id);
+
+        // Update data pendaftaran
+        $pendaftaran->mahasiswa_id = $anggotaTim[0]; // Anggota pertama dianggap ketua
+        $pendaftaran->lomba_id = $request->lomba_id;
+        $pendaftaran->status_pendaftaran = $request->status_pendaftaran;
+
+        // Cek dan simpan file baru jika ada
+        if ($request->hasFile('bukti_pendaftaran')) {
+            // Hapus file lama jika bukan default
+            if ($pendaftaran->bukti_pendaftaran && $pendaftaran->bukti_pendaftaran !== 'default-file.jpg') {
+                $oldFile = public_path('uploads/bukti/' . $pendaftaran->bukti_pendaftaran);
+                if (file_exists($oldFile)) {
+                    unlink($oldFile);
+                }
+            }
+
+            $file = $request->file('bukti_pendaftaran');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads/bukti'), $filename);
+            $pendaftaran->bukti_pendaftaran = $filename;
+        }
+
+        $pendaftaran->save();
+
+        // Simpan ulang anggota tim
+        $pendaftaran->anggota()->sync($anggotaTim);
+
+        return response()->json([
+            'message' => 'Pendaftaran lomba berhasil diperbarui!'
+        ], 200);
+    }
+
+
+    public function hapus($id)
+    {
+        $pendaftaran = PendaftaranLombaModel::with(['lomba', 'mahasiswa', 'anggota'])->findOrFail($id);
+        return view('admin.manajemen-lomba.verifikasi-pendaftaran.hapus', compact('pendaftaran'));
+    }
+
+    public function destroy($id)
+    {
+        $pendaftaran = PendaftaranLombaModel::with('anggota')->findOrFail($id);
+
+        // Hapus file jika ada dan bukan default
+        if ($pendaftaran->bukti_pendaftaran && $pendaftaran->bukti_pendaftaran !== 'default-file.jpg') {
+            $filePath = public_path('uploads/bukti/' . $pendaftaran->bukti_pendaftaran);
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+        }
+
+        // Hapus relasi anggota tim (pivot table)
+        $pendaftaran->anggota()->detach();
+
+        // Hapus data utama
+        $pendaftaran->delete();
+
+        return redirect()->route('riwayat-pendaftaran.index')->with('success', 'Data pendaftaran berhasil dihapus.');
+    }
+
 
 }

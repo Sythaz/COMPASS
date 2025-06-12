@@ -246,11 +246,14 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::get('pendaftaran-lomba/show/{id}', [VerifikasiPendaftaranController::class, 'detail_pendaftaran'])->name('verifikasi-pendaftaran.show');
             Route::get('riwayat-pendaftaran-lomba', [VerifikasiPendaftaranController::class, 'riwayat_index'])->name('riwayat-pendaftaran.index');
             Route::get('riwayat-pendaftaran-lomba/list', [VerifikasiPendaftaranController::class, 'riwayat_list'])->name('riwayat-pendaftaran.list');
-            // Tambahan untuk tombol Terima dan Tolak
             Route::get('pendaftaran-lomba/{id}/terima', [VerifikasiPendaftaranController::class, 'terimaView'])->name('verifikasi-pendaftaran.terima_view');
             Route::post('pendaftaran-lomba/{id}/terima', [VerifikasiPendaftaranController::class, 'terima'])->name('verifikasi-pendaftaran.terima');
             Route::get('pendaftaran-lomba/{id}/tolak', [VerifikasiPendaftaranController::class, 'tolakView'])->name('verifikasi-pendaftaran.tolak_view');
             Route::post('pendaftaran-lomba/{id}/tolak', [VerifikasiPendaftaranController::class, 'tolak'])->name('verifikasi-pendaftaran.tolak');
+            Route::get('pendaftaran-lomba/{id}/edit', [VerifikasiPendaftaranController::class, 'edit'])->name('verifikasi-pendaftaran.edit');
+            Route::put('pendaftaran-lomba/{id}', [VerifikasiPendaftaranController::class, 'update_pendaftaran'])->name('verifikasi-pendaftaran.update');
+            Route::get('pendaftaran-lomba/{id}/hapus', [VerifikasiPendaftaranController::class, 'hapus'])->name('verifikasi-pendaftaran.hapus');
+            Route::delete('pendaftaran-lomba/{id}', [VerifikasiPendaftaranController::class, 'destroy'])->name('verifikasi-pendaftaran.destroy');
         });
 
         // MANAJEMEN PRESTASI

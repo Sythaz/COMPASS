@@ -87,6 +87,7 @@
                     </div>
                 </div>
             </div>
+
             {{-- Menampilkan Alasan jika pendaftaran Lomba ditolak  --}}
             @if ($pendaftaran->status_pendaftaran === 'Nonaktif' || !empty($pendaftaran->alasan_tolak))
                 <div class="mt-3">
@@ -101,8 +102,11 @@
 
                     @if (!empty($pendaftaran->alasan_tolak))
                         <div class="form-group">
-                            <label class="col-form-label font-weight-bold">Alasan Penolakan</label>
-                            <textarea class="form-control" rows="3" disabled>{{ $pendaftaran->alasan_tolak }}</textarea>
+                            <label for="alasan_tolak" class="text-danger font-weight-bold">
+                                <i class="fa fa-exclamation-circle"></i> Alasan Penolakan <span
+                                    class="text-danger">*</span>
+                            </label>
+                            <textarea name="alasan_tolak" id="alasan_tolak" class="form-control" disabled>{{ $pendaftaran->alasan_tolak }}</textarea>
                         </div>
                     @endif
                 </div>

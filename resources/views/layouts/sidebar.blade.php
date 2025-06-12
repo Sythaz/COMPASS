@@ -68,8 +68,8 @@
                     </a>
                     <ul aria-expanded="false">
                         <li><a href="{{ route('kelola-lomba.index') }}">Kelola Lomba</a></li>
+                        <li><a href="{{ route('verifikasi-pendaftaran.index') }}">Kelola Pendaftaran Lomba</a></li>
                         <li><a href="{{ route('verifikasi-lomba.index') }}">Verifikasi Pengajuan Lomba</a></li>
-                        <li><a href="{{ route('verifikasi-pendaftaran.index') }}">Verifikasi Pendaftaran Lomba</a></li>
                         <li><a href="{{ route('histori-pengajuan-lomba.index') }}">Riwayat Pengajuan Lomba</a></li>
                         <li><a href="{{ route('rekomendasi-lomba.index') }}">Rekomendasi Lomba</a></li>
                     </ul>
@@ -158,8 +158,8 @@
                         <li><a href="{{ route('mahasiswa.informasi-lomba.history') }}">Riwayat Pengajuan Lomba</a>
                         </li>
                         {{-- Halaman untuk melihat Daftar Lomba yang pernah diajukan mahasiswa --}}
-                        <li><a href="{{ route('mahasiswa.informasi-lomba.riwayat-pendaftaran') }}">Riwayat
-                                Pendaftaran</a>
+                        <li><a href="{{ route('mahasiswa.informasi-lomba.riwayat-pendaftaran') }}">Riwayat Pendaftaran
+                                Lomba</a>
                         </li>
                         {{-- Laporan Promethee untuk melihat rekomendasi Lomba --}}
                         <li>
