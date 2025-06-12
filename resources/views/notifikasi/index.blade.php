@@ -4,7 +4,7 @@
 
 @section('page-title', 'Notifikasi')
 
-@section('page-description', 'Kelola semua notifikasi Anda')
+@section('page-description', 'Halaman notifikasi, tempat anda dapat melihat semua notifikasi yang dikirim untuk anda.')
 
 @section('content')
     <div class="row">
@@ -219,7 +219,7 @@
                                             <a href="{{ $route }}" class="btn btn-sm btn-primary">
                                                 <i class="fas fa-external-link-alt"></i>
                                             </a>
-                                            <a href="javascript:void(0)" class="btn btn-sm btn-danger hapus-notifikasi"
+                                            <a href="javascript:void(0)" class="mt-2 btn btn-sm btn-danger hapus-notifikasi"
                                                 data-id="{{ $notif->notifikasi_id }}">
                                                 <i class="fas fa-trash-alt"></i>
                                         </td>
