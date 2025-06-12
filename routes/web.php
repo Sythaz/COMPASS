@@ -66,6 +66,7 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
     Route::get('notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi.index');
     Route::post('notifikasi/baca_semua_notifikasi', [NotifikasiController::class, 'bacaSemuaNotifikasi'])->name('notifikasi.bacaSemuaNotifikasi');
     Route::post('notifikasi/tandai_sudah_dibaca_notifikasi/{id}', [NotifikasiController::class, 'tandaiSudahDibacaNotifikasi'])->name('notifikasi.tandaiSudahDibacaNotifikasi');
+    Route::post('/notifikasi/tandai-dibaca-banyak', [NotifikasiController::class, 'tandaiDibacaBanyakNotifikasi'])->name('notifikasi.tandaiDibacaBanyakNotifikasi');
     Route::post('notifikasi/hapus_notifikasi/{id}', [NotifikasiController::class, 'hapusNotifikasi'])->name('notifikasi.hapusNotifikasi');
     Route::post('notifikasi/hapus_banyak_notifikasi', [NotifikasiController::class, 'hapusBanyakNotifikasi'])->name('notifikasi.hapusBanyakNotifikasi');
 

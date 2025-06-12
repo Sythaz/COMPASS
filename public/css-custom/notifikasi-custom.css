@@ -1,0 +1,68 @@
+.notification-row {
+    transition: all 0.3s ease;
+}
+
+.notification-row:hover {
+    background-color: #f8f9fa !important;
+}
+
+.avatar-sm {
+    min-width: 40px;
+}
+
+.notification-message p {
+    margin-bottom: 0.25rem;
+    line-height: 1.4;
+}
+
+.empty-state {
+    padding: 2rem;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+    letter-spacing: 0.5px;
+}
+
+.badge {
+    font-size: 0.75rem;
+}
+
+.dropdown-toggle::after {
+    display: none;
+}
+
+.custom-control-label::after {
+    position: relative;
+}
+
+@media (max-width: 768px) {
+    .card-header {
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+
+    .card-header>div {
+        margin-bottom: 1rem;
+    }
+
+    .card-header>div:last-child {
+        margin-bottom: 0;
+    }
+
+    .input-group {
+        width: 100% !important;
+        margin-right: 0 !important;
+        margin-bottom: 0.5rem;
+    }
+}
+
+.table thead th:first-child {
+    border-top-left-radius: 0.4rem;
+}
+
+.table thead th:last-child {
+    border-top-right-radius: 0.4rem;
+}
