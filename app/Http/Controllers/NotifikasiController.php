@@ -41,6 +41,30 @@ class NotifikasiController extends Controller
         return response()->json(['success' => true]);
     }
 
+    // app/Http/Controllers/NotifikasiController.php
+    public function tandaiDibacaBanyakNotifikasi(Request $request)
+    {
+        $ids = $request->input('ids');
+
+        if (!$ids || !is_array($ids)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ada notifikasi yang dipilih'
+            ]);
+        }
+
+        $userId = auth()->id();
+        $updated = NotifikasiModel::whereIn('notifikasi_id', $ids)
+            ->where('user_id', $userId)
+            ->update(['status_notifikasi' => 'Sudah Dibaca']);
+
+        return response()->json([
+            'success' => true,
+            'updated_ids' => $ids,
+            'count' => $updated
+        ]);
+    }
+
     public function hapusNotifikasi($notifikasiId)
     {
         $userId = auth()->id();
