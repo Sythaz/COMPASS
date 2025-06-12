@@ -298,7 +298,7 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
         // Halaman Kelola Bimbingan (Menampilkan Riwayat Prestasi mahasiswa sesuai Mahasiswa yang Di Bimbing)
         Route::prefix('dosen/kelola-bimbingan')->group(function () {
             Route::get('/', [KelolaBimbinganController::class, 'index'])->name('dosen.kelola-bimbingan.index');
-            Route::get('list', [KelolaBimbinganController::class, 'list'])->name('dosen.kelola-bimbingan.list');
+            Route::post('list', [KelolaBimbinganController::class, 'list'])->name('dosen.kelola-bimbingan.list');
             Route::get('{id}/show_ajax', [KelolaBimbinganController::class, 'showAjax'])->name('dosen.kelola-bimbingan.showAjax');
         });
 

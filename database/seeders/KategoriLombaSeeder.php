@@ -61,6 +61,19 @@ class KategoriLombaSeeder extends Seeder
             // Lomba 13: Lomba Bisnis Startup Tingkat Nasional
             ['lomba_id' => 13, 'kategori_id' => 17, 'created_at' => now(), 'updated_at' => now()],
             ['lomba_id' => 13, 'kategori_id' => 13, 'created_at' => now(), 'updated_at' => now()],
+
+            // Lomba 14: Desain Poster Kreatif
+            ['lomba_id' => 14, 'kategori_id' => 1, 'created_at' => now(), 'updated_at' => now()],
+            ['lomba_id' => 14, 'kategori_id' => 2, 'created_at' => now(), 'updated_at' => now()],
+
+            // Lomba 15: Kompetisi Fotografi Alam Nasional
+            ['lomba_id' => 15, 'kategori_id' => 1, 'created_at' => now(), 'updated_at' => now()],
+
+            // Lomba 16: Turnamen Catur Cepat Pelajar
+            ['lomba_id' => 16, 'kategori_id' => 2, 'created_at' => now(), 'updated_at' => now()],
+
+            // Lomba 17: Festival Tari Tradisional Jawa
+            ['lomba_id' => 17, 'kategori_id' => 1, 'created_at' => now(), 'updated_at' => now()],
         ];
 
         DB::table('t_kategori_lomba')->insert($data);

@@ -75,14 +75,6 @@
                     </ul>
                 </li>
 
-                {{-- Log Out --}}
-                <li class="nav-item">
-                    <a href="{{ url('/logout') }}">
-                        <i class="nav-icon fas fa-arrow-right-from-bracket"></i>
-                        <span class="nav-text">Log Out</span>
-                    </a>
-                </li>
-
                 <!-- Menu Khusus Dosen -->
             @elseif ($user->hasRole('Dosen'))
                 <!-- Isi Menu Khusus Dosen Disini ya!! -->
@@ -116,14 +108,6 @@
                         {{-- Halaman untuk melihat Daftar Lomba yang pernah diajukan Dosen --}}
                         <li><a href="{{ route('dosen.data-lomba.index') }}">Riwayat Pengajuan Lomba</a></li>
                     </ul>
-                </li>
-
-                {{-- Log Out --}}
-                <li class="nav-item">
-                    <a href="{{ url('/logout') }}">
-                        <i class="nav-icon fas fa-arrow-right-from-bracket"></i>
-                        <span class="nav-text">Log Out</span>
-                    </a>
                 </li>
 
                 <!-- Menu Khusus Mahasiswa -->
@@ -167,13 +151,6 @@
                         </li>
                     </ul>
                 </li>
-
-                {{-- <li class="nav-item">
-                    <a href="{{ url('/logout') }}">
-                        <i class="nav-icon fas fa-arrow-right-from-bracket"></i>
-                        <span class="nav-text">Log Out</span>
-                    </a>
-                </li> --}}
             @endif
 
         </ul>
