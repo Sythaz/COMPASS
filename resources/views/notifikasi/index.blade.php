@@ -4,97 +4,106 @@
 
 @section('page-title', 'Notifikasi')
 
-@section('page-description', 'Kelola semua notifikasi Anda')
+@section('page-description', 'Halaman notifikasi, tempat anda dapat melihat semua notifikasi yang dikirim untuk anda.')
 
 @section('content')
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <div class="d-flex align-items-center">
-                        <h5 class="card-title mb-0">Semua Notifikasi</h5>
-                        <span class="badge badge-primary ml-2 badge-jumlah-notif mr-3">{{ $notifikasi->count() }}</span>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <h5 class="card-title mb-0">Semua Notifikasi</h5>
+                            <span class="badge badge-primary ml-2 badge-jumlah-notif mr-3">{{ $notifikasi->count() }}</span>
 
-                        <!-- Dropdown Filter Status -->
-                        <div class="dropdown mr-2">
-                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filterStatusDropdown"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-filter mr-1"></i> Status
-                            </button>
-                            <div class="dropdown-menu p-3" style="width: 200px;">
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="filter-status-all" checked>
-                                    <label class="custom-control-label" for="filter-status-all">Semua</label>
+                            <!-- Dropdown Filter Status -->
+                            <div class="dropdown mr-2">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                    id="filterStatusDropdown" data-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                    <i class="fas fa-filter mr-1"></i> Status
+                                </button>
+                                <div class="dropdown-menu p-3" style="width: 200px;">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="filter-status-all" checked>
+                                        <label class="custom-control-label" for="filter-status-all">Semua</label>
+                                    </div>
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="filter-status-unread"
+                                            checked>
+                                        <label class="custom-control-label" for="filter-status-unread">Belum Dibaca</label>
+                                    </div>
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="filter-status-read" checked>
+                                        <label class="custom-control-label" for="filter-status-read">Sudah Dibaca</label>
+                                    </div>
                                 </div>
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="filter-status-unread" checked>
-                                    <label class="custom-control-label" for="filter-status-unread">Belum Dibaca</label>
-                                </div>
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="filter-status-read" checked>
-                                    <label class="custom-control-label" for="filter-status-read">Sudah Dibaca</label>
+                            </div>
+
+                            <!-- Dropdown Filter Jenis -->
+                            <div class="dropdown mr-2">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                    id="filterJenisDropdown" data-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                    <i class="fas fa-tag mr-1"></i> Jenis
+                                </button>
+                                <div class="dropdown-menu p-3" style="width: 200px;">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="filter-jenis-all" checked>
+                                        <label class="custom-control-label p-0" for="filter-jenis-all">Semua</label>
+                                    </div>
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="filter-jenis-rekomendasi"
+                                            checked>
+                                        <label class="custom-control-label" for="filter-jenis-rekomendasi">Rekomendasi
+                                            Lomba</label>
+                                    </div>
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input"
+                                            id="filter-jenis-verifikasi-lomba" checked>
+                                        <label class="custom-control-label" for="filter-jenis-verifikasi-lomba">Verifikasi
+                                            Lomba</label>
+                                    </div>
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input"
+                                            id="filter-jenis-verifikasi-prestasi" checked>
+                                        <label class="custom-control-label"
+                                            for="filter-jenis-verifikasi-prestasi">Verifikasi
+                                            Prestasi</label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Dropdown Filter Jenis -->
-                        <div class="dropdown mr-2">
-                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
-                                id="filterJenisDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-tag mr-1"></i> Jenis
-                            </button>
-                            <div class="dropdown-menu p-3" style="width: 200px;">
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="filter-jenis-all" checked>
-                                    <label class="custom-control-label p-0" for="filter-jenis-all">Semua</label>
-                                </div>
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="filter-jenis-rekomendasi"
-                                        checked>
-                                    <label class="custom-control-label" for="filter-jenis-rekomendasi">Rekomendasi
-                                        Lomba</label>
-                                </div>
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="filter-jenis-verifikasi-lomba"
-                                        checked>
-                                    <label class="custom-control-label" for="filter-jenis-verifikasi-lomba">Verifikasi
-                                        Lomba</label>
-                                </div>
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input"
-                                        id="filter-jenis-verifikasi-prestasi" checked>
-                                    <label class="custom-control-label" for="filter-jenis-verifikasi-prestasi">Verifikasi
-                                        Prestasi</label>
+                        <div class="d-flex align-items-center">
+                            <div class="input-group mr-3" style="width: 250px; height: calc(2.25rem + 2px);">
+                                <input type="text" class="form-control rounded-left" placeholder="Cari notifikasi..."
+                                    id="searchInput" style="height: 100%;">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" style="height: 100%;">
+                                        <i class="fas fa-search"></i>
+                                    </span>
                                 </div>
                             </div>
+                            <button class="btn btn-primary btn-baca-semua" id="btn-baca-semua" href="javascript:void(0)">
+                                <i class="fas fa-check-double mr-1"></i> Tandai Semua Dibaca
+                            </button>
                         </div>
                     </div>
-                    <div class="d-flex align-items-center">
-                        <div class="input-group mr-3" style="width: 250px; height: calc(2.25rem + 2px);">
-                            <input type="text" class="form-control rounded-left" placeholder="Cari notifikasi..."
-                                id="searchInput" style="height: 100%;">
-                            <div class="input-group-append">
-                                <span class="input-group-text" style="height: 100%;">
-                                    <i class="fas fa-search"></i>
-                                </span>
-                            </div>
-                        </div>
-                        <button class="btn btn-primary btn-baca-semua" id="btn-baca-semua" href="javascript:void(0)">
-                            <i class="fas fa-check-double mr-1"></i> Tandai Semua Dibaca
-                        </button>
-                    </div>
-                </div>
 
-                <div class="card-body pt-0">
-                    <div class="table-responsive">
-                        <div class="delete-button-container d-none bg-danger rounded p-1">
+                    <div class="table-responsive mt-4">
+                        <div class="delete-button-container d-none bg-primary rounded p-1">
                             <div class="d-flex align-items-center justify-content-between">
                                 <span class="ml-3 text-white"><span id="total-selected">0</span>
                                     baris notifikasi terpilih
                                 </span>
-                                <button class="btn btn-danger ml-auto" id="btn-hapus-notifikasi-terpilih">
-                                    <i class="fas fa-trash mr-1"></i> Hapus Notifikasi Terpilih
-                                </button>
+                                <div>
+                                    <button class="btn btn-light mr-2" id="btn-tandai-dibaca-terpilih">
+                                        <i class="fas fa-check-double mr-1"></i> Tandai Dibaca
+                                    </button>
+                                    <button class="btn btn-danger mr-2" id="btn-hapus-notifikasi-terpilih">
+                                        <i class="fas fa-trash mr-1"></i> Hapus
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <table class="table table-hover mb-0">
@@ -187,8 +196,30 @@
                                                 </div>
                                             </div>
                                         </td>
+                                        @php
+                                            $routes = [
+                                                'Rekomendasi' => [
+                                                    'Dosen' => route('dosen.info-lomba.index'),
+                                                    'Mahasiswa' => route('mahasiswa.informasi-lomba.index'),
+                                                ],
+                                                'Verifikasi Lomba' => [
+                                                    'Dosen' => route('dosen.info-lomba.index'),
+                                                    'Mahasiswa' => route('mahasiswa.informasi-lomba.index'),
+                                                ],
+                                                'Verifikasi Prestasi' => [
+                                                    'Dosen' => route('dosen.kelola-bimbingan.index'),
+                                                    'Mahasiswa' => route('mhs.prestasi.index'),
+                                                ],
+                                            ];
+                                            $role = auth()->user()->getRole();
+                                            $route =
+                                                $routes[$notif->jenis_notifikasi][$role] ?? route('notifikasi.index');
+                                        @endphp
                                         <td class="text-center">
-                                            <a href="javascript:void(0)" class="btn btn-sm btn-danger hapus-notifikasi"
+                                            <a href="{{ $route }}" class="btn btn-sm btn-primary">
+                                                <i class="fas fa-external-link-alt"></i>
+                                            </a>
+                                            <a href="javascript:void(0)" class="mt-2 btn btn-sm btn-danger hapus-notifikasi"
                                                 data-id="{{ $notif->notifikasi_id }}">
                                                 <i class="fas fa-trash-alt"></i>
                                         </td>
@@ -230,7 +261,13 @@
             </div>
         </div>
     </div>
+@endsection
 
+@push('css')
+    <link href="{{ asset('css-custom/notifikasi-custom.css') }}" rel="stylesheet">
+@endpush
+
+@push('js')
     <script>
         // Tandai notifikasi sebagai dibaca semua dan perbarui jumlah notifikasi di header
         function updateHeaderNotifCount(newCount) {
@@ -245,136 +282,6 @@
             }
         }
 
-        $('.btn-baca-semua').click(function() {
-            // Kirim permintaan AJAX untuk menandai semua notifikasi sebagai dibaca
-            $.ajax({
-                url: '{{ route('notifikasi.bacaSemuaNotifikasi') }}',
-                type: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function(response) {
-                    if (response.success) {
-                        // Ubah status notifikasi di UI
-                        $('.notification-row').each(function() {
-                            $(this).removeClass('bg-light');
-                        });
-
-                        updateHeaderNotifCount(0);
-                    }
-                }
-            });
-        });
-
-        // Hapus notifikasi
-        $('.hapus-notifikasi').click(function(e) {
-            e.preventDefault();
-            const notifikasiId = $(this).data('id');
-            const row = $('#check' + notifikasiId).closest('tr');
-
-            Swal.fire({
-                title: 'Hapus Notifikasi?',
-                text: 'Anda yakin ingin menghapus notifikasi ini?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, hapus!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: '{{ route('notifikasi.hapusNotifikasi', '') }}/' + notifikasiId,
-                        type: 'POST',
-                        data: {
-                            _token: '{{ csrf_token() }}'
-                        },
-                        success: function(response) {
-                            if (response.success) {
-                                row.fadeOut(300, function() {
-                                    row.remove();
-                                });
-
-                                // Perbarui badge jumlah notifikasi menjadi berkurang 1
-                                const $badge = $(
-                                    '.badge-jumlah-notif'); // Target badge notifikasi saja
-                                let currentBadgeCount = parseInt($badge.text());
-
-                                if (!isNaN(currentBadgeCount) && currentBadgeCount > 0) {
-                                    $badge.text(currentBadgeCount - 1);
-                                } else {
-                                    $badge.remove(); // Hapus badge jika sudah 0
-                                }
-                            } else {
-                                alert(response.message || 'Gagal menghapus notifikasi.');
-                            }
-                        },
-                        error: function() {
-                            alert('Terjadi kesalahan saat menghapus notifikasi.');
-                        }
-                    });
-                }
-            });
-        });
-
-        // Hapus banyak notifikasi
-        $('#btn-hapus-notifikasi-terpilih').click(function() {
-            const selectedIds = $('.notification-checkbox:checked').map(function() {
-                return $(this).val();
-            }).get();
-
-            if (selectedIds.length === 0) {
-                alert('Pilih setidaknya satu notifikasi untuk dihapus.');
-                return;
-            }
-
-            Swal.fire({
-                title: 'Hapus Notifikasi?',
-                text: `Anda yakin ingin menghapus ${selectedIds.length} notifikasi?`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, hapus!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: "{{ route('notifikasi.hapusBanyakNotifikasi') }}",
-                        method: "POST",
-                        data: {
-                            _token: "{{ csrf_token() }}",
-                            ids: selectedIds
-                        },
-                        success: function(response) {
-                            if (response.success) {
-                                // Hapus baris dari tabel
-                                response.deleted_ids.forEach(function(id) {
-                                    $('#check' + id).closest('tr').fadeOut(300,
-                                        function() {
-                                            $(this).remove();
-                                        });
-
-                                    // Update badge jumlah notifikasi
-                                    const $badge = $('.badge-jumlah-notif');
-                                    let current = parseInt($badge.text());
-                                    if (!isNaN(current) && current > 0) {
-                                        $badge.text(current - 1);
-                                        if (current - 1 <= 0) {
-                                            $badge.remove();
-                                        }
-                                    }
-                                });
-                            } else {
-                                alert(response.message || 'Gagal menghapus notifikasi.');
-                            }
-                        },
-                        error: function() {
-                            alert('Terjadi kesalahan saat menghapus notifikasi.');
-                        }
-                    });
-                }
-            });
-        });
-
         function applyFilters() {
             const statusUnread = $('#filter-status-unread').is(':checked');
             const statusRead = $('#filter-status-read').is(':checked');
@@ -385,7 +292,8 @@
             $('.notification-row').each(function() {
                 const row = $(this);
                 const isUnread = row.hasClass('bg-light');
-                const isRekomendasi = row.hasClass('jenis-notifikasi-rekomendasi-lomba');
+
+                const isRekomendasi = row.hasClass('jenis-notifikasi-rekomendasi');
                 const isLomba = row.hasClass('jenis-notifikasi-verifikasi-lomba');
                 const isPrestasi = row.hasClass('jenis-notifikasi-verifikasi-prestasi');
 
@@ -396,6 +304,24 @@
 
                 row.toggle(matchStatus && matchJenis);
             });
+
+            const visibleCheckboxes = $('#notificationTableBody tr:visible .notification-checkbox');
+            const allChecked = visibleCheckboxes.length > 0 &&
+                visibleCheckboxes.length === visibleCheckboxes.filter(':checked').length;
+            $('#pilihSemua').prop('checked', allChecked);
+
+            updateSelectedCount();
+        }
+
+        function updateSelectedCount() {
+            const count = $('#notificationTableBody tr:visible .notification-checkbox:checked').length;
+            const totalVisible = $('#notificationTableBody tr:visible .notification-checkbox').length;
+
+            $('#total-selected').text(count);
+            $('.delete-button-container').toggleClass('d-none', count === 0);
+
+            // Update status "Select All" checkbox
+            $('#pilihSemua').prop('checked', count > 0 && count === totalVisible);
         }
 
         // Event listener saat checkbox berubah
@@ -443,7 +369,9 @@
 
             // Select All Checkbox
             $('#pilihSemua').change(function() {
-                $('.notification-checkbox').prop('checked', $(this).prop('checked'));
+                const isChecked = $(this).prop('checked');
+                $('#notificationTableBody tr:visible .notification-checkbox').prop('checked', isChecked);
+                updateSelectedCount();
             });
 
             // Fungsi Search
@@ -453,77 +381,262 @@
                     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
                 });
             });
+
+            // Hapus notifikasi
+            $('.hapus-notifikasi').click(function(e) {
+                e.preventDefault();
+                const notifikasiId = $(this).data('id');
+                const row = $('#check' + notifikasiId).closest('tr');
+
+                Swal.fire({
+                    title: 'Hapus Notifikasi?',
+                    text: 'Anda yakin ingin menghapus notifikasi ini?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, hapus!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '{{ route('notifikasi.hapusNotifikasi', '') }}/' +
+                                notifikasiId,
+                            type: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    row.fadeOut(300, function() {
+                                        row.remove();
+                                    });
+
+                                    // Perbarui badge jumlah notifikasi menjadi berkurang 1
+                                    const $badge = $(
+                                        '.badge-jumlah-notif'
+                                    ); // Target badge notifikasi saja
+                                    let currentBadgeCount = parseInt($badge.text());
+
+                                    if (!isNaN(currentBadgeCount) && currentBadgeCount >
+                                        0) {
+                                        $badge.text(currentBadgeCount - 1);
+                                    } else {
+                                        $badge.remove(); // Hapus badge jika sudah 0
+                                    }
+                                } else {
+                                    alert(response.message ||
+                                        'Gagal menghapus notifikasi.');
+                                }
+                            },
+                            error: function() {
+                                alert('Terjadi kesalahan saat menghapus notifikasi.');
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Hapus banyak notifikasi
+            $('#btn-hapus-notifikasi-terpilih').click(function() {
+                const selectedIds = $('.notification-checkbox:checked').map(function() {
+                    return $(this).val();
+                }).get();
+
+                if (selectedIds.length === 0) {
+                    alert('Pilih setidaknya satu notifikasi untuk dihapus.');
+                    return;
+                }
+
+                Swal.fire({
+                    title: 'Hapus Notifikasi?',
+                    text: `Anda yakin ingin menghapus ${selectedIds.length} notifikasi?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, hapus!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "{{ route('notifikasi.hapusBanyakNotifikasi') }}",
+                            method: "POST",
+                            data: {
+                                _token: "{{ csrf_token() }}",
+                                ids: selectedIds
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    // Hapus baris dari tabel
+                                    response.deleted_ids.forEach(function(id) {
+                                        $('#check' + id).closest('tr').fadeOut(
+                                            300,
+                                            function() {
+                                                $(this).remove();
+                                            });
+
+                                        // Update badge jumlah notifikasi
+                                        const $badge = $('.badge-jumlah-notif');
+                                        let current = parseInt($badge.text());
+                                        if (!isNaN(current) && current > 0) {
+                                            $badge.text(current - 1);
+                                            if (current - 1 <= 0) {
+                                                $badge.remove();
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    alert(response.message ||
+                                        'Gagal menghapus notifikasi.');
+                                }
+                            },
+                            error: function() {
+                                alert('Terjadi kesalahan saat menghapus notifikasi.');
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Tombol "Tandai Semua Dibaca"
+            $('.btn-baca-semua').click(function() {
+                Swal.fire({
+                    title: 'Tandai Semua Dibaca?',
+                    text: 'Anda yakin ingin menandai semua notifikasi sebagai dibaca?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#28a745',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Tandai Semua Dibaca'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Kirim permintaan AJAX untuk menandai semua notifikasi sebagai dibaca
+                        $.ajax({
+                            url: '{{ route('notifikasi.bacaSemuaNotifikasi') }}',
+                            type: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    // Ubah status notifikasi di UI
+                                    $('.notification-row').each(function() {
+                                        $(this).removeClass('bg-light');
+                                    });
+
+                                    updateHeaderNotifCount(0);
+
+                                    Swal.fire({
+                                        title: 'Berhasil!',
+                                        text: 'Semua notifikasi berhasil ditandai sebagai dibaca',
+                                        icon: 'success',
+                                        timer: 1500,
+                                        showConfirmButton: false
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: 'Gagal!',
+                                        text: response.message ||
+                                            'Terjadi kesalahan saat menandai semua notifikasi sebagai dibaca',
+                                        icon: 'error',
+                                        timer: 1500,
+                                        showConfirmButton: false
+                                    });
+                                }
+                            },
+                            error: function() {
+                                Swal.fire({
+                                    title: 'Gagal!',
+                                    text: 'Terjadi kesalahan saat menghubungi server',
+                                    icon: 'error',
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+
+
+            // Fungsi untuk menandai notifikasi terpilih sebagai dibaca
+            $('#btn-tandai-dibaca-terpilih').click(function() {
+                const selectedIds = $('.notification-checkbox:checked').map(function() {
+                    return $(this).val();
+                }).get();
+
+                if (selectedIds.length === 0) {
+                    Swal.fire({
+                        title: 'Peringatan',
+                        text: 'Pilih setidaknya satu notifikasi untuk ditandai dibaca',
+                        icon: 'warning'
+                    });
+                    return;
+                }
+
+                Swal.fire({
+                    title: 'Tandai Dibaca?',
+                    text: `Anda yakin ingin menandai ${selectedIds.length} notifikasi sebagai dibaca?`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#28a745',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Tandai Dibaca'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "{{ route('notifikasi.tandaiDibacaBanyakNotifikasi') }}",
+                            method: "POST",
+                            data: {
+                                _token: "{{ csrf_token() }}",
+                                ids: selectedIds
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    // Update UI untuk notifikasi yang ditandai dibaca
+                                    selectedIds.forEach(function(id) {
+                                        $('#check' + id).closest('tr')
+                                            .removeClass('bg-light');
+                                    });
+
+                                    // Reset seleksi
+                                    $('.notification-checkbox').prop('checked', false);
+                                    $('#pilihSemua').prop('checked', false);
+                                    updateSelectedCount();
+
+                                    // Update badge jumlah notifikasi di header jika ada
+                                    if (typeof updateHeaderNotifCount === 'function') {
+                                        const currentUnread = $(
+                                            '.notification-row.bg-light').length;
+                                        updateHeaderNotifCount(currentUnread);
+                                    }
+
+                                    Swal.fire({
+                                        title: 'Berhasil!',
+                                        text: 'Notifikasi berhasil ditandai sebagai dibaca',
+                                        icon: 'success',
+                                        timer: 1500,
+                                        showConfirmButton: false
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: 'Gagal!',
+                                        text: response.message ||
+                                            'Gagal menandai notifikasi sebagai dibaca',
+                                        icon: 'error'
+                                    });
+                                }
+                            },
+                            error: function() {
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: 'Terjadi kesalahan saat menandai notifikasi sebagai dibaca',
+                                    icon: 'error'
+                                });
+                            }
+                        });
+                    }
+                });
+            });
         });
     </script>
-
-    <style>
-        .notification-row {
-            transition: all 0.3s ease;
-        }
-
-        .notification-row:hover {
-            background-color: #f8f9fa !important;
-        }
-
-        .avatar-sm {
-            min-width: 40px;
-        }
-
-        .notification-message p {
-            margin-bottom: 0.25rem;
-            line-height: 1.4;
-        }
-
-        .empty-state {
-            padding: 2rem;
-        }
-
-        .table th {
-            border-top: none;
-            font-weight: 600;
-            font-size: 0.875rem;
-            letter-spacing: 0.5px;
-        }
-
-        .badge {
-            font-size: 0.75rem;
-        }
-
-        .dropdown-toggle::after {
-            display: none;
-        }
-
-        .custom-control-label::after {
-            position: relative;
-        }
-
-        @media (max-width: 768px) {
-            .card-header {
-                flex-direction: column;
-                align-items: stretch !important;
-            }
-
-            .card-header>div {
-                margin-bottom: 1rem;
-            }
-
-            .card-header>div:last-child {
-                margin-bottom: 0;
-            }
-
-            .input-group {
-                width: 100% !important;
-                margin-right: 0 !important;
-                margin-bottom: 0.5rem;
-            }
-        }
-
-        .table thead th:first-child {
-            border-top-left-radius: 0.4rem;
-        }
-
-        .table thead th:last-child {
-            border-top-right-radius: 0.4rem;
-        }
-    </style>
-@endsection
+@endpush

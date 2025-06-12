@@ -66,7 +66,8 @@
                                         <a href="{{ route('mahasiswa.profile.index') }}" class="dropdown-item"><i
                                                 class="icon-user mr-2"></i><span>Profil Saya</span></a>
                                     @else
-                                        <a href="#" class="dropdown-item"><i class="icon-user mr-2"></i><span>Profil Saya</span></a>
+                                        <a href="#" class="dropdown-item"><i
+                                                class="icon-user mr-2"></i><span>Profil Saya</span></a>
                                     @endif
                                     <hr class="my-2">
                                     <a href="{{ route('logout') }}" class="dropdown-item-logout"><i
@@ -113,7 +114,8 @@
                                         <i class="fa-solid fa-check-double" style="font-size: 1rem"></i> Tandai Semua
                                         Dibaca
                                     </a>
-                                    <a class="font-weight-semi-bold text-muted" href="{{ route('notifikasi.index') }}">
+                                    <a class="font-weight-semi-bold text-muted"
+                                        href="{{ route('notifikasi.index') }}">
                                         <i class="fa-solid fa-envelope-open-text" style="font-size: 1rem"></i> Lihat
                                     </a>
                                 </div>
@@ -154,7 +156,27 @@
                                                         : 'sudah-dibaca';
                                             @endphp
                                             <li class="p-0 hover-bg-light {{ $statusKelas }}">
-                                                <a href="javascript:void()" class="px-1 tandai-sebagai-dibaca"
+                                                @php
+                                                    $routes = [
+                                                        'Rekomendasi' => [
+                                                            'Dosen' => route('dosen.info-lomba.index'),
+                                                            'Mahasiswa' => route('mahasiswa.informasi-lomba.index'),
+                                                        ],
+                                                        'Verifikasi Lomba' => [
+                                                            'Dosen' => route('dosen.info-lomba.index'),
+                                                            'Mahasiswa' => route('mahasiswa.informasi-lomba.index'),
+                                                        ],
+                                                        'Verifikasi Prestasi' => [
+                                                            'Dosen' => route('dosen.kelola-bimbingan.index'),
+                                                            'Mahasiswa' => route('mhs.prestasi.index'),
+                                                        ],
+                                                    ];
+                                                    $role = auth()->user()->getRole();
+                                                    $route =
+                                                        $routes[$n->jenis_notifikasi][$role] ??
+                                                        route('notifikasi.index');
+                                                @endphp
+                                                <a href="{{ $route }}" class="px-1 tandai-sebagai-dibaca"
                                                     data-id="{{ $n->notifikasi_id }}">
                                                     <img class="float-left mr-3 avatar-img" style="height: 2.5rem"
                                                         src="
