@@ -8,7 +8,6 @@ use Yajra\DataTables\Facades\DataTables;
 use App\Models\PrestasiModel;
 use Illuminate\Support\Facades\Auth;
 
-
 class VerifikasiBimbinganController extends Controller
 {
     public function index()
@@ -112,13 +111,19 @@ class VerifikasiBimbinganController extends Controller
         }
     }
 
-    public function tolakPrestasi($id)
+    public function tolakPrestasi(Request $request, $id)
     {
+        $request->validate([
+            'alasan_tolak' => 'required|string|max:255'
+        ]);
+
         $prestasi = PrestasiModel::findOrFail($id);
 
         try {
-            // Update status_verifikasi menjadi Ditolak
-            $prestasi->update(['status_verifikasi' => 'Ditolak']);
+            $prestasi->update([
+                'status_verifikasi' => 'Ditolak',
+                'alasan_tolak' => $request->alasan_tolak
+            ]);
 
             return response()->json([
                 'success' => true,
@@ -131,5 +136,4 @@ class VerifikasiBimbinganController extends Controller
             ], 500);
         }
     }
-
 }

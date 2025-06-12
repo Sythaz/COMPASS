@@ -16,8 +16,8 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="col-form-label font-weight-bold">Nama Lomba</label>
-                        <input type="text" class="form-control" 
-                            value="@if($prestasi->lomba_id && $prestasi->lomba){{ $prestasi->lomba->nama_lomba }}@elseif($prestasi->lomba_lainnya){{ $prestasi->lomba_lainnya }}@else Lomba tidak tersedia @endif" 
+                        <input type="text" class="form-control"
+                            value="@if ($prestasi->lomba_id && $prestasi->lomba) {{ $prestasi->lomba->nama_lomba }}@elseif($prestasi->lomba_lainnya){{ $prestasi->lomba_lainnya }}@else Lomba tidak tersedia @endif"
                             disabled>
                     </div>
                 </div>
@@ -25,7 +25,8 @@
                     <div class="form-group">
                         <label class="col-form-label font-weight-bold">Juara</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" value="{{ $prestasi->juara_prestasi ?? 'Tidak tersedia' }}" disabled>
+                            <input type="text" class="form-control"
+                                value="{{ $prestasi->juara_prestasi ?? 'Tidak tersedia' }}" disabled>
                             <div class="input-group-append">
                                 <span class="input-group-text bg-warning text-white">
                                     <i class="fas fa-medal"></i>
@@ -35,20 +36,21 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="col-form-label font-weight-bold">Kategori</label>
-                        <input type="text" class="form-control" value="{{ $prestasi->kategori->nama_kategori ?? 'Tidak tersedia' }}" disabled>
+                        <input type="text" class="form-control"
+                            value="{{ $prestasi->kategori->nama_kategori ?? 'Tidak tersedia' }}" disabled>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="col-form-label font-weight-bold">Tingkat Lomba</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" 
-                                value="@if($prestasi->lomba_id && $prestasi->lomba && $prestasi->lomba->tingkat_lomba){{ $prestasi->lomba->tingkat_lomba->nama_tingkat }}@elseif($prestasi->tingkat_lomba){{ $prestasi->tingkat_lomba->nama_tingkat }}@else Tidak tersedia @endif" 
+                            <input type="text" class="form-control"
+                                value="@if ($prestasi->lomba_id && $prestasi->lomba && $prestasi->lomba->tingkat_lomba) {{ $prestasi->lomba->tingkat_lomba->nama_tingkat }}@elseif($prestasi->tingkat_lomba){{ $prestasi->tingkat_lomba->nama_tingkat }}@else Tidak tersedia @endif"
                                 disabled>
                             <div class="input-group-append">
                                 <span class="input-group-text bg-info text-white">
@@ -63,33 +65,10 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label class="col-form-label font-weight-bold">Status Verifikasi</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control" value="{{ strip_tags($statusBadge) }}" disabled>
-                            <div class="input-group-append">
-                                <span class="input-group-text bg-secondary text-white">
-                                    <i class="fas fa-check-circle"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label class="col-form-label font-weight-bold">Tanggal Prestasi</label>
-                        <input type="text" class="form-control"
-                            value="@if($prestasi->tanggal_prestasi){{ \Carbon\Carbon::parse($prestasi->tanggal_prestasi)->format('d M Y') }}@else Tidak tersedia @endif"
-                            disabled>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
                         <label class="col-form-label font-weight-bold">Dosen Pembimbing</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" value="{{ $prestasi->dosen->nama_dosen ?? 'Tidak tersedia' }}" disabled>
+                            <input type="text" class="form-control"
+                                value="{{ $prestasi->dosen->nama_dosen ?? 'Tidak tersedia' }}" disabled>
                             <div class="input-group-append">
                                 <span class="input-group-text bg-success text-white">
                                     <i class="fas fa-chalkboard-teacher"></i>
@@ -100,11 +79,95 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label class="col-form-label font-weight-bold">Periode</label>
-                        <input type="text" class="form-control" value="{{ $prestasi->periode->semester_periode ?? 'Tidak tersedia' }}" disabled>
+                        <label class="col-form-label font-weight-bold">Tanggal Prestasi</label>
+                        <input type="text" class="form-control"
+                            value="@if ($prestasi->tanggal_prestasi) {{ \Carbon\Carbon::parse($prestasi->tanggal_prestasi)->format('d M Y') }}@else Tidak tersedia @endif"
+                            disabled>
                     </div>
                 </div>
             </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-form-label font-weight-bold">Status Verifikasi</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control"
+                                value="{{ ucfirst($prestasi->status_verifikasi ?? '') }}" disabled>
+                            <div class="input-group-append">
+                                @php
+                                    $status = $prestasi->status_verifikasi ?? '';
+                                    $statusClass = '';
+                                    $statusIcon = '';
+
+                                    switch ($status) {
+                                        case 'Terverifikasi':
+                                            $statusClass = 'bg-success';
+                                            $statusIcon = 'fas fa-check';
+                                            break;
+                                        case 'Ditolak':
+                                            $statusClass = 'bg-danger';
+                                            $statusIcon = 'fas fa-times';
+                                            break;
+                                        case 'Valid':
+                                            $statusClass = 'bg-primary';
+                                            $statusIcon = 'fas fa-check-circle';
+                                            break;
+                                        case 'Menunggu':
+                                        default:
+                                            $statusClass = 'bg-warning';
+                                            $statusIcon = 'fas fa-clock';
+                                            break;
+                                    }
+                                @endphp
+                                <span class="input-group-text {{ $statusClass }} text-white">
+                                    <i class="{{ $statusIcon }}"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-form-label font-weight-bold">Periode</label>
+                        <input type="text" class="form-control"
+                            value="{{ $prestasi->periode->semester_periode ?? 'Tidak tersedia' }}" disabled>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Menampilkan Alasan jika prestasi ditolak  --}}
+            @if ($prestasi->status_verifikasi === 'Nonaktif' || !empty($prestasi->alasan_tolak))
+                <div class="mt-3">
+                    <div class="card border-danger">
+                        <div class="card-header bg-danger text-white d-flex align-items-center">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                            <strong>
+                                @if ($prestasi->status_verifikasi === 'Nonaktif')
+                                    Prestasi Terhapus
+                                @elseif (!empty($prestasi->alasan_tolak))
+                                    Ditolak
+                                @endif
+                            </strong>
+                        </div>
+                        <div class="card-body">
+                            @if ($prestasi->status_verifikasi === 'Nonaktif')
+                                <div class="form-group">
+                                    <label class="col-form-label font-weight-bold ">Status</label>
+                                    <input type="text" class="form-control " value="Terhapus" disabled>
+                                </div>
+                            @endif
+
+                            @if (!empty($prestasi->alasan_tolak))
+                                <div class="form-group">
+                                    <label class="col-form-label font-weight-bold  ">Alasan Penolakan</label>
+                                    <textarea class="form-control " rows="3" disabled>{{ $prestasi->alasan_tolak }}</textarea>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 
@@ -113,7 +176,7 @@
         <div class="card-header bg-light">
             <h6 class="mb-0">
                 <i class="fas fa-users mr-2"></i>Anggota Tim
-                @if($prestasi->mahasiswa && $prestasi->mahasiswa->count() > 0)
+                @if ($prestasi->mahasiswa && $prestasi->mahasiswa->count() > 0)
                     <span class="badge badge-primary ml-2">
                         {{ $prestasi->mahasiswa->count() }} Anggota
                     </span>
@@ -121,23 +184,24 @@
             </h6>
         </div>
         <div class="card-body">
-            @if($prestasi->mahasiswa && $prestasi->mahasiswa->count() > 0)
+            @if ($prestasi->mahasiswa && $prestasi->mahasiswa->count() > 0)
                 @foreach ($prestasi->mahasiswa as $index => $mhs)
                     <div class="anggota-item bg-light rounded p-3 mb-2">
                         <div class="form-group mb-0">
                             <label class="col-form-label font-weight-bold">
-                                @if(($mhs->pivot->peran ?? 'Anggota') === 'Ketua')
-                                    <i class="fas fa-crown mr-2 text-warning"></i>{{ $mhs->pivot->peran ?? 'Anggota' }}
+                                @if (($mhs->pivot->peran ?? 'Anggota') === 'Ketua')
+                                    <i
+                                        class="fas fa-crown mr-2 text-warning"></i>{{ $mhs->pivot->peran ?? 'Anggota' }}
                                 @else
-                                    <i class="fas fa-user mr-2"></i>{{ $mhs->pivot->peran ?? 'Anggota' }} {{ $index + 1 }}
+                                    <i class="fas fa-user mr-2"></i>{{ $mhs->pivot->peran ?? 'Anggota' }}
+                                    {{ $index + 1 }}
                                 @endif
                             </label>
                             <div class="input-group">
-                                <input type="text" class="form-control" 
-                                    value="{{ $mhs->nama_mahasiswa }}" 
+                                <input type="text" class="form-control" value="{{ $mhs->nama_mahasiswa }}"
                                     disabled>
                                 <div class="input-group-append">
-                                    @if(($mhs->pivot->peran ?? 'Anggota') === 'Ketua')
+                                    @if (($mhs->pivot->peran ?? 'Anggota') === 'Ketua')
                                         <span class="input-group-text bg-warning text-dark">
                                             <i class="fas fa-crown"></i>
                                         </span>
@@ -187,12 +251,14 @@
                         <h6 class="font-weight-bold mb-2">
                             <i class="fas fa-image mr-2"></i>Gambar Kegiatan
                         </h6>
-                        @if($prestasi->img_kegiatan && Storage::disk('public')->exists('img/prestasi/' . $prestasi->img_kegiatan))
+                        @if ($prestasi->img_kegiatan && Storage::disk('public')->exists('img/prestasi/' . $prestasi->img_kegiatan))
                             <div class="text-center">
                                 <div class="file-preview mb-2">
-                                    <a href="{{ Storage::url('img/prestasi/' . $prestasi->img_kegiatan) }}" data-lightbox="prestasi" data-title="Gambar Kegiatan">
-                                        <img src="{{ Storage::url('img/prestasi/' . $prestasi->img_kegiatan) }}" 
-                                             width="100" class="img-thumbnail" style="cursor: zoom-in;" alt="Gambar Kegiatan" />
+                                    <a href="{{ Storage::url('img/prestasi/' . $prestasi->img_kegiatan) }}"
+                                        data-lightbox="prestasi" data-title="Gambar Kegiatan">
+                                        <img src="{{ Storage::url('img/prestasi/' . $prestasi->img_kegiatan) }}"
+                                            width="100" class="img-thumbnail" style="cursor: zoom-in;"
+                                            alt="Gambar Kegiatan" />
                                     </a>
                                 </div>
                                 <small class="text-success">
@@ -214,13 +280,14 @@
                         <h6 class="font-weight-bold mb-2">
                             <i class="fas fa-certificate mr-2"></i>Bukti Prestasi
                         </h6>
-                        @if($prestasi->bukti_prestasi && Storage::disk('public')->exists('img/prestasi/' . $prestasi->bukti_prestasi))
+                        @if ($prestasi->bukti_prestasi && Storage::disk('public')->exists('img/prestasi/' . $prestasi->bukti_prestasi))
                             <div class="text-center">
                                 <div class="file-preview mb-2">
                                     <i class="fas fa-file-alt fa-3x text-primary mb-2"></i>
                                     <p class="small mb-2">File berhasil diunggah</p>
                                 </div>
-                                <a href="{{ Storage::url('img/prestasi/' . $prestasi->bukti_prestasi) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                <a href="{{ Storage::url('img/prestasi/' . $prestasi->bukti_prestasi) }}"
+                                    target="_blank" class="btn btn-sm btn-outline-primary">
                                     <i class="fas fa-eye mr-1"></i> Lihat
                                 </a>
                             </div>
@@ -239,13 +306,16 @@
                         <h6 class="font-weight-bold mb-2">
                             <i class="fas fa-envelope mr-2"></i>Surat Tugas
                         </h6>
-                        @if($prestasi->surat_tugas_prestasi && Storage::disk('public')->exists('img/prestasi/' . $prestasi->surat_tugas_prestasi))
+                        @if (
+                            $prestasi->surat_tugas_prestasi &&
+                                Storage::disk('public')->exists('img/prestasi/' . $prestasi->surat_tugas_prestasi))
                             <div class="text-center">
                                 <div class="file-preview mb-2">
                                     <i class="fas fa-file-contract fa-3x text-success mb-2"></i>
                                     <p class="small mb-2">File berhasil diunggah</p>
                                 </div>
-                                <a href="{{ Storage::url('img/prestasi/' . $prestasi->surat_tugas_prestasi) }}" target="_blank" class="btn btn-sm btn-outline-success">
+                                <a href="{{ Storage::url('img/prestasi/' . $prestasi->surat_tugas_prestasi) }}"
+                                    target="_blank" class="btn btn-sm btn-outline-success">
                                     <i class="fas fa-download mr-1"></i> Lihat
                                 </a>
                             </div>
@@ -272,17 +342,17 @@
     .anggota-item {
         border-left: 4px solid #17a2b8;
     }
-    
+
     .anggota-item:has(.fa-crown) {
         border-left-color: #ffc107 !important;
         background-color: rgba(255, 193, 7, 0.1) !important;
     }
-    
+
     .badge-lg {
         font-size: 1rem;
         padding: 0.5rem 0.75rem;
     }
-    
+
     .file-preview {
         padding: 15px;
         border: 2px dashed #dee2e6;
@@ -294,19 +364,19 @@
         justify-content: center;
         align-items: center;
     }
-    
+
     .file-section {
         border: 1px solid #dee2e6;
         border-radius: 8px;
         padding: 15px;
         height: 100%;
     }
-    
+
     .card-header h6 {
         color: #495057;
         font-weight: 600;
     }
-    
+
     .total-anggota {
         border: 1px solid #dee2e6;
     }
@@ -334,11 +404,11 @@
     // Animasi saat modal dibuka
     $(document).ready(function() {
         $('.card').hide().fadeIn(600);
-        
+
         // Tooltip untuk status
         $('[data-toggle="tooltip"]').tooltip();
     });
-    
+
     // Force hide processing text after any modal operation
     setInterval(function() {
         if ($('.modal').is(':hidden')) {
