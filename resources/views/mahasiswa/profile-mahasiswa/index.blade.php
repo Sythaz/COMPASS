@@ -530,6 +530,9 @@
 
     {{-- Memanggil Custom CSS Select2 --}}
     <link href="{{ asset('css-custom/select2-custom.css') }}" rel="stylesheet">
+    
+    {{-- Custom CSS untuk tab --}}
+    <link href="{{ asset('css-custom/tab-custom.css') }}" rel="stylesheet">
 @endpush
 
 @push('js')
