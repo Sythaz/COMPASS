@@ -3,11 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\DosenModel;
-use App\Models\KategoriModel;
-use App\Models\LombaModel;
-use App\Models\MahasiswaModel;
-use App\Models\PeriodeModel;
 use App\Models\PrestasiModel;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -130,13 +125,19 @@ class VerifikasiPrestasiController extends Controller
         }
     }
 
-    public function tolakPrestasi($id)
+    public function tolakPrestasi(Request $request, $id)
     {
+        $request->validate([
+            'alasan_tolak' => 'required|string|max:255'
+        ]);
+
         $prestasi = PrestasiModel::findOrFail($id);
 
         try {
-            // Update status_verifikasi menjadi Ditolak
-            $prestasi->update(['status_verifikasi' => 'Ditolak']);
+            $prestasi->update([
+                'status_verifikasi' => 'Ditolak',
+                'alasan_tolak' => $request->alasan_tolak
+            ]);
 
             return response()->json([
                 'success' => true,
@@ -149,4 +150,5 @@ class VerifikasiPrestasiController extends Controller
             ], 500);
         }
     }
+
 }

@@ -29,7 +29,8 @@
             </tr>
             <tr>
                 <th style="width: 30%">Lomba:</th>
-                <td class="text-start"> {{ $prestasi->lomba?->nama_lomba ?? $prestasi->lomba_lainnya ?? 'Tidak tersedia' }}</td>
+                <td class="text-start">
+                    {{ $prestasi->lomba?->nama_lomba ?? ($prestasi->lomba_lainnya ?? 'Tidak tersedia') }}</td>
             </tr>
             <tr>
                 <th style="width: 30%">Kategori:</th>
@@ -59,8 +60,10 @@
                 <th style="width: 30%">Gambar Kegiatan:</th>
                 <td class="text-start">
                     @if (!is_null($prestasi->img_kegiatan) && file_exists(public_path('storage/prestasi/img/' . $prestasi->img_kegiatan)))
-                        <a href="{{ asset('storage/prestasi/img/' . $prestasi->img_kegiatan) }}" data-lightbox="prestasi" data-title="Gambar Kegiatan">
-                            <img src="{{ asset('storage/prestasi/img/' . $prestasi->img_kegiatan) }}" width="100" class="d-block mx-auto img-thumbnail" alt="Gambar Kegiatan" style="cursor: zoom-in;" />
+                        <a href="{{ asset('storage/prestasi/img/' . $prestasi->img_kegiatan) }}"
+                            data-lightbox="prestasi" data-title="Gambar Kegiatan">
+                            <img src="{{ asset('storage/prestasi/img/' . $prestasi->img_kegiatan) }}" width="100"
+                                class="d-block mx-auto img-thumbnail" alt="Gambar Kegiatan" style="cursor: zoom-in;" />
                         </a>
                     @else
                         <p class="text-center text-muted">Gambar tidak ada atau belum di upload</p>
@@ -70,8 +73,11 @@
             <tr>
                 <th style="width: 30%">Bukti Prestasi:</th>
                 <td class="text-start">
-                    @if (!is_null($prestasi->bukti_prestasi) && file_exists(public_path('storage/prestasi/bukti/' . $prestasi->bukti_prestasi)))
-                        <a class="btn btn-primary" href="{{ asset('storage/prestasi/bukti/' . $prestasi->bukti_prestasi) }}" target="_blank">
+                    @if (
+                        !is_null($prestasi->bukti_prestasi) &&
+                            file_exists(public_path('storage/prestasi/bukti/' . $prestasi->bukti_prestasi)))
+                        <a class="btn btn-primary"
+                            href="{{ asset('storage/prestasi/bukti/' . $prestasi->bukti_prestasi) }}" target="_blank">
                             <i class="fa fa-file-alt"></i> <span class="ml-1">Lihat Bukti</span>
                         </a>
                     @else
@@ -82,8 +88,12 @@
             <tr>
                 <th style="width: 30%">Surat Tugas:</th>
                 <td class="text-start">
-                    @if (!is_null($prestasi->surat_tugas_prestasi) && file_exists(public_path('storage/prestasi/surat/' . $prestasi->surat_tugas_prestasi)))
-                        <a class="btn btn-primary" href="{{ asset('storage/prestasi/surat/' . $prestasi->surat_tugas_prestasi) }}" target="_blank">
+                    @if (
+                        !is_null($prestasi->surat_tugas_prestasi) &&
+                            file_exists(public_path('storage/prestasi/surat/' . $prestasi->surat_tugas_prestasi)))
+                        <a class="btn btn-primary"
+                            href="{{ asset('storage/prestasi/surat/' . $prestasi->surat_tugas_prestasi) }}"
+                            target="_blank">
                             <i class="fa fa-file-alt"></i> <span class="ml-1">Lihat Surat Tugas</span>
                         </a>
                     @else
@@ -97,7 +107,8 @@
                     @switch($prestasi->status_verifikasi)
                         @case('Menunggu')
                             <span class="label label-warning">{{ $prestasi->status_verifikasi }}</span>
-                            @break
+                        @break
+
                         @default
                             <span class="label label-danger">{{ $prestasi->status_verifikasi }}</span>
                     @endswitch
@@ -107,7 +118,8 @@
     </div>
     <div class="modal-footer">
         <button type="submit" class="btn btn-success"><i class="fas fa-check-circle mr-2"></i>Terima</button>
-        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal"><i class="fas fa-times mr-2"></i>Batal</button>
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal"><i
+                class="fas fa-times mr-2"></i>Batal</button>
     </div>
 </form>
 
@@ -127,7 +139,7 @@
                 if (response.success) {
                     Swal.fire('Berhasil', response.message, 'success').then(() => {
                         $('#myModal').modal('hide');
-                        $('#tabel-verifikasi-prestasi').DataTable().ajax.reload(null, false);
+                        $('#prestasiTable').DataTable().ajax.reload(null, false);
                     });
                 } else {
                     Swal.fire('Error', 'Verifikasi gagal.', 'error');
