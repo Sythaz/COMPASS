@@ -13,7 +13,9 @@ return new class extends Migration {
         Schema::create('t_prestasi', function (Blueprint $table) {
             $table->id('prestasi_id');
             $table->unsignedBigInteger('lomba_id')->nullable()->index();
+            $table->string('lomba_lainnya')->nullable();
             $table->unsignedBigInteger('dosen_id')->nullable()->index();
+            $table->unsignedBigInteger('tingkat_lomba_id')->nullable()->index();
             $table->unsignedBigInteger('periode_id')->nullable()->index();
             $table->date('tanggal_prestasi')->nullable();
             $table->string('juara_prestasi', 255)->nullable();
@@ -32,6 +34,7 @@ return new class extends Migration {
             $table->foreign('lomba_id')->references('lomba_id')->on('t_lomba')->nullOnDelete();
             $table->foreign('dosen_id')->references('dosen_id')->on('t_dosen')->nullOnDelete();
             $table->foreign('periode_id')->references('periode_id')->on('t_periode')->nullOnDelete();
+            $table->foreign('tingkat_lomba_id')->references('tingkat_lomba_id')->on('t_tingkat_lomba')->nullOnDelete();
         });
     }
 
