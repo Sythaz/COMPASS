@@ -61,7 +61,7 @@ class KelolaBimbinganController extends Controller
         // Ambil semua prestasi yang dibimbing oleh dosen yang login
         $data = PrestasiModel::with(['lomba', 'dosen'])
             ->where('dosen_id', $dosenId)
-            ->where('status_verifikasi', 'Terverifikasi')
+            ->whereIn('status_verifikasi', ['Terverifikasi', 'Valid'])
             ->select('t_prestasi.*');
 
         if ($request->kategori) {
