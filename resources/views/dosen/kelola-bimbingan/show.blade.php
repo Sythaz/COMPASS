@@ -8,7 +8,7 @@
     <table class="table table-bordered">
         <tr>
             <th style="width: 30%">Nama Lomba:</th>
-            <td class="text-start">{{ $prestasi->lomba_lainnya ?? 'Lomba tidak tersedia' }}</td>
+            <td class="text-start">{{ $prestasi->lomba->nama_lomba ?? 'Lomba tidak tersedia' }}</td>
         </tr>
         <tr>
             <th style="width: 30%">Juara:</th>
@@ -24,7 +24,7 @@
         </tr>
         <tr>
             <th style="width: 30%">Tingkat Lomba:</th>
-            <td class="text-start">{{ $prestasi->tingkat_lomba->nama_tingkat ?? 'Tidak tersedia' }}</td>
+            <td class="text-start">{{ $prestasi->lomba->tingkat_lomba->nama_tingkat ?? 'Tidak tersedia' }}</td>
         </tr>
         <tr>
             <th style="width: 30%">Periode:</th>
