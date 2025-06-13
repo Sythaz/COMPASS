@@ -10,6 +10,14 @@
             <th style="width: 30%">Semester Periode: </th>
             <td class="text-start">{{ $periode->semester_periode }}</td>
         </tr>
+        <tr>
+            <th style="width: 30%">Tanggal Mulai: </th>
+            <td class="text-start">{{ $periode->tanggal_mulai }}</td>
+        </tr>
+        <tr>
+            <th style="width: 30%">Tanggal Akhir: </th>
+            <td class="text-start">{{ $periode->tanggal_akhir }}</td>
+        </tr>
     </table>
 </div>
 <div class="modal-footer">

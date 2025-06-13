@@ -12,106 +12,121 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $breadcrumb = (object) [
+        $breadcrumb = (object)[
             'list' => ['Home', 'Dashboard']
         ];
 
-        // Ranking Mahasiswa 
+        // Inisialisasi variabel
+        $userRank = '-';
+        $totalPartisipasiLomba = 0;
+        $mahasiswaId = null;
+
         $loggedInUser = Auth::user();
 
-        if (!$loggedInUser || $loggedInUser->role !== 'Mahasiswa') {
+        if (!$loggedInUser || strtolower($loggedInUser->role) !== 'mahasiswa') {
             return redirect('/login/mahasiswa');
-        } else {
-            $mahasiswa = $loggedInUser->mahasiswa;
-
-            if (!$mahasiswa){
-                return redirect('/error');
-            } else {
-                $mahasiswaId = $mahasiswa->mahasiswa_id;
-
-                // hitung ranking 
-                $rankingData = DB::table('t_pendaftaran_lomba')
-                ->select('mahasiswa_id', DB::raw('COUNT(*) as total_lomba'))
-                ->where('status_pendaftaran', 'Terverifikasi')
-                ->groupBy('mahasiswa_id')
-                ->orderByDesc('total_lomba')
-                ->get();
-
-                $ranking = 1;
-                $userRank ='-';
-                foreach ($rankingData as $data) {
-                    if ((int)$data->mahasiswa_id == (int)$mahasiswaId) {
-                        $userRank = '#' . $ranking;
-                        break;
-                    }
-                    $ranking++;
-                }
-            }
         }
 
-        // Mendapatkan data mahasiswa teraktif mengikuti lomba dalam 1 semester yang sedang berlangsung
+        $mahasiswa = $loggedInUser->mahasiswa;
+
+        if (!$mahasiswa) {
+            return redirect('/error');
+        }
+
+        $mahasiswaId = $mahasiswa->mahasiswa_id;
+
+        // Hitung jumlah partisipasi lomba pengguna
+        $partisipasiLomba = DB::table('t_prestasi_mahasiswa')
+            ->join('t_prestasi', 't_prestasi_mahasiswa.prestasi_id', '=', 't_prestasi.prestasi_id')
+            ->where('t_prestasi_mahasiswa.mahasiswa_id', $mahasiswaId)
+            ->where('t_prestasi.status_verifikasi', 'Terverifikasi')
+            ->count();
+
+        $totalPartisipasiLomba = $partisipasiLomba > 0 ? $partisipasiLomba : '-';
+
+        // Ambil tanggal semester aktif
         $currentDate = Carbon::now();
         $currentMonth = $currentDate->month;
 
         if ($currentMonth >= 8 && $currentMonth <= 12) {
-            // Semester Ganjil (Agustus–Desember)
+            // Semester Ganjil: Agustus - Desember
             $startSemester = Carbon::create($currentDate->year, 8, 1);
             $endSemester = Carbon::create($currentDate->year, 12, 31);
         } else {
-            // Semester Genap (Februari–Juni)
-            $startSemester = Carbon::create($currentDate->year, 2, 1);
-            $endSemester = Carbon::create($currentDate->year, 6, 30);
+            // Semester Genap: Januari - Juli
+            $startSemester = Carbon::create($currentDate->year, 1, 1);
+            $endSemester = Carbon::create($currentDate->year, 7, 31);
         }
 
-        // Kode ini mengambil data 5 mahasiswa teratas yang paling aktif mengikuti lomba dalam satu semester.
-        // Proses dimulai dengan menggabungkan tabel mahasiswa, pendaftaran lomba, dan lomba untuk memperoleh data yang saling terkait.
-        // Kemudian, hanya lomba yang waktu pendaftarannya berada dalam rentang semester aktif yang dihitung.
-        // Dari data tersebut, sistem menghitung jumlah total pendaftaran (termasuk duplikat lomba) dan jumlah lomba unik yang diikuti oleh setiap mahasiswa.
-        // Data mahasiswa kemudian dikelompokkan berdasarkan ID, diurutkan berdasarkan jumlah partisipasi terbanyak, dan dibatasi hanya menampilkan lima teratas.
+        // Ambil 5 mahasiswa teratas dengan ranking
         $topMahasiswa = DB::table('t_mahasiswa')
-            ->join('t_pendaftaran_lomba', 't_mahasiswa.mahasiswa_id', '=', 't_pendaftaran_lomba.mahasiswa_id')
-            ->join('t_lomba', 't_pendaftaran_lomba.lomba_id', '=', 't_lomba.lomba_id')
-            // ->where('t_lomba.awal_registrasi_lomba', '<=', $endSemester)
-            // ->where('t_lomba.akhir_registrasi_lomba', '>=', $startSemester)
-            ->where('t_pendaftaran_lomba.status_pendaftaran', 'Terverifikasi') // Tambahkan ini
-            // ->where('t_lomba.status_verifikasi', 'Terverifikasi')              // Tambahkan ini
-            ->select('t_mahasiswa.nama_mahasiswa', DB::raw('COUNT(t_pendaftaran_lomba.lomba_id) as total_partisipasi'))
-            ->groupBy('t_mahasiswa.mahasiswa_id')
-            ->orderBy('total_partisipasi', 'desc')
+            ->join('t_prestasi_mahasiswa', 't_mahasiswa.mahasiswa_id', '=', 't_prestasi_mahasiswa.mahasiswa_id')
+            ->join('t_prestasi', 't_prestasi_mahasiswa.prestasi_id', '=', 't_prestasi.prestasi_id')
+            ->where('t_prestasi.status_verifikasi', 'Terverifikasi')
+            ->whereBetween('t_prestasi.tanggal_prestasi', [$startSemester, $endSemester])
+            ->select(
+                't_mahasiswa.mahasiswa_id',
+                't_mahasiswa.nama_mahasiswa',
+                DB::raw('COUNT(t_prestasi.prestasi_id) as total_partisipasi'),
+                DB::raw('MAX(CASE WHEN t_prestasi_mahasiswa.peran = "Ketua" THEN 1 ELSE 0 END) as ketua')
+            )
+            ->groupBy('t_mahasiswa.mahasiswa_id', 't_mahasiswa.nama_mahasiswa')
+            ->orderByDesc('total_partisipasi')
+            ->orderByDesc('ketua')
             ->limit(5)
             ->get();
 
-        // Partisipasi Lomba Mahasiswa 
-        $partisipasiLomba = DB::table('t_pendaftaran_lomba')
-            ->where('mahasiswa_id', $mahasiswaId)
-            ->where('status_pendaftaran', 'Terverifikasi')
-            ->count();    
-        if($partisipasiLomba > 0) {
-            $totalPartisipasiLomba = $partisipasiLomba;
-        } else {
-            $totalPartisipasiLomba = '-';
-        }
-        
+        // Tambahkan ranking ke dalam data topMahasiswa
+        $topMahasiswaRank = collect($topMahasiswa)->map(function ($item, $key) {
+            $item = (object) $item;
+            $item->rank = '#' . ($key + 1); // Tambahkan nomor ranking
+            return $item;
+        });
+
+        // Jumlah lomba tersedia
         $jumlahLombaTersedia = DB::table('t_lomba')
             ->where('status_lomba', 'Aktif')
             ->where('status_verifikasi', 'Terverifikasi')
+            ->where('akhir_registrasi_lomba', '>=', Carbon::today())
             ->count();
 
+        // Hitung ranking dalam konteks semester aktif
+        $rankingData = DB::table('t_prestasi_mahasiswa')
+            ->select(
+                't_prestasi_mahasiswa.mahasiswa_id',
+                DB::raw('COUNT(*) as total_partisipasi')
+            )
+            ->join('t_prestasi', 't_prestasi_mahasiswa.prestasi_id', '=', 't_prestasi.prestasi_id')
+            ->where('t_prestasi.status_verifikasi', 'Terverifikasi')
+            ->whereBetween('t_prestasi.tanggal_prestasi', [$startSemester, $endSemester])
+            ->groupBy('t_prestasi_mahasiswa.mahasiswa_id')
+            ->orderByDesc('total_partisipasi')
+            ->get();
+
+        // Temukan rank pengguna dalam konteks semester aktif
+        foreach ($rankingData as $index => $data) {
+            if ((int)$data->mahasiswa_id === (int)$mahasiswaId) {
+                $userRank = '#' . ($index + 1);
+                break;
+            }
+        }
+
+        // Lomba sedang aktif
         $lombaSedangAktif = DB::table('t_lomba')
             ->where('status_lomba', 'Aktif')
             ->where('status_verifikasi', 'Terverifikasi')
-            ->orderByRaw('akhir_registrasi_lomba ASC')
+            ->where('akhir_registrasi_lomba', '>=', Carbon::now())
+            ->orderBy('akhir_registrasi_lomba', 'ASC')
             ->get()
             ->map(function ($lomba) {
-                $lomba->akhir_registrasi_lomba = Carbon::parse($lomba->akhir_registrasi_lomba)
-                    ->translatedFormat('d F Y');
+                $lomba->akhir_registrasi_lomba = Carbon::parse($lomba->akhir_registrasi_lomba)->translatedFormat('d M Y');
                 return $lomba;
-            });    
+            });
 
         return view('mahasiswa.index', compact(
-            'breadcrumb', 
-            'topMahasiswa', 
-            'jumlahLombaTersedia', 
+            'breadcrumb',
+            'topMahasiswaRank',
+            'jumlahLombaTersedia',
             'userRank',
             'lombaSedangAktif',
             'totalPartisipasiLomba'

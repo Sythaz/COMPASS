@@ -45,7 +45,7 @@
                         <li><a href="{{ route('periode-semester.index') }}">Periode Semester</a></li>
                         <li><a href="{{ route('kategori-keahlian.index') }}">Kategori & Keahlian</a></li>
                         <li><a href="{{ route('tingkat-lomba.index') }}">Tingkat Lomba</a></li>
-                        <li><a href="javascript:void()">Kriteria Penilaian</a></li>
+                        <li><a href="{{ route('bobot-rekomendasi.index') }}">Bobot Rekomendasi</a></li>
                     </ul>
                 </li>
 

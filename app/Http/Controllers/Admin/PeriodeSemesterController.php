@@ -21,7 +21,7 @@ class PeriodeSemesterController extends Controller
     public function list(Request $request)
     {
         // Mengambil data dari database
-        $dataPeriodeSemester = PeriodeModel::select(['periode_id', 'semester_periode'])->get();
+        $dataPeriodeSemester = PeriodeModel::select(['periode_id', 'semester_periode', 'tanggal_mulai', 'tanggal_akhir'])->get();
 
         return DataTables::of($dataPeriodeSemester)
             ->addIndexColumn()
@@ -64,10 +64,14 @@ class PeriodeSemesterController extends Controller
         try {
             $request->validate([
                 'semester_periode' => 'required|unique:t_periode,semester_periode',
+                'tanggal_mulai' => 'required|date',
+                'tanggal_akhir' => 'required|date|after_or_equal:tanggal_mulai',
             ]);
 
             PeriodeModel::create([
                 'semester_periode' => $request->semester_periode,
+                'tanggal_mulai' => $request->tanggal_mulai,
+                'tanggal_akhir' => $request->tanggal_akhir,
             ]);
 
             return response()->json([
@@ -89,6 +93,8 @@ class PeriodeSemesterController extends Controller
             // Memeriksa apakah data sudah digunakan oleh data lain
             // kecuali data yang sedang diedit
             'semester_periode' => 'required|unique:t_periode,semester_periode,' . $id . ',periode_id',
+            'tanggal_mulai' => 'required|date',
+            'tanggal_akhir' => 'required|date|after_or_equal:tanggal_mulai',
         ]);
 
         try {
@@ -96,6 +102,8 @@ class PeriodeSemesterController extends Controller
             $periode = PeriodeModel::findOrFail($id);
             $periode->update([
                 'semester_periode' => $request->semester_periode,
+                'tanggal_mulai' => $request->tanggal_mulai,
+                'tanggal_akhir' => $request->tanggal_akhir,
             ]);
 
             return response()->json([
