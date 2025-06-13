@@ -15,6 +15,18 @@
                 <input type="text" class="form-control" name="semester_periode"
                     value="{{ $periode->semester_periode }}" required>
             </div>
+            <label for="tanggal_mulai" class="col-form-label">Tanggal Mulai <span class="text-danger"
+                    style="color: red;">*</span></label>
+            <div class="custom-validation">
+                <input type="date" class="form-control" name="tanggal_mulai" value="{{ $periode->tanggal_mulai }}"
+                    required>
+            </div>
+            <label for="tanggal_akhir" class="col-form-label">Tanggal Akhir <span class="text-danger"
+                    style="color: red;">*</span></label>
+            <div class="custom-validation">
+                <input type="date" class="form-control" name="tanggal_akhir" value="{{ $periode->tanggal_akhir }}"
+                    required>
+            </div>
         </div>
     </div>
     <div class="modal-footer">
@@ -37,10 +49,22 @@
             semester_periode: {
                 required: true,
             },
+            tanggal_mulai: {
+                required: true,
+            },
+            tanggal_akhir: {
+                required: true,
+            }
         }, {
             // Pesan validasi untuk setiap field saat tidak valid
             semester_periode: {
                 required: "Semester periode wajib diisi",
+            },
+            tanggal_mulai: {
+                required: "Tanggal mulai wajib diisi",
+            },
+            tanggal_akhir: {
+                required: "Tanggal akhir wajib diisi",
             }
         },
 

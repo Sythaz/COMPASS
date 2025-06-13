@@ -27,6 +27,8 @@
                                 <tr>
                                     <th style="width: 1px; white-space: nowrap;">No</th>
                                     <th>Periode Semester</th>
+                                    <th>Tanggal Mulai</th>
+                                    <th>Tanggal Akhir</th>
                                     <th class="text-center" style="width: 1px; white-space: nowrap;">Aksi</th>
                                 </tr>
                             </thead>
@@ -102,6 +104,14 @@
                     {
                         data: 'semester_periode',
                         name: 'semester_periode',
+                    },
+                    {
+                        data: 'tanggal_mulai',
+                        name: 'tanggal_mulai',
+                    },
+                    {
+                        data: 'tanggal_akhir',
+                        name: 'tanggal_akhir',
                     },
                     {
                         data: 'aksi',

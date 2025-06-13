@@ -13,6 +13,16 @@
             <div class="custom-validation">
                 <input type="text" class="form-control" name="semester_periode" required>
             </div>
+            <label for="tanggal_mulai" class="col-form-label">Tanggal Mulai <span class="text-danger"
+                    style="color: red;">*</span></label>
+            <div class="custom-validation">
+                <input type="date" class="form-control" name="tanggal_mulai" required>
+            </div>
+            <label for="tanggal_akhir" class="col-form-label">Tanggal Akhir <span class="text-danger"
+                    style="color: red;">*</span></label>
+            <div class="custom-validation">
+                <input type="date" class="form-control" name="tanggal_akhir" required>
+            </div>
         </div>
     </div>
     <div class="modal-footer">
