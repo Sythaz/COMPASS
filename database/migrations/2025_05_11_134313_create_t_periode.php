@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('t_periode', function (Blueprint $table) {
             $table->id('periode_id');
             $table->string('semester_periode',255);
+            $table->date('tanggal_mulai');
+            $table->date('tanggal_akhir');
             $table->timestamps();
         });
     }
