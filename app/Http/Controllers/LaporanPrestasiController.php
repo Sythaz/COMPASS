@@ -8,6 +8,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class LaporanPrestasiController extends Controller
 {
@@ -86,5 +87,28 @@ class LaporanPrestasiController extends Controller
     }
 
     // Export PDF
-    
+    public function export_pdf()
+    {
+        //  $status = $request->input('status');
+
+        $query = PrestasiModel::with(['mahasiswa', 'lomba'])
+            ->orderBy('tanggal_prestasi', 'desc');
+
+        // Filter berdasarkan status jika dipilih
+        // if ($status) {
+        //     $query->where('status_verifikasi', $status);
+        // }
+
+        $prestasiList = $query->get();
+
+        $viewPath = resource_path('views/admin/manajemen-prestasi/kelola-prestasi/export_pdf.blade.php');
+
+        $html = view()->file($viewPath, ['prestasiList' => $prestasiList])->render();
+
+        $pdf = Pdf::loadHTML($html);
+        $pdf->setPaper('a4', 'portrait');
+        $pdf->setOption('isRemoteEnabled', true);
+
+        return $pdf->stream('Laporan Prestasi Mahasiswa ' . date('Y-m-d H:i:s') . '.pdf');
+    }
 }

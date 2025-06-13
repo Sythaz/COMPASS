@@ -71,7 +71,8 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
     Route::post('notifikasi/hapus_banyak_notifikasi', [NotifikasiController::class, 'hapusBanyakNotifikasi'])->name('notifikasi.hapusBanyakNotifikasi');
 
     // Route Cetak Laporan Prestasi
-    Route::get('/export-prestasi', [LaporanPrestasiController::class, 'export_excel'])->name('prestasi.export-excel');
+    Route::get('/export-prestasi-excel', [LaporanPrestasiController::class, 'export_excel'])->name('prestasi.export-excel');
+    Route::get('/export-prestasi-pdf', [LaporanPrestasiController::class, 'export_pdf'])->name('prestasi.export-pdf');
 
     // ROUTE ADMIN
     Route::middleware('authorize:Admin')->group(function () {

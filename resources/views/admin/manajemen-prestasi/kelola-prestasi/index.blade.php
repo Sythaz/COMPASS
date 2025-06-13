@@ -11,6 +11,8 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
+
+                    {{-- Tombol Tambah dan Ekspor --}}
                     <div class="row mb-2">
                         <div class="col-6">
                             <a onclick="modalAction('{{ route('kelola-prestasi.create') }}')"
@@ -19,9 +21,7 @@
                                 <strong>Tambah Data</strong>
                             </a>
                         </div>
-
                         <div class="col-6 text-right">
-                            {{-- Menu Export Excel/PDF --}}
                             <div class="btn-group" role="group">
                                 <button type="button" class="btn btn-outline-primary dropdown-toggle"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -29,44 +29,41 @@
                                     <strong>Menu Ekspor</strong>
                                 </button>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="{{ route('prestasi.export-excel') }}">Ekspor Data ke
-                                        XLSX</a>
-                                    <a class="dropdown-item" href="{{ route('admin.export_pdf') }}">Ekspor Data ke
-                                        PDF</a>
+                                    <a class="dropdown-item" href="{{ route('prestasi.export-excel') }}">Ekspor ke XLSX</a>
+                                    <a class="dropdown-item" href="{{ route('prestasi.export-pdf') }}">Ekspor ke PDF</a>
                                 </div>
-
-                                {{-- <a href="{{ route('riwayat-pendaftaran.index') }}" class="ml-2 btn btn-primary text-white">
-                                    <i class="fa fa-clock-rotate-left"></i>
-                                    <strong> Riwayat</strong>
-                                </a> --}}
                             </div>
                         </div>
                     </div>
 
-                    {{-- Tambahkan Tabel DataTables di sini --}}
-                    <table class="w-100 table table-striped table-bordered custom-datatable" id="prestasiTable"
-                        style="width:100%">
-                        <thead>
-                            <tr>
-                                <th style="width: 1px; white-space: nowrap;">No</th>
-                                <th>Mahasiswa</th>
-                                <th>Nama Lomba</th>
-                                <th>Jenis</th>
-                                <th>Juara</th>
-                                <th>Dosen Pembimbing</th>
-                                <th>Tanggal Prestasi</th>
-                                <th>Status Verifikasi</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                    </table>
+                    {{-- Tabel Prestasi --}}
+                    <div class="table-responsive">
+                        <table class="w-100 table table-striped table-bordered custom-datatable" id="prestasiTable">
+                            <thead>
+                                <tr>
+                                    <th style="width: 1px; white-space: nowrap;">No</th>
+                                    <th>Mahasiswa</th>
+                                    <th>Nama Lomba</th>
+                                    <th>Jenis</th>
+                                    <th>Juara</th>
+                                    <th>Dosen Pembimbing</th>
+                                    <th>Tanggal Prestasi</th>
+                                    <th>Status Verifikasi</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                        </table>
 
-                    {{-- Modal untuk menampilkan form --}}
+                        {{-- Custom Pagination (jika ada) --}}
+                        <div class="bootstrap-pagination"></div>
+                    </div>
+
+                    {{-- Modal --}}
                     <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="ajaxModalLabel"
                         aria-hidden="true">
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content" id="ajaxModalContent">
-                                {{-- Konten modal akan dimuat lewat Ajax --}}
+                                {{-- Konten modal via Ajax --}}
                             </div>
                         </div>
                     </div>

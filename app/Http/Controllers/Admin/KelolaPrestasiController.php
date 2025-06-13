@@ -16,15 +16,6 @@ use Yajra\DataTables\DataTables;
 
 class KelolaPrestasiController extends Controller
 {
-    public function index()
-    {
-        $breadcrumb = (object) [
-            'title' => 'Manajemen Prestasi',
-            'list' => ['Manajemen Prestasi', 'Kelola Prestasi']
-        ];
-        return view('admin.manajemen-prestasi.kelola-prestasi.index', compact('breadcrumb'));
-    }
-
     private function getStatusBadge($status_verifikasi)
     {
         $status = strtolower($status_verifikasi ?? '');
@@ -41,6 +32,15 @@ class KelolaPrestasiController extends Controller
             default:
                 return '<span class="label label-default">Tidak Diketahui</span>';
         }
+    }
+
+    public function index()
+    {
+        $breadcrumb = (object) [
+            'title' => 'Manajemen Prestasi',
+            'list' => ['Manajemen Prestasi', 'Kelola Prestasi']
+        ];
+        return view('admin.manajemen-prestasi.kelola-prestasi.index', compact('breadcrumb'));
     }
 
     public function list(Request $request)
