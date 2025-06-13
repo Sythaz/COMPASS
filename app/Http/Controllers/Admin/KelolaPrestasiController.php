@@ -45,8 +45,18 @@ class KelolaPrestasiController extends Controller
 
     public function list(Request $request)
     {
-        $data = PrestasiModel::with(['lomba', 'dosen', 'mahasiswa'])
+        $data = PrestasiModel::with(['lomba', 'dosen', 'mahasiswa', 'periode'])
             ->select('t_prestasi.*');
+
+        // Filter berdasarkan status_verifikasi
+        if ($request->filled('status_verifikasi')) {
+            $data->where('status_verifikasi', $request->status_verifikasi);
+        }
+
+        // Filter berdasarkan periode_id
+        if ($request->filled('periode_id')) {
+            $data->where('periode_id', $request->periode_id);
+        }
 
         return DataTables::of($data)
             ->addIndexColumn()
@@ -62,24 +72,22 @@ class KelolaPrestasiController extends Controller
                 });
                 return $ketua->nama_mahasiswa ?? '<span class="text-muted">Belum ada</span>';
             })
-            ->addColumn('jenis_prestasi', function ($row) {
-                return $row->jenis_prestasi ?? '-';
-            })
+            ->addColumn('jenis_prestasi', fn ($row) => $row->jenis_prestasi ?? '-')
             ->editColumn('status_verifikasi', function ($prestasi) {
                 $status = $prestasi->status_verifikasi ?? 'menunggu';
                 return $this->getStatusBadge($status);
             })
             ->addColumn('aksi', function ($row) {
-                $btn = '<div class="d-flex justify-content-center" style="gap: 0.5rem;">';
-                $btn .= '<button onclick="modalAction(\'' . route('kelola-prestasi.showAjax', $row->prestasi_id) . '\')" class="btn btn-info btn-sm">Detail</button>';
-                $btn .= '<button onclick="modalAction(\'' . route('kelola-prestasi.editAjax', $row->prestasi_id) . '\')" class="btn btn-warning btn-sm">Edit</button>';
-                $btn .= '<button onclick="modalAction(\'' . route('kelola-prestasi.deleteAjax', $row->prestasi_id) . '\')" class="btn btn-danger btn-sm">Hapus</button>';
-                $btn .= '</div>';
-                return $btn;
+                return '<div class="d-flex justify-content-center" style="gap: 0.5rem;">' .
+                    '<button onclick="modalAction(\'' . route('kelola-prestasi.showAjax', $row->prestasi_id) . '\')" class="btn btn-info btn-sm">Detail</button>' .
+                    '<button onclick="modalAction(\'' . route('kelola-prestasi.editAjax', $row->prestasi_id) . '\')" class="btn btn-warning btn-sm">Edit</button>' .
+                    '<button onclick="modalAction(\'' . route('kelola-prestasi.deleteAjax', $row->prestasi_id) . '\')" class="btn btn-danger btn-sm">Hapus</button>' .
+                '</div>';
             })
             ->rawColumns(['dosen_pembimbing', 'status_verifikasi', 'aksi'])
             ->make(true);
     }
+
 
     public function showAjax($id)
     {
