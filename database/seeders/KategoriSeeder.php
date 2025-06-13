@@ -61,7 +61,7 @@ class KategoriSeeder extends Seeder
             ],
             [
                 'kategori_id'   => 10,
-                'nama_kategori' => 'AI & Mechine Learning',
+                'nama_kategori' => 'AI & Machine Learning',
                 'status_kategori'   => 'Aktif'
             ],
             [
