@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\DashboardController as DashboardAdminController;
 use App\Http\Controllers\Admin\ProfileAdminController as ProfileAdminController;
 use App\Http\Controllers\Admin\HistoriPengajuanLombaController;
 use App\Http\Controllers\Admin\KelolaPrestasiController;
+use App\Http\Controllers\Admin\KriteriaPrometheeController;
 use App\Http\Controllers\Admin\RekomendasiLombaController;
 use App\Http\Controllers\Admin\VerifikasiLombaController;
 use App\Http\Controllers\Admin\VerifikasiPrestasiController;
@@ -33,6 +34,7 @@ use App\Http\Controllers\Mahasiswa\PrestasiController;
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\PrometheeRekomendasiController;
 use App\Http\Controllers\LaporanPrestasiController;
+use App\Models\KriteriaPrometheeModel;
 
 // Validasi global parameter {id} agar hanya angka
 Route::pattern('id', '[0-9]+');
@@ -198,6 +200,12 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::post('tingkat-lomba/store', [TingkatLombaController::class, 'store'])->name('tingkat-lomba.store');
             Route::put('tingkat-lomba/{id}', [TingkatLombaController::class, 'update'])->name('tingkat-lomba.update');
             Route::put('tingkat-lomba/{id}/delete', [TingkatLombaController::class, 'destroy'])->name('tingkat-lomba.destroy'); // Seharusnya ::delete namun karena menggunakan status maka diganti menjadi ::put
+
+            // Rute Bobot Rekomendasi
+            Route::get('bobot-rekomendasi', [KriteriaPrometheeController::class, 'index'])->name('bobot-rekomendasi.index');
+            Route::put('/update', [KriteriaPrometheeController::class, 'update'])->name('bobot-rekomendasi.update');
+            Route::post('/reset', [KriteriaPrometheeController::class, 'reset'])->name('bobot-rekomendasi.reset');
+            Route::get('/ambil-bobot', [KriteriaPrometheeController::class, 'ambilBobot'])->name('bobot-rekomendasi.get');
         });
 
         // MANAJEMEN LOMBA

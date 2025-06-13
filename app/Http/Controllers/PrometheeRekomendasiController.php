@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\KriteriaPrometheeModel;
 use App\Models\LombaModel;
 use App\Models\PreferensiUserModel;
 use App\Models\TingkatLombaModel;
@@ -11,64 +12,28 @@ use Illuminate\Http\JsonResponse;
 
 class PrometheeRekomendasiController extends Controller
 {
-    /**
-     * Data lomba (alternatif) dengan nilai preferensi untuk setiap kriteria
-     */
-    private $alternatif = [];
-
     public function __construct()
     {
-        // // Ambil semua lomba yang aktif dan terverifikasi, beserta relasi kategorinya
-        // $lombas = LombaModel::with('kategori')
-        //     ->where('status_lomba', 'Aktif')
-        //     ->where('status_verifikasi', 'Terverifikasi')
-        //     ->get();
+        $this->criteria = $this->getCriteriaFromDatabase();
+    }
 
-        // // Ambil semua preferensi user yang sedang login
-        // $preferensiAll = PreferensiUserModel::where('user_id', auth()->user())
-        //     ->orderBy('prioritas')
-        //     ->get();
+    // Data lomba (alternatif) dengan nilai preferensi untuk setiap kriteria
+    private $alternatif = [];
 
+    private $criteria = [];
 
-        // $preferensiBidang = $preferensiAll
-        //     ->where('kriteria', 'bidang')
-        //     ->pluck('nilai', 'prioritas');
-        // $totalCountBidangLomba = $preferensiAll->where('kriteria', 'bidang')->count();
-
-        // $preferensiTingkat = $preferensiAll
-        //     ->where('kriteria', 'tingkat')
-        //     ->pluck('nilai', 'prioritas');
-        // $totalCountTingkatLomba = TingkatLombaModel::count();
-
-        // $preferensiReputasiPenyelenggara = $preferensiAll
-        //     ->where('kriteria', 'penyelenggara')
-        //     ->pluck('nilai', 'prioritas');
-        // $totalCountReputasiPenyelenggara = $preferensiAll->where('kriteria', 'penyelenggara')->count();
-
-        // $preferensiLokasi = $preferensiAll
-        //     ->where('kriteria', 'lokasi')
-        //     ->pluck('nilai', 'prioritas');
-        // $totalCountLokasi = $preferensiAll->where('kriteria', 'lokasi')->count();
-
-        // $preferensiBiaya = $preferensiAll
-        //     ->where('kriteria', 'biaya')
-        //     ->pluck('nilai', 'prioritas');
-        // $totalCountBiaya = $preferensiAll->where('kriteria', 'biaya')->count();
-
-        // foreach ($lombas as $lomba) {
-        //     $this->alternatif[] = [
-        //         'id' => $lomba->lomba_id,
-        //         'name' => $lomba->nama_lomba,
-        //         'values' => [
-        //             $this->getBidangScore($lomba, $preferensiBidang, $totalCountBidangLomba),
-        //             $this->getTingkatScore($lomba, $preferensiTingkat, $totalCountTingkatLomba),
-        //             $this->getReputasiPenyelenggaraScore($lomba, $preferensiReputasiPenyelenggara, $totalCountReputasiPenyelenggara),
-        //             $this->getDeadlineScore($lomba),
-        //             $this->getLokasiScore($lomba, $preferensiLokasi, $totalCountLokasi),
-        //             $this->getBiayaScore($lomba, $preferensiBiaya, $totalCountBiaya),
-        //         ],
-        //     ];
-        // }
+    private function getCriteriaFromDatabase()
+    {
+        return KriteriaPrometheeModel::orderByRaw("FIELD(kode_kriteria, 'C1', 'C2', 'C3', 'C4', 'C5', 'C6')")->get()->map(function ($item) {
+            return [
+                'id' => $item->kode_kriteria,
+                'name' => $item->nama_kriteria,
+                'type' => $item->type,
+                'weight' => (float)$item->bobot,
+                'dynamic_group' => $item->dynamic_group,
+                'preference_function' => $item->preference_function,
+            ];
+        })->toArray();
     }
 
     public function loadPreferensi()
@@ -76,6 +41,7 @@ class PrometheeRekomendasiController extends Controller
         // Ambil semua lomba yang aktif dan terverifikasi, beserta relasi kategorinya
         $lombas = LombaModel::with('kategori')
             ->where('status_lomba', 'Aktif')
+            ->where('akhir_registrasi_lomba', '>=', Carbon::now())
             ->where('status_verifikasi', 'Terverifikasi')
             ->get();
 
@@ -335,60 +301,6 @@ class PrometheeRekomendasiController extends Controller
 
         return 0;
     }
-
-    /**
-     * Informasi kriteria dengan bobot tetap sesuai nilai default
-     */
-    private array $criteria = [
-        [
-            'id' => 'C1',
-            'name' => 'Kesesuaian Bidang Kompetisi',
-            'type' => 'benefit',
-            'weight' => 0.25,
-            'dynamic_group' => 'bidang',
-            'preference_function' => 'usual'
-        ],
-        [
-            'id' => 'C2',
-            'name' => 'Tingkat lomba',
-            'type' => 'benefit',
-            'weight' => 0.15,
-            'dynamic_group' => null,
-            'preference_function' => 'usual'
-        ],
-        [
-            'id' => 'C3',
-            'name' => 'Reputasi penyelenggara',
-            'type' => 'benefit',
-            'weight' => 0.10,
-            'dynamic_group' => null,
-            'preference_function' => 'usual'
-        ],
-        [
-            'id' => 'C4',
-            'name' => 'Deadline pendaftaran',
-            'type' => 'benefit',
-            'weight' => 0.10,
-            'dynamic_group' => null,
-            'preference_function' => 'usual'
-        ],
-        [
-            'id' => 'C5',
-            'name' => 'Lokasi',
-            'type' => 'cost',
-            'weight' => 0.30,
-            'dynamic_group' => 'lokasi',
-            'preference_function' => 'usual'
-        ],
-        [
-            'id' => 'C6',
-            'name' => 'Biaya',
-            'type' => 'benefit',
-            'weight' => 0.10,
-            'dynamic_group' => 'biaya',
-            'preference_function' => 'usual'
-        ]
-    ];
 
     /**
      * Menghitung rekomendasi lomba menggunakan metode PROMETHEE
