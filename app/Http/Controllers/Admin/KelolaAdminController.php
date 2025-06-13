@@ -65,7 +65,7 @@ class KelolaAdminController extends Controller
     public function history()
     {
         $breadcrumb = (object) [
-            'list' => ['Kelola Pengguna', 'Kelola Admin', 'History']
+            'list' => ['Kelola Pengguna', 'Kelola Admin', 'Riwayat Kelola Admin']
         ];
         return view('admin.kelola-pengguna.kelola-admin.history', compact('breadcrumb'));
     }

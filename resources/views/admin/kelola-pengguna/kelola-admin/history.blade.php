@@ -1,8 +1,8 @@
 @extends('layouts.template')
 
-@section('title', 'Kelola Admin | COMPASS')
-@section('page-title', 'Kelola Admin')
-@section('page-description', 'Halaman Kelola Admin Nonaktif')
+@section('title', 'Riwayat Kelola Admin | COMPASS')
+@section('page-title', 'Riwayat Kelola Admin')
+@section('page-description', 'Halaman riwayat kelola admin yang telah dinonaktifkan.')
 
 @section('content')
     <div class="row">
@@ -12,7 +12,7 @@
                     <div class="row mb-2">
                         {{-- Kembali ke index admin --}}
                         <div class="col-6">
-                            <a href="{{ route('admin.index') }}" class="ml-2 btn btn-primary text-white">
+                            <a href="{{ route('admin.index') }}" class="btn btn-primary text-white">
                                 <strong>Kembali</strong>
                             </a>
                         </div>
