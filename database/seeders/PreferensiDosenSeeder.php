@@ -18,6 +18,19 @@ class PreferensiDosenSeeder extends Seeder
         DB::table('t_preferensi_dosen')->truncate();
 
         // contoh preferensi untuk user_id = 1 
+        $dosenId = 1;
+        $userId  = 6;
+
+        // preferensi bidang (Maksimal 5 preferensi)
+        $this->createPreferensi($userId, $dosenId, 'Bidang', 'AI & Machine Learning', 1);
+        $this->createPreferensi($userId, $dosenId, 'Bidang', 'Mobile App Development', 2);
+        $this->createPreferensi($userId, $dosenId, 'Bidang', 'Internet of Things', 3);
+        $this->createPreferensi($userId, $dosenId, 'Bidang', 'Networking & Cloud', 4);
+        $this->createPreferensi($userId, $dosenId, 'Bidang', 'Cybersecurity', 5); 
+
+        $this->createPreferensi($userId, $dosenId, 'lainnya', 'lainnya', 1);
+        
+        // contoh preferensi untuk user_id = 1 
         $dosenId = 2;
         $userId  = 7;
 
@@ -26,8 +39,7 @@ class PreferensiDosenSeeder extends Seeder
         $this->createPreferensi($userId, $dosenId, 'Bidang', 'Web Development', 2);
         $this->createPreferensi($userId, $dosenId, 'Bidang', 'Mobile Development', 3);
         $this->createPreferensi($userId, $dosenId, 'Bidang', 'Software Development', 4);
-        $this->createPreferensi($userId, $dosenId, 'Bidang', 'Business ', 5); 
-        
+        $this->createPreferensi($userId, $dosenId, 'Bidang', 'Business', 5); 
 
         $this->createPreferensi($userId, $dosenId, 'lainnya', 'lainnya', 1);
     }
