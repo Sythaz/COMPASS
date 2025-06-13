@@ -28,11 +28,11 @@ use App\Http\Controllers\Dosen\KelolaBimbinganController;
 use App\Http\Controllers\Dosen\VerifikasiBimbinganController;
 use App\Http\Controllers\Mahasiswa\DashboardController as DashboardMahasiswaController;
 use App\Http\Controllers\Mahasiswa\ProfileMahasiswaController as ProfileMahasiswaController;
-use App\Http\Controllers\Mahasiswa\InputPrestasiController;
 use App\Http\Controllers\Mahasiswa\LombaMahasiswaController;
 use App\Http\Controllers\Mahasiswa\PrestasiController;
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\PrometheeRekomendasiController;
+use App\Http\Controllers\LaporanPrestasiController;
 
 // Validasi global parameter {id} agar hanya angka
 Route::pattern('id', '[0-9]+');
@@ -69,6 +69,9 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
     Route::post('/notifikasi/tandai-dibaca-banyak', [NotifikasiController::class, 'tandaiDibacaBanyakNotifikasi'])->name('notifikasi.tandaiDibacaBanyakNotifikasi');
     Route::post('notifikasi/hapus_notifikasi/{id}', [NotifikasiController::class, 'hapusNotifikasi'])->name('notifikasi.hapusNotifikasi');
     Route::post('notifikasi/hapus_banyak_notifikasi', [NotifikasiController::class, 'hapusBanyakNotifikasi'])->name('notifikasi.hapusBanyakNotifikasi');
+
+    // Route Cetak Laporan Prestasi
+    Route::get('/export-prestasi', [LaporanPrestasiController::class, 'export_excel'])->name('prestasi.export-excel');
 
     // ROUTE ADMIN
     Route::middleware('authorize:Admin')->group(function () {

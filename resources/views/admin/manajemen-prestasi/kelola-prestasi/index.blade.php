@@ -29,7 +29,7 @@
                                     <strong>Menu Ekspor</strong>
                                 </button>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="{{ route('admin.export_excel') }}">Ekspor Data ke
+                                    <a class="dropdown-item" href="{{ route('prestasi.export-excel') }}">Ekspor Data ke
                                         XLSX</a>
                                     <a class="dropdown-item" href="{{ route('admin.export_pdf') }}">Ekspor Data ke
                                         PDF</a>
