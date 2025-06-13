@@ -20,23 +20,29 @@ class DashboardController extends Controller
 
         // Menghitung persentase mahasiswa ikut lomba
         $totalMhs = MahasiswaModel::count();
-        $totalMhsIkutLomba = PendaftaranLombaModel::distinct('mahasiswa_id')->count();
+        $totalPartisipasiMahasiswa = PendaftaranLombaModel::where('status_pendaftaran', 'Terverifikasi')
+        ->distinct('mahasiswa_id')
+        ->count('mahasiswa_id');
 
-        $persentaseMhsIkutLomba = 0;
+        $persentasePartisipasiMahasiswa = 0;
         if ($totalMhs > 0) {
-            $persentaseMhsIkutLomba = floor($totalMhsIkutLomba / $totalMhs * 100);
+            $persentasePartisipasiMahasiswa = floor($totalPartisipasiMahasiswa / $totalMhs * 100);
         }
 
         // Menghitung lomba yang sedang aktif pendaftaran
         $hariIni = Carbon::today();
-        $lombaAktif = LombaModel::where('awal_registrasi_lomba', '<=', $hariIni)
-            ->where('akhir_registrasi_lomba', '>=', $hariIni);
-
-        $totalLombaAktif = $lombaAktif->count();
+        $jumlahLombaAktif = DB::table('t_lomba')
+            ->where('status_lomba', 'Aktif')
+            ->where('status_verifikasi', 'Terverifikasi')
+            ->count();
 
         // Mengambil data lomba yang sedang aktif dan format tanggal (Tanggal Bulan Tahun)
-        $lombaSedangAktif = $lombaAktif->orderByRaw('akhir_registrasi_lomba ASC')
-            ->get()->map(function ($lomba) {
+        $lombaSedangAktif = DB::table('t_lomba')
+            ->where('status_lomba', 'Aktif')
+            ->where('status_verifikasi', 'Terverifikasi')
+            ->orderByRaw('akhir_registrasi_lomba ASC')
+            ->get()
+            ->map(function ($lomba) {
                 $lomba->akhir_registrasi_lomba = Carbon::parse($lomba->akhir_registrasi_lomba)
                     ->translatedFormat('d F Y');
                 return $lomba;
@@ -99,6 +105,6 @@ class DashboardController extends Controller
             ];
         }
 
-        return view('admin.index', compact('breadcrumb', 'persentaseMhsIkutLomba', 'totalLombaAktif', 'jmlPartisipasiSemingguTerakhir', 'topMahasiswa', 'lombaSedangAktif', 'chartPieData'));
+        return view('admin.index', compact('breadcrumb', 'persentasePartisipasiMahasiswa', 'jumlahLombaAktif', 'jmlPartisipasiSemingguTerakhir', 'topMahasiswa', 'lombaSedangAktif', 'chartPieData'));
     }
 }

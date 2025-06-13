@@ -4,7 +4,7 @@
 
 @section('page-title', 'Dashboard')
 
-@section('page-description', 'Hai, selamat datang kembali di COMPASS!')
+@section('page-description', 'Halo, selamat datang kembali di COMPASS!')
 
 @section('content')
     <div class="row">
@@ -13,7 +13,7 @@
                 <div class="card-body">
                     <h3 class="card-title text-white">Partisipasi Lomba</h3>
                     <div class="d-inline-block mt-auto">
-                        <h1 class="text-white my-3">1</h1>
+                        <h1 class="text-white my-3">{{ $totalPartisipasiLomba }}</h1>
                     </div>
                     <span class="float-right display-5 opacity-5"><i class="fas fa-chart-line"></i></span>
                     <p class="text-white mb-0">Lomba yang telah diikuti</p>
@@ -25,7 +25,7 @@
                 <div class="card-body">
                     <h3 class="card-title text-white">Lomba Tersedia</h3>
                     <div class="d-inline-block">
-                        <h1 class="text-white my-3">5</h1>
+                        <h1 class="text-white my-3">{{ $jumlahLombaTersedia }}</h1>
                     </div>
                     <span class="float-right display-5 opacity-5"><i class="fas fa-flag-checkered"></i></span>
                     <p class="text-white mb-0">Lomba yang dapat diikuti</p>
@@ -37,7 +37,7 @@
                 <div class="card-body">
                     <h3 class="card-title text-white">Ranking</h3>
                     <div class="d-inline-block">
-                        <h1 class="text-white my-3">#5</h1>
+                        <h1 class="text-white my-3">{{ $userRank }}</h1>
                     </div>
                     <span class="float-right display-5 opacity-5"><i class="fas fa-medal"></i></span>
                     <p class="text-white mb-0">Teraktif semester ini</p>
@@ -76,17 +76,17 @@
         <div class="col-lg-6">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Jadwal Batas Lomba Peminatan Yang Tersedia</h4>
-                    <div class="table-responsive">
+                    <h4 class="card-title">Jadwal Batas Lomba Yang Tersedia</h4>
+                    <div class="scrollable-container">
                         <table class="table header-border table-hover verticle-middle">
                             <tbody>
-                                {{-- @foreach ($lombaSedangAktif as $index => $upcomingLomba) --}}
-                                <tr>
-                                    <td class="pl-0 col-8 font-weight-bold">IO CHALLENGE</td>
-                                    <td class="text-center col">30 June 2025 </td>
-                                    <th class="text-center col"><i class="fa fa-solid fa-angle-right fa-2x"></i></th>
-                                </tr>
-                                {{-- @endforeach --}}
+                                @foreach ($lombaSedangAktif as $index => $upcomingLomba)
+                                    <tr>
+                                        <td class="pl-0 col-8 font-weight-bold">{{ $upcomingLomba->nama_lomba }}</td>
+                                        <td class="text-center col">{{ $upcomingLomba->akhir_registrasi_lomba }}</td>
+                                        <th class="text-center col"><i class="fa fa-solid fa-angle-right fa-2x"></i></th>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -94,16 +94,16 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Perbandingan Prestasi Mahasiswa Antar Angkatan</h4>
-                    <div id="morris-bar-chart"></div>
-                </div>
-            </div>
-        </div>
-    </div>
+    {{-- <div class="row"> --}}
+        {{-- <div class="col-lg-12"> --}}
+            {{-- <div class="card"> --}}
+                {{-- <div class="card-body"> --}}
+                    {{-- <h4 class="card-title">Perbandingan Prestasi Mahasiswa Antar Angkatan</h4> --}}
+                    {{-- <div id="morris-bar-chart"></div> --}}
+                {{-- </div> --}}
+            {{-- </div> --}}
+        {{-- </div> --}}
+    {{-- </div> --}}
 @endsection
 
 @push('css')
