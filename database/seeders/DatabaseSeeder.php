@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
             NotifikasiSeeder::class,        // 17
             PreferensiUserSeeder::class,    // 18
             PreferensiDosenSeeder::class,   // 19
+            KriteriaPrometheeSeeder::class, // 20
         ]);
     }
 }
