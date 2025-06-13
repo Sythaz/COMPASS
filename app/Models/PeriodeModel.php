@@ -14,5 +14,7 @@ class PeriodeModel extends Model
 
     protected $fillable = [
         'semester_periode',
+        'tanggal_mulai',
+        'tanggal_akhir',
     ];
 }
