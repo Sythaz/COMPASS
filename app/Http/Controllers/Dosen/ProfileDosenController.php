@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Dosen;
 
 use App\Http\Controllers\Controller;
+use App\Models\KategoriModel;
 use App\Models\DosenModel;
+use App\Models\PreferensiDosenModel;
 use App\Models\UsersModel;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
@@ -25,6 +27,11 @@ class ProfileDosenController extends Controller
         $page = (object) [
             'title' => 'Profil Saya'
         ];
+        
+        $preferensi = true;
+        if (PreferensiDosenModel::where('user_id', auth()->id())->doesntExist()) {
+            $preferensi = false;
+        }
 
         $activeMenu = 'profil';
 
@@ -32,7 +39,27 @@ class ProfileDosenController extends Controller
             ->where('user_id', Auth::user()->user_id)
             ->firstOrFail();
 
-        return view('dosen.profile-dosen.index', compact('breadcrumb', 'page', 'activeMenu', 'dosen'));
+        $daftarKategori = KategoriModel::all();
+
+        $dataPreferensi = PreferensiDosenModel::where('user_id', auth()->id())
+            ->get()
+            ->groupBy('kriteria')
+            ->mapWithKeys(function ($item, $key) {
+                return [$key => $item->keyBy('prioritas')];
+            });
+
+        $dataPreferensiBidang = $dataPreferensi['bidang'] ?? collect();
+        $dataPreferensiLainnya = $dataPreferensi['lainnya'] ?? collect();
+
+        return view('dosen.profile-dosen.index', compact(
+            'breadcrumb', 
+            'daftarKategori',
+            'preferensi',
+            'dataPreferensiBidang',
+            'dataPreferensiLainnya',
+            'page', 
+            'activeMenu', 
+            'dosen'));
     }
 
     public function update(Request $request)
@@ -40,6 +67,7 @@ class ProfileDosenController extends Controller
         try {
             $dosen = DosenModel::where('user_id', Auth::user()->user_id)->firstOrFail();
 
+            // Validasi - perhatikan penyesuaian 'img_profile'
             $request->validate([
                 'nip_dosen'         => 'required',
                 'nama_dosen'        => 'required|string|max:100',
@@ -51,18 +79,37 @@ class ProfileDosenController extends Controller
                 'username'          => 'nullable|int|unique:t_users,username,' . $dosen->user_id . ',user_id',
             ]);
 
+            // Update data dosen
+            $dosen->fill($request->only([
+                'nip_dosen',
+                'nama_dosen',
+                'alamat',
+                'email',
+                'no_hp',
+                'kelamin',
+            ]));
+
+            // upload foto jika ada 
             if ($request->hasFile('img_profile')) {
                 $file = $request->file('img_profile');
                 $filename = $dosen->dosen_id . '_' . time() . '.' . $file->getClientOriginalExtension();
                 $path = $file->storeAs('public/img/profile', $filename);
 
-                // Update kolom img_dosen di database
+                // // Update kolom img_dosen di database
+                // $dosen->img_dosen = $filename;
+
+                // Hapus foto lama jika ada
+                if ($dosen->img_dosen && Storage::exists('public/img/profile' . $dosen->img_dosen)) {
+                    Storage::delete('public/img/profile/' . $dosen->img_dosen);
+                }
+
                 $dosen->img_dosen = $filename;
             }
 
+            //simpan perubahan
             $dosen->save();
 
-            // jika req username ada maka update
+            // update username jika diisi
             if ($request->filled('username')) {
                 $dosen->users()->update(['username' => $request->username]);
             }
@@ -99,6 +146,71 @@ class ProfileDosenController extends Controller
 
         // harus mengembalikan string 'true' atau 'false', bukan JSON 
         return response($exists ? 'false' : 'true');
+    }
+
+    public function storePreferensi(Request $request)
+    {
+        try {
+            // validtion rules 
+            $rules = [
+                'bidang1_id' => 'required|exists:t_kategori,kategori_id',
+                'bidang2_id' => 'nullable|exists:t_kategori,kategori_id',
+                'bidang3_id' => 'nullable|exists:t_kategori,kategori_id',
+                'bidang4_id' => 'nullable|exists:t_kategori,kategori_id',
+                'bidang5_id' => 'nullable|exists:t_kategori,kategori_id',
+            ];
+
+            $request->validate($rules);
+            
+            $user = Auth::user();
+            $dosen = $user->dosen;
+
+            // Hapus preferensi lama jika ada
+            DB::table('t_preferensi_dosen')
+                ->where('user_id', $user->user_id)
+                ->where('dosen_id', $dosen->dosen_id)
+                ->delete();
+            
+            $preferensiData = [];
+
+            // memasukkan preferensi bidang ke array untuk insert
+            for ($i = 1; $i <= 5; $i++) {
+                $bidangId = $request->input("bidang{$i}_id");
+                if ($bidangId) {
+                    $kategori = DB::table('t_kategori')->where('kategori_id', $bidangId)->first();
+                    $preferensiData[] = [
+                        'user_id' => $user->user_id,
+                        'dosen_id' => $dosen->dosen_id,
+                        'kriteria' => 'bidang',
+                        'nama' => $kategori->nama_kategori,
+                        'prioritas' => $i,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+            }
+
+            // insert data array preferensi user ke database 
+            DB::table('t_preferensi_dosen')->insert($preferensiData);
+
+            return response()->json([
+                'success'   => true,
+                'message'   => 'Preferensi berhasil disimpan.',
+                'redirect'  => route('dosen.profile.index')
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data tidak valid.',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat menyimpan preferensi.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function changePassword(Request $request)

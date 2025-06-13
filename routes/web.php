@@ -292,7 +292,8 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::get('/edit/{id}', [ProfileDosenController::class, 'edit'])->name('dosen.profile.edit');
             Route::put('/update', [ProfileDosenController::class, 'update'])->name('dosen.profile.update');
             Route::post('/cek-username', [ProfileDosenController::class, 'cekUsername'])->name('dosen.profile.cek-username');
-            Route::post('/ubah-password', [ProfileDosenController::class, 'changePassword'])->name('ubah-password');
+            Route::post('/ubah-password', [ProfileDosenController::class, 'changePassword'])->name('ubah-password-dosen');
+            Route::post('/preferensi', [ProfileDosenController::class, 'storePreferensi'])->name('dosen.profile.preferensi');
         });
 
         // Halaman Kelola Bimbingan (Menampilkan Riwayat Prestasi mahasiswa sesuai Mahasiswa yang Di Bimbing)
