@@ -13,7 +13,7 @@
                 <div class="card-body">
                     <h3 class="card-title text-white">Partisipasi Mahasiswa</h3>
                     <div class="d-inline-block mt-auto">
-                        <h1 class="text-white my-3">{{ $persentaseMhsIkutLomba }}%</h1>
+                        <h1 class="text-white my-3">{{ $persentasePartisipasiMahasiswa }}%</h1>
                     </div>
                     <span class="float-right display-5 opacity-5"><i class="fa fa-users"></i></span>
                     <p class="text-white mb-0">Pernah mengikuti lomba</p>
@@ -25,7 +25,7 @@
                 <div class="card-body">
                     <h3 class="card-title text-white">Lomba Aktif</h3>
                     <div class="d-inline-block">
-                        <h1 class="text-white my-3">{{ $totalLombaAktif }}</h1>
+                        <h1 class="text-white my-3">{{ $jumlahLombaAktif }}</h1>
                     </div>
                     <span class="float-right display-5 opacity-5"><i class="fas fa-flag-checkered"></i></span>
                     <p class="text-white mb-0">Sedang berlangsung</p>
