@@ -16,7 +16,7 @@ class DataLombaController extends Controller
     public function index()
     {
         $breadcrumb = (object) [
-            'list' => ['Manajemen Lomba', 'Data Lomba']
+            'list' => ['Manajemen Lomba', 'Riwayat Pengajuan Lomba']
         ];
 
         return view('dosen.data-lomba.index', compact('breadcrumb'));
