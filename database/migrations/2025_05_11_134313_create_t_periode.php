@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('semester_periode',255);
             $table->date('tanggal_mulai');
             $table->date('tanggal_akhir');
+            $table->enum('status_periode', ['Aktif', 'Nonaktif'])->default('Aktif');
             $table->timestamps();
         });
     }
