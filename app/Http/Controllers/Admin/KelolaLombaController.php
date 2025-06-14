@@ -91,9 +91,10 @@ class KelolaLombaController extends Controller
 
     public function showAjax($id)
     {
-        $kelolaLomba = LombaModel::with('kategori', 'tingkat_lomba')->findOrFail($id);
-        $pengusul = $kelolaLomba->pengusul_id;
+        $lomba = LombaModel::with('kategori', 'tingkat_lomba')->findOrFail($id);
+        $pengusul = $lomba->pengusul_id;
         $rolePengusul = UsersModel::where('user_id', $pengusul)->first()->role;
+        $tipeLomba = $lomba->tipe_lomba;
 
         $namaPengusul = '';
         switch ($rolePengusul) {
@@ -106,12 +107,16 @@ class KelolaLombaController extends Controller
             case 'Mahasiswa':
                 $namaPengusul = MahasiswaModel::where('user_id', $pengusul)->first()->nama_mahasiswa;
                 break;
-
             default:
                 $namaPengusul = 'Pengusul tidak diketahui';
                 break;
         }
-        return view('admin.manajemen-lomba.kelola-lomba.show', compact('kelolaLomba', 'namaPengusul'));
+
+        $breadcrumb = (object) [
+            'list' => ['Informasi Lomba', 'Detail Lomba']
+        ];
+
+        return view('admin.manajemen-lomba.kelola-lomba.show', compact('lomba', 'namaPengusul', 'tipeLomba', 'breadcrumb'));
     }
 
     public function editAjax($id)
