@@ -66,12 +66,26 @@
                     <td class="text-start">{{ $kelolaLomba->penyelenggara_lomba }}</td>
                 </tr>
                 <tr>
+                    <th style="width: 30%">Tipe Lomba: </th>
+                    <td class="text-start">{{ $kelolaLomba->tipe_lomba }}</td>
+                </tr>
+                <tr>
+                    <th style="width: 30%">Biaya Lomba: </th>
+                    <td class="text-start">{{ $kelolaLomba->biaya_lomba ?: 'Tidak Diketahui' }}</td>
+                </tr>
+                <tr>
+                    <th style="width: 30%">Lokasi Lomba: </th>
+                    <td class="text-start">{{ $kelolaLomba->lokasi_lomba ?: 'Tidak Diketahui' }}</td>
+                </tr>
+                <tr>
                     <th style="width: 30%">Awal Registrasi: </th>
-                    <td class="text-start">{{ $kelolaLomba->awal_registrasi_lomba }}</td>
+                    <td class="text-start">
+                        {{ \Carbon\Carbon::parse($kelolaLomba->awal_registrasi_lomba)->format('d F Y') }}</td>
                 </tr>
                 <tr>
                     <th style="width: 30%">Akhir Registrasi: </th>
-                    <td class="text-start">{{ $kelolaLomba->akhir_registrasi_lomba }}</td>
+                    <td class="text-start">
+                        {{ \Carbon\Carbon::parse($kelolaLomba->akhir_registrasi_lomba)->format('d F Y') }}</td>
                 </tr>
                 <tr>
                     <th style="width: 30%">Link Pendaftaran: </th>
