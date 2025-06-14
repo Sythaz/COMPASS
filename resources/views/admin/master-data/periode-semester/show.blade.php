@@ -18,6 +18,9 @@
             <th style="width: 30%">Tanggal Akhir: </th>
             <td class="text-start">{{ $periode->tanggal_akhir }}</td>
         </tr>
+        <tr>
+            <th style="width: 30%">Status: </th>
+            <td class="text-start">{{ $periode->status_periode }}</td>
     </table>
 </div>
 <div class="modal-footer">

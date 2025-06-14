@@ -8,10 +8,13 @@
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
+
     <div class="modal-body">
         <div class="alert alert-danger">
             <i class="fas fa-exclamation-triangle fa-lg mr-2"></i>
             <strong class="alert-heading h4">Apakah anda yakin untuk menghapus data ini?</strong>
+            <hr class="my-2">
+            Data akan tetap tersimpan di database, hanya statusnya yang akan diubah dari "Aktif" menjadi "Inaktif".
         </div>
         <table class="table table-bordered">
             <tr>

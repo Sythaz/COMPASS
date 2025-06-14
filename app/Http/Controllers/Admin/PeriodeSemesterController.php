@@ -21,7 +21,7 @@ class PeriodeSemesterController extends Controller
     public function list(Request $request)
     {
         // Mengambil data dari database
-        $dataPeriodeSemester = PeriodeModel::select(['periode_id', 'semester_periode', 'tanggal_mulai', 'tanggal_akhir'])->get();
+        $dataPeriodeSemester = PeriodeModel::select(['periode_id', 'semester_periode', 'tanggal_mulai', 'tanggal_akhir', 'status_periode'])->get();
 
         return DataTables::of($dataPeriodeSemester)
             ->addIndexColumn()
@@ -122,11 +122,20 @@ class PeriodeSemesterController extends Controller
     {
         try {
             $periode = PeriodeModel::findOrFail($id);
-            $periode->delete();
+            if ($periode->status_periode === 'Nonaktif') {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Data sudah tidak aktif sebelumnya.',
+                ]);
+            }
+
+            $periode->update([
+                'status_periode' => $periode->status_periode = 'Nonaktif',
+            ]);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Data berhasil dihapus'
+                'message' => 'Data berhasil dihapus.',
             ]);
         } catch (\Exception $e) {
             return response()->json([
