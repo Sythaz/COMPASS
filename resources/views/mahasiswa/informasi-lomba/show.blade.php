@@ -52,24 +52,36 @@
                         <input type="text" class="form-control" value="{{ $lomba->penyelenggara_lomba }}" disabled>
                     </div>
                 </div>
-
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label class="col-form-label font-weight-bold">Tipe Lomba</label>
-                        <input type="text" class="form-control" value="{{ $lomba->tipe_lomba }}" disabled>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="col-form-label font-weight-bold">Status</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" value="{{ strip_tags($badgeStatus) }}" disabled>
+                            <input type="text" class="form-control"
+                                value="{{ ucfirst($lomba->status_verifikasi ?? '') }}" disabled>
                             <div class="input-group-append">
-                                <span class="input-group-text bg-info text-white">
-                                    <i class="fas fa-flag"></i>
+                                @php
+                                    $status = $lomba->status_verifikasi ?? '';
+                                    $statusClass = '';
+                                    $statusIcon = '';
+
+                                    switch (strtolower($status)) {
+                                        case 'Terverifikasi':
+                                        case 'terverifikasi':
+                                            $statusClass = 'bg-success';
+                                            $statusIcon = 'fas fa-check';
+                                            break;
+                                        case 'Ditolak':
+                                        case 'ditolak':
+                                            $statusClass = 'bg-danger';
+                                            $statusIcon = 'fas fa-times';
+                                            break;
+                                        default:
+                                            $statusClass = 'bg-warning';
+                                            $statusIcon = 'fas fa-clock';
+                                    }
+                                @endphp
+                                <span class="input-group-text {{ $statusClass }} text-white">
+                                    <i class="{{ $statusIcon }}"></i>
                                 </span>
                             </div>
                         </div>
@@ -81,6 +93,20 @@
                 <label class="col-form-label font-weight-bold">Deskripsi</label>
                 <textarea class="form-control" rows="3" disabled>{{ $lomba->deskripsi_lomba }}</textarea>
             </div>
+
+            {{-- Menampilkan Alasan jika pengajuan Lomba ditolak  --}}
+            @if ($lomba->status_verifikasi === 'Ditolak')
+                <div class="alert alert-danger d-flex align-items-start gap-2 shadow-sm rounded">
+                    <i class="bi bi-exclamation-circle-fill fs-4 mt-1 text-white"></i>
+                    <div class="w-100">
+                        <label class="fw-bold mb-1">Alasan Penolakan</label>
+                        <div class="bg-white border border-danger rounded p-2 text-danger" style="min-height: 100px;">
+                            {{ $lomba->alasan_tolak ?? '-' }}
+                        </div>
+                    </div>
+                </div>
+            @endif
+
         </div>
     </div>
 
@@ -219,7 +245,7 @@
 
 <script>
     // Animasi saat modal dibuka
-    $(document).ready(function () {
+    $(document).ready(function() {
         $('.card').hide().fadeIn(600);
 
         // Tooltip untuk status
@@ -227,7 +253,7 @@
     });
 
     // Force hide processing text after any modal operation
-    setInterval(function () {
+    setInterval(function() {
         if ($('.modal').is(':hidden')) {
             $('.processing, [class*="processing"]').hide();
         }
