@@ -69,10 +69,18 @@ class PrestasiController extends Controller
                 $status = $prestasi->status_verifikasi ?? 'menunggu';
                 return $this->getStatusBadge($status);
             })
-            ->addColumn('aksi', function ($row) {
-                $url = route('mhs.prestasi.showAjax', $row->prestasi_id);
-                return '<button data-url="' . $url . '" class="btn btn-info btn-sm btn-detail-prestasi">Detail</button>';
-            })
+           ->addColumn('aksi', function ($row) {
+               $urlDetail = route('mhs.prestasi.showAjax', $row->prestasi_id);
+               $btnDetail = '<button data-url="' . $urlDetail . '" class="btn btn-info btn-sm btn-detail-prestasi">Detail</button>';
+
+               $btnCetak = '';
+               if ($row->status_verifikasi === 'Terverifikasi') {
+                   $urlCetak = route('laporan.prestasi.pdf', ['id' => $row->prestasi_id]);
+                   $btnCetak = '<a href="' . $urlCetak . '" target="_blank" class="btn btn-success btn-sm ml-1">Cetak</a>';
+               }
+
+               return $btnDetail . ' ' . $btnCetak;
+           })
 
             ->rawColumns(['dosen_pembimbing', 'status_verifikasi', 'aksi'])
             ->make(true);

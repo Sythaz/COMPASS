@@ -76,6 +76,8 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
     // Route Cetak Laporan Prestasi
     Route::get('/export-prestasi-excel', [LaporanPrestasiController::class, 'export_excel'])->name('prestasi.export-excel');
     Route::get('/export-prestasi-pdf', [LaporanPrestasiController::class, 'export_pdf'])->name('prestasi.export-pdf');
+    // Cetak Laporan Tiap Prestasi PDF
+    Route::get('/laporan-prestasi-pdf/{id}', [LaporanPrestasiController::class, 'cetak_laporan'])->name('laporan.prestasi.pdf');
 
     // Route Cetak Laporan Pendaftaran Lomba
     Route::get('/export-pendaftaran-excel', [LaporanPendaftaranController::class, 'export_excel'])->name('pendaftaran.export-excel');

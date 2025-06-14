@@ -88,10 +88,15 @@ class KelolaPrestasiController extends Controller
             ->make(true);
     }
 
-
     public function showAjax($id)
     {
-        $prestasi = PrestasiModel::with(['mahasiswa', 'dosen', 'kategori', 'tingkat_lomba', 'periode'])->findOrFail($id);
+        $prestasi = PrestasiModel::with([
+            'mahasiswa',
+            'dosen',
+            'kategori',
+            'tingkat_lomba',
+            'periode'
+        ])->findOrFail($id);
 
         $statusBadge = $this->getStatusBadge($prestasi->status_verifikasi);
 

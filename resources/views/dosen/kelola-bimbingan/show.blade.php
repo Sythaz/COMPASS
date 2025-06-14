@@ -317,10 +317,18 @@
     </div>
 </div>
 
+{{-- Footer --}}
 <div class="modal-footer">
     <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
         <i class="fas fa-times mr-2"></i>Tutup
     </button>
+
+    @if ($prestasi->status_verifikasi === 'Terverifikasi')
+        <a href="{{ route('laporan.prestasi.pdf', ['id' => $prestasi->prestasi_id]) }}" target="_blank"
+            class="btn btn-success">
+            <i class="fas fa-print mr-2"></i>Cetak
+        </a>
+    @endif
 </div>
 
 <style>

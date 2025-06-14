@@ -122,4 +122,27 @@ class LaporanPrestasiController extends Controller
         return $pdf->stream('Laporan Prestasi Mahasiswa ' . date('Y-m-d H:i:s') . '.pdf');
     }
 
+    public function cetak_laporan($id)
+    {
+        $prestasi = PrestasiModel::with([
+            'mahasiswa',
+            'kategori',
+            'lomba',
+            'dosen',
+            'tingkat_lomba',
+            'periode'
+       ])->findOrFail($id);
+
+        $html = view('laporan', [
+            'prestasi' => $prestasi
+        ])->render();
+
+        $pdf = PDF::loadHTML($html);
+        $pdf->setPaper('a4', 'portrait');
+        $pdf->setOption('isRemoteEnabled', true);
+
+        return $pdf->stream('laporan-prestasi-' . now()->format('Ymd_His') . '.pdf');
+    }
+
+
 }

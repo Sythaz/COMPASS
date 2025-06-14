@@ -9,7 +9,6 @@ use Yajra\DataTables\Facades\DataTables;
 use App\Models\PrestasiModel;
 use Illuminate\Support\Facades\Auth;
 
-
 class KelolaBimbinganController extends Controller
 {
     public function index()
@@ -109,7 +108,13 @@ class KelolaBimbinganController extends Controller
 
     public function showAjax($id)
     {
-        $prestasi = PrestasiModel::with(['mahasiswa', 'dosen', 'kategori', 'tingkat_lomba', 'periode'])->findOrFail($id);
+        $prestasi = PrestasiModel::with([
+           'mahasiswa',
+           'dosen',
+           'kategori',
+           'tingkat_lomba',
+           'periode'
+        ])->findOrFail($id);
 
         $statusBadge = $this->getStatusBadge($prestasi->status_verifikasi);
 
