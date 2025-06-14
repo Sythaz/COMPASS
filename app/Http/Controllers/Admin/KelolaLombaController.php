@@ -59,6 +59,12 @@ class KelolaLombaController extends Controller
             ->addColumn('tingkat_lomba', function ($row) {
                 return $row->tingkat_lomba->nama_tingkat ?? '-';
             })
+            ->addColumn('awal_registrasi_lomba', function ($row) {
+                return $row->awal_registrasi_lomba ? \Carbon\Carbon::parse($row->awal_registrasi_lomba)->translatedFormat('d M Y') : '-';
+            })
+            ->addColumn('akhir_registrasi_lomba', function ($row) {
+                return $row->akhir_registrasi_lomba ? \Carbon\Carbon::parse($row->akhir_registrasi_lomba)->translatedFormat('d M Y') : '-';
+            })
             ->addColumn('status_verifikasi', function ($row) {
                 switch ($row->status_verifikasi) {
                     case 'Terverifikasi':
@@ -166,7 +172,9 @@ class KelolaLombaController extends Controller
     {
         $daftarKategori = KategoriModel::where('status_kategori', 'Aktif')->get();
         $daftarTingkatLomba = TingkatLombaModel::where('status_tingkat_lomba', 'Aktif')->get();
-        return view('admin.manajemen-lomba.kelola-lomba.create', compact('daftarKategori', 'daftarTingkatLomba'));
+        $dataLomba = LombaModel::where('status_lomba', 'Aktif')->get();
+
+        return view('admin.manajemen-lomba.kelola-lomba.create', compact('dataLomba', 'daftarKategori', 'daftarTingkatLomba'));
     }
 
     public function store(Request $request)
@@ -316,7 +324,6 @@ class KelolaLombaController extends Controller
                 $response['threshold_results'] = $results;
             }
             return response()->json($response);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,

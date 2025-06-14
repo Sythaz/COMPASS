@@ -1,7 +1,7 @@
 @extends('layouts.template')
 
-@section('title', 'Data Lomba | COMPASS')
-@section('page-title', 'Data Lomba')
+@section('title', 'Riwayat Pengajuan Lomba | COMPASS')
+@section('page-title', 'Riwayat Pengajuan Lomba')
 @section('page-description', 'Halaman Daftar Riwayat Lomba yang pernah Diajukan')
 
 @section('content')
@@ -10,11 +10,13 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row mb-2">
-                        <a onclick="modalAction('{{ route('dosen.data-lomba.create') }}')"
-                            class="btn btn-primary text-white">
-                            <i class="fa-solid fa-plus"></i>
-                            <strong> Ajukan Lomba</strong>
-                        </a>
+                        <div class="col-md-6">
+                            <a onclick="modalAction('{{ route('dosen.data-lomba.create') }}')"
+                                class="btn btn-primary text-white">
+                                <i class="fa-solid fa-plus"></i>
+                                <strong> Ajukan Lomba</strong>
+                            </a>
+                        </div>    
                     </div>
 
                     <div class="table-responsive">

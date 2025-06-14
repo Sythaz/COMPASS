@@ -108,33 +108,85 @@
                 </div>
 
                 <div class="row mt-2">
+                    <!-- Tipe Lomba -->
+                    <div class="col-md-6">
+                        <label for="tipe_lomba" class="col-form-label">Tipe Lomba <span class="text-danger"
+                                style="color: red;">*</span></label>
+                        <div class="custom-validation">
+                            <select name="tipe_lomba" id="tipe_lomba" class="form-control" required>
+                                <option value="">-- Pilih Tipe Lomba --</option>
+                                <option value="Tim" {{ old('tipe_lomba', $kelolaLomba->tipe_lomba) == 'Tim' ? 'selected' : '' }}>Tim</option>
+                                <option value="Individu" {{ old('tipe_lomba', $kelolaLomba->tipe_lomba) == 'Individu' ? 'selected' : '' }}>Individu</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Biaya Pendaftaran -->
+                    <div class="col-md-6">
+                        <label for="biaya_lomba" class="col-form-label">Biaya Pendaftaran <span class="text-danger"
+                                style="color: red;">*</span></label>
+                        <div class="custom-validation">
+                            <select name="biaya_lomba" id="biaya_lomba" class="form-control" required>
+                                <option value="">-- Pilih Biaya Pendaftaran --</option>
+                                <option value="Tanpa Biaya" {{ old('biaya_lomba', $kelolaLomba->biaya_lomba) == 'Tanpa Biaya' ? 'selected' : '' }}>Tanpa Biaya</option>
+                                <option value="Dengan Biaya" {{ old('biaya_lomba', $kelolaLomba->biaya_lomba) == 'Dengan Biaya' ? 'selected' : '' }}>Dengan Biaya</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-2">
                     <!-- Tanggal Registrasi Lomba -->
                     <div class="col-md-6">
                         <label for="awal_registrasi_lomba" class="col-form-label">Awal Registrasi Lomba <span
                                 class="text-danger" style="color: red;">*</span></label>
                         <div class="custom-validation">
                             <input type="date" class="form-control" name="awal_registrasi_lomba"
-                                id="awal_registrasi_lomba"
-                                value="{{ old('awal_registrasi_lomba', $kelolaLomba->awal_registrasi_lomba) }}"
-                                required>
+                                id="awal_registrasi_lomba" value="{{ old('awal_registrasi_lomba', $kelolaLomba->awal_registrasi_lomba) }}" required>
                         </div>
                     </div>
-
                     <div class="col-md-6">
                         <label for="akhir_registrasi_lomba" class="col-form-label">Akhir Registrasi Lomba <span
                                 class="text-danger" style="color: red;">*</span></label>
                         <div class="custom-validation">
                             <input type="date" class="form-control" name="akhir_registrasi_lomba"
-                                id="akhir_registrasi_lomba"
-                                value="{{ old('akhir_registrasi_lomba', $kelolaLomba->akhir_registrasi_lomba) }}"
-                                required>
+                                id="akhir_registrasi_lomba" value="{{ old('akhir_registrasi_lomba', $kelolaLomba->akhir_registrasi_lomba) }}" required>
                         </div>
                     </div>
                 </div>
 
                 <div class="row mt-2">
-                    <!-- Link Pendaftaran Lomba -->
+                    <!-- Lokasi Lomba -->
                     <div class="col-md-6">
+                        <label for="lokasi_lomba" class="col-form-label">Lokasi Lomba <span
+                                class="text-danger">*</span></label>
+                        <div class="input-group custom-validation">
+                            <select name="lokasi_lomba" id="lokasi_lomba" class="form-control" required>
+                                <option value="">-- Pilih Lokasi Lomba --</option>
+                                <option value="Online" {{ old('lokasi_lomba', $kelolaLomba->lokasi_lomba) == 'Online' ? 'selected' : '' }}>Online</option>
+                                <option value="Offline Dalam Kota" {{ old('lokasi_lomba', $kelolaLomba->lokasi_lomba) == 'Offline Dalam Kota' ? 'selected' : '' }}>Offline Dalam Kota</option>
+                                <option value="Offline Luar Kota" {{ old('lokasi_lomba', $kelolaLomba->lokasi_lomba) == 'Offline Luar Kota' ? 'selected' : '' }}>Offline Luar Kota</option>
+                                <option value="Hybrid" {{ old('lokasi_lomba', $kelolaLomba->lokasi_lomba) == 'Hybrid' ? 'selected' : '' }}>Hybrid</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Status Lomba -->
+                    <div class="col-md-6">
+                        <label for="status_verifikasi" class="col-form-label">Status Lomba <span class="text-danger"
+                                style="color: red;">*</span></label>
+                        <div class="custom-validation">
+                            <select name="status_verifikasi" id="status_verifikasi" class="form-control" required>
+                                <option value="Terverifikasi" {{ old('status_verifikasi', $kelolaLomba->status_verifikasi) == 'Terverifikasi' ? 'selected' : '' }}>Terverifikasi</option>
+                                <option value="Menunggu" {{ old('status_verifikasi', $kelolaLomba->status_verifikasi) == 'Menunggu' ? 'selected' : '' }}>Menunggu</option>
+                                <option value="Ditolak" {{ old('status_verifikasi', $kelolaLomba->status_verifikasi) == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Link Pendaftaran Lomba -->
+                <div class="row mt-2">
+                    <div class="col-12">
                         <label for="link_pendaftaran_lomba" class="col-form-label">Link Pendaftaran Lomba <span
                                 class="text-danger" style="color: red;">*</span></label>
                         <div class="input-group custom-validation">
@@ -145,28 +197,6 @@
                             </div>
                             <input type="text" class="form-control" name="link_pendaftaran_lomba"
                                 value="{{ old('link_pendaftaran_lomba', $kelolaLomba->link_pendaftaran_lomba) }}" required>
-                        </div>
-                    </div>
-
-                    <!-- Status Lomba -->
-                    <div class="col-md-6">
-                        <label for="status_verifikasi" class="col-form-label">Status Lomba <span class="text-danger"
-                                style="color: red;">*</span></label>
-                        <div class="custom-validation">
-                            <select name="status_verifikasi" id="status_verifikasi" class="form-control" required>
-                                <option value="Terverifikasi"
-                                    {{ old('status_verifikasi', $kelolaLomba->status_verifikasi) == 'Terverifikasi' ? 'selected' : '' }}>
-                                    Terverifikasi
-                                </option>
-                                <option value="Menunggu"
-                                    {{ old('status_verifikasi', $kelolaLomba->status_verifikasi) == 'Menunggu' ? 'selected' : '' }}>
-                                    Menunggu
-                                </option>
-                                <option value="Ditolak"
-                                    {{ old('status_verifikasi', $kelolaLomba->status_verifikasi) == 'Ditolak' ? 'selected' : '' }}>
-                                    Ditolak
-                                </option>
-                            </select>
                         </div>
                     </div>
                 </div>
@@ -193,15 +223,15 @@
                             <small class="text-muted">File saat ini: <a href="{{ asset($kelolaLomba->img_lomba) }}"
                                     target="_blank">{{ basename($kelolaLomba->img_lomba) }}</a></small>
                         @endif
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="modal-footer">
-            <button type="submit" class="btn btn-primary"><i
-                    class="fa-solid fa-floppy-disk mr-2"></i>Simpan</button>
-            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
-                <i class="fa-solid fa-xmark mr-2"></i>Batal</button>
-        </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary"><i
+                        class="fa-solid fa-floppy-disk mr-2"></i>Simpan</button>
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+                    <i class="fa-solid fa-xmark mr-2"></i>Batal</button>
+            </div>
     </form>
 
     <!-- Memanggil Fungsi Form Validation Custom -->

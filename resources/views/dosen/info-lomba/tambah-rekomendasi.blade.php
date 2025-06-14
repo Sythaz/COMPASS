@@ -6,7 +6,7 @@
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
-    
+
     <div class="modal-body">
         <!-- Form Pilih Lomba -->
         <div class="card mb-3">
@@ -104,7 +104,8 @@
                     <select name="user_id" class="form-control select2" required>
                         <option value="">-- Pilih Peserta --</option>
                         @foreach ($daftarMahasiswa as $m)
-                            <option value="{{ $m->user_id }}">{{ $m->nim_mahasiswa }} - {{ $m->nama_mahasiswa }}</option>
+                            <option value="{{ $m->user_id }}">{{ $m->nim_mahasiswa }} - {{ $m->nama_mahasiswa }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
@@ -115,12 +116,13 @@
                     </label>
                     <textarea name="pesan_notifikasi" class="form-control" rows="4"
                         placeholder="Anda direkomendasikan oleh Dosen '{{ Auth::user()->getName() }}' untuk mengikuti lomba ini. Silakan periksa informasi lomba lebih lanjut jika berminat."></textarea>
-                    <small class="form-text text-muted">Berikan alasan mengapa mahasiswa ini cocok untuk lomba tersebut</small>
+                    <small class="form-text text-muted">Berikan alasan mengapa mahasiswa ini cocok untuk lomba
+                        tersebut</small>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <div class="modal-footer">
         <button type="submit" class="btn btn-primary">
             <i class="fas fa-paper-plane mr-2"></i>Kirim Rekomendasi
@@ -138,54 +140,10 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
+{{-- Memanggil Custom CSS Select2 --}}
+<link rel="stylesheet" href="{{ asset('css-custom/select2-custom.css') }}">
+
 <style>
-    .select2-container .select2-selection--multiple {
-        min-height: 45px;
-        border-radius: 0;
-        border: 1px solid #ced4da !important;
-    }
-
-    .select2-container--default .select2-selection--single {
-        border: none;
-        margin-top: 9px;
-        margin-left: 9px;
-    }
-
-    .select2-container {
-        min-height: 45px;
-        border-radius: 0;
-        border: 1px solid #ced4da !important;
-        z-index: 9999;
-    }
-
-    .select2-container--default .select2-selection--single .select2-selection__arrow {
-        margin-top: 9px;
-    }
-
-    .select2-container--default .select2-selection--multiple .select2-selection__choice {
-        color: #7571F9;
-        background-color: white !important;
-        outline: 2px solid #7571F9 !important;
-        border: none;
-        border-radius: 4px;
-        margin-top: 10px;
-        margin-left: 12px
-    }
-
-    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
-        color: white;
-        background-color: #7571F9;
-    }
-
-    .select2-container .select2-search--inline .select2-search__field {
-        margin-top: 12px;
-        margin-left: 12px;
-    }
-
-    .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
-        background-color: #7571F9;
-    }
-
     /* Additional styles matching the registration details modal */
     .card-header h6 {
         color: #495057;
@@ -201,7 +159,7 @@
         color: #495057;
     }
 
-    .form-control:disabled, 
+    .form-control:disabled,
     .form-control[readonly] {
         background-color: #f8f9fa;
         border-color: #dee2e6;
@@ -231,10 +189,21 @@
             opacity: 0;
             transform: translateY(-10px);
         }
+
         to {
             opacity: 1;
             transform: translateY(0);
         }
+    }
+
+    .form-group:has(#select-lomba) {
+        position: relative;
+        z-index: 1000;
+    }
+
+    .form-group:has(select[name="user_id"]) {
+        position: relative;
+        z-index: 999;
     }
 </style>
 
@@ -258,7 +227,7 @@
         // When lomba selection changes
         $('#select-lomba').on('change', function() {
             const lombaId = $(this).val();
-            
+
             if (!lombaId) {
                 // Hide all lomba info fields if no lomba selected
                 $('.form-group[id*="-lomba"]').addClass('d-none');
@@ -268,10 +237,10 @@
             }
 
             const url = `{{ url('api/data-lomba') }}/${lombaId}`;
-            
+
             // Show loading state
             $('#info-lomba-card').removeClass('d-none').addClass('fade-in');
-            
+
             $.get(url)
                 .done(function(response) {
                     if (response.success) {
@@ -291,9 +260,10 @@
 
                         // Enable and set up external link button
                         if (data.link_pendaftaran_lomba) {
-                            $('#btn-open-link').prop('disabled', false).off('click').on('click', function() {
-                                window.open(data.link_pendaftaran_lomba, '_blank');
-                            });
+                            $('#btn-open-link').prop('disabled', false).off('click').on('click',
+                                function() {
+                                    window.open(data.link_pendaftaran_lomba, '_blank');
+                                });
                         } else {
                             $('#btn-open-link').prop('disabled', true);
                         }

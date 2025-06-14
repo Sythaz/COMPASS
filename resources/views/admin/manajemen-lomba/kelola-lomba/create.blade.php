@@ -72,6 +72,33 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="row mt-2">
+                <!-- Tipe Lomba -->
+                <div class="col-md-6">
+                    <label for="tipe_lomba" class="col-form-label">Tipe Lomba <span class="text-danger"
+                            style="color: red;">*</span></label>
+                    <div class="custom-validation">
+                        <select name="tipe_lomba" id="tipe_lomba" class="form-control" required>
+                            <option value="">-- Pilih Tipe Lomba --</option>
+                            <option value="Tim">Tim</option>
+                            <option value="Individu">Individu</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Biaya Pendaftaran -->
+                <div class="col-md-6">
+                    <label for="biaya_lomba" class="col-form-label">Biaya Pendaftaran <span class="text-danger"
+                            style="color: red;">*</span></label>
+                    <div class="custom-validation">
+                        <select name="biaya_lomba" id="biaya_lomba" class="form-control" required>
+                            <option value="">-- Pilih Biaya Pendaftaran --</option>
+                            <option value="Tanpa Biaya">Tanpa Biaya</option>
+                            <option value="Dengan Biaya">Dengan Biaya</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
 
             <div class="row mt-2">
                 <!-- Tanggal Registrasi Lomba -->
@@ -94,20 +121,20 @@
             </div>
 
             <div class="row mt-2">
-                <!-- Link Pendaftaran Lomba -->
+                <!-- Lokasi Lomba -->
                 <div class="col-md-6">
-                    <label for="link_pendaftaran_lomba" class="col-form-label">Link Pendaftaran Lomba <span
-                            class="text-danger" style="color: red;">*</span></label>
+                    <label for="lokasi_lomba" class="col-form-label">Lokasi Lomba <span class="text-danger">*</span></label>
                     <div class="input-group custom-validation">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text bg-primary text-white">
-                                <i class="fas fa-link"></i>
-                            </span>
-                        </div>
-                        <input type="text" class="form-control" name="link_pendaftaran_lomba" value="https://"
-                            required>
+                        <select name="lokasi_lomba" id="lokasi_lomba" class="form-control" required>
+                            <option value="">-- Pilih Lokasi Lomba --</option>
+                            <option value="Online">Online</option>
+                            <option value="Offline Dalam Kota">Offline Dalam Kota</option>
+                            <option value="Offline Luar Kota">Offline Luar Kota</option>
+                            <option value="Hybrid">Hybrid</option>
+                        </select>
                     </div>
                 </div>
+
                 <!-- Status Lomba -->
                 <div class="col-md-6">
                     <label for="status_verifikasi" class="col-form-label">Status Lomba <span class="text-danger"
@@ -118,6 +145,23 @@
                             <option value="Menunggu">Menunggu</option>
                             <option value="Ditolak">Ditolak</option>
                         </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Link Pendaftaran Lomba -->
+            <div class="row mt-2">
+                <div class="col-12">
+                    <label for="link_pendaftaran_lomba" class="col-form-label">Link Pendaftaran Lomba <span
+                            class="text-danger" style="color: red;">*</span></label>
+                    <div class="input-group custom-validation">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-primary text-white">
+                                <i class="fas fa-link"></i>
+                            </span>
+                        </div>
+                        <input type="text" class="form-control" name="link_pendaftaran_lomba" value="https://"
+                            required>
                     </div>
                 </div>
             </div>
@@ -207,6 +251,15 @@
             tingkat_lomba_id: {
                 required: true,
             },
+            tipe_lomba: {
+                required: true,
+            },
+            biaya_lomba: {
+                required: true,
+            },
+            lokasi_lomba: {
+                required: true,
+            },
             penyelenggara_lomba: {
                 required: true,
             },
@@ -241,6 +294,15 @@
             },
             tingkat_lomba_id: {
                 required: "Tingkat Lomba wajib diisi",
+            },
+            tipe_lomba: {
+                required: "Tipe Lomba wajib diisi",
+            },
+            biaya_lomba: {
+                required: "Biaya Pendaftaran wajib diisi",
+            },
+            lokasi_lomba: {
+                required: "Lokasi Lomba wajib diisi",
             },
             penyelenggara_lomba: {
                 required: "Penyelenggara Lomba wajib diisi",

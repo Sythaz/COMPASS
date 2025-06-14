@@ -35,14 +35,14 @@ class DashboardController extends Controller
 
         $dosenId = $dosen->dosen_id;
 
-        // Hitung jumlah partisipasi lomba pengguna
-        $partisipasiLomba = DB::table('t_prestasi_mahasiswa')
-            ->join('t_prestasi', 't_prestasi_mahasiswa.prestasi_id', '=', 't_prestasi.prestasi_id')
-            ->where('t_prestasi_mahasiswa.mahasiswa_id', $mahasiswaId)
-            ->where('t_prestasi.status_verifikasi', 'Terverifikasi')
-            ->count();
+        // // Data untuk kartu Performa Bimbingan
+        // $performaBimbingan = $this->getPerformaBimbingan($dosenId);
 
-        $totalPartisipasiLomba = $partisipasiLomba > 0 ? $partisipasiLomba : '-';
+        // // Data untuk kartu verifikasi bimbingan
+        $jumlahVerifikasiBimbingan = $this->getJumlahVerifikasiBimbingan($dosenId);
+
+        // Data untuk kartu Prestasi Bimbingan
+        $jumlahPrestasiBimbingan = $this->getJumlahPrestasiBimbingan($dosenId);
 
         // Ambil tanggal semester aktif
         $currentDate = Carbon::now();
@@ -58,7 +58,7 @@ class DashboardController extends Controller
             $endSemester = Carbon::create($currentDate->year, 6, 30);
         }
 
-        // Ambil data 5 mahasiswa teratas dengan ranking.
+        // Ambil 5 mahasiswa teratas dengan ranking
         $topMahasiswa = DB::table('t_mahasiswa')
             ->join('t_prestasi_mahasiswa', 't_mahasiswa.mahasiswa_id', '=', 't_prestasi_mahasiswa.mahasiswa_id')
             ->join('t_prestasi', 't_prestasi_mahasiswa.prestasi_id', '=', 't_prestasi.prestasi_id')
@@ -83,35 +83,7 @@ class DashboardController extends Controller
             return $item;
         });
 
-        // Jumlah lomba tersedia
-        $jumlahLombaTersedia = DB::table('t_lomba')
-            ->where('status_lomba', 'Aktif')
-            ->where('status_verifikasi', 'Terverifikasi')
-            ->where('akhir_registrasi_lomba', '>=', Carbon::today())
-            ->count();
-
-        // Hitung ranking dalam konteks semester aktif
-        $rankingData = DB::table('t_prestasi_mahasiswa')
-            ->select(
-                't_prestasi_mahasiswa.mahasiswa_id',
-                DB::raw('COUNT(*) as total_partisipasi')
-            )
-            ->join('t_prestasi', 't_prestasi_mahasiswa.prestasi_id', '=', 't_prestasi.prestasi_id')
-            ->where('t_prestasi.status_verifikasi', 'Terverifikasi')
-            ->whereBetween('t_prestasi.tanggal_prestasi', [$startSemester, $endSemester])
-            ->groupBy('t_prestasi_mahasiswa.mahasiswa_id')
-            ->orderByDesc('total_partisipasi')
-            ->get();
-
-        // Temukan rank pengguna dalam konteks semester aktif
-        foreach ($rankingData as $index => $data) {
-            if ((int)$data->mahasiswa_id === (int)$mahasiswaId) {
-                $userRank = '#' . ($index + 1);
-                break;
-            }
-        }
-
-        // Lomba sedang aktif
+        // Mengambil lomba yang sedang aktif pendaftaran
         $lombaSedangAktif = DB::table('t_lomba')
             ->where('status_lomba', 'Aktif')
             ->where('status_verifikasi', 'Terverifikasi')
@@ -123,13 +95,69 @@ class DashboardController extends Controller
                 return $lomba;
             });
 
-        return view('mahasiswa.index', compact(
+        return view('dosen.index', compact(
             'breadcrumb',
+            'jumlahPrestasiBimbingan',
+            'jumlahVerifikasiBimbingan',
             'topMahasiswaRank',
-            'jumlahLombaTersedia',
-            'userRank',
             'lombaSedangAktif',
-            'totalPartisipasiLomba'
         ));
+    }
+
+    // protected function getPerformaBimbingan($dosenId)
+    // {
+    //     // Hitung persentase mahasiswa bimbingan yang mendapatkan prestasi
+    //     $totalMahasiswaBimbingan = DB::table('t_bimbingan')
+    //         ->where('dosen_id', $dosenId)
+    //         ->count();
+
+    //     $mahasiswaDenganPrestasi = DB::table('t_bimbingan')
+    //         ->join('t_prestasi_mahasiswa', 't_bimbingan.mahasiswa_id', '=', 't_prestasi_mahasiswa.mahasiswa_id')
+    //         ->join('t_prestasi', 't_prestasi_mahasiswa.prestasi_id', '=', 't_prestasi.prestasi_id')
+    //         ->where('t_bimbingan.dosen_id', $dosenId)
+    //         ->where('t_prestasi.status_verifikasi', 'Terverifikasi')
+    //         ->distinct('t_bimbingan.mahasiswa_id')
+    //         ->count();
+
+    //     $persentase = $totalMahasiswaBimbingan > 0
+    //         ? round(($mahasiswaDenganPrestasi / $totalMahasiswaBimbingan) * 100)
+    //         : 0;
+
+    //     return [
+    //         'persentase' => $persentase,
+    //         'label' => 'Mahasiswa mendapatkan prestasi'
+    //     ];
+    // }
+
+    // protected function getJumlahMahasiswaBimbingan($dosenId)
+    // {
+    //     $jumlah = DB::table('t_bimbingan')
+    //         ->where('dosen_id', $dosenId)
+    //         ->count();
+
+    //     return [
+    //         'jumlah' => $jumlah,
+    //         'label' => 'Mahasiswa telah dibimbing'
+    //     ];
+    // }
+
+    protected function getJumlahVerifikasiBimbingan($dosenId)
+    {
+        $jumlah = DB::table('t_prestasi')
+            ->where('dosen_id', $dosenId)
+            ->where('status_verifikasi', 'Menunggu')
+            ->count();
+
+        return $jumlah;
+    }
+
+    protected function getJumlahPrestasiBimbingan($dosenId)
+    {
+        $jumlah = DB::table('t_prestasi')
+            ->where('dosen_id', $dosenId)
+            ->where('status_verifikasi', 'Terverifikasi')
+            ->count();
+
+        return $jumlah;
     }
 }
