@@ -196,12 +196,16 @@
         </div>
     </div>
 </div>
-
+{{-- Footer  --}}
 <div class="modal-footer">
     <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
         <i class="fas fa-times mr-2"></i>Tutup
     </button>
 </div>
+
+{{-- Library Lightbox untuk membesarkan gambar --}}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>
 
 <style>
     .file-preview {
@@ -259,7 +263,3 @@
         }
     }, 500);
 </script>
-
-{{-- Library Lightbox untuk membesarkan gambar --}}
-<link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>

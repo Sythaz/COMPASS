@@ -2,103 +2,210 @@
     action="{{ url('admin/manajemen-lomba/verifikasi-lomba/tolak/' . $lomba->lomba_id) }}">
     @csrf
     @method('PUT')
+
     <div class="modal-header bg-primary rounded">
         <h5 class="modal-title text-white"></i>Tolak Verifikasi Lomba</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
+
     <div class="modal-body">
         <div class="alert alert-danger">
             <i class="fas fa-exclamation-triangle fa-lg mr-2"></i>
             <strong class="alert-heading h4">Apakah anda yakin untuk menolak verifikasi data lomba ini?</strong>
         </div>
-        <table class="table table-bordered">
-            <tr>
-                <th style="width: 30%">Nama Lomba: </th>
-                <td class="text-start">{{ $lomba->nama_lomba }}</td>
-            </tr>
-            <tr>
-                <th style="width: 30%">Pengusul: </th>
-                <td class="text-start">{{ $namaPengusul }}</td>
-            </tr>
-            <tr>
-                <th style="width: 30%">Deskripsi: </th>
-                <td class="text-start">{{ $lomba->deskripsi_lomba }}</td>
-            </tr>
-            <tr>
-                <th style="width: 30%">Kategori: </th>
-                <td class="text-start">{{ $lomba->kategori->pluck('nama_kategori')->join(', ') ?: 'Tidak Diketahui' }}
-                </td>
-            </tr>
-            <tr>
-                <th style="width: 30%">Tingkat: </th>
-                <td class="text-start">{{ $lomba->tingkat_lomba->nama_tingkat }}</td>
-            </tr>
-            <tr>
-                <th style="width: 30%">Penyelenggara: </th>
-                <td class="text-start">{{ $lomba->penyelenggara_lomba }}</td>
-            </tr>
-            <tr>
-                <th style="width: 30%">Awal Registrasi: </th>
-                <td class="text-start">{{ $lomba->awal_registrasi_lomba }}</td>
-            </tr>
-            <tr>
-                <th style="width: 30%">Akhir Registrasi: </th>
-                <td class="text-start">{{ $lomba->akhir_registrasi_lomba }}</td>
-            </tr>
-            <tr>
-                <th style="width: 30%">Link Pendaftaran Lomba: </th>
-                <td class="text-start">
-                    <a class="alert-primary" href="{{ $lomba->link_pendaftaran_lomba }}"
-                        target="_blank">{{ $lomba->link_pendaftaran_lomba }}</a>
-                </td>
-            </tr>
-            <tr>
-                <th style="width: 30%">Status: </th>
-                <td class="text-start">
-                    <span>
-                        @switch($lomba->status_verifikasi)
-                            @case('Menunggu')
-                                {{-- Menunggu --}}
-                                <span class="label label-warning">{{ $lomba->status_verifikasi }}</span>
-                            @break
-
-                            @default
-                                {{-- Selain Menunggu --}}
-                                <span class="label label-danger">{{ $lomba->status_verifikasi }}</span>
-                        @endswitch
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <th style="width: 30%">Gambar Poster Lomba:</th>
-                <td class="text-start">
-                    @if (!is_null($lomba->img_lomba) && file_exists(public_path('storage/img/lomba/' . $lomba->img_lomba)))
-                        <a href="{{ asset('storage/img/lomba/' . $lomba->img_lomba) }}" data-lightbox="lomba"
-                            data-title="Gambar Poster Lomba">
-                            <img src="{{ asset('storage/img/lomba/' . $lomba->img_lomba) }}" width="100"
-                                class="d-block mx-auto img-thumbnail" alt="Gambar Poster Lomba"
-                                style="cursor: zoom-in;" />
-                        </a>
-                    @else
-                        <p class="text-center text-muted">Gambar tidak ada atau belum di upload</p>
-                    @endif
-                </td>
-            </tr>
-            <tr>
-                <th style="width: 30%">
-                    <label for="alasan_tolak" class="col-form-label mt-2">Alasan Penolakan: <span class="text-danger"
-                            style="color: red;">*</span></label>
-                </th>
-                <td class="text-start">
-                    <div class="custom-validation">
-                        <textarea name="alasan_tolak" id="alasan_tolak" cols="30" rows="3" class="form-control" required></textarea>
+        <!-- Informasi Dasar Lomba -->
+        <div class="card mb-3">
+            <div class="card-header bg-light">
+                <h6 class="mb-0"><i class="fas fa-info-circle mr-2"></i>Informasi Dasar</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-form-label font-weight-bold">Nama Lomba</label>
+                            <input type="text" class="form-control" value="{{ $lomba->nama_lomba }}" disabled>
+                        </div>
                     </div>
-                </td>
-            </tr>
-        </table>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-form-label font-weight-bold">Pengusul</label>
+                            <input type="text" class="form-control" value="{{ $namaPengusul }}" disabled>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-form-label font-weight-bold">Kategori</label>
+                            <input type="text" class="form-control"
+                                value="{{ $lomba->kategori->pluck('nama_kategori')->join(', ') ?: 'Tidak Diketahui' }}"
+                                disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-form-label font-weight-bold">Tingkat</label>
+                            <input type="text" class="form-control" value="{{ $lomba->tingkat_lomba->nama_tingkat }}"
+                                disabled>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-form-label font-weight-bold">Penyelenggara</label>
+                            <input type="text" class="form-control" value="{{ $lomba->penyelenggara_lomba }}"
+                                disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-form-label font-weight-bold">Status</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control"
+                                    value="{{ ucfirst($lomba->status_verifikasi ?? '') }}" disabled>
+                                <div class="input-group-append">
+                                    @php
+                                        $status = $lomba->status_verifikasi ?? '';
+                                        $statusClass = '';
+                                        $statusIcon = '';
+
+                                        switch (strtolower($status)) {
+                                            case 'Terverifikasi':
+                                            case 'terverifikasi':
+                                                $statusClass = 'bg-success';
+                                                $statusIcon = 'fas fa-check';
+                                                break;
+                                            case 'Ditolak':
+                                            case 'ditolak':
+                                                $statusClass = 'bg-danger';
+                                                $statusIcon = 'fas fa-times';
+                                                break;
+                                            default:
+                                                $statusClass = 'bg-warning';
+                                                $statusIcon = 'fas fa-clock';
+                                        }
+                                    @endphp
+                                    <span class="input-group-text {{ $statusClass }} text-white">
+                                        <i class="{{ $statusIcon }}"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-form-label font-weight-bold">Deskripsi</label>
+                    <textarea class="form-control" rows="3" disabled>{{ $lomba->deskripsi_lomba }}</textarea>
+                </div>
+
+                {{-- Form Alasan Penolakan --}}
+                <div class="form-group">
+                    <label class="col-form-label font-weight-bold text-danger">
+                        Alasan Penolakan
+                        <i class="fas fa-exclamation-triangle ml-1"></i>
+                    </label>
+                    <textarea name="alasan_tolak" class="form-control border border-danger text-danger bg-light" rows="3"
+                        placeholder="Tulis alasan penolakan..."></textarea>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Informasi Pendaftaran -->
+        <div class="card mb-3">
+            <div class="card-header bg-light">
+                <h6 class="mb-0"><i class="fas fa-calendar-alt mr-2"></i>Informasi Pendaftaran</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-form-label font-weight-bold">Awal Registrasi</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" value="{{ $lomba->awal_registrasi_lomba }}"
+                                    disabled>
+                                <div class="input-group-append">
+                                    <span class="input-group-text bg-success text-white">
+                                        <i class="fas fa-play"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-form-label font-weight-bold">Akhir Registrasi</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" value="{{ $lomba->akhir_registrasi_lomba }}"
+                                    disabled>
+                                <div class="input-group-append">
+                                    <span class="input-group-text bg-danger text-white">
+                                        <i class="fas fa-stop"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-form-label font-weight-bold">Link Pendaftaran</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" value="{{ $lomba->link_pendaftaran_lomba }}"
+                            disabled>
+                        <div class="input-group-append">
+                            <a href="{{ $lomba->link_pendaftaran_lomba }}" target="_blank" class="btn btn-primary">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Poster Lomba -->
+        <div class="card">
+            <div class="card-header bg-light">
+                <h6 class="mb-0"><i class="fas fa-image mr-2"></i>Poster Lomba</h6>
+            </div>
+            <div class="card-body">
+                @if (!is_null($lomba->img_lomba) && file_exists(public_path('storage/img/lomba/' . $lomba->img_lomba)))
+                    <div class="text-center">
+                        <div class="file-preview mb-3">
+                            <a href="{{ asset('storage/img/lomba/' . $lomba->img_lomba) }}" data-lightbox="lomba"
+                                data-title="Poster Lomba - {{ $lomba->nama_lomba }}">
+                                <img src="{{ asset('storage/img/lomba/' . $lomba->img_lomba) }}"
+                                    class="img-thumbnail" style="max-width: 300px; cursor: zoom-in;"
+                                    alt="Poster Lomba" />
+                            </a>
+                        </div>
+                        <div class="btn-group">
+                            <a href="{{ asset('storage/img/lomba/' . $lomba->img_lomba) }}" target="_blank"
+                                class="btn btn-primary">
+                                <i class="fas fa-eye mr-2"></i>Lihat Poster
+                            </a>
+                            <a href="{{ asset('storage/img/lomba/' . $lomba->img_lomba) }}" download
+                                class="btn btn-outline-primary">
+                                <i class="fas fa-download mr-2"></i>Unduh
+                            </a>
+                        </div>
+                    </div>
+                @else
+                    <div class="text-center text-muted">
+                        <i class="fas fa-image-times fa-3x mb-2"></i>
+                        <p>Tidak ada poster lomba yang tersedia</p>
+                    </div>
+                @endif
+            </div>
+        </div>
     </div>
+    {{-- Footer --}}
     <div class="modal-footer">
         <button type="submit" class="btn btn-danger"><i class="fas fa-times-circle mr-2"></i>Tolak</button>
         <button type="button" class="btn btn-outline-secondary" data-dismiss="modal"><i
@@ -106,47 +213,70 @@
     </div>
 </form>
 
-<!-- Memanggil Fungsi Form Validation Custom -->
-<script src="{{ asset('js-custom/form-validation.js') }}"></script>
+
+{{-- Library Lightbox untuk membesarkan gambar --}}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>
+
+<style>
+    .file-preview {
+        padding: 20px;
+        border: 2px dashed #dee2e6;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+    }
+
+    .card-header h6 {
+        color: #495057;
+        font-weight: 600;
+    }
+
+    .lightbox .lb-data {
+        top: 0;
+        bottom: auto;
+        background: rgba(0, 0, 0, 0.7);
+    }
+
+    .lightbox .lb-data .lb-caption {
+        color: #fff;
+        padding: 10px;
+        font-size: 16px;
+        text-align: center;
+    }
+
+    .lightbox .lb-close {
+        top: 10px;
+        right: 10px;
+    }
+
+    .img-thumbnail {
+        transition: transform 0.3s ease;
+    }
+
+    .img-thumbnail:hover {
+        transform: scale(1.05);
+    }
+</style>
 
 <script>
-    customFormValidation(
-        "#form-tolak-verifikasi", {
-            alasan_tolak: {
-                required: true,
-            }
-        }, {
-            alasan_tolak: {
-                required: "Alasan penolakan tidak boleh kosong",
-            }
-        },
-        function(response, form) {
-            if (response.success) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil',
-                    text: response.message,
-                }).then(function() {
-                    // Tutup modal
-                    $('#myModal').modal('hide');
+    // Animasi saat modal dibuka
+    $(document).ready(function() {
+        $('.card').hide().fadeIn(600);
 
-                    // Reload tabel DataTables (Sesuaikan dengan ID tabel DataTables di Index)
-                    $('#tabel-verifikasi-lomba').DataTable().ajax.reload();
-                });
-            } else {
-                $('.error-text').text('');
-                $.each(response.msgField, function(prefix, val) {
-                    $('#error-' + prefix).text(val[0]);
-                });
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Terjadi Kesalahan',
-                    text: response.message
-                });
-            }
+        // Tooltip untuk status
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+
+    // Force hide processing text after any modal operation
+    setInterval(function() {
+        if ($('.modal').is(':hidden')) {
+            $('.processing, [class*="processing"]').hide();
         }
-    );
+    }, 500);
+</script>
 
+{{-- Submit handler --}}
+<script>
     $(document).off('submit', '#form-tolak-verifikasi'); // Hapus event handler lama (jika ada)
     $(document).on('submit', '#form-tolak-verifikasi', function(e) {
         e.preventDefault();
