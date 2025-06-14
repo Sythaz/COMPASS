@@ -271,6 +271,9 @@
 
 @push('css')
     <link href="{{ asset('css-custom/profile-custom.css') }}" rel="stylesheet">
+    
+    {{-- Custom CSS untuk tab --}}
+    <link href="{{ asset('css-custom/tab-custom.css') }}" rel="stylesheet">
 @endpush
 
 @push('js')
