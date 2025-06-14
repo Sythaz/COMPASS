@@ -14,19 +14,8 @@ use App\Models\PrestasiModel;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
-
-
 class PrestasiController extends Controller
 {
-    public function index()
-    {
-        $breadcrumb = (object) [
-            'list' => ['Prestasi Mahasiswa', 'Prestasi']
-        ];
-
-        return view('mahasiswa.prestasi.index', compact('breadcrumb'));
-    }
-
     private function getStatusBadge($status_verifikasi)
     {
         $status = strtolower($status_verifikasi ?? '');
@@ -45,6 +34,15 @@ class PrestasiController extends Controller
         }
     }
 
+    public function index()
+    {
+        $breadcrumb = (object) [
+            'list' => ['Prestasi Mahasiswa', 'Prestasi']
+        ];
+
+        return view('mahasiswa.prestasi.index', compact('breadcrumb'));
+    }
+
     public function list(Request $request)
     {
         $mahasiswaId = Auth::user()->mahasiswa->mahasiswa_id;
@@ -61,8 +59,11 @@ class PrestasiController extends Controller
             ->addColumn('nama_lomba', function ($row) {
                 return $row->lomba->nama_lomba ?? $row->lomba_lainnya ?? '-';
             })
+             ->addColumn('juara_prestasi', function ($row) {
+                 return $row->juara_prestasi ?? '-';
+             })
             ->addColumn('dosen_pembimbing', function ($row) {
-                return $row->dosen->nama_dosen ?? '<span class="text-muted">Belum ada</span>';
+                return $row->dosen->nama_dosen ?? '<span class="text-muted">Tidak ada</span>';
             })
             ->editColumn('status_verifikasi', function ($prestasi) {
                 $status = $prestasi->status_verifikasi ?? 'menunggu';
@@ -113,44 +114,66 @@ class PrestasiController extends Controller
         if ($request->input('lomba_id') === 'lainnya') {
             $request->merge(['lomba_id' => null]);
         }
-        // Validasi input utama dengan aturan required_without agar salah satu wajib diisi
-        $validated = $request->validate([
+
+        // Validasi input utama
+        $validated = $request->validate(
+            [
             'lomba_id' => 'nullable|required_without:lomba_lainnya|exists:t_lomba,lomba_id',
             'lomba_lainnya' => 'nullable|required_without:lomba_id|string|max:255',
             'dosen_id' => 'nullable|exists:t_dosen,dosen_id',
             'kategori_id' => 'required|exists:t_kategori,kategori_id',
             'periode_id' => 'required|exists:t_periode,periode_id',
             'tanggal_prestasi' => 'required|date',
-            'juara_prestasi' => 'required|string|max:255',
             'jenis_prestasi' => 'nullable|string|max:255',
+            'juara_prestasi' => 'required|string|max:255',
             'tingkat_lomba_id' => 'nullable|exists:t_tingkat_lomba,tingkat_lomba_id',
-        ]);
+            'img_kegiatan' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'bukti_prestasi' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:4096',
+            'surat_tugas_prestasi' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:4096',],
+            ['tanggal_prestasi.before_or_equal' => 'Tanggal prestasi tidak boleh lebih dari hari ini.',]
+        );
 
-        // Jika user pilih lomba dari daftar (lomba_id), isi otomatis tingkat_lomba_id dan jenis_prestasi
+        // Lengkapi data dari relasi lomba jika tersedia
         if (!empty($validated['lomba_id'])) {
             $lomba = LombaModel::with('tingkat_lomba')->find($validated['lomba_id']);
             if ($lomba) {
-                // Isi tingkat lomba jika kosong
                 if (empty($validated['tingkat_lomba_id']) && $lomba->tingkat_lomba) {
                     $validated['tingkat_lomba_id'] = $lomba->tingkat_lomba->tingkat_lomba_id;
                 }
-                // Isi jenis prestasi jika kosong
                 if (empty($validated['jenis_prestasi'])) {
                     $validated['jenis_prestasi'] = $lomba->tipe_lomba;
                 }
             }
-
-            // Kosongkan lomba_lainnya supaya tidak duplikasi data
             $validated['lomba_lainnya'] = null;
         } else {
-            // Jika input lomba_lainnya manual, pastikan lomba_id di-set null
             $validated['lomba_id'] = null;
         }
 
-        // Simpan data ke tabel prestasi
+        // Simpan data prestasi
         $prestasi = PrestasiModel::create($validated);
 
-        // Jika ada input mahasiswa_id (array), simpan relasi ke pivot dengan peran Ketua dan Anggota
+        // Upload file baru jika ada
+        if ($request->hasFile('img_kegiatan')) {
+            $filename = 'img_' . $prestasi->prestasi_id . '.' . $request->file('img_kegiatan')->getClientOriginalExtension();
+            $request->file('img_kegiatan')->storeAs('public/prestasi/img', $filename);
+            $prestasi->update(['img_kegiatan' => $filename]);
+        }
+
+        if ($request->hasFile('bukti_prestasi')) {
+            $originalFilename = $request->file('bukti_prestasi')->getClientOriginalName();
+            $filename = 'bukti_' . $prestasi->prestasi_id . '_' . time() . '_' . $originalFilename;
+            $request->file('bukti_prestasi')->storeAs('public/prestasi/bukti', $filename);
+            $prestasi->update(['bukti_prestasi' => $filename]);
+        }
+
+        if ($request->hasFile('surat_tugas_prestasi')) {
+            $originalFilename = $request->file('surat_tugas_prestasi')->getClientOriginalName();
+            $filename = 'surat_' . $prestasi->prestasi_id . '_' . time() . '_' . $originalFilename;
+            $request->file('surat_tugas_prestasi')->storeAs('public/prestasi/surat', $filename);
+            $prestasi->update(['surat_tugas_prestasi' => $filename]);
+        }
+
+        // Simpan relasi mahasiswa jika ada
         if ($request->filled('mahasiswa_id')) {
             $mahasiswaIds = $request->input('mahasiswa_id');
             $pivotData = [];

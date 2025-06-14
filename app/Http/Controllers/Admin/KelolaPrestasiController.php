@@ -64,7 +64,7 @@ class KelolaPrestasiController extends Controller
                 return $row->lomba->nama_lomba ?? $row->lomba_lainnya ?? '-';
             })
             ->addColumn('dosen_pembimbing', function ($row) {
-                return $row->dosen->nama_dosen ?? '<span class="text-muted">Belum ada</span>';
+                return $row->dosen->nama_dosen ?? '<span class="text-muted">Tidak ada</span>';
             })
             ->addColumn('ketua_mahasiswa', function ($row) {
                 $ketua = $row->mahasiswa->first(function ($m) {
@@ -217,21 +217,22 @@ class KelolaPrestasiController extends Controller
         }
 
         // Validasi input utama
-        $validated = $request->validate([
+        $validated = $request->validate(
+            [
             'lomba_id' => 'nullable|required_without:lomba_lainnya|exists:t_lomba,lomba_id',
             'lomba_lainnya' => 'nullable|required_without:lomba_id|string|max:255',
             'dosen_id' => 'nullable|exists:t_dosen,dosen_id',
             'kategori_id' => 'required|exists:t_kategori,kategori_id',
             'periode_id' => 'required|exists:t_periode,periode_id',
             'tanggal_prestasi' => 'required|date',
-            'juara_prestasi' => 'required|string|max:255',
             'jenis_prestasi' => 'nullable|string|max:255',
+            'juara_prestasi' => 'required|string|max:255',
             'tingkat_lomba_id' => 'nullable|exists:t_tingkat_lomba,tingkat_lomba_id',
             'img_kegiatan' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'bukti_prestasi' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:4096',
-            'surat_tugas_prestasi' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:4096',
-
-        ]);
+            'surat_tugas_prestasi' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:4096',],
+            ['tanggal_prestasi.before_or_equal' => 'Tanggal prestasi tidak boleh lebih dari hari ini.',]
+        );
 
         // Lengkapi data dari relasi lomba jika tersedia
         if (!empty($validated['lomba_id'])) {
