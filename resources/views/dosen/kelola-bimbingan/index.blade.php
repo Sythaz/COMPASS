@@ -11,7 +11,7 @@
                 <div class="card-body">
                     <div class="row mb-2">
                         <div class="col">
-                            <div class="d-flex justify-content-end align-items-center">
+                            <div class="d-flex justify-content-start align-items-center">
                                 <!-- Dropdown Filter dan Tombol Reset -->
                                 <div class="d-flex gap-2">
                                     <select id="filter-kategori" class="form-control mr-2"
