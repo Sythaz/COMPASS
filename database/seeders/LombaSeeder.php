@@ -249,7 +249,7 @@ class LombaSeeder extends Seeder
                 'status_verifikasi' => 'Ditolak',
                 'status_lomba' => 'Aktif'
             ],
-            
+
             // Lomba sudah selesai untuk prestasi
             [
                 'lomba_id' => 14,
@@ -295,8 +295,8 @@ class LombaSeeder extends Seeder
                 'deskripsi_lomba' => 'Turnamen catur cepat untuk pelajar tingkat kota.',
                 'penyelenggara_lomba' => 'Persatuan Catur Indonesia',
                 'jenis_penyelenggara_lomba' => 'Komunitas',
-                'awal_registrasi_lomba' => Carbon::parse('2024-10-20'),
-                'akhir_registrasi_lomba' => Carbon::parse('2024-12-15'),
+                'awal_registrasi_lomba' => Carbon::parse('2025-05-20'),
+                'akhir_registrasi_lomba' => Carbon::parse('2025-05-15'),
                 'link_pendaftaran_lomba' => 'https://pcatur-indonesia.id/register',
                 'img_lomba' => 'turnamen_catur.png',
                 'tipe_lomba' => 'Tim',

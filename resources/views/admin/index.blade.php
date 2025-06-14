@@ -11,12 +11,12 @@
         <div class="col-lg-4 col-sm-6">
             <div class="card gradient-1">
                 <div class="card-body">
-                    <h3 class="card-title text-white">Partisipasi Mahasiswa</h3>
+                    <h3 class="card-title text-white">Prestasi Mahasiswa</h3>
                     <div class="d-inline-block mt-auto">
-                        <h1 class="text-white my-3">{{ $persentasePartisipasiMahasiswa }}%</h1>
+                        <h1 class="text-white my-3">{{ $persentasePrestasiMahasiswa }}%</h1>
                     </div>
                     <span class="float-right display-5 opacity-5"><i class="fa fa-users"></i></span>
-                    <p class="text-white mb-0">Pernah mengikuti lomba</p>
+                    <p class="text-white mb-0">Dalam 1 tahun ini</p>
                 </div>
             </div>
         </div>
@@ -35,12 +35,12 @@
         <div class="col-lg-4 col-sm-6">
             <div class="card gradient-1">
                 <div class="card-body">
-                    <h3 class="card-title text-white">Partisipasi Seminggu Terakhir</h3>
+                    <h3 class="card-title text-white">Prestasi Sebulan Terakhir</h3>
                     <div class="d-inline-block">
-                        <h1 class="text-white my-3">{{ $jmlPartisipasiSemingguTerakhir }}</h1>
+                        <h1 class="text-white my-3">{{ $jmlPrestasiSebulanTerakhir }}</h1>
                     </div>
                     <span class="float-right display-5 opacity-5"><i class="fa fa-calendar-alt"></i></span>
-                    <p class="text-white mb-0">Mahasiswa mengikuti lomba</p>
+                    <p class="text-white mb-0">Mahasiswa yang berprestasi</p>
                 </div>
             </div>
         </div>
@@ -76,15 +76,18 @@
         <div class="col-lg-6">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Jadwal Batas Lomba Yang Tersedia</h4>
-                    <div class="table-responsive">
+                    <h4 class="card-title">Lomba dengan Batas Waktu Terdekat</h4>
+                    <div class="scrollable-container" style="max-height: 400px; overflow-y: auto;">
                         <table class="table header-border table-hover verticle-middle">
                             <tbody>
                                 @foreach ($lombaSedangAktif as $index => $upcomingLomba)
                                     <tr>
                                         <td class="pl-0 col-8 font-weight-bold">{{ $upcomingLomba->nama_lomba }}</td>
                                         <td class="text-center col">{{ $upcomingLomba->akhir_registrasi_lomba }}</td>
-                                        <th class="text-center col"><i class="fa fa-solid fa-angle-right fa-2x"></i></th>
+                                        <th class="text-center col" style="cursor: pointer;">
+                                            <i onclick="location.href='{{ route('mahasiswa.informasi-lomba.index') }}'"
+                                                class="fa fa-solid fa-angle-right fa-2x"></i>
+                                        </th>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -140,8 +143,8 @@
 
             // Data untuk line chart
             const lineConfig = {
-                labels: ['Ganjil 2022', 'Genap 2022', 'Ganjil 2023', 'Genap 2023', 'Ganjil 2024', 'Genap 2024'],
-                values: [17, 13, 19, 11, 15, 7],
+                labels: @json($labels),
+                values: @json($values),
                 label: "Jumlah Prestasi",
                 color: "#7571F9"
             };

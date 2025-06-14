@@ -2,7 +2,7 @@
 
 @section('title', 'Kelola Admin | COMPASS')
 @section('page-title', 'Kelola Admin')
-@section('page-description', 'Halaman Kelola Admin')
+@section('page-description', 'Halaman untuk mengelola data admin')
 
 @section('content')
     <div class="row">
