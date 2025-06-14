@@ -59,6 +59,27 @@ class PrestasiMahasiswaSeeder extends Seeder
             ],
 
             [
+                'prestasi_id' => 7,
+                'mahasiswa_id' => 3,
+                'peran' => 'Ketua',
+            ],
+            [
+                'prestasi_id' => 7,
+                'mahasiswa_id' => 65,
+                'peran' => 'Anggota',
+            ],
+            [
+                'prestasi_id' => 7,
+                'mahasiswa_id' => 45,
+                'peran' => 'Anggota',
+            ],
+            [
+                'prestasi_id' => 7,
+                'mahasiswa_id' => 6,
+                'peran' => 'Anggota',
+            ],
+
+            [
                 'prestasi_id' => 5,
                 'mahasiswa_id' => 1,
                 'peran' => 'Ketua',

@@ -102,7 +102,7 @@ const LineChart = (function () {
                     },
                     yaxis: {
                         min: 0,
-                        max: Math.max(...values) + 5,
+                        max: Math.max(...values) + 2,
                         tickColor: "rgba(0,0,0,0.05)",
                         font: {
                             size: 10,
