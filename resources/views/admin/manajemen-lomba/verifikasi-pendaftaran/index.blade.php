@@ -12,20 +12,8 @@
                     <div class="row mb-2">
                         <div class="col-6">
                         </div>
-                        {{-- Menu Export Excel/PDF --}}
                         <div class="col-6 text-right">
                             <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false">
-                                    <i class="fa fa-file-export"></i>
-                                    <strong>Menu Ekspor</strong>
-                                </button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="{{ route('admin.export_excel') }}">Ekspor Data ke
-                                        XLSX</a>
-                                    <a class="dropdown-item" href="{{ route('admin.export_pdf') }}">Ekspor Data ke PDF</a>
-                                </div>
-
                                 <a href="{{ route('riwayat-pendaftaran.index') }}" class="ml-2 btn btn-primary text-white">
                                     <i class="fa fa-clock-rotate-left"></i>
                                     <strong> Riwayat</strong>

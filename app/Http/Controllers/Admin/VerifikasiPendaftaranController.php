@@ -86,6 +86,10 @@ class VerifikasiPendaftaranController extends Controller
         $data = PendaftaranLombaModel::with(['mahasiswa', 'lomba'])
             ->select('t_pendaftaran_lomba.*');
 
+        if ($request->filled('status_verifikasi')) {
+            $data->where('status_pendaftaran', $request->status_verifikasi);
+        }
+
         return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('nama_mahasiswa', function ($row) {

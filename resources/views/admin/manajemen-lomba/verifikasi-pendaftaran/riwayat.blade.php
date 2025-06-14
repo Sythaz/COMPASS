@@ -9,31 +9,42 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <div class="row mb-2">
-                        <div class="col-6">
+
+                    {{-- Filter Status Verifikasi --}}
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <form id="filterForm" class="form-inline">
+                                <label class="mr-2 font-weight-bold" for="status_verifikasi">Status:</label>
+                                <select class="form-control mr-2" id="status_verifikasi" name="status_verifikasi">
+                                    <option value="">Semua</option>
+                                    <option value="menunggu">Menunggu</option>
+                                    <option value="terverifikasi">Terverifikasi</option>
+                                    <option value="ditolak">Ditolak</option>
+                                </select>
+                            </form>
                         </div>
-                        {{-- Menu Export Excel/PDF --}}
-                        <div class="col-6 text-right">
+
+                        {{-- Menu Ekspor dan Kembali --}}
+                        <div class="col-md-6 text-right">
                             <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false">
+                                <button type="button" class="btn btn-outline-primary dropdown-toggle"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="fa fa-file-export"></i>
                                     <strong>Menu Ekspor</strong>
                                 </button>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="{{ route('admin.export_excel') }}">Ekspor Data ke
-                                        XLSX</a>
-                                    <a class="dropdown-item" href="{{ route('admin.export_pdf') }}">Ekspor Data ke PDF</a>
+                                    <a href="#" id="exportExcel" class="dropdown-item">Ekspor Data ke XLSX</a>
+                                    <a href="#" id="exportPdf" class="dropdown-item">Ekspor Data ke PDF</a>
                                 </div>
-                                {{-- Kembali ke index --}}
                                 <a href="{{ route('verifikasi-pendaftaran.index') }}"
                                     class="ml-2 btn btn-primary text-white">
-                                    <i class="fa-solid fa-circle-arrow-left"></i>
-                                    <strong> Kembali</strong>
+                                    <i class="fa-solid fa-circle-arrow-left"></i> <strong>Kembali</strong>
                                 </a>
                             </div>
                         </div>
                     </div>
+
+                    {{-- Tabel Data --}}
                     <table class="table table-bordered" id="pendaftaranTable" style="width:100%">
                         <thead>
                             <tr>
@@ -47,7 +58,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {{-- Data akan di-load oleh DataTables AJAX --}}
+                            {{-- Data dimuat via AJAX --}}
                         </tbody>
                     </table>
                 </div>
@@ -55,11 +66,11 @@
         </div>
     </div>
 
-    <!-- Modal utama untuk menampilkan detail pendaftaran -->
+    {{-- Modal Detail --}}
     <div class="modal fade" id="myModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content" id="ajaxModalContent">
-                <!-- Konten modal akan di-load dari AJAX -->
+                {{-- Konten modal dimuat dari AJAX --}}
             </div>
         </div>
     </div>
@@ -77,12 +88,15 @@
 
     <script>
         $(document).ready(function() {
-            $('#pendaftaranTable').DataTable({
+            let table = $('#pendaftaranTable').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
                     url: '{{ route('riwayat-pendaftaran.list') }}',
                     type: 'GET',
+                    data: function(d) {
+                        d.status_verifikasi = $('#status_verifikasi').val();
+                    }
                 },
                 columns: [{
                         data: 'DT_RowIndex',
@@ -101,7 +115,7 @@
                     },
                     {
                         data: 'tipe_lomba',
-                        name: 'lomba.tipe_lomba',
+                        name: 'lomba.tipe_lomba'
                     },
                     {
                         data: 'tanggal_daftar',
@@ -123,37 +137,60 @@
                 ],
                 order: [
                     [4, 'desc']
-                ],
+                ]
             });
-        });
 
-        function modalAction(url) {
-            $.get(url)
-                .done(function(res) {
-                    $('#ajaxModalContent').html(res);
-                    $('#myModal').modal('show');
-                })
-                .fail(function() {
-                    Swal.fire('Gagal', 'Tidak dapat memuat data dari server.', 'error');
+            // Reload otomatis saat filter status berubah
+            $('#status_verifikasi').on('change', function() {
+                table.ajax.reload();
+            });
+
+            // Modal AJAX
+            window.modalAction = function(url) {
+                $.get(url)
+                    .done(function(res) {
+                        $('#ajaxModalContent').html(res);
+                        $('#myModal').modal('show');
+                    })
+                    .fail(function() {
+                        Swal.fire('Gagal', 'Tidak dapat memuat data dari server.', 'error');
+                    });
+            };
+
+            // Tombol ekspor dengan filter
+            $('#exportExcel').on('click', function(e) {
+                e.preventDefault();
+                let status = $('#status_verifikasi').val();
+                let url = '{{ route('pendaftaran.export-excel') }}' + (status ? '?status_verifikasi=' +
+                    status : '');
+                window.location.href = url;
+            });
+
+            $('#exportPdf').on('click', function(e) {
+                e.preventDefault();
+                let status = $('#status_verifikasi').val();
+                let url = '{{ route('pendaftaran.export-pdf') }}' + (status ? '?status_verifikasi=' +
+                    status : '');
+                window.location.href = url;
+            });
+
+            @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{{ session('success') }}',
+                    confirmButtonText: 'OK'
                 });
-        }
+            @endif
 
-        @if (session('success'))
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: '{{ session('success') }}',
-                confirmButtonText: 'OK'
-            });
-        @endif
-
-        @if (session('error'))
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal!',
-                text: '{{ session('error') }}',
-                confirmButtonText: 'OK'
-            });
-        @endif
+            @if (session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: '{{ session('error') }}',
+                    confirmButtonText: 'OK'
+                });
+            @endif
+        });
     </script>
 @endpush

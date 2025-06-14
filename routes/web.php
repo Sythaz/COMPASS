@@ -34,6 +34,7 @@ use App\Http\Controllers\Mahasiswa\PrestasiController;
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\PrometheeRekomendasiController;
 use App\Http\Controllers\LaporanPrestasiController;
+use App\Http\Controllers\LaporanPendaftaranController;
 use App\Models\KriteriaPrometheeModel;
 
 // Validasi global parameter {id} agar hanya angka
@@ -75,6 +76,11 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
     // Route Cetak Laporan Prestasi
     Route::get('/export-prestasi-excel', [LaporanPrestasiController::class, 'export_excel'])->name('prestasi.export-excel');
     Route::get('/export-prestasi-pdf', [LaporanPrestasiController::class, 'export_pdf'])->name('prestasi.export-pdf');
+
+    // Route Cetak Laporan Pendaftaran Lomba
+    Route::get('/export-pendaftaran-excel', [LaporanPendaftaranController::class, 'export_excel'])->name('pendaftaran.export-excel');
+    Route::get('/export-pendaftaran-pdf', [LaporanPendaftaranController::class, 'export_pdf'])->name('pendaftaran.export-pdf');
+
 
     // ROUTE ADMIN
     Route::middleware('authorize:Admin')->group(function () {
