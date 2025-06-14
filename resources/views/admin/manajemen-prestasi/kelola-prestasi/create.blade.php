@@ -8,175 +8,324 @@
     </div>
 
     <div class="modal-body">
-
-        {{-- Pilih Lomba yang tersedia (Lomba yang ditampilkan hanya yang sudah berakhir) --}}
-        <label for="lomba_id" class="col-form-label mt-2">Nama Lomba <span class="text-danger">*</span></label>
-        <div class="custom-validation">
-            <select name="lomba_id" id="lomba_id" class="form-control select2" required>
-                <option value="">-- Pilih Lomba --</option>
-                @foreach ($daftarLomba as $lomba)
-                    <option value="{{ $lomba->lomba_id }}"
-                        data-tingkat="{{ $lomba->tingkat_lomba->nama_tingkat ?? '' }}"
-                        data-tingkat-id="{{ $lomba->tingkat_lomba->tingkat_lomba_id ?? '' }}"
-                        data-kategori="{{ optional($lomba->kategori)->pluck('nama_kategori')->implode(', ') }}"
-                        data-kategori-json='@json(
-                            $lomba->kategori->map(function ($k) {
-                                return ['id' => $k->kategori_id, 'text' => $k->nama_kategori];
-                            }))' data-tipe="{{ $lomba->tipe_lomba }}">
-                        {{ $lomba->nama_lomba }}
-                    </option>
-                @endforeach
-                <option value="lainnya">Lainnya</option>
-            </select>
-
-            {{-- Tingkat dan Kategori (Readonly jika pilih dari DB) --}}
-            <div id="form-tingkat-lomba" class="form-group mt-2" style="display:none;">
-                <label for="nama_tingkat_lomba" class="col-form-label">Tingkat Lomba</label>
-                <input type="text" id="nama_tingkat_lomba" class="form-control" readonly>
-                <input type="hidden" name="tingkat_lomba_id" id="tingkat_lomba_id">
+        <!-- Informasi Lomba -->
+        <div class="card mb-3">
+            <div class="card-header bg-light">
+                <h6 class="mb-0"><i class="fas fa-trophy mr-2"></i>Informasi Lomba</h6>
             </div>
-            {{-- Pilih kategori Lomba sesuai dengan lomba yang dipilih --}}
-            <div id="form-kategori-lomba" class="form-group mt-2" style="display:none;">
-                <label for="kategori_id" class="col-form-label">Kategori Lomba <span
-                        class="text-danger">*</span></label>
-                <select name="kategori_id" id="kategori_id" class="form-control select2" required>
-                    {{-- Diisi via JS --}}
-                </select>
-            </div>
+            <div class="card-body">
+                {{-- Pilih Lomba yang tersedia (Lomba yang ditampilkan hanya yang sudah berakhir) --}}
+                <div class="form-group">
+                    <label for="lomba_id" class="col-form-label font-weight-bold">Nama Lomba <span class="text-danger">*</span></label>
+                    <div class="custom-validation">
+                        <select name="lomba_id" id="lomba_id" class="form-control select2" required>
+                            <option value="">-- Pilih Lomba --</option>
+                            @foreach ($daftarLomba as $lomba)
+                                <option value="{{ $lomba->lomba_id }}"
+                                    data-tingkat="{{ $lomba->tingkat_lomba->nama_tingkat ?? '' }}"
+                                    data-tingkat-id="{{ $lomba->tingkat_lomba->tingkat_lomba_id ?? '' }}"
+                                    data-kategori="{{ optional($lomba->kategori)->pluck('nama_kategori')->implode(', ') }}"
+                                    data-kategori-json='@json(
+                                        $lomba->kategori->map(function ($k) {
+                                            return ['id' => $k->kategori_id, 'text' => $k->nama_kategori];
+                                        }))' data-tipe="{{ $lomba->tipe_lomba }}">
+                                    {{ $lomba->nama_lomba }}
+                                </option>
+                            @endforeach
+                            <option value="lainnya">Lainnya</option>
+                        </select>
+                    </div>
+                </div>
 
-            {{-- Input Manual (Jika "Lainnya") --}}
-            <div id="input-lomba-lainnya" class="form-group mt-2" style="display:none;">
-                {{-- Input Nama Lomba --}}
-                <label for="lomba_lainnya" class="col-form-label">Nama Lomba (Lainnya) <span
-                        class="text-danger">*</span></label>
-                <input type="text" name="lomba_lainnya" id="lomba_lainnya" class="form-control">
-                {{-- Pilih Tingkat Lomba --}}
-                <label for="tingkat_lomba_id" class="col-form-label mt-2">Tingkat Lomba <span
-                        class="text-danger">*</span></label>
-                <select name="tingkat_lomba_id" id="tingkat_lomba_id" class="form-control select2">
-                    <option value="">-- Pilih Tingkat Lomba --</option>
-                    @foreach ($daftarTingkatLomba as $tingkat)
-                        <option value="{{ $tingkat->tingkat_lomba_id }}">{{ $tingkat->nama_tingkat }}</option>
-                    @endforeach
-                </select>
-            </div>
-            {{-- Kategori Manual jika "Lainnya" --}}
-            <div id="kategori-lomba-manual" class="form-group mt-2" style="display:none;">
-                <label for="kategori_id_manual" class="col-form-label">Kategori Lomba <span
-                        class="text-danger">*</span></label>
-                <select name="kategori_id" id="kategori_id_manual" class="form-control select2" required>
-                    <option value="">-- Pilih Kategori --</option>
-                    @foreach ($daftarKategori as $kategori)
-                        <option value="{{ $kategori->kategori_id }}">{{ $kategori->nama_kategori }}</option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
+                <div class="row">
+                    {{-- Tingkat dan Kategori (Readonly jika pilih dari DB) --}}
+                    <div class="col-md-6">
+                        <div id="form-tingkat-lomba" class="form-group" style="display:none;">
+                            <label for="nama_tingkat_lomba" class="col-form-label font-weight-bold">Tingkat Lomba</label>
+                            <div class="input-group">
+                                <input type="text" id="nama_tingkat_lomba" class="form-control" readonly>
+                                <div class="input-group-append">
+                                    <span class="input-group-text bg-info text-white">
+                                        <i class="fas fa-layer-group"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <input type="hidden" name="tingkat_lomba_id" id="tingkat_lomba_id">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        {{-- Pilih kategori Lomba sesuai dengan lomba yang dipilih --}}
+                        <div id="form-kategori-lomba" class="form-group" style="display:none;">
+                            <label for="kategori_id" class="col-form-label font-weight-bold">Kategori Lomba <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <select name="kategori_id" id="kategori_id" class="form-control select2" required>
+                                    {{-- Diisi via JS --}}
+                                </select>
+                                <div class="input-group-append">
+                                    <span class="input-group-text bg-success text-white">
+                                        <i class="fas fa-tags"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-        {{-- Tipe Prestasi --}}
-        <div class="form-group">
-            <label class="col-form-label mt-3">Tipe Prestasi <span class="text-danger">*</span></label>
-            <select name="jenis_prestasi" id="jenis_prestasi" class="form-control select2" required>
-                <option value="">-- Pilih Tipe --</option>
-                <option value="individu">Individu</option>
-                <option value="tim">Tim</option>
-            </select>
-        </div>
-        {{-- Anggota Tim --}}
-        <div class="form-group mt-3">
-            <label class="col-form-label">Jumlah Anggota</label>
-            <div class="input-group">
-                <button type="button" class="btn btn-outline-secondary" id="btn-minus">-</button>
-                <input type="number" id="jumlah_anggota" class="form-control text-center" value="1" readonly>
-                <button type="button" class="btn btn-outline-secondary" id="btn-plus">+</button>
-            </div>
-        </div>
-        {{-- Pilih Anggota --}}
-        <div id="anggota-container" class="mt-3">
-            {{-- Akan di-render otomatis oleh JS --}}
-        </div>
-
-        {{-- Tanggal Prestasi --}}
-        <label for="tanggal_prestasi" class="col-form-label mt-2">Tanggal Prestasi <span class="text-danger"
-                style="color: red;">*</span></label>
-        <div class="custom-validation">
-            <input type="date" class="form-control" name="tanggal_prestasi" required>
-        </div>
-        {{-- Juara Prestasi --}}
-        <label for="juara_prestasi" class="col-form-label mt-2">Juara Prestasi <span class="text-danger"
-                style="color: red;">*</span></label>
-        <div class="custom-validation">
-            <input type="text" class="form-control" name="juara_prestasi" required>
-        </div>
-        {{-- Periode --}}
-        <label for="periode_id" class="col-form-label mt-2">Periode <span class="text-danger"
-                style="color: red;">*</span></label>
-        <div class="custom-validation">
-            <select name="periode_id" id="periode_id" class="form-control select2" required>
-                @foreach ($daftarPeriode as $periode)
-                    <option value="{{ $periode->periode_id }}">
-                        {{ $periode->semester_periode }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-        {{-- Dosen Pembimbing --}}
-        <label for="dosen_id" class="col-form-label mt-2">Dosen (Opsional)</label>
-        <div class="custom-validation">
-            <select name="dosen_id" id="dosen_id" class="form-control select2">
-                <option value="">-- Tidak ada dosen pembimbing --</option>
-                @foreach ($daftarDosen as $dosen)
-                    <option value="{{ $dosen->dosen_id }}">
-                        {{ $dosen->nama_dosen }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-        {{-- Gambar Kegiatan --}}
-        <label for="img_kegiatan" class="col-form-label mt-2">Gambar Kegiatan <small>(Maksimal 2MB)</small> </label>
-        <div class="custom-validation">
-            <div class="input-group mt-1">
-                <div class="custom-file">
-                    <input type="file" class="custom-file-input" name="img_kegiatan" accept=".png, .jpg, .jpeg"
-                        onchange="$('#img_kegiatan_label').text(this.files[0].name)" nullable>
-                    <label class="custom-file-label" id="img_kegiatan_label" for="img_kegiatan">Pilih File</label>
+                {{-- Input Manual (Jika "Lainnya") --}}
+                <div id="input-lomba-lainnya" class="form-group" style="display:none;">
+                    <div class="bg-light rounded p-3">
+                        <h6 class="mb-3"><i class="fas fa-edit mr-2"></i>Input Manual Lomba</h6>
+                        
+                        {{-- Input Nama Lomba --}}
+                        <div class="form-group">
+                            <label for="lomba_lainnya" class="col-form-label font-weight-bold">Nama Lomba (Lainnya) <span class="text-danger">*</span></label>
+                            <input type="text" name="lomba_lainnya" id="lomba_lainnya" class="form-control">
+                        </div>
+                        
+                        {{-- Pilih Tingkat Lomba --}}
+                        <div class="form-group">
+                            <label for="tingkat_lomba_id" class="col-form-label font-weight-bold">Tingkat Lomba <span class="text-danger">*</span></label>
+                            <select name="tingkat_lomba_id" id="tingkat_lomba_id" class="form-control select2">
+                                <option value="">-- Pilih Tingkat Lomba --</option>
+                                @foreach ($daftarTingkatLomba as $tingkat)
+                                    <option value="{{ $tingkat->tingkat_lomba_id }}">{{ $tingkat->nama_tingkat }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                {{-- Kategori Manual jika "Lainnya" --}}
+                <div id="kategori-lomba-manual" class="form-group" style="display:none;">
+                    <label for="kategori_id_manual" class="col-form-label font-weight-bold">Kategori Lomba <span class="text-danger">*</span></label>
+                    <select name="kategori_id" id="kategori_id_manual" class="form-control select2" required>
+                        <option value="">-- Pilih Kategori --</option>
+                        @foreach ($daftarKategori as $kategori)
+                            <option value="{{ $kategori->kategori_id }}">{{ $kategori->nama_kategori }}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
         </div>
-        {{-- Bukti Prestasi --}}
-        <label for="bukti_prestasi" class="col-form-label mt-2">Bukti Prestasi <small>(Maksimal 2MB)</small>
-        </label>
-        <div class="custom-validation">
-            <div class="input-group mt-1">
-                <div class="custom-file">
-                    <input type="file" class="custom-file-input" name="bukti_prestasi" accept=".png, .jpg, .jpeg"
-                        onchange="$('#bukti_prestasi_label').text(this.files[0].name)" nullable>
-                    <label class="custom-file-label" id="bukti_prestasi_label" for="bukti_prestasi">Pilih
-                        File</label>
+
+        <!-- Informasi Prestasi -->
+        <div class="card mb-3">
+            <div class="card-header bg-light">
+                <h6 class="mb-0"><i class="fas fa-medal mr-2"></i>Detail Prestasi</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        {{-- Tipe Prestasi --}}
+                        <div class="form-group">
+                            <label class="col-form-label font-weight-bold">Tipe Prestasi <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <select name="jenis_prestasi" id="jenis_prestasi" class="form-control select2" required>
+                                    <option value="">-- Pilih Tipe --</option>
+                                    <option value="individu">Individu</option>
+                                    <option value="tim">Tim</option>
+                                </select>
+                                <div class="input-group-append">
+                                    <span class="input-group-text bg-primary text-white">
+                                        <i class="fas fa-user-friends"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        {{-- Anggota Tim --}}
+                        <div class="form-group">
+                            <label class="col-form-label font-weight-bold">Jumlah Anggota</label>
+                            <div class="input-group">
+                                <button type="button" class="btn btn-outline-secondary" id="btn-minus">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <input type="number" id="jumlah_anggota" class="form-control text-center font-weight-bold" value="1" readonly>
+                                <button type="button" class="btn btn-outline-secondary" id="btn-plus">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            <small class="text-muted">Tim: 2-5 anggota, Individu: 1 anggota</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        {{-- Tanggal Prestasi --}}
+                        <div class="form-group">
+                            <label for="tanggal_prestasi" class="col-form-label font-weight-bold">Tanggal Prestasi <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="date" class="form-control" name="tanggal_prestasi" required>
+                                <div class="input-group-append">
+                                    <span class="input-group-text bg-info text-white">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        {{-- Juara Prestasi --}}
+                        <div class="form-group">
+                            <label for="juara_prestasi" class="col-form-label font-weight-bold">Juara Prestasi <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="juara_prestasi" placeholder="Contoh: Juara 1, Juara 2, Juara 3" required>
+                                <div class="input-group-append">
+                                    <span class="input-group-text bg-warning text-dark">
+                                        <i class="fas fa-trophy"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        {{-- Periode --}}
+                        <div class="form-group">
+                            <label for="periode_id" class="col-form-label font-weight-bold">Periode <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <select name="periode_id" id="periode_id" class="form-control select2" required>
+                                    @foreach ($daftarPeriode as $periode)
+                                        <option value="{{ $periode->periode_id }}">
+                                            {{ $periode->semester_periode }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <div class="input-group-append">
+                                    <span class="input-group-text bg-secondary text-white">
+                                        <i class="fas fa-clock"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        {{-- Dosen Pembimbing --}}
+                        <div class="form-group">
+                            <label for="dosen_id" class="col-form-label font-weight-bold">Dosen Pembimbing</label>
+                            <div class="input-group">
+                                <select name="dosen_id" id="dosen_id" class="form-control select2">
+                                    <option value="">-- Tidak ada dosen pembimbing --</option>
+                                    @foreach ($daftarDosen as $dosen)
+                                        <option value="{{ $dosen->dosen_id }}">
+                                            {{ $dosen->nama_dosen }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <div class="input-group-append">
+                                    <span class="input-group-text bg-success text-white">
+                                        <i class="fas fa-chalkboard-teacher"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <small class="text-muted">Opsional - Pilih jika ada dosen pembimbing</small>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        {{-- Surat Tugas Prestasi --}}
-        <label for="surat_tugas_prestasi" class="col-form-label mt-2">Surat Tugas Prestasi <small>(Maksimal
-                2MB)</small>
-        </label>
-        <div class="custom-validation">
-            <div class="input-group mt-1">
-                <div class="custom-file">
-                    <input type="file" class="custom-file-input" name="surat_tugas_prestasi"
-                        accept=".png, .jpg, .jpeg"
-                        onchange="$('#surat_tugas_prestasi_label').text(this.files[0].name)" nullable>
-                    <label class="custom-file-label" id="surat_tugas_prestasi_label" for="surat_tugas_prestasi">Pilih
-                        File</label>
+
+        <!-- Informasi Peserta/Tim -->
+        <div class="card mb-3">
+            <div class="card-header bg-light">
+                <h6 class="mb-0">
+                    <i class="fas fa-users mr-2"></i>Informasi Peserta
+                    <span class="badge badge-primary ml-2" id="badge-anggota">1 Anggota</span>
+                </h6>
+            </div>
+            <div class="card-body">
+                {{-- Pilih Anggota --}}
+                <div id="anggota-container">
+                    {{-- Akan di-render otomatis oleh JS --}}
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Dokumen -->
+        <div class="card mb-3">
+            <div class="card-header bg-light">
+                <h6 class="mb-0"><i class="fas fa-file-upload mr-2"></i>Upload Dokumen</h6>
+            </div>
+            <div class="card-body">
+                {{-- Gambar Kegiatan --}}
+                <div class="form-group">
+                    <label for="img_kegiatan" class="col-form-label font-weight-bold">Gambar Kegiatan</label>
+                    <div class="file-upload-wrapper">
+                        <div class="input-group">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" name="img_kegiatan" id="img_kegiatan" accept=".png, .jpg, .jpeg"
+                                    onchange="updateFileLabel('img_kegiatan', 'img_kegiatan_label')" nullable>
+                                <label class="custom-file-label" id="img_kegiatan_label" for="img_kegiatan">Pilih File</label>
+                            </div>
+                            <div class="input-group-append">
+                                <span class="input-group-text bg-info text-white">
+                                    <i class="fas fa-image"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <small class="text-muted">Format: PNG, JPG, JPEG. Maksimal 2MB</small>
+                    </div>
+                </div>
+
+                {{-- Bukti Prestasi --}}
+                <div class="form-group">
+                    <label for="bukti_prestasi" class="col-form-label font-weight-bold">Bukti Prestasi</label>
+                    <div class="file-upload-wrapper">
+                        <div class="input-group">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" name="bukti_prestasi" id="bukti_prestasi" accept=".png, .jpg, .jpeg"
+                                    onchange="updateFileLabel('bukti_prestasi', 'bukti_prestasi_label')" nullable>
+                                <label class="custom-file-label" id="bukti_prestasi_label" for="bukti_prestasi">Pilih File</label>
+                            </div>
+                            <div class="input-group-append">
+                                <span class="input-group-text bg-success text-white">
+                                    <i class="fas fa-certificate"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <small class="text-muted">Format: PNG, JPG, JPEG. Maksimal 2MB</small>
+                    </div>
+                </div>
+
+                {{-- Surat Tugas Prestasi --}}
+                <div class="form-group mb-0">
+                    <label for="surat_tugas_prestasi" class="col-form-label font-weight-bold">Surat Tugas Prestasi</label>
+                    <div class="file-upload-wrapper">
+                        <div class="input-group">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" name="surat_tugas_prestasi" id="surat_tugas_prestasi"
+                                    accept=".png, .jpg, .jpeg" onchange="updateFileLabel('surat_tugas_prestasi', 'surat_tugas_prestasi_label')" nullable>
+                                <label class="custom-file-label" id="surat_tugas_prestasi_label" for="surat_tugas_prestasi">Pilih File</label>
+                            </div>
+                            <div class="input-group-append">
+                                <span class="input-group-text bg-warning text-dark">
+                                    <i class="fas fa-file-contract"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <small class="text-muted">Format: PNG, JPG, JPEG. Maksimal 2MB</small>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
     {{-- Footer Modal --}}
     <div class="modal-footer">
-        <button type="submit" class="btn btn-primary"><i class="fas fa-save mr-2"></i>Simpan</button>
-        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal"><i
-                class="fas fa-times mr-2"></i>Batal</button>
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save mr-2"></i>Simpan Prestasi
+        </button>
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+            <i class="fas fa-times mr-2"></i>Batal
+        </button>
     </div>
 </form>
 
@@ -187,8 +336,83 @@
 {{-- Memanggil Custom CSS Select2 --}}
 <link href="{{ asset('css-custom/select2-custom.css') }}" rel="stylesheet">
 
+<style>
+    .card {
+        border-left: 4px solid #7571F9;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .card-header {
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .card-header h6 {
+        color: #495057;
+        font-weight: 600;
+    }
+
+    .peserta-section,
+    .ketua-section,
+    .anggota-item {
+        border-left: 4px solid #7571F9;
+        margin-bottom: 10px;
+    }
+
+    .ketua-section {
+        border-left-color: #ffc107 !important;
+        background-color: rgba(255, 193, 7, 0.1);
+    }
+
+    .anggota-item {
+        border-left-color: #17a2b8 !important;
+        background-color: rgba(23, 162, 184, 0.05);
+    }
+
+    .file-upload-wrapper {
+        position: relative;
+    }
+
+    .file-upload-wrapper small {
+        display: block;
+        margin-top: 5px;
+    }
+
+    .input-group-text {
+        border: 1px solid #ced4da;
+    }
+
+    .badge-lg {
+        font-size: 1rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .form-group label.font-weight-bold {
+        color: #495057;
+    }
+
+    .bg-light.rounded.p-3 {
+        border: 1px solid #dee2e6;
+    }
+
+    .total-anggota {
+        border: 1px solid #dee2e6;
+        background-color: #f8f9fa;
+    }
+</style>
+
 {{-- Validasi Inputan --}}
 <script>
+    // Fungsi untuk update label file
+    function updateFileLabel(inputId, labelId) {
+        const input = document.getElementById(inputId);
+        const label = document.getElementById(labelId);
+        if (input.files.length > 0) {
+            label.textContent = input.files[0].name;
+        } else {
+            label.textContent = 'Pilih File';
+        }
+    }
+
     $(document).ready(function() {
         // Inisialisasi Select2 untuk dropdown dosen
         $('#dosen_id').select2({
@@ -218,12 +442,17 @@
                 });
             }
         });
+
+        // Animasi saat modal dibuka
+        $('.card').hide().fadeIn(600);
     });
 </script>
+
 {{-- Mengirim data dari PHP (Laravel Blade) ke JavaScript di browser. --}}
 <script>
     window.daftarMahasiswa = @json($daftarMahasiswa);
 </script>
+
 {{-- Kode JavaScript/jQuery yang ingin dijalankan setelah halaman siap --}}
 <script>
     $(document).ready(function() {
@@ -244,9 +473,10 @@
                 // Sembunyikan bagian readonly
                 $('#form-tingkat-lomba').hide();
                 $('#form-kategori-lomba').hide();
-                $('#form-kategori-dropdown').hide(); // tambahan: dropdown untuk kategori dari database
+                $('#form-kategori-dropdown').hide();
                 $('#kategori_id').removeAttr('name').prop('required', false);
                 $('#kategori_id_manual').attr('name', 'kategori_id').prop('required', true);
+                
                 // Kosongkan nilai readonly
                 $('#nama_tingkat_lomba').val('');
                 $('#nama_kategori_lomba').val('');
