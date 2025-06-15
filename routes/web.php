@@ -260,6 +260,7 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::get('rekomendasi-lomba/{id}/rekomendasi_ajax', [RekomendasiLombaController::class, 'rekomendasiAjax']);
             Route::get('rekomendasi-lomba/tambah_rekomendasi_ajax', [RekomendasiLombaController::class, 'tambahRekomendasiAjax']);
             Route::post('rekomendasi-lomba/notifikasi', [RekomendasiLombaController::class, 'notifikasiRekomendasi'])->name('rekomendasi-lomba.notifikasi');
+            Route::get('rekomendasi-lomba/{id}/data', [RekomendasiLombaController::class, 'getLombaData'])->name('rekomendasi-lomba.data');
 
             // Rute Verifikasi Pendaftaran Lomba
             Route::get('pendaftaran-lomba', [VerifikasiPendaftaranController::class, 'index'])->name('verifikasi-pendaftaran.index');

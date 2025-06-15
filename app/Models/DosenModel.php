@@ -44,4 +44,9 @@ class DosenModel extends Model
         );
     }
 
+    public function preferensiDosen()
+    {
+        return $this->hasMany(PreferensiDosenModel::class, 'dosen_id', 'dosen_id');
+    }
+
 }

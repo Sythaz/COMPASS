@@ -63,6 +63,22 @@
                 </td>
             </tr>
             <tr>
+                <th style="width: 30%">Nama Dosen: <span class="text-danger">*</span></th>
+                <td class="text-start">
+                    <div class="custom-validation">
+                        <select name="dosen_id" id="dosen_id" class="form-control select2" required>
+                            <option value="">-- Pilih Dosen --</option>
+                            @foreach ($daftarDosen as $d)
+                                <option value="{{ $d->dosen_id }}"
+                                    {{ old('dosen_id') == $d->dosen_id ? 'selected' : '' }}>
+                                    {{ $d->nip_dosen }} - {{ $d->nama_dosen }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </td>
+            </tr>
+            <tr>
                 <th style="width: 30%">Alasan Rekomendasi: </th>
                 <td class="text-start">
                     <textarea name="pesan_notifikasi" id="pesan_notifikasi" class="form-control" rows="3"
