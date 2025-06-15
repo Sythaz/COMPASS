@@ -214,7 +214,9 @@ class LombaMahasiswaController extends Controller
     {
         $daftarKategori = KategoriModel::where('status_kategori', 'Aktif')->get();
         $daftarTingkatLomba = TingkatLombaModel::where('status_tingkat_lomba', 'Aktif')->get();
-        return view('mahasiswa.informasi-lomba.create', compact('daftarKategori', 'daftarTingkatLomba'));
+        $dataLomba = LombaModel::where('status_lomba', 'Aktif')->get();
+
+        return view('mahasiswa.informasi-lomba.create', compact('dataLomba', 'daftarKategori', 'daftarTingkatLomba'));
     }
 
     public function store_lomba(Request $request)
@@ -224,7 +226,7 @@ class LombaMahasiswaController extends Controller
             'tipe_lomba' => ucfirst(strtolower($request->tipe_lomba)),
         ]);
 
-        // Validasi data yang dikirimkan (hapus status_verifikasi)
+        // Validasi data yang dikirimkan
         $validator = Validator::make($request->all(), [
             'nama_lomba' => 'required',
             'deskripsi_lomba' => 'required',
@@ -235,7 +237,7 @@ class LombaMahasiswaController extends Controller
             'akhir_registrasi_lomba' => 'required|date|after_or_equal:awal_registrasi_lomba',
             'link_pendaftaran_lomba' => 'required|url',
             'img_lomba' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'tipe_lomba' => 'required|in:Individu,Tim',
+            'status_verifikasi' => 'required|in:Terverifikasi,Menunggu,Ditolak',
         ]);
 
         if ($validator->fails()) {
@@ -251,9 +253,6 @@ class LombaMahasiswaController extends Controller
 
             // Tambahkan pengusul_id dengan pengusul yang sedang login
             $data['pengusul_id'] = auth()->user()->user_id;
-
-            // Set status_verifikasi default "Menunggu"
-            $data['status_verifikasi'] = 'Menunggu';
 
             // Simpan data ke database terlebih dahulu
             $lomba = LombaModel::create($data);
@@ -276,9 +275,23 @@ class LombaMahasiswaController extends Controller
                 $lomba->update(['img_lomba' => $filename]);
             }
 
+            $results = [];
+            if ($request->input('status_verifikasi') === 'Terverifikasi') {
+                // Ambil semua user_id yang sudah mengisi preferensi
+                $userIds = PreferensiUserModel::distinct('user_id')->pluck('user_id');
+
+                $results = [];
+                foreach ($userIds as $userId) {
+                    $prometheeController = new PrometheeRekomendasiController();
+                    $result = $prometheeController->calculateNetFlowForSingleLomba($lomba, $userId);
+                    $results[] = $result;
+                }
+            }
+
             return response()->json([
                 'success' => true,
-                'message' => 'Data berhasil ditambahkan'
+                'message' => 'Data berhasil ditambahkan',
+                'threshold_results' => $results
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -307,11 +320,11 @@ class LombaMahasiswaController extends Controller
 
         return DataTables::of($dataKelolaLomba)
             ->addIndexColumn()
-            ->addColumn('nama_lomba', fn($row) => $row->nama_lomba ?? '-')
-            ->addColumn('kategori', fn($row) => $row->kategori->pluck('nama_kategori')->join(', ') ?: 'Tidak Diketahui')
-            ->addColumn('tingkat_lomba', fn($row) => $row->tingkat_lomba->nama_tingkat ?? '-')
-            ->addColumn('awal_registrasi_lomba', fn($row) => date('d M Y', strtotime($row->awal_registrasi_lomba)))
-            ->addColumn('akhir_registrasi_lomba', fn($row) => date('d M Y', strtotime($row->akhir_registrasi_lomba)))
+            ->addColumn('nama_lomba', fn ($row) => $row->nama_lomba ?? '-')
+            ->addColumn('kategori', fn ($row) => $row->kategori->pluck('nama_kategori')->join(', ') ?: 'Tidak Diketahui')
+            ->addColumn('tingkat_lomba', fn ($row) => $row->tingkat_lomba->nama_tingkat ?? '-')
+            ->addColumn('awal_registrasi_lomba', fn ($row) => date('d M Y', strtotime($row->awal_registrasi_lomba)))
+            ->addColumn('akhir_registrasi_lomba', fn ($row) => date('d M Y', strtotime($row->akhir_registrasi_lomba)))
             ->addColumn('status_verifikasi', function ($row) {
                 return $this->getStatusBadge($row->status_verifikasi);
             })
@@ -359,14 +372,14 @@ class LombaMahasiswaController extends Controller
 
         return DataTables::of($pendaftaran)
             ->addIndexColumn()
-            ->addColumn('nama_lomba', fn($row) => $row->lomba->nama_lomba ?? '-')
-            ->addColumn('tingkat_lomba', fn($row) => $row->lomba->tingkat_lomba->nama_tingkat ?? '-')
+            ->addColumn('nama_lomba', fn ($row) => $row->lomba->nama_lomba ?? '-')
+            ->addColumn('tingkat_lomba', fn ($row) => $row->lomba->tingkat_lomba->nama_tingkat ?? '-')
             ->addColumn('kategori', function ($row) {
                 // kalau relasi kategori many-to-many, pluck dan implode, kalau one-to-many bisa langsung akses
                 return $row->lomba->kategori ? ($row->lomba->kategori->pluck('nama_kategori')->implode(', ') ?: '-') : '-';
             })
 
-            ->addColumn('tipe_lomba', fn($row) => $row->lomba->tipe_lomba ?? '-')
+            ->addColumn('tipe_lomba', fn ($row) => $row->lomba->tipe_lomba ?? '-')
 
             ->addColumn('status', function ($row) {
                 return $this->getStatusPendaftaran($row->status_pendaftaran);

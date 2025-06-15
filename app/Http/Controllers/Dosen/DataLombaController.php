@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dosen;
 
+use App\Http\Controllers\PrometheeRekomendasiController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -10,6 +11,7 @@ use App\Models\LombaModel;
 use App\Models\KategoriModel;
 use App\Models\TingkatLombaModel;
 use App\Models\KategoriLombaModel;
+use App\Models\PreferensiUserModel;
 
 class DataLombaController extends Controller
 {
@@ -32,11 +34,11 @@ class DataLombaController extends Controller
 
         return DataTables::of($dataKelolaLomba)
             ->addIndexColumn()
-            ->addColumn('nama_lomba', fn($row) => $row->nama_lomba ?? '-')
-            ->addColumn('kategori', fn($row) => $row->kategori->pluck('nama_kategori')->join(', ') ?: 'Tidak Diketahui')
-            ->addColumn('tingkat_lomba', fn($row) => $row->tingkat_lomba->nama_tingkat ?? '-')
-            ->addColumn('awal_registrasi_lomba', fn($row) => date('d M Y', strtotime($row->awal_registrasi_lomba)))
-            ->addColumn('akhir_registrasi_lomba', fn($row) => date('d M Y', strtotime($row->akhir_registrasi_lomba)))
+            ->addColumn('nama_lomba', fn ($row) => $row->nama_lomba ?? '-')
+            ->addColumn('kategori', fn ($row) => $row->kategori->pluck('nama_kategori')->join(', ') ?: 'Tidak Diketahui')
+            ->addColumn('tingkat_lomba', fn ($row) => $row->tingkat_lomba->nama_tingkat ?? '-')
+            ->addColumn('awal_registrasi_lomba', fn ($row) => date('d M Y', strtotime($row->awal_registrasi_lomba)))
+            ->addColumn('akhir_registrasi_lomba', fn ($row) => date('d M Y', strtotime($row->akhir_registrasi_lomba)))
             ->addColumn('status_verifikasi', function ($row) {
                 $statusLomba = $row->status_verifikasi;
                 switch ($statusLomba) {
@@ -71,12 +73,14 @@ class DataLombaController extends Controller
     {
         $daftarKategori = KategoriModel::where('status_kategori', 'Aktif')->get();
         $daftarTingkatLomba = TingkatLombaModel::where('status_tingkat_lomba', 'Aktif')->get();
-        return view('dosen.data-lomba.create', compact('daftarKategori', 'daftarTingkatLomba'));
+        $dataLomba = LombaModel::where('status_lomba', 'Aktif')->get();
+
+        return view('dosen.data-lomba.create', compact('dataLomba', 'daftarKategori', 'daftarTingkatLomba'));
     }
 
     public function store(Request $request)
     {
-        // Validasi data yang dikirimkan (hapus status_verifikasi)
+        // Validasi data yang dikirimkan
         $validator = Validator::make($request->all(), [
             'nama_lomba' => 'required',
             'deskripsi_lomba' => 'required',
@@ -87,6 +91,7 @@ class DataLombaController extends Controller
             'akhir_registrasi_lomba' => 'required|date|after_or_equal:awal_registrasi_lomba',
             'link_pendaftaran_lomba' => 'required|url',
             'img_lomba' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'status_verifikasi' => 'required|in:Terverifikasi,Menunggu,Ditolak',
         ]);
 
         if ($validator->fails()) {
@@ -102,9 +107,6 @@ class DataLombaController extends Controller
 
             // Tambahkan pengusul_id dengan pengusul yang sedang login
             $data['pengusul_id'] = auth()->user()->user_id;
-
-            // Set status_verifikasi default "Menunggu"
-            $data['status_verifikasi'] = 'Menunggu';
 
             // Simpan data ke database terlebih dahulu
             $lomba = LombaModel::create($data);
@@ -127,9 +129,23 @@ class DataLombaController extends Controller
                 $lomba->update(['img_lomba' => $filename]);
             }
 
+            $results = [];
+            if ($request->input('status_verifikasi') === 'Terverifikasi') {
+                // Ambil semua user_id yang sudah mengisi preferensi
+                $userIds = PreferensiUserModel::distinct('user_id')->pluck('user_id');
+
+                $results = [];
+                foreach ($userIds as $userId) {
+                    $prometheeController = new PrometheeRekomendasiController();
+                    $result = $prometheeController->calculateNetFlowForSingleLomba($lomba, $userId);
+                    $results[] = $result;
+                }
+            }
+
             return response()->json([
                 'success' => true,
-                'message' => 'Data berhasil ditambahkan'
+                'message' => 'Data berhasil ditambahkan',
+                'threshold_results' => $results
             ]);
         } catch (\Exception $e) {
             return response()->json([

@@ -233,6 +233,7 @@ class KelolaLombaController extends Controller
                 $lomba->update(['img_lomba' => $filename]);
             }
 
+            $results = [];
             if ($request->input('status_verifikasi') === 'Terverifikasi') {
                 // Ambil semua user_id yang sudah mengisi preferensi
                 $userIds = PreferensiUserModel::distinct('user_id')->pluck('user_id');
