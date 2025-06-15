@@ -341,7 +341,7 @@
                     info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri"
                 },
                 
-                autoWidth: false,
+                autoWidth: true,
                 ajax: {
                     url: '{{ route('kelola-prestasi.list') }}',
                     type: 'POST',

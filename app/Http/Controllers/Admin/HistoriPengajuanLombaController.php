@@ -59,6 +59,12 @@ class HistoriPengajuanLombaController extends Controller
             ->addColumn('kategori', function ($row) {
                 return $row->kategori->pluck('nama_kategori')->join(', ') ?: 'Tidak Diketahui';
             })
+            ->addColumn('awal_registrasi_lomba', function ($row) {
+                return $row->awal_registrasi_lomba ? date('d M Y', strtotime($row->awal_registrasi_lomba)) : '-';
+            })
+            ->addColumn('akhir_registrasi_lomba', function ($row) {
+                return $row->akhir_registrasi_lomba ? date('d M Y', strtotime($row->akhir_registrasi_lomba)) : '-';
+            })
             ->addColumn('status_verifikasi', function ($row) {
                 $statusLomba = $row->status_verifikasi;
                 switch ($statusLomba) {
