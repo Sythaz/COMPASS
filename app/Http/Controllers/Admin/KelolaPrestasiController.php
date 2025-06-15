@@ -72,6 +72,9 @@ class KelolaPrestasiController extends Controller
                 });
                 return $ketua->nama_mahasiswa ?? '<span class="text-muted">Belum ada</span>';
             })
+            ->addColumn('tanggal_prestasi', function ($row) {
+                return $row->tanggal_prestasi ? date('d M Y', strtotime($row->tanggal_prestasi)) : '-';
+            })
             ->addColumn('jenis_prestasi', fn ($row) => $row->jenis_prestasi ?? '-')
             ->editColumn('status_verifikasi', function ($prestasi) {
                 $status = $prestasi->status_verifikasi ?? 'menunggu';

@@ -84,7 +84,6 @@
                     info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
                 },
 
-                serverSide: true,
                 autoWidth: true,
                 ajax: {
                     url: '{{ route('verifikasi-pendaftaran.list') }}',

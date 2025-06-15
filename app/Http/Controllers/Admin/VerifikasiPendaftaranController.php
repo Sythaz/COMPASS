@@ -52,7 +52,7 @@ class VerifikasiPendaftaranController extends Controller
                 return optional($row->lomba)->tipe_lomba ?? '-';
             })
             ->addColumn('tanggal_daftar', function ($row) {
-                return $row->created_at ? $row->created_at->format('d-m-Y') : '-';
+                return $row->created_at ? $row->created_at->format('d F Y') : '-';
             })
             ->editColumn('status_verifikasi', function ($prestasi) {
                 $status = $prestasi->status_pendaftaran ?? '';

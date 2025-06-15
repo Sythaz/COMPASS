@@ -337,7 +337,6 @@
                 },
 
                 // Bisa di Kustomisasi dengan data
-                serverSide: true,
                 autoWidth: true,
                 ajax: {
                     url: "{{ route('kelola-lomba.list') }}",

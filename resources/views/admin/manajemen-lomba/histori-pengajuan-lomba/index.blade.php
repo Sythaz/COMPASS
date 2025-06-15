@@ -305,7 +305,7 @@
                 // Styling untuk pagination (Jangan diubah)
                 pagingType: "simple_numbers",
                 language: {
-                    lengthMenu: "Tampilkan *MENU* entri",
+                    lengthMenu: "Tampilkan _MENU_ entri",
                     paginate: {
                         first: "Pertama",
                         previous: "Sebelum",
@@ -313,10 +313,10 @@
                         last: "Terakhir",
                     },
                     search: "Cari:",
-                    info: "Menampilkan *START* sampai *END* dari *TOTAL* entri",
+                    info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
+                    zeroRecords: "Tidak ada data yang sesuai",
                 },
                 // Bisa di Kustomisasi dengan data
-                serverSide: true,
                 autoWidth: true,
                 ajax: {
                     url: "{{ route('histori-pengajuan-lomba.list') }}",

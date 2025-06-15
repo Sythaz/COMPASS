@@ -25,6 +25,12 @@ class PeriodeSemesterController extends Controller
 
         return DataTables::of($dataPeriodeSemester)
             ->addIndexColumn()
+            ->addCOlumn('tanggal_mulai', function ($row) {
+                return $row->tanggal_mulai ? date('d F Y', strtotime($row->tanggal_mulai)) : '-';
+            })
+            ->addColumn('tanggal_akhir', function ($row) {
+                return $row->tanggal_akhir ? date('d F Y', strtotime($row->tanggal_akhir)) : '-';
+            })
             ->addColumn('aksi', function ($row) {
                 $btn = '<div class="d-flex justify-content-center">';
                 $btn .= '<button style="white-space:nowrap" onclick="modalAction(\'' . url('/admin/master-data/periode-semester/' . $row->periode_id . '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button>';

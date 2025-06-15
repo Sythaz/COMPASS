@@ -128,7 +128,7 @@
                         <div class="form-group">
                             <label class="col-form-label font-weight-bold">Awal Registrasi</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" value="{{ $lomba->awal_registrasi_lomba }}"
+                                <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($lomba->awal_registrasi_lomba)->format('d F Y') }}"
                                     disabled>
                                 <div class="input-group-append">
                                     <span class="input-group-text bg-success text-white">
@@ -142,7 +142,7 @@
                         <div class="form-group">
                             <label class="col-form-label font-weight-bold">Akhir Registrasi</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" value="{{ $lomba->akhir_registrasi_lomba }}"
+                                <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($lomba->akhir_registrasi_lomba)->format('d F Y') }}"
                                     disabled>
                                 <div class="input-group-append">
                                     <span class="input-group-text bg-danger text-white">
