@@ -81,14 +81,16 @@
                                         <select id="filter-periode" class="form-control filter-select">
                                             <option value="">Pilih Periode...</option>
                                             @foreach (\App\Models\PeriodeModel::all() as $periode)
-                                                <option value="{{ $periode->periode_id }}">{{ $periode->semester_periode }}</option>
+                                                <option value="{{ $periode->periode_id }}">{{ $periode->semester_periode }}
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-12 col-lg-4 filter-item d-flex align-items-end">
                                     <div class="form-group w-100">
-                                        <button type="button" class="btn btn-info btn-block filter-apply-btn" id="apply-filters">
+                                        <button type="button" class="btn btn-info btn-block filter-apply-btn"
+                                            id="apply-filters">
                                             <i class="fas fa-search"></i>
                                             Terapkan Filter
                                         </button>
@@ -133,7 +135,7 @@
 @push('css')
     <link href="{{ asset('theme/plugins/tables/css/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css-custom/pagination-datatables.css') }}" rel="stylesheet">
-    
+
     <style>
         .filter-container {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -142,12 +144,12 @@
             overflow: hidden;
             transition: all 0.3s ease;
         }
-        
+
         .filter-container:hover {
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
             transform: translateY(-2px);
         }
-        
+
         .filter-header {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
@@ -157,41 +159,48 @@
             align-items: center;
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
-        
+
         .filter-title {
             display: flex;
             align-items: center;
             color: white;
             font-weight: 600;
         }
-        
+
         .filter-icon {
             font-size: 1.2em;
             margin-right: 10px;
             color: #fff;
             animation: pulse 2s infinite;
         }
-        
+
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
         }
-        
+
         .filter-label {
             font-size: 1.1em;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
-        
+
         .filter-body {
             padding: 25px;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
         }
-        
+
         .filter-item {
             margin-bottom: 15px;
         }
-        
+
         .filter-form-label {
             display: flex;
             align-items: center;
@@ -200,12 +209,13 @@
             margin-bottom: 8px;
             font-size: 0.95em;
         }
-        
-        .status-icon, .periode-icon {
+
+        .status-icon,
+        .periode-icon {
             margin-right: 8px;
             color: #667eea;
         }
-        
+
         .filter-select {
             border: 2px solid #e9ecef;
             border-radius: 8px;
@@ -214,17 +224,17 @@
             transition: all 0.3s ease;
             background: white;
         }
-        
+
         .filter-select:focus {
             border-color: #667eea;
             box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
             transform: translateY(-1px);
         }
-        
+
         .filter-select:hover {
             border-color: #667eea;
         }
-        
+
         .filter-apply-btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
@@ -234,29 +244,29 @@
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
-        
+
         .filter-apply-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
             background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
         }
-        
+
         .filter-apply-btn:active {
             transform: translateY(0);
         }
-        
+
         #reset-filters {
             border: 1px solid rgba(255, 255, 255, 0.3);
             color: white;
             transition: all 0.3s ease;
         }
-        
+
         #reset-filters:hover {
             background: rgba(255, 255, 255, 0.1);
             border-color: rgba(255, 255, 255, 0.5);
             color: white;
         }
-        
+
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .filter-header {
@@ -264,31 +274,40 @@
                 gap: 10px;
                 text-align: center;
             }
-            
+
             .filter-body {
                 padding: 20px 15px;
             }
-            
+
             .filter-apply-btn {
                 margin-top: 10px;
             }
         }
-        
+
         /* Animation for filter items */
         .filter-item {
             opacity: 0;
             animation: slideInUp 0.6s ease forwards;
         }
-        
-        .filter-item:nth-child(1) { animation-delay: 0.1s; }
-        .filter-item:nth-child(2) { animation-delay: 0.2s; }
-        .filter-item:nth-child(3) { animation-delay: 0.3s; }
-        
+
+        .filter-item:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .filter-item:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .filter-item:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
         @keyframes slideInUp {
             from {
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -303,46 +322,43 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
-        function modalAction(url) {
-            $('#ajaxModalContent').html('Loading...');
-            $.get(url)
-                .done(function(res) {
-                    $('#ajaxModalContent').html(res);
-                    $('#myModal').modal('show');
-                })
-                .fail(function() {
-                    Swal.fire('Gagal', 'Tidak dapat memuat data dari server.', 'error');
-                });
-        }
-
-        $('#myModal').on('hidden.bs.modal', function() {
-            $('#ajaxModalContent').html('');
-            $('body').removeClass('modal-open');
-            $('.modal-backdrop').remove();
-        });
-
+        var idDataTables = '#prestasiTable';
         let table;
 
         $(function() {
-            table = $('#prestasiTable').DataTable({
-                processing: true,
-                serverSide: true,
+            table = $(idDataTables).DataTable({
+                // Styling untuk pagination (Jangan diubah)
+                pagingType: "simple_numbers",
+                language: {
+                    lengthMenu: "Tampilkan _MENU_ entri",
+                    paginate: {
+                        first: "Pertama",
+                        previous: "Sebelum",
+                        next: "Lanjut",
+                        last: "Terakhir"
+                    },
+                    search: "Cari:",
+                    info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri"
+                },
+                
+                autoWidth: false,
                 ajax: {
                     url: '{{ route('kelola-prestasi.list') }}',
                     type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
                     data: function(d) {
                         d.status_verifikasi = $('#filter-status').val();
                         d.periode_id = $('#filter-periode').val();
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     }
                 },
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
                         orderable: false,
-                        searchable: false
+                        searchable: false,
+                        className: 'text-center'
                     },
                     {
                         data: 'ketua_mahasiswa',
@@ -382,8 +398,57 @@
                         orderable: false,
                         searchable: false,
                         className: 'text-center'
-                    },
-                ]
+                    }
+                ],
+                scrollX: true,
+                layout: {
+                    topStart: null,
+                    topEnd: null,
+                    bottomStart: null,
+                    bottomEnd: null
+                },
+
+                // Callback untuk styling tambahan
+                drawCallback: function() {
+                    $(".dataTables_wrapper").css({
+                        margin: "0",
+                        padding: "0"
+                    });
+                    $(".dataTables_paginate .pagination").addClass("justify-content-end");
+                    $(".dataTables_paginate .paginate_button")
+                        .removeClass("paginate_button")
+                        .addClass("page-item");
+                    $(".dataTables_paginate .paginate_button a")
+                        .addClass("page-link")
+                        .css("border-radius", "5px");
+                    $(".dataTables_paginate .paginate_button.previous a").text("Sebelum");
+                    $(".dataTables_paginate .paginate_button.next a").text("Lanjut");
+                    $(".dataTables_paginate .paginate_button.first a").text("Pertama");
+                    $(".dataTables_paginate .paginate_button.last a").text("Terakhir");
+
+                    // Styling untuk input dan dropdown
+                    $(idDataTables + '_length select').css({
+                        width: "auto",
+                        height: "auto",
+                        "border-radius": "5px",
+                        border: "1px solid #ced4da"
+                    });
+                    $(idDataTables + '_filter input').css({
+                        height: "auto",
+                        "border-radius": "5px",
+                        border: "1px solid #ced4da"
+                    });
+                    $(idDataTables + '_wrapper .table-bordered').css({
+                        "border-top-left-radius": "5px",
+                        "border-top-right-radius": "5px"
+                    });
+                    $(idDataTables + '_wrapper .dataTables_scrollBody table').css({
+                        "border-top-left-radius": "0px",
+                        "border-top-right-radius": "0px",
+                        "border-bottom-left-radius": "5px",
+                        "border-bottom-right-radius": "5px"
+                    });
+                }
             });
 
             // Enhanced filter functionality
@@ -394,7 +459,7 @@
             // Apply filters button
             $('#apply-filters').on('click', function() {
                 table.ajax.reload();
-                
+
                 // Visual feedback
                 $(this).html('<i class="fas fa-spinner fa-spin"></i> Memuat...');
                 setTimeout(() => {
@@ -407,7 +472,7 @@
                 $('#filter-status').val('').trigger('change');
                 $('#filter-periode').val('').trigger('change');
                 table.ajax.reload();
-                
+
                 // Visual feedback
                 $(this).html('<i class="fas fa-spinner fa-spin"></i>');
                 setTimeout(() => {
@@ -440,6 +505,24 @@
                 if (params.length > 0) url += '?' + params.join('&');
                 window.location.href = url;
             });
+        });
+
+        function modalAction(url) {
+            $('#ajaxModalContent').html('Loading...');
+            $.get(url)
+                .done(function(res) {
+                    $('#ajaxModalContent').html(res);
+                    $('#myModal').modal('show');
+                })
+                .fail(function() {
+                    Swal.fire('Gagal', 'Tidak dapat memuat data dari server.', 'error');
+                });
+        }
+
+        $('#myModal').on('hidden.bs.modal', function() {
+            $('#ajaxModalContent').html('');
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
         });
     </script>
 @endpush
