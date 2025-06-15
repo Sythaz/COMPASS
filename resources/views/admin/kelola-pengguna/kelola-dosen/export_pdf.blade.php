@@ -93,7 +93,7 @@
         </tr>
     </table>
 
-    <h3 class="text-center">LAPORAN DATA MAHASISWA</h3>
+    <h3 class="text-center">LAPORAN DATA DOSEN</h3>
 
     <table class="border-all">
         <thead>
