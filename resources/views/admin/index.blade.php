@@ -7,6 +7,13 @@
 @section('page-description', 'Hai, selamat datang kembali di COMPASS!')
 
 @section('content')
+    <div class="row mb-3">
+        <div class="col-12 d-flex justify-content-start">
+            <a href="{{ route('admin.dashboard.export') }}" class="btn btn-sm btn-light border shadow-sm">
+                <i class="fa fa-file-export"></i> Laporan Statistik
+            </a>
+        </div>
+    </div>
     <div class="row">
         <div class="col-lg-4 col-sm-6">
             <div class="card gradient-1">
