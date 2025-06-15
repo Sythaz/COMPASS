@@ -101,7 +101,8 @@
                     },
                     search: "Cari:",
                     info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
-                    emptyTable: "Anda belum pernah mengajukan Lomba"
+                    emptyTable: "Tidak ada data prestasi yang tersedia.",
+                    infoEmpty: "Tidak ada data yang ditemukan.",
                 },
                 serverSide: true,
                 autoWidth: false,
