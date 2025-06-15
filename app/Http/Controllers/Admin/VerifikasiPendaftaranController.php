@@ -28,7 +28,7 @@ class VerifikasiPendaftaranController extends Controller
     public function index()
     {
         $breadcrumb = (object) [
-            'list' => ['Manajemen Lomba', 'Verifikasi Pendaftaran']
+            'list' => ['Manajemen Lomba', 'Verifikasi Pendaftaran Lomba']
         ];
 
         return view('admin.manajemen-lomba.verifikasi-pendaftaran.index', compact('breadcrumb'));
