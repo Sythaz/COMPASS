@@ -372,6 +372,8 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::get('list', [PrestasiController::class, 'list'])->name('mhs.prestasi.list');
             Route::get('tambah', [PrestasiController::class, 'create_prestasi'])->name('mhs.prestasi.create');
             Route::get('show-ajax/{id}', [PrestasiController::class, 'showAjax'])->name('mhs.prestasi.showAjax');
+            Route::get('edit-ajax/{id}', [PrestasiController::class, 'editAjax'])->name('mhs.prestasi.editAjax');
+            Route::put('update/{id}', [PrestasiController::class, 'update'])->name('mhs.prestasi.update');
             Route::post('simpan', [PrestasiController::class, 'store'])->name('mhs.prestasi.store');
             Route::post('cek-lomba-duplicate', [PrestasiController::class, 'cekLombaDuplicate'])->name('mhs.prestasi.cekLombaDuplicate');
         });
