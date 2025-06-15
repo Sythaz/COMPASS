@@ -9,11 +9,13 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <div class="row mb-2">
-                        <a onclick="modalAction('{{ route('create-lomba') }}')" class="btn btn-primary text-white">
-                            <i class="fa-solid fa-plus"></i>
-                            <strong> Ajukan Lomba</strong>
-                        </a>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <a onclick="modalAction('{{ route('create-lomba') }}')" class="btn btn-primary text-white">
+                                <i class="fa-solid fa-plus"></i>
+                                <strong> Ajukan Lomba</strong>
+                            </a>
+                        </div>
                     </div>
 
                     <div class="table-responsive">

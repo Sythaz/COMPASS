@@ -41,7 +41,7 @@ class VerifikasiPrestasiController extends Controller
         $data = PrestasiModel::with(['lomba', 'dosen', 'mahasiswa'])
             ->select('t_prestasi.*')
             ->where(function ($query) {
-                $query->where('status_verifikasi', 'valid') // tampilkan yang valid
+                $query->where('status_verifikasi', 'Valid') // tampilkan yang valid
                     ->orWhere(function ($subQuery) {
                         $subQuery->where('status_verifikasi', 'menunggu')
                             ->whereNull('dosen_id'); // tampilkan menunggu jika belum punya dosen
@@ -64,6 +64,9 @@ class VerifikasiPrestasiController extends Controller
             })
             ->addColumn('jenis_prestasi', function ($row) {
                 return $row->jenis_prestasi ?? '-';
+            })
+            ->editColumn('tanggal_prestasi', function ($row) {
+                return $row->tanggal_prestasi ? \Carbon\Carbon::parse($row->tanggal_prestasi)->format('d M Y') : '-';
             })
             ->editColumn('status_verifikasi', function ($prestasi) {
                 // Tetap gunakan status asli (karena query sudah disaring sebelumnya)

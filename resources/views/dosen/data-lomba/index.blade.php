@@ -81,7 +81,6 @@
                 },
 
                 serverSide: true,
-                processing: true,
                 autoWidth: false,
                 responsive: true,
                 ajax: {
