@@ -211,12 +211,12 @@
                                                         @php
                                                             $preferensiBidang = $dataPreferensiBidang->get($i);
                                                             $selectedKategori = $preferensiBidang
-                                                                ? $preferensiBidang->nama
+                                                                ? $preferensiBidang->kategori_id
                                                                 : old("bidang{$i}_id");
                                                         @endphp
-                                                        @foreach ($daftarKategori->keyBy('nama_kategori') as $kategori)
+                                                        @foreach ($daftarKategori as $kategori)
                                                             <option value="{{ $kategori->kategori_id }}"
-                                                                {{ $selectedKategori == $kategori->nama_kategori ? 'selected' : '' }}>
+                                                                {{ $selectedKategori == $kategori->kategori_id ? 'selected' : '' }}>
                                                                 {{ $kategori->nama_kategori }}
                                                             </option>
                                                         @endforeach
@@ -229,11 +229,6 @@
                                                     </button>
                                                 </div>
                                             @endfor
-                                        </div>
-                                        <div class="form-group mb-0">
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="fas fa-save"></i> Simpan Perubahan
-                                            </button>
                                         </div>
                                     </form>
                                 </div>

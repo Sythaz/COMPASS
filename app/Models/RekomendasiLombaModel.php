@@ -15,11 +15,16 @@ class RekomendasiLombaModel extends Model
 
     protected $fillable = [
         'mahasiswa_id', 
+        'dosen_id', 
         'lomba_id',
     ];
 
     public function mahasiswa(): BelongsTo {
         return $this->belongsTo(MahasiswaModel::class, 'mahasiswa_id','mahasiswa_id');
+    }
+
+    public function dosen(): BelongsTo {
+        return $this->belongsTo(DosenModel::class, 'dosen_id', 'dosen_id');
     }
 
     public function lomba(): BelongsTo {

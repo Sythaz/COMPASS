@@ -14,10 +14,12 @@ return new class extends Migration
         Schema::create('t_rekomendasi_lomba', function (Blueprint $table) {
             $table->id('rekomendasi_lomba_id');
             $table->unsignedBigInteger('mahasiswa_id')->index();
+            $table->unsignedBigInteger('dosen_id')->index()->nullable();
             $table->unsignedBigInteger('lomba_id')->index();
             $table->timestamps();
 
             $table->foreign('mahasiswa_id')->references('mahasiswa_id')->on('t_mahasiswa');
+            $table->foreign('dosen_id')->references('dosen_id')->on('t_dosen');
             $table->foreign('lomba_id')->references('lomba_id')->on('t_lomba');
         });
     }
