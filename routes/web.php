@@ -263,7 +263,7 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
 
             // Rute Verifikasi Pendaftaran Lomba
             Route::get('pendaftaran-lomba', [VerifikasiPendaftaranController::class, 'index'])->name('verifikasi-pendaftaran.index');
-            Route::get('pendaftaran-lomba/list', [VerifikasiPendaftaranController::class, 'list'])->name('verifikasi-pendaftaran.list');
+            Route::post('pendaftaran-lomba/list', [VerifikasiPendaftaranController::class, 'list'])->name('verifikasi-pendaftaran.list');
             Route::get('pendaftaran-lomba/show/{id}', [VerifikasiPendaftaranController::class, 'detail_pendaftaran'])->name('verifikasi-pendaftaran.show');
             Route::get('riwayat-pendaftaran-lomba', [VerifikasiPendaftaranController::class, 'riwayat_index'])->name('riwayat-pendaftaran.index');
             Route::get('riwayat-pendaftaran-lomba/list', [VerifikasiPendaftaranController::class, 'riwayat_list'])->name('riwayat-pendaftaran.list');

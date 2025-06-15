@@ -11,7 +11,6 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-
                     {{-- Tombol Tambah Data --}}
                     <div class="mb-3">
                         <a onclick="modalAction('{{ route('kelola-prestasi.create') }}')" class="btn btn-primary text-white">
@@ -21,21 +20,23 @@
                     </div>
 
                     {{-- Tambahkan Tabel DataTables di sini --}}
-                    <table class="table table-bordered" id="prestasiTable" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th style="width: 1px; white-space: nowrap;">No</th>
-                                <th>Mahasiswa</th>
-                                <th>Nama Lomba</th>
-                                <th>Jenis</th>
-                                <th>Juara</th>
-                                <th>Dosen Pembimbing</th>
-                                <th>Tanggal Prestasi</th>
-                                <th>Status Verifikasi</th>
-                                <th class="text-center">Aksi</th>
-                            </tr>
-                        </thead>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="w-100 table table-striped table-bordered custom-datatable" id="prestasiTable">
+                            <thead>
+                                <tr>
+                                    <th style="width: 1px; white-space: nowrap;">No</th>
+                                    <th>Mahasiswa</th>
+                                    <th>Nama Lomba</th>
+                                    <th>Jenis</th>
+                                    <th>Juara</th>
+                                    <th>Dosen Pembimbing</th>
+                                    <th>Tanggal Prestasi</th>
+                                    <th>Status Verifikasi</th>
+                                    <th class="text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
 
                     {{-- Modal untuk menampilkan form --}}
                     <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="ajaxModalLabel"
@@ -64,12 +65,27 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
+        var idDataTables = '#prestasiTable';
         var prestasiTable;
 
         $(function() {
-            prestasiTable = $('#prestasiTable').DataTable({
-                processing: true,
+            prestasiTable = $(idDataTables).DataTable({
+                // Styling untuk pagination (Jangan diubah)
+                pagingType: "simple_numbers",
+                language: {
+                    lengthMenu: "Tampilkan _MENU_ entri",
+                    paginate: {
+                        first: "Pertama",
+                        previous: "Sebelum",
+                        next: "Lanjut",
+                        last: "Terakhir"
+                    },
+                    search: "Cari:",
+                    info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri"
+                },
+
                 serverSide: true,
+                autoWidth: false,
                 ajax: {
                     url: '{{ route('verifikasi-prestasi.list') }}',
                     type: 'POST',
@@ -81,7 +97,8 @@
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
                         orderable: false,
-                        searchable: false
+                        searchable: false,
+                        className: 'text-center'
                     },
                     {
                         data: 'ketua_mahasiswa',
@@ -116,9 +133,58 @@
                         data: 'aksi',
                         name: 'aksi',
                         orderable: false,
-                        searchable: false
-                    },
+                        searchable: false,
+                        className: 'text-center'
+                    }
                 ],
+                scrollX: true,
+                layout: {
+                    topStart: null,
+                    topEnd: null,
+                    bottomStart: null,
+                    bottomEnd: null
+                },
+                drawCallback: function() {
+                    // Styling untuk pagination
+                    $(".dataTables_wrapper").css({
+                        margin: "0",
+                        padding: "0"
+                    });
+                    $(".dataTables_paginate .pagination").addClass("justify-content-end");
+                    $(".dataTables_paginate .paginate_button")
+                        .removeClass("paginate_button")
+                        .addClass("page-item");
+                    $(".dataTables_paginate .paginate_button a")
+                        .addClass("page-link")
+                        .css("border-radius", "5px");
+                    $(".dataTables_paginate .paginate_button.previous a").text("Sebelum");
+                    $(".dataTables_paginate .paginate_button.next a").text("Lanjut");
+                    $(".dataTables_paginate .paginate_button.first a").text("Pertama");
+                    $(".dataTables_paginate .paginate_button.last a").text("Terakhir");
+
+                    // Styling untuk input dan dropdown
+                    $(idDataTables + ' select').css({
+                        width: "auto",
+                        height: "auto",
+                        "border-radius": "5px",
+                        border: "1px solid #ced4da"
+                    });
+                    $(idDataTables + '_filter input').css({
+                        height: "auto",
+                        "border-radius": "5px",
+                        border: "1px solid #ced4da"
+                    });
+                    $(idDataTables + '_wrapper .table-bordered').css({
+                        "border-top-left-radius": "5px",
+                        "border-top-right-radius": "5px"
+                    });
+                    $(idDataTables + '_wrapper .dataTables_scrollBody table').css({
+                        "border-top-left-radius": "0px",
+                        "border-top-right-radius": "0px",
+                        "border-bottom-left-radius": "5px",
+                        "border-bottom-right-radius": "5px"
+                    });
+                }
             });
         });
 

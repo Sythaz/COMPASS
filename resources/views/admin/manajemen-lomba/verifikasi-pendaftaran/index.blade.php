@@ -21,22 +21,24 @@
                             </div>
                         </div>
                     </div>
-                    <table class="table table-bordered" id="pendaftaranTable" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th class="text-center">No</th>
-                                <th>Nama Mahasiswa</th>
-                                <th>Nama Lomba</th>
-                                <th>Tipe Lomba</th>
-                                <th class="text-center">Tanggal Daftar</th>
-                                <th class="text-center">Status</th>
-                                <th class="text-center">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {{-- Data akan di-load oleh DataTables AJAX --}}
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="w-100 table table-striped table-bordered custom-datatable" id="pendaftaranTable">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">No</th>
+                                    <th>Nama Mahasiswa</th>
+                                    <th>Nama Lomba</th>
+                                    <th>Tipe Lomba</th>
+                                    <th class="text-center">Tanggal Daftar</th>
+                                    <th class="text-center">Status</th>
+                                    <th class="text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{-- Data akan di-load oleh DataTables AJAX --}}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -63,13 +65,33 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
+        var idDataTables = '#pendaftaranTable';
+        var table;
+
         $(document).ready(function() {
-            $('#pendaftaranTable').DataTable({
-                processing: true,
+            table = $(idDataTables).DataTable({
+                // Styling untuk pagination (Jangan diubah)
+                pagingType: "simple_numbers",
+                language: {
+                    lengthMenu: "Tampilkan _MENU_ entri",
+                    paginate: {
+                        first: "Pertama",
+                        previous: "Sebelum",
+                        next: "Lanjut",
+                        last: "Terakhir",
+                    },
+                    search: "Cari:",
+                    info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
+                },
+
                 serverSide: true,
+                autoWidth: true,
                 ajax: {
                     url: '{{ route('verifikasi-pendaftaran.list') }}',
-                    type: 'GET',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
                 },
                 columns: [{
                         data: 'DT_RowIndex',
@@ -108,9 +130,59 @@
                         className: 'text-center'
                     }
                 ],
+                // Set default sorting table berdasarkan kolom tanggal daftar dalam urutan descending
                 order: [
                     [4, 'desc']
                 ],
+                scrollX: true,
+                layout: {
+                    topStart: null,
+                    topEnd: null,
+                    bottomStart: null,
+                    bottomEnd: null
+                },
+                // Styling untuk pagination (Jangan diubah)
+                drawCallback: function() {
+                    // Styling untuk pagination
+                    $(".dataTables_wrapper").css({
+                        margin: "0",
+                        padding: "0",
+                    });
+                    $(".dataTables_paginate .pagination").addClass("justify-content-end");
+                    $(".dataTables_paginate .paginate_button")
+                        .removeClass("paginate_button")
+                        .addClass("page-item");
+                    $(".dataTables_paginate .paginate_button a")
+                        .addClass("page-link")
+                        .css("border-radius", "5px");
+                    $(".dataTables_paginate .paginate_button.previous a").text("Sebelum");
+                    $(".dataTables_paginate .paginate_button.next a").text("Lanjut");
+                    $(".dataTables_paginate .paginate_button.first a").text("Pertama");
+                    $(".dataTables_paginate .paginate_button.last a").text("Terakhir");
+
+                    // Styling untuk input dan dropdown
+                    $(idDataTables + ' select').css({
+                        width: "auto",
+                        height: "auto",
+                        "border-radius": "5px",
+                        border: "1px solid #ced4da",
+                    });
+                    $(idDataTables + '_filter input').css({
+                        height: "auto",
+                        "border-radius": "5px",
+                        border: "1px solid #ced4da",
+                    });
+                    $(idDataTables + '_wrapper .table-bordered').css({
+                        "border-top-left-radius": "5px",
+                        "border-top-right-radius": "5px",
+                    });
+                    $(idDataTables + '_wrapper .dataTables_scrollBody table').css({
+                        "border-top-left-radius": "0px",
+                        "border-top-right-radius": "0px",
+                        "border-bottom-left-radius": "5px",
+                        "border-bottom-right-radius": "5px",
+                    });
+                }
             });
         });
 
