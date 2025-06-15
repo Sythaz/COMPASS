@@ -12,11 +12,11 @@
         </tr>
         <tr>
             <th style="width: 30%">Tanggal Mulai: </th>
-            <td class="text-start">{{ $periode->tanggal_mulai }}</td>
+            <td class="text-start">{{ \Carbon\Carbon::parse($periode->tanggal_mulai)->format('d F Y') }}</td>
         </tr>
         <tr>
             <th style="width: 30%">Tanggal Akhir: </th>
-            <td class="text-start">{{ $periode->tanggal_akhir }}</td>
+            <td class="text-start">{{ \Carbon\Carbon::parse($periode->tanggal_akhir)->format('d F Y') }}</td>
         </tr>
         <tr>
             <th style="width: 30%">Status: </th>

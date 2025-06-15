@@ -267,7 +267,7 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::post('pendaftaran-lomba/list', [VerifikasiPendaftaranController::class, 'list'])->name('verifikasi-pendaftaran.list');
             Route::get('pendaftaran-lomba/show/{id}', [VerifikasiPendaftaranController::class, 'detail_pendaftaran'])->name('verifikasi-pendaftaran.show');
             Route::get('riwayat-pendaftaran-lomba', [VerifikasiPendaftaranController::class, 'riwayat_index'])->name('riwayat-pendaftaran.index');
-            Route::get('riwayat-pendaftaran-lomba/list', [VerifikasiPendaftaranController::class, 'riwayat_list'])->name('riwayat-pendaftaran.list');
+            Route::post('riwayat-pendaftaran-lomba/list', [VerifikasiPendaftaranController::class, 'riwayat_list'])->name('riwayat-pendaftaran.list');
             Route::get('pendaftaran-lomba/{id}/terima', [VerifikasiPendaftaranController::class, 'terimaView'])->name('verifikasi-pendaftaran.terima_view');
             Route::post('pendaftaran-lomba/{id}/terima', [VerifikasiPendaftaranController::class, 'terima'])->name('verifikasi-pendaftaran.terima');
             Route::get('pendaftaran-lomba/{id}/tolak', [VerifikasiPendaftaranController::class, 'tolakView'])->name('verifikasi-pendaftaran.tolak_view');

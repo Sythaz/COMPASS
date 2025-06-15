@@ -50,8 +50,8 @@
             </select>
         </div>
         <div class="form-group custom-validation">
-            <label>Nama Dosen <span class="text-danger">*</span></label>
-            <select name="dosen_id" class="form-control select2" required>
+            <label>Nama Dosen</label>
+            <select name="dosen_id" class="form-control select2">
                 <option value="">-- Pilih Dosen --</option>
                 @foreach ($daftarDosen as $d)
                     <option value="{{ $d->dosen_id }}">{{ $d->nip_dosen }} - {{ $d->nama_dosen }}</option>
