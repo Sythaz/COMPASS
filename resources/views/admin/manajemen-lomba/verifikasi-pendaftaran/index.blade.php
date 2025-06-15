@@ -21,22 +21,24 @@
                             </div>
                         </div>
                     </div>
-                    <table class="w-100 table table-striped table-bordered custom-datatable" id="pendaftaranTable">
-                        <thead>
-                            <tr>
-                                <th class="text-center">No</th>
-                                <th>Nama Mahasiswa</th>
-                                <th>Nama Lomba</th>
-                                <th>Tipe Lomba</th>
-                                <th class="text-center">Tanggal Daftar</th>
-                                <th class="text-center">Status</th>
-                                <th class="text-center">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {{-- Data akan di-load oleh DataTables AJAX --}}
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="w-100 table table-striped table-bordered custom-datatable" id="pendaftaranTable">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">No</th>
+                                    <th>Nama Mahasiswa</th>
+                                    <th>Nama Lomba</th>
+                                    <th>Tipe Lomba</th>
+                                    <th class="text-center">Tanggal Daftar</th>
+                                    <th class="text-center">Status</th>
+                                    <th class="text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{-- Data akan di-load oleh DataTables AJAX --}}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
