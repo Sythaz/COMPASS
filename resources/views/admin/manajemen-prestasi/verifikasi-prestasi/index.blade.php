@@ -83,8 +83,6 @@
                     search: "Cari:",
                     info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri"
                 },
-
-                serverSide: true,
                 autoWidth: false,
                 ajax: {
                     url: '{{ route('verifikasi-prestasi.list') }}',

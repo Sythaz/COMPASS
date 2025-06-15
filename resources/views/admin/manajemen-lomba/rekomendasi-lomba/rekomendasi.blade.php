@@ -63,6 +63,22 @@
                 </td>
             </tr>
             <tr>
+                <th style="width: 30%">Nama Dosen:</th>
+                <td class="text-start">
+                    <div class="custom-validation">
+                        <select name="dosen_id" id="dosen_id" class="form-control select2">
+                            <option value="">-- Pilih Dosen --</option>
+                            @foreach ($daftarDosen as $d)
+                                <option value="{{ $d->dosen_id }}"
+                                    {{ old('dosen_id') == $d->dosen_id ? 'selected' : '' }}>
+                                    {{ $d->nip_dosen }} - {{ $d->nama_dosen }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </td>
+            </tr>
+            <tr>
                 <th style="width: 30%">Alasan Rekomendasi: </th>
                 <td class="text-start">
                     <textarea name="pesan_notifikasi" id="pesan_notifikasi" class="form-control" rows="3"
@@ -88,54 +104,8 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<style>
-    .select2-container .select2-selection--multiple {
-        min-height: 45px;
-        border-radius: 0;
-        border: 1px solid #ced4da !important;
-    }
-
-    .select2-container--default .select2-selection--single {
-        border: none;
-        margin-top: 9px;
-        margin-left: 9px;
-    }
-
-    .select2-container {
-        min-height: 45px;
-        border-radius: 0;
-        border: 1px solid #ced4da !important;
-        z-index: 9999;
-    }
-
-    .select2-container--default .select2-selection--single .select2-selection__arrow {
-        margin-top: 9px;
-    }
-
-    .select2-container--default .select2-selection--multiple .select2-selection__choice {
-        color: #7571F9;
-        background-color: white !important;
-        outline: 2px solid #7571F9 !important;
-        border: none;
-        border-radius: 4px;
-        margin-top: 10px;
-        margin-left: 12px
-    }
-
-    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
-        color: white;
-        background-color: #7571F9;
-    }
-
-    .select2-container .select2-search--inline .select2-search__field {
-        margin-top: 12px;
-        margin-left: 12px;
-    }
-
-    .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
-        background-color: #7571F9;
-    }
-</style>
+{{-- Memanggil Custom CSS Select2 --}}
+<link rel="stylesheet" href="{{ asset('css-custom/select2-custom.css') }}">
 
 {{-- Memanggil Select2 single select --}}
 <script>

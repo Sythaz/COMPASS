@@ -260,13 +260,14 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::get('rekomendasi-lomba/{id}/rekomendasi_ajax', [RekomendasiLombaController::class, 'rekomendasiAjax']);
             Route::get('rekomendasi-lomba/tambah_rekomendasi_ajax', [RekomendasiLombaController::class, 'tambahRekomendasiAjax']);
             Route::post('rekomendasi-lomba/notifikasi', [RekomendasiLombaController::class, 'notifikasiRekomendasi'])->name('rekomendasi-lomba.notifikasi');
+            Route::get('rekomendasi-lomba/{id}/data', [RekomendasiLombaController::class, 'getLombaData'])->name('rekomendasi-lomba.data');
 
             // Rute Verifikasi Pendaftaran Lomba
             Route::get('pendaftaran-lomba', [VerifikasiPendaftaranController::class, 'index'])->name('verifikasi-pendaftaran.index');
             Route::post('pendaftaran-lomba/list', [VerifikasiPendaftaranController::class, 'list'])->name('verifikasi-pendaftaran.list');
             Route::get('pendaftaran-lomba/show/{id}', [VerifikasiPendaftaranController::class, 'detail_pendaftaran'])->name('verifikasi-pendaftaran.show');
             Route::get('riwayat-pendaftaran-lomba', [VerifikasiPendaftaranController::class, 'riwayat_index'])->name('riwayat-pendaftaran.index');
-            Route::get('riwayat-pendaftaran-lomba/list', [VerifikasiPendaftaranController::class, 'riwayat_list'])->name('riwayat-pendaftaran.list');
+            Route::post('riwayat-pendaftaran-lomba/list', [VerifikasiPendaftaranController::class, 'riwayat_list'])->name('riwayat-pendaftaran.list');
             Route::get('pendaftaran-lomba/{id}/terima', [VerifikasiPendaftaranController::class, 'terimaView'])->name('verifikasi-pendaftaran.terima_view');
             Route::post('pendaftaran-lomba/{id}/terima', [VerifikasiPendaftaranController::class, 'terima'])->name('verifikasi-pendaftaran.terima');
             Route::get('pendaftaran-lomba/{id}/tolak', [VerifikasiPendaftaranController::class, 'tolakView'])->name('verifikasi-pendaftaran.tolak_view');
@@ -371,6 +372,8 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::get('list', [PrestasiController::class, 'list'])->name('mhs.prestasi.list');
             Route::get('tambah', [PrestasiController::class, 'create_prestasi'])->name('mhs.prestasi.create');
             Route::get('show-ajax/{id}', [PrestasiController::class, 'showAjax'])->name('mhs.prestasi.showAjax');
+            Route::get('edit-ajax/{id}', [PrestasiController::class, 'editAjax'])->name('mhs.prestasi.editAjax');
+            Route::put('update/{id}', [PrestasiController::class, 'update'])->name('mhs.prestasi.update');
             Route::post('simpan', [PrestasiController::class, 'store'])->name('mhs.prestasi.store');
             Route::post('cek-lomba-duplicate', [PrestasiController::class, 'cekLombaDuplicate'])->name('mhs.prestasi.cekLombaDuplicate');
         });

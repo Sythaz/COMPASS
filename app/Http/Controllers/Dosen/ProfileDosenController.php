@@ -27,11 +27,6 @@ class ProfileDosenController extends Controller
         $page = (object) [
             'title' => 'Profil Saya'
         ];
-        
-        $preferensi = true;
-        if (PreferensiDosenModel::where('user_id', auth()->id())->doesntExist()) {
-            $preferensi = false;
-        }
 
         $activeMenu = 'profil';
 
@@ -40,26 +35,28 @@ class ProfileDosenController extends Controller
             ->firstOrFail();
 
         $daftarKategori = KategoriModel::all();
+// UPDATE: 39 - 44 //
+        $preferensi = PreferensiDosenModel::where('dosen_id', $dosen->dosen_id)->exists();
 
-        $dataPreferensi = PreferensiDosenModel::where('user_id', auth()->id())
-            ->get()
-            ->groupBy('kriteria')
-            ->mapWithKeys(function ($item, $key) {
-                return [$key => $item->keyBy('prioritas')];
-            });
-
-        $dataPreferensiBidang = $dataPreferensi['bidang'] ?? collect();
-        $dataPreferensiLainnya = $dataPreferensi['lainnya'] ?? collect();
+        $dataPreferensiBidang = PreferensiDosenModel::where('dosen_id', $dosen->dosen_id)
+            ->orderBy('prioritas')
+            ->with('kategori')
+            ->get();
 
         return view('dosen.profile-dosen.index', compact(
             'breadcrumb', 
             'daftarKategori',
             'preferensi',
             'dataPreferensiBidang',
-            'dataPreferensiLainnya',
             'page', 
             'activeMenu', 
-            'dosen'));
+            'dosen'
+        ));
+    }
+
+    public function kategori()
+    {
+        return $this->belongsTo(KategoriModel::class, 'kategori_id');
     }
 
     public function update(Request $request)
@@ -161,31 +158,24 @@ class ProfileDosenController extends Controller
             ];
 
             $request->validate($rules);
-            
+            $dosen = DosenModel::where('user_id', $user->user_id)->firstOrFail();
             $user = Auth::user();
-            $dosen = $user->dosen;
-
             // Hapus preferensi lama jika ada
-            DB::table('t_preferensi_dosen')
-                ->where('user_id', $user->user_id)
-                ->where('dosen_id', $dosen->dosen_id)
-                ->delete();
-            
+            PreferensiDosenModel::where('dosen_id', $dosen->dosen_id)->delete();
+           
             $preferensiData = [];
 
             // memasukkan preferensi bidang ke array untuk insert
             for ($i = 1; $i <= 5; $i++) {
-                $bidangId = $request->input("bidang{$i}_id");
-                if ($bidangId) {
-                    $kategori = DB::table('t_kategori')->where('kategori_id', $bidangId)->first();
+                $kategoriId = $request->input("bidang{$i}_id");
+                if ($kategoriId) {
+                    //$kategori = DB::table('t_kategori')->where('kategori_id', $bidangId)->first();
                     $preferensiData[] = [
-                        'user_id' => $user->user_id,
-                        'dosen_id' => $dosen->dosen_id,
-                        'kriteria' => 'bidang',
-                        'nama' => $kategori->nama_kategori,
-                        'prioritas' => $i,
-                        'created_at' => now(),
-                        'updated_at' => now(),
+                        'dosen_id'    => $dosen->dosen_id,
+                        'kategori_id' => $kategoriId,
+                        'prioritas'   => $i,
+                        'created_at'  => now(),
+                        'updated_at'  => now(),
                     ];
                 }
             }

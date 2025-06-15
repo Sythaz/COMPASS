@@ -13,15 +13,13 @@ return new class extends Migration
     {
         Schema::create('t_preferensi_dosen', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('dosen_id');
-            $table->enum('kriteria', ['bidang', 'lainnya']);
-            $table->string('nama');
+            $table->unsignedBigInteger('kategori_id');
             $table->integer('prioritas');
             $table->timestamps();
 
-            $table->foreign('user_id')->references('user_id')->on('t_users')->onDelete('cascade');
             $table->foreign('dosen_id')->references('dosen_id')->on('t_dosen')->onDelete('cascade');
+            $table->foreign('kategori_id')->references('kategori_id')->on('t_kategori')->onDelete('cascade');
         });
     }
 

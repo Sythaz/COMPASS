@@ -33,11 +33,11 @@
         </tr>
         <tr>
             <th style="width: 30%">Awal Registrasi: </th>
-            <td class="text-start">{{ $lomba->awal_registrasi_lomba }}</td>
+            <td class="text-start">{{ \Carbon\Carbon::parse($lomba->awal_registrasi_lomba)->format('d F Y') }}</td>
         </tr>
         <tr>
             <th style="width: 30%">Akhir Registrasi: </th>
-            <td class="text-start">{{ $lomba->akhir_registrasi_lomba }}</td>
+            <td class="text-start">{{ \Carbon\Carbon::parse($lomba->akhir_registrasi_lomba)->format('d F Y') }}</td>
         </tr>
         <tr>
             <th style="width: 30%">Link Pendaftaran Lomba: </th>

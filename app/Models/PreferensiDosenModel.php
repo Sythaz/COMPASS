@@ -13,20 +13,18 @@ class PreferensiDosenModel extends Model
     protected $primaryKey = 'preferensi_dosen_id';
 
     protected $fillable = [
-        'user_id',
         'dosen_id',
-        'kriteria',
-        'nama',
+        'kategori_id',
         'prioritas',
     ];
-
-    public function user()
-    {
-        return $this->belongsTo(UsersModel::class, 'user_id', 'user_id');
-    }
 
     public function dosen()
     {
         return $this->belongsTo(DosenModel::class, 'dosen_id', 'dosen_id');
+    }
+
+    public function kategori()
+    {
+        return $this->belongsTo(KategoriModel::class, 'kategori_id', 'kategori_id');
     }
 }

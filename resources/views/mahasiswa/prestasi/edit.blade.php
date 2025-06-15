@@ -1,4 +1,5 @@
-<form id="form-prestasi" method="POST" action="{{ route('prestasi.update', $prestasi->prestasi_id) }}" enctype="multipart/form-data">
+<form id="form-prestasi" method="POST" action="{{ route('mhs.prestasi.update', $prestasi->prestasi_id) }}"
+    enctype="multipart/form-data">
     @csrf
     @method('PUT')
     <div class="modal-header bg-primary rounded">
@@ -15,14 +16,14 @@
             <select name="lomba_id" id="lomba_id" class="form-control select2" required>
                 <option value="">-- Pilih Lomba --</option>
                 @foreach ($daftarLomba as $lomba)
-                    <option value="{{ $lomba->lomba_id }}" 
+                    <option value="{{ $lomba->lomba_id }}"
                         data-tingkat="{{ $lomba->tingkat_lomba->nama_tingkat ?? '' }}"
                         data-tingkat-id="{{ $lomba->tingkat_lomba->tingkat_lomba_id ?? '' }}"
                         data-kategori="{{ optional($lomba->kategori)->pluck('nama_kategori')->implode(', ') }}"
-                        data-kategori-json='@json($lomba->kategori->map(function ($k) {
-                            return ['id' => $k->kategori_id, 'text' => $k->nama_kategori];
-                        }))' 
-                        data-tipe="{{ $lomba->tipe_lomba }}"
+                        data-kategori-json='@json(
+                            $lomba->kategori->map(function ($k) {
+                                return ['id' => $k->kategori_id, 'text' => $k->nama_kategori];
+                            }))' data-tipe="{{ $lomba->tipe_lomba }}"
                         {{ $prestasi->lomba_id == $lomba->lomba_id ? 'selected' : '' }}>
                         {{ $lomba->nama_lomba }}
                     </option>
@@ -31,21 +32,26 @@
             </select>
 
             {{-- Tingkat dan Kategori (Readonly jika pilih dari DB) --}}
-            <div id="form-tingkat-lomba" class="form-group mt-2" style="{{ is_null($prestasi->lomba_id) ? 'display:none;' : '' }}">
+            <div id="form-tingkat-lomba" class="form-group mt-2"
+                style="{{ is_null($prestasi->lomba_id) ? 'display:none;' : '' }}">
                 <label for="nama_tingkat_lomba" class="col-form-label">Tingkat Lomba</label>
-                <input type="text" id="nama_tingkat_lomba" class="form-control" 
-                    value="{{ $prestasi->lomba_id ? ($prestasi->lomba->tingkat_lomba->nama_tingkat ?? '') : '' }}" readonly>
-                <input type="hidden" name="tingkat_lomba_id" id="tingkat_lomba_id" 
-                    value="{{ $prestasi->lomba_id ? ($prestasi->lomba->tingkat_lomba->tingkat_lomba_id ?? '') : '' }}">
+                <input type="text" id="nama_tingkat_lomba" class="form-control"
+                    value="{{ $prestasi->lomba_id ? $prestasi->lomba->tingkat_lomba->nama_tingkat ?? '' : '' }}"
+                    readonly>
+                <input type="hidden" name="tingkat_lomba_id" id="tingkat_lomba_id"
+                    value="{{ $prestasi->lomba_id ? $prestasi->lomba->tingkat_lomba->tingkat_lomba_id ?? '' : '' }}">
             </div>
-            
+
             {{-- Pilih kategori Lomba sesuai dengan lomba yang dipilih --}}
-            <div id="form-kategori-lomba" class="form-group mt-2" style="{{ is_null($prestasi->lomba_id) ? 'display:none;' : '' }}">
-                <label for="kategori_id" class="col-form-label">Kategori Lomba <span class="text-danger">*</span></label>
+            <div id="form-kategori-lomba" class="form-group mt-2"
+                style="{{ is_null($prestasi->lomba_id) ? 'display:none;' : '' }}">
+                <label for="kategori_id" class="col-form-label">Kategori Lomba <span
+                        class="text-danger">*</span></label>
                 <select name="kategori_id" id="kategori_id" class="form-control select2" required>
-                    @if($prestasi->lomba_id)
-                        @foreach($prestasi->lomba->kategori as $kategori)
-                            <option value="{{ $kategori->kategori_id }}" {{ $prestasi->kategori_id == $kategori->kategori_id ? 'selected' : '' }}>
+                    @if ($prestasi->lomba_id)
+                        @foreach ($prestasi->lomba->kategori as $kategori)
+                            <option value="{{ $kategori->kategori_id }}"
+                                {{ $prestasi->kategori_id == $kategori->kategori_id ? 'selected' : '' }}>
                                 {{ $kategori->nama_kategori }}
                             </option>
                         @endforeach
@@ -54,32 +60,37 @@
             </div>
 
             {{-- Input Manual (Jika "Lainnya") --}}
-            <div id="input-lomba-lainnya" class="form-group mt-2" style="{{ !is_null($prestasi->lomba_id) ? 'display:none;' : '' }}">
+            <div id="input-lomba-lainnya" class="form-group mt-2"
+                style="{{ !is_null($prestasi->lomba_id) ? 'display:none;' : '' }}">
                 {{-- Input Nama Lomba --}}
-                <label for="lomba_lainnya" class="col-form-label">Nama Lomba (Lainnya) <span class="text-danger">*</span></label>
-                <input type="text" name="lomba_lainnya" id="lomba_lainnya" class="form-control" 
+                <label for="lomba_lainnya" class="col-form-label">Nama Lomba (Lainnya) <span
+                        class="text-danger">*</span></label>
+                <input type="text" name="lomba_lainnya" id="lomba_lainnya" class="form-control"
                     value="{{ $prestasi->lomba_lainnya }}">
-                
+
                 {{-- Pilih Tingkat Lomba --}}
-                <label for="tingkat_lomba_id" class="col-form-label mt-2">Tingkat Lomba <span class="text-danger">*</span></label>
+                <label for="tingkat_lomba_id" class="col-form-label mt-2">Tingkat Lomba <span
+                        class="text-danger">*</span></label>
                 <select name="tingkat_lomba_id" id="tingkat_lomba_id" class="form-control select2">
                     <option value="">-- Pilih Tingkat Lomba --</option>
                     @foreach ($daftarTingkatLomba as $tingkat)
-                        <option value="{{ $tingkat->tingkat_lomba_id }}" 
+                        <option value="{{ $tingkat->tingkat_lomba_id }}"
                             {{ $prestasi->tingkat_lomba_id == $tingkat->tingkat_lomba_id ? 'selected' : '' }}>
                             {{ $tingkat->nama_tingkat }}
                         </option>
                     @endforeach
                 </select>
             </div>
-            
+
             {{-- Kategori Manual jika "Lainnya" --}}
-            <div id="kategori-lomba-manual" class="form-group mt-2" style="{{ !is_null($prestasi->lomba_id) ? 'display:none;' : '' }}">
-                <label for="kategori_id_manual" class="col-form-label">Kategori Lomba <span class="text-danger">*</span></label>
+            <div id="kategori-lomba-manual" class="form-group mt-2"
+                style="{{ !is_null($prestasi->lomba_id) ? 'display:none;' : '' }}">
+                <label for="kategori_id_manual" class="col-form-label">Kategori Lomba <span
+                        class="text-danger">*</span></label>
                 <select name="kategori_id" id="kategori_id_manual" class="form-control select2" required>
                     <option value="">-- Pilih Kategori --</option>
                     @foreach ($daftarKategori as $kategori)
-                        <option value="{{ $kategori->kategori_id }}" 
+                        <option value="{{ $kategori->kategori_id }}"
                             {{ $prestasi->kategori_id == $kategori->kategori_id ? 'selected' : '' }}>
                             {{ $kategori->nama_kategori }}
                         </option>
@@ -93,34 +104,37 @@
             <label class="col-form-label mt-3">Tipe Prestasi <span class="text-danger">*</span></label>
             <select name="jenis_prestasi" id="jenis_prestasi" class="form-control select2" required>
                 <option value="">-- Pilih Tipe --</option>
-                <option value="individu" {{ $prestasi->jenis_prestasi == 'individu' ? 'selected' : '' }}>Individu</option>
-                <option value="tim" {{ $prestasi->jenis_prestasi == 'tim' ? 'selected' : '' }}>Tim</option>
+                <option value="individu" {{ $prestasi->jenis_prestasi == 'Individu' ? 'selected' : '' }}>Individu
+                </option>
+                <option value="tim" {{ $prestasi->jenis_prestasi == 'Tim' ? 'selected' : '' }}>Tim</option>
             </select>
         </div>
-        
+
         {{-- Anggota Tim --}}
         <div class="form-group mt-3">
             <label class="col-form-label">Jumlah Anggota</label>
             <div class="input-group">
                 <button type="button" class="btn btn-outline-secondary" id="btn-minus">-</button>
-                <input type="number" id="jumlah_anggota" class="form-control text-center" 
+                <input type="number" id="jumlah_anggota" class="form-control text-center"
                     value="{{ count($anggotaTim) > 0 ? count($anggotaTim) : 1 }}" readonly>
                 <button type="button" class="btn btn-outline-secondary" id="btn-plus">+</button>
             </div>
         </div>
-        
+
         {{-- Pilih Anggota --}}
         <div id="anggota-container" class="mt-3">
-            @foreach($anggotaTim as $index => $anggota)
+            @foreach ($anggotaTim as $index => $anggota)
                 <div class="form-group anggota-item">
                     <label class="col-form-label mt-2">
-                        {{ $index === 0 ? 'Ketua Tim' : 'Anggota ' . $index }} 
+                        {{ $index === 0 ? 'Ketua Tim' : 'Anggota ' . $index }}
                         <span class="text-danger">*</span>
                     </label>
-                    <select name="mahasiswa_id[]" class="form-control anggota-select" {{ $index === 0 ? 'required' : '' }}>
-                        <option value="">-- Pilih {{ $index === 0 ? 'Ketua Tim' : 'Anggota ' . $index }} --</option>
+                    <select name="mahasiswa_id[]" class="form-control anggota-select"
+                        {{ $index === 0 ? 'required' : '' }}>
+                        <option value="">-- Pilih {{ $index === 0 ? 'Ketua Tim' : 'Anggota ' . $index }} --
+                        </option>
                         @foreach ($daftarMahasiswa as $mhs)
-                            <option value="{{ $mhs->mahasiswa_id }}" 
+                            <option value="{{ $mhs->mahasiswa_id }}"
                                 {{ $anggota['mahasiswa_id'] == $mhs->mahasiswa_id ? 'selected' : '' }}>
                                 {{ $mhs->nim_mahasiswa }} - {{ $mhs->nama_mahasiswa }}
                             </option>
@@ -131,46 +145,47 @@
         </div>
 
         {{-- Tanggal Prestasi --}}
-        <label for="tanggal_prestasi" class="col-form-label mt-2">Tanggal Prestasi <span class="text-danger">*</span></label>
+        <label for="tanggal_prestasi" class="col-form-label mt-2">Tanggal Prestasi <span
+                class="text-danger">*</span></label>
         <div class="custom-validation">
-            <input type="date" class="form-control" name="tanggal_prestasi" 
-                value="{{ $prestasi->tanggal_prestasi->format('Y-m-d') }}" required>
+            <input type="date" class="form-control" name="tanggal_prestasi"
+                value="{{ \Carbon\Carbon::parse($prestasi->tanggal_prestasi)->format('Y-m-d') }}" required>
         </div>
-        
+
         {{-- Juara Prestasi --}}
-        <label for="juara_prestasi" class="col-form-label mt-2">Juara Prestasi <span class="text-danger">*</span></label>
+        <label for="juara_prestasi" class="col-form-label mt-2">Juara Prestasi <span
+                class="text-danger">*</span></label>
         <div class="custom-validation">
-            <input type="text" class="form-control" name="juara_prestasi" 
+            <input type="text" class="form-control" name="juara_prestasi"
                 value="{{ $prestasi->juara_prestasi }}" required>
         </div>
-        
+
         {{-- Periode --}}
         <label for="periode_id" class="col-form-label mt-2">Periode <span class="text-danger">*</span></label>
         <div class="custom-validation">
             <select name="periode_id" id="periode_id" class="form-control select2" required>
                 @foreach ($daftarPeriode as $periode)
-                    <option value="{{ $periode->periode_id }}" 
+                    <option value="{{ $periode->periode_id }}"
                         {{ $prestasi->periode_id == $periode->periode_id ? 'selected' : '' }}>
                         {{ $periode->semester_periode }}
                     </option>
                 @endforeach
             </select>
         </div>
-        
+
         {{-- Dosen Pembimbing --}}
         <label for="dosen_id" class="col-form-label mt-2">Dosen (Opsional)</label>
         <div class="custom-validation">
             <select name="dosen_id" id="dosen_id" class="form-control select2">
                 <option value="">-- Tidak ada dosen pembimbing --</option>
                 @foreach ($daftarDosen as $dosen)
-                    <option value="{{ $dosen->dosen_id }}" 
+                    <option value="{{ $dosen->dosen_id }}"
                         {{ $prestasi->dosen_id == $dosen->dosen_id ? 'selected' : '' }}>
                         {{ $dosen->nama_dosen }}
                     </option>
                 @endforeach
             </select>
         </div>
-        
         {{-- Gambar Kegiatan --}}
         <label for="img_kegiatan" class="col-form-label mt-2">Gambar Kegiatan <small>(Maksimal 2MB)</small></label>
         <div class="custom-validation">
@@ -183,11 +198,12 @@
                     </label>
                 </div>
             </div>
-            @if($prestasi->img_kegiatan)
-                <small class="text-muted">File saat ini: <a href="{{ asset($prestasi->img_kegiatan) }}" target="_blank">{{ basename($prestasi->img_kegiatan) }}</a></small>
+            @if ($prestasi->img_kegiatan)
+                <small class="text-muted">File saat ini: <a href="{{ asset($prestasi->img_kegiatan) }}"
+                        target="_blank">{{ basename($prestasi->img_kegiatan) }}</a></small>
             @endif
         </div>
-        
+
         {{-- Bukti Prestasi --}}
         <label for="bukti_prestasi" class="col-form-label mt-2">Bukti Prestasi <small>(Maksimal 2MB)</small></label>
         <div class="custom-validation">
@@ -200,283 +216,202 @@
                     </label>
                 </div>
             </div>
-            @if($prestasi->bukti_prestasi)
-                <small class="text-muted">File saat ini: <a href="{{ asset($prestasi->bukti_prestasi) }}" target="_blank">{{ basename($prestasi->bukti_prestasi) }}</a></small>
+            @if ($prestasi->bukti_prestasi)
+                <small class="text-muted">File saat ini: <a href="{{ asset($prestasi->bukti_prestasi) }}"
+                        target="_blank">{{ basename($prestasi->bukti_prestasi) }}</a></small>
             @endif
         </div>
-        
+
         {{-- Surat Tugas Prestasi --}}
-        <label for="surat_tugas_prestasi" class="col-form-label mt-2">Surat Tugas Prestasi <small>(Maksimal 2MB)</small></label>
+        <label for="surat_tugas_prestasi" class="col-form-label mt-2">Surat Tugas Prestasi <small>(Maksimal
+                2MB)</small></label>
         <div class="custom-validation">
             <div class="input-group mt-1">
                 <div class="custom-file">
-                    <input type="file" class="custom-file-input" name="surat_tugas_prestasi" accept=".png, .jpg, .jpeg"
+                    <input type="file" class="custom-file-input" name="surat_tugas_prestasi"
+                        accept=".png, .jpg, .jpeg"
                         onchange="$('#surat_tugas_prestasi_label').text(this.files[0] ? this.files[0].name : '{{ $prestasi->surat_tugas_prestasi ? basename($prestasi->surat_tugas_prestasi) : 'Pilih File' }}')">
                     <label class="custom-file-label" id="surat_tugas_prestasi_label" for="surat_tugas_prestasi">
                         {{ $prestasi->surat_tugas_prestasi ? basename($prestasi->surat_tugas_prestasi) : 'Pilih File' }}
                     </label>
                 </div>
             </div>
-            @if($prestasi->surat_tugas_prestasi)
-                <small class="text-muted">File saat ini: <a href="{{ asset($prestasi->surat_tugas_prestasi) }}" target="_blank">{{ basename($prestasi->surat_tugas_prestasi) }}</a></small>
+            @if ($prestasi->surat_tugas_prestasi)
+                <small class="text-muted">File saat ini: <a href="{{ asset($prestasi->surat_tugas_prestasi) }}"
+                        target="_blank">{{ basename($prestasi->surat_tugas_prestasi) }}</a></small>
             @endif
         </div>
     </div>
-    
+
     {{-- Footer Modal --}}
     <div class="modal-footer">
         <button type="submit" class="btn btn-primary"><i class="fas fa-save mr-2"></i>Simpan Perubahan</button>
-        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal"><i class="fas fa-times mr-2"></i>Batal</button>
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal"><i
+                class="fas fa-times mr-2"></i>Batal</button>
     </div>
 </form>
 
+<!-- Memanggil Fungsi Form Validation Custom -->
+<script src="{{ asset('js-custom/form-validation.js') }}"></script>
+
 <script>
     window.daftarMahasiswa = @json($daftarMahasiswa);
-    
-    $(document).ready(function () {
-        const MAX_ANGGOTA_TIM = 5;
-        const MIN_ANGGOTA_TIM = 2;
-        const JUMLAH_INDIVIDU = 1;
 
-        // Inisialisasi berdasarkan data yang ada
-        const jenisPrestasi = '{{ $prestasi->jenis_prestasi }}';
-        const jumlahAnggota = {{ count($anggotaTim) > 0 ? count($anggotaTim) : 1 }};
-        
-        // Handle pilihan lomba
-        $('#lomba_id').on('change', function () {
-            const selected = $(this).val();
-            const tingkat = $('option:selected', this).data('tingkat') || '';
-            const kategoriLabel = $('option:selected', this).data('kategori') || '';
-            const kategoriJson = $('option:selected', this).data('kategori-json') || [];
-            const tipe = $('option:selected', this).data('tipe') || '';
+    $(document).ready(function() {
+        const idDataTables = '#pendaftaranTable';
+        let table;
 
-            if (selected === 'lainnya') {
-                // Sembunyikan bagian readonly
-                $('#form-tingkat-lomba').hide();
-                $('#form-kategori-lomba').hide();
-                $('#form-kategori-dropdown').hide();
-                $('#kategori_id').removeAttr('name').prop('required', false);
-                $('#kategori_id_manual').attr('name', 'kategori_id').prop('required', true);
-                
-                // Kosongkan nilai readonly
-                $('#nama_tingkat_lomba').val('');
-                $('#nama_kategori_lomba').val('');
-
-                // Tampilkan input manual lainnya
-                $('#input-lomba-lainnya').show();
-                $('#kategori-lomba-manual').show();
-
-                // Reset dan aktifkan jenis prestasi
-                $('#jenis_prestasi').val(jenisPrestasi).prop('disabled', false);
-
-                // Set jumlah anggota berdasarkan jenis prestasi
-                if (jenisPrestasi === 'individu') {
-                    $('#jumlah_anggota').val(JUMLAH_INDIVIDU).prop('readonly', true);
-                    renderAnggota(JUMLAH_INDIVIDU);
-                } else {
-                    $('#jumlah_anggota').val(jumlahAnggota).prop('readonly', false);
-                    renderAnggota(jumlahAnggota);
+        table = $(idDataTables).DataTable({
+            processing: true,
+            serverSide: true,
+            scrollX: true,
+            pagingType: "simple_numbers",
+            language: {
+                lengthMenu: "Tampilkan _MENU_ entri",
+                paginate: {
+                    first: "Pertama",
+                    previous: "Sebelum",
+                    next: "Lanjut",
+                    last: "Terakhir"
+                },
+                search: "Cari:",
+                info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
+                emptyTable: "Belum ada data prestasi tersedia"
+            },
+            ajax: {
+                url: '{{ route('riwayat-pendaftaran.list') }}',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                data: function(d) {
+                    d.status_verifikasi = $('#status_verifikasi').val();
                 }
-
-            } else if (selected) {
-                const tingkat = $('option:selected', this).data('tingkat') || '';
-                const tingkatId = $('option:selected', this).data('tingkat-id') || '';
-                const kategoriLabel = $('option:selected', this).data('kategori') || '';
-                const kategoriJson = $('option:selected', this).data('kategori-json') || [];
-
-                // Tampilkan form readonly
-                $('#form-tingkat-lomba').show();
-                $('#form-kategori-lomba').show();
-                $('#form-kategori-dropdown').show();
-
-                // Set nilai readonly dan hidden input
-                $('#nama_tingkat_lomba').val(tingkat);
-                $('#tingkat_lomba_id').val(tingkatId);
-
-                // Atur kategori dropdown
-                $('#kategori_id_manual').removeAttr('name').prop('required', false);
-                $('#kategori_id').attr('name', 'kategori_id').prop('required', true);
-                $('#input-lomba-lainnya').hide();
-                $('#kategori-lomba-manual').hide();
-
-                // Isi dropdown kategori
-                $('#kategori_id').html('');
-                kategoriJson.forEach(item => {
-                    $('#kategori_id').append(`<option value="${item.id}">${item.text}</option>`);
+            },
+            columns: [{
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    orderable: false,
+                    searchable: false,
+                    className: 'text-center'
+                },
+                {
+                    data: 'nama_mahasiswa',
+                    name: 'mahasiswa.nama_mahasiswa'
+                },
+                {
+                    data: 'nama_lomba',
+                    name: 'lomba.nama_lomba'
+                },
+                {
+                    data: 'tipe_lomba',
+                    name: 'lomba.tipe_lomba',
+                    className: 'text-center'
+                },
+                {
+                    data: 'tanggal_daftar',
+                    name: 'created_at',
+                    className: 'text-center'
+                },
+                {
+                    data: 'status_verifikasi',
+                    name: 'status_pendaftaran',
+                    className: 'text-center'
+                },
+                {
+                    data: 'aksi',
+                    name: 'aksi',
+                    orderable: false,
+                    searchable: false,
+                    className: 'text-center'
+                }
+            ],
+            layout: {
+                topStart: null,
+                topEnd: null,
+                bottomStart: null,
+                bottomEnd: null
+            },
+            drawCallback: function() {
+                $(".dataTables_wrapper").css({
+                    margin: "0",
+                    padding: "0"
                 });
-                
-                // Set kategori yang dipilih sebelumnya
-                $('#kategori_id').val('{{ $prestasi->kategori_id }}').trigger('change');
 
-                // Atur jenis prestasi berdasarkan tipe lomba
-                if (tipe) {
-                    const tipeLower = tipe.toLowerCase();
-                    $('#jenis_prestasi').val(tipeLower).prop('disabled', true);
+                // Styling pagination
+                $(".dataTables_paginate .pagination").addClass("justify-content-end");
+                $(".dataTables_paginate .paginate_button")
+                    .removeClass("paginate_button")
+                    .addClass("page-item");
+                $(".dataTables_paginate .paginate_button a")
+                    .addClass("page-link")
+                    .css("border-radius", "5px");
+                $(".dataTables_paginate .paginate_button.previous a").text("Sebelum");
+                $(".dataTables_paginate .paginate_button.next a").text("Lanjut");
+                $(".dataTables_paginate .paginate_button.first a").text("Pertama");
+                $(".dataTables_paginate .paginate_button.last a").text("Terakhir");
 
-                    if (tipeLower === 'individu') {
-                        $('#jumlah_anggota').val(JUMLAH_INDIVIDU).prop('readonly', true);
-                        renderAnggota(JUMLAH_INDIVIDU);
-                    } else if (tipeLower === 'tim') {
-                        $('#jumlah_anggota').val(jumlahAnggota).prop('readonly', false);
-                        renderAnggota(jumlahAnggota);
-                    }
-                } else {
-                    $('#jenis_prestasi').val(jenisPrestasi).prop('disabled', false);
-                    
-                    if (jenisPrestasi === 'individu') {
-                        $('#jumlah_anggota').val(JUMLAH_INDIVIDU).prop('readonly', true);
-                        renderAnggota(JUMLAH_INDIVIDU);
-                    } else {
-                        $('#jumlah_anggota').val(jumlahAnggota).prop('readonly', false);
-                        renderAnggota(jumlahAnggota);
-                    }
-                }
+                // Styling input pencarian
+                $(idDataTables + '_filter input').css({
+                    height: "auto",
+                    "border-radius": "5px",
+                    border: "1px solid #ced4da"
+                });
 
-            } else {
-                // Semua disembunyikan jika tidak ada yang dipilih
-                $('#form-tingkat-lomba').hide();
-                $('#form-kategori-lomba').hide();
-                $('#form-kategori-dropdown').hide();
-                $('#input-lomba-lainnya').hide();
-                $('#kategori-lomba-manual').hide();
+                // Styling dropdown jumlah entri
+                $(idDataTables + '_length select').css({
+                    width: "auto",
+                    height: "auto",
+                    "border-radius": "5px",
+                    border: "1px solid #ced4da"
+                });
 
-                $('#kategori_id').html('').val('').trigger('change');
-
-                $('#jenis_prestasi').val(jenisPrestasi).prop('disabled', false);
-                
-                if (jenisPrestasi === 'individu') {
-                    $('#jumlah_anggota').val(JUMLAH_INDIVIDU).prop('readonly', true);
-                    renderAnggota(JUMLAH_INDIVIDU);
-                } else {
-                    $('#jumlah_anggota').val(jumlahAnggota).prop('readonly', false);
-                    renderAnggota(jumlahAnggota);
-                }
+                // Styling header & body tabel
+                $(idDataTables + '_wrapper .table-bordered').css({
+                    "border-top-left-radius": "5px",
+                    "border-top-right-radius": "5px"
+                });
+                $(idDataTables + '_wrapper .dataTables_scrollBody table').css({
+                    "border-top-left-radius": "0px",
+                    "border-top-right-radius": "0px",
+                    "border-bottom-left-radius": "5px",
+                    "border-bottom-right-radius": "5px"
+                });
             }
         });
 
-        // Handle tipe prestasi jika user bisa pilih (lomba lainnya)
-        $('#jenis_prestasi').on('change', function () {
-            const tipe = $(this).val();
-            const jumlahInput = $('#jumlah_anggota');
-            const isIndividu = tipe === 'individu';
-
-            if (isIndividu) {
-                jumlahInput.val(JUMLAH_INDIVIDU).prop('readonly', true);
-                renderAnggota(JUMLAH_INDIVIDU);
-            } else if (tipe === 'tim') {
-                jumlahInput.val(jumlahAnggota).prop('readonly', false);
-                renderAnggota(jumlahAnggota);
-            } else {
-                jumlahInput.val(JUMLAH_INDIVIDU).prop('readonly', true);
-                renderAnggota(JUMLAH_INDIVIDU);
-            }
+        // Reload otomatis saat filter status berubah
+        $('#status_verifikasi').on('change', function() {
+            table.ajax.reload();
         });
 
-        $('#btn-plus').on('click', function () {
-            const tipe = $('#jenis_prestasi').val();
-            let current = parseInt($('#jumlah_anggota').val());
-
-            if (tipe === 'individu') {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Tidak Bisa',
-                    text: 'Jumlah anggota untuk individu harus 1'
+        // Modal AJAX
+        window.modalAction = function(url) {
+            $.get(url)
+                .done(function(res) {
+                    $('#ajaxModalContent').html(res);
+                    $('#myModal').modal('show');
+                })
+                .fail(function() {
+                    Swal.fire('Gagal', 'Tidak dapat memuat data dari server.', 'error');
                 });
-                return;
-            }
+        };
 
-            if (tipe === 'tim') {
-                if (current < MAX_ANGGOTA_TIM) {
-                    current++;
-                    $('#jumlah_anggota').val(current);
-                    renderAnggota(current);
-                } else {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Oops...',
-                        text: `Jumlah anggota maksimal adalah ${MAX_ANGGOTA_TIM}`
-                    });
-                }
-            }
+        // Tombol ekspor
+        $('#exportExcel').on('click', function(e) {
+            e.preventDefault();
+            let status = $('#status_verifikasi').val();
+            let url = '{{ route('pendaftaran.export-excel') }}' + (status ? '?status_verifikasi=' +
+                status : '');
+            window.location.href = url;
         });
 
-        $('#btn-minus').on('click', function () {
-            const tipe = $('#jenis_prestasi').val();
-            let current = parseInt($('#jumlah_anggota').val());
-
-            if (tipe === 'individu') {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Tidak Bisa',
-                    text: 'Jumlah anggota untuk individu harus 1'
-                });
-                return;
-            }
-
-            if (tipe === 'tim') {
-                if (current > MIN_ANGGOTA_TIM) {
-                    current--;
-                    $('#jumlah_anggota').val(current);
-                    renderAnggota(current);
-                } else {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Oops...',
-                        text: `Jumlah anggota minimal adalah ${MIN_ANGGOTA_TIM}`
-                    });
-                }
-            }
-        });
-
-        // Render input anggota tim
-        function renderAnggota(jumlah) {
-            const container = $('#anggota-container');
-            container.empty();
-
-            for (let i = 0; i < jumlah; i++) {
-                const label = i === 0 ? 'Ketua Tim' : `Anggota ${i}`;
-                const requiredAttr = i === 0 ? 'required' : '';
-
-                let options = `<option value="">-- Pilih ${label} --</option>`;
-                daftarMahasiswa.forEach(mhs => {
-                    options += `<option value="${mhs.mahasiswa_id}">${mhs.nim_mahasiswa} - ${mhs.nama_mahasiswa}</option>`;
-                });
-
-                const anggotaHtml = `
-                    <div class="form-group anggota-item">
-                        <label class="col-form-label mt-2">${label} <span class="text-danger">*</span></label>
-                        <select name="mahasiswa_id[]" class="form-control anggota-select" ${requiredAttr}>
-                            ${options}
-                        </select>
-                    </div>
-                `;
-                container.append(anggotaHtml);
-            }
-
-            // Set nilai yang sudah ada
-            @foreach($anggotaTim as $index => $anggota)
-                $(`select[name="mahasiswa_id[]"]:eq({{ $index }})`).val('{{ $anggota['mahasiswa_id'] }}');
-            @endforeach
-
-            // Inisialisasi ulang Select2 untuk elemen yang baru ditambahkan
-            $('.anggota-select').select2({
-                width: '100%',
-                dropdownParent: $('#anggota-container')
-            });
-        }
-
-        // Inisialisasi awal berdasarkan data yang ada
-        if ('{{ $prestasi->lomba_id }}' === '') {
-            $('#input-lomba-lainnya').show();
-            $('#kategori-lomba-manual').show();
-            $('#form-tingkat-lomba').hide();
-            $('#form-kategori-lomba').hide();
-        }
-
-        // Inisialisasi select2
-        $('.select2').select2({
-            width: '100%',
-            dropdownParent: $('#form-prestasi')
+        $('#exportPdf').on('click', function(e) {
+            e.preventDefault();
+            let status = $('#status_verifikasi').val();
+            let url = '{{ route('pendaftaran.export-pdf') }}' + (status ? '?status_verifikasi=' +
+                status : '');
+            window.location.href = url;
         });
     });
 </script>

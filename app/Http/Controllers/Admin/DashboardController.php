@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\LombaModel;
 use App\Models\MahasiswaModel;
+use App\Models\PendaftaranLombaModel;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
@@ -95,7 +98,16 @@ class DashboardController extends Controller
         // Mendapatkan data untuk Flot Chart (Perkembangan Prestasi Mahasiswa per Semester)
         list($labels, $values) = $this->getFlotChartData();
 
-        return view('admin.index', compact('breadcrumb', 'persentasePrestasiMahasiswa', 'jumlahLombaAktif', 'jmlPrestasiSebulanTerakhir', 'topMahasiswa', 'lombaSedangAktif', 'chartPieData', 'labels', 'values'));
+        return view('admin.index', compact(
+            'breadcrumb', 
+            'persentasePrestasiMahasiswa', 
+            'jumlahLombaAktif', 
+            'jmlPrestasiSebulanTerakhir', 
+            'topMahasiswa', 
+            'lombaSedangAktif', 
+            'chartPieData', 
+            'labels', 
+            'values'));
     }
 
     // Warna untuk chart pie
