@@ -22,7 +22,7 @@
             </div>
             <div class="filter-body">
                 <div class="row align-items-end">
-                    <div class="col-md-6 col-lg-3 filter-item">
+                    <div class="col-md-6 col-lg-3 filter-item mb-0">
                         <div class="form-group">
                             <label class="filter-form-label">
                                 <i class="fas fa-tags status-icon"></i>
@@ -41,7 +41,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-6 col-lg-3 filter-item">
+                    <div class="col-md-6 col-lg-3 filter-item mb-0">
                         <div class="form-group">
                             <label class="filter-form-label">
                                 <i class="fas fa-trophy periode-icon"></i>
@@ -58,7 +58,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-12 col-lg-6 filter-item">
+                    <div class="col-md-12 col-lg-6 filter-item mb-0">
                         <div class="row">
                             <div class="col-md-12 col-lg-6">
                                 <div class="form-group">
@@ -73,9 +73,9 @@
                             <div class="col-md-12 col-lg-6 d-flex align-items-end">
                                 <div class="form-group w-100">
                                     <div class="action-buttons-container">
-                                        <button type="button" class="btn btn-info filter-apply-btn" id="apply-filters">
+                                        {{-- <button type="button" class="btn btn-info filter-apply-btn" id="apply-filters">
                                             <i class="fas fa-search"></i> Terapkan Filter
-                                        </button>
+                                        </button> --}}
                                         <button class="btn btn-primary add-recommendation-btn"
                                             onclick="modalAction('{{ url('/admin/manajemen-lomba/rekomendasi-lomba/tambah_rekomendasi_ajax') }}')">
                                             <i class="fa-solid fa-plus"></i> Rekomendasi Lomba
@@ -292,29 +292,7 @@
             flex-direction: column;
             gap: 10px; /* Space between buttons */
             width: 100%;
-        }
-        
-        .filter-apply-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 8px;
-            padding: 10px 15px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-            font-size: 0.9em;
-            width: 100%;
-        }
-        
-        .filter-apply-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-        }
-        
-        .filter-apply-btn:active {
-            transform: translateY(0);
-        }
+        }            
         
         .add-recommendation-btn {
             border-radius: 8px;
@@ -438,17 +416,6 @@
         // Event listener untuk input/filter
         $('#categoryFilter, #levelFilter, #searchInput').on('input change', function() {
             filterLomba();
-        });
-
-        // Apply filters button dengan visual feedback
-        $('#apply-filters').on('click', function() {
-            filterLomba();
-            
-            // Visual feedback
-            $(this).html('<i class="fas fa-spinner fa-spin"></i> Memfilter...');
-            setTimeout(() => {
-                $(this).html('<i class="fas fa-search"></i> Terapkan Filter');
-            }, 800);
         });
 
         // Reset filters
