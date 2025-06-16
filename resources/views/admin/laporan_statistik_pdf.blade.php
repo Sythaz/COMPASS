@@ -164,7 +164,7 @@
         </p>
         <table>
             <tr>
-                <th>Total Berprestasi Mahasiswa</th>
+                <th>Total Prestasi Mahasiswa</th>
                 <td>{{ $totalPrestasiMahasiswa }}</td>
             </tr>
             <tr>

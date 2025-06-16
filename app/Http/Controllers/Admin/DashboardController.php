@@ -298,7 +298,7 @@ class DashboardController extends Controller
         // HEADER
         $bold = ['font' => ['bold' => true]];
         $sheet->setCellValue('A1', '--- RINGKASAN ---');
-        $sheet->setCellValue('A2', 'Total Berprestasi Mahasiswa ');
+        $sheet->setCellValue('A2', 'Total Prestasi Mahasiswa ');
         $sheet->setCellValue('B2', $totalPrestasi );
         $sheet->setCellValue('A3', 'Jumlah Lomba Aktif');
         $sheet->setCellValue('B3', $jumlahLombaAktif);
