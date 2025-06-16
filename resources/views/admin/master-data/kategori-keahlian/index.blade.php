@@ -18,10 +18,6 @@
                                 <i class="fa-solid fa-plus"></i>
                                 <strong>Tambah Data</strong>
                             </a>
-                            <a href="javascript:void(0)" class="ml-2 btn btn-primary">
-                                <i class="fa-solid fa-file-import"></i>
-                                <strong> Impor Data</strong>
-                            </a>
                         </div>
                     </div>
                     <div class="table-responsive">
