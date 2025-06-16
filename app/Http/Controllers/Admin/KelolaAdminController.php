@@ -41,7 +41,7 @@ class KelolaAdminController extends Controller
 
         return DataTables::of($data)
             ->addIndexColumn()
-            ->addColumn('username', fn($row) => $row->users ? ' ' . $row->users->username : '-')
+            ->addColumn('username', fn ($row) => $row->users ? ' ' . $row->users->username : '-')
             ->editColumn('nip_admin', function ($row) {
                 return (string) $row->nip_admin;  // pastikan nip dikirim sebagai string
             })
@@ -79,7 +79,7 @@ class KelolaAdminController extends Controller
 
         return DataTables::of($data)
             ->addIndexColumn()
-            ->addColumn('username', fn($row) => $row->users ? ' ' . $row->users->username : '-')
+            ->addColumn('username', fn ($row) => $row->users ? ' ' . $row->users->username : '-')
             ->editColumn('nip_admin', function ($row) {
                 return (string) $row->nip_admin;
             })
@@ -386,155 +386,105 @@ class KelolaAdminController extends Controller
     // Import Data Admin Excel
     public function import(Request $request)
     {
-        if ($request->ajax() || $request->wantsJson()) {
-            $rules = [
-                'file_admin' => ['required', 'mimes:xlsx', 'max:1024'],
-            ];
+        if (!$request->ajax() && !$request->wantsJson()) {
+            return redirect('/');
+        }
 
-            $validator = Validator::make($request->all(), $rules);
-            if ($validator->fails()) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Validasi Gagal',
-                    'msgField' => $validator->errors()
-                ]);
-            }
+        $request->validate([
+            'file_admin' => 'required|file|mimes:xlsx|max:1024',
+        ]);
 
-            $file = $request->file('file_admin');
-            $reader = IOFactory::createReader('Xlsx');
-            $reader->setReadDataOnly(true);
-
-            try {
-                $spreadsheet = $reader->load($file->getRealPath());
-            } catch (\Exception $e) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Gagal membaca file Excel: ' . $e->getMessage()
-                ]);
-            }
-
-            $sheet = $spreadsheet->getActiveSheet();
-            $data = $sheet->toArray(null, false, true, true);
-
-            $jumlahBerhasil = 0;
-            $skipped = 0;
-
-            if (count($data) > 1) {
-                foreach ($data as $baris => $value) {
-                    if ($baris == 1)
-                        continue; // Skip header
-
-                    // Cek apakah baris kosong (semua kolom kosong atau null)
-                    $allEmpty = true;
-                    foreach (['A', 'B', 'C', 'D', 'E', 'F'] as $col) {
-                        if (isset($value[$col]) && trim($value[$col]) !== '') {
-                            $allEmpty = false;
-                            break;
-                        }
-                    }
-                    if ($allEmpty) {
-                        Log::info("Baris $baris dilewati: Baris kosong");
-                        $skipped++;
-                        continue;
-                    }
-
-                    $nip = trim($value['A'] ?? '');
-                    $nama = trim($value['B'] ?? '');
-                    $email = trim($value['C'] ?? '');
-                    $no_hp = trim($value['D'] ?? '');
-                    $alamat = trim($value['E'] ?? '');
-                    $kelamin = trim($value['F'] ?? '');
-
-                    if (!in_array($kelamin, ['L', 'P'])) {
-                        $kelamin = 'Belum diisi';
-                    }
-
-                    if (empty($nip) || empty($nama)) {
-                        Log::warning("Baris $baris dilewati: NIP atau Nama kosong");
-                        $skipped++;
-                        continue;
-                    }
-
-                    // Cek user sudah ada atau belum (username = nip)
-                    $existingUser = UsersModel::where('username', $nip)->first();
-                    if ($existingUser) {
-                        Log::info("Baris $baris dilewati: User dengan NIP '$nip' sudah ada");
-                        $skipped++;
-                        continue;
-                    }
-
-                    // Cek email sudah ada di admin
-                    $existingEmail = AdminModel::where('email', $email)->first();
-                    if ($email && $existingEmail) {
-                        Log::info("Baris $baris dilewati: Email '$email' sudah digunakan");
-                        $skipped++;
-                        continue;
-                    }
-
-                    // Cek no_hp sudah ada di admin
-                    $existingNoHp = AdminModel::where('no_hp', $no_hp)->first();
-                    if ($no_hp && $existingNoHp) {
-                        Log::info("Baris $baris dilewati: No HP '$no_hp' sudah digunakan");
-                        $skipped++;
-                        continue;
-                    }
-
-                    try {
-                        $user = UsersModel::create([
-                            'username' => $nip,
-                            'password' => Hash::make($nip),
-                            'role' => 'Admin',
-                            'phrase' => $nip,
-                        ]);
-
-                        AdminModel::create([
-                            'user_id' => $user->user_id,
-                            'nip_admin' => $nip,
-                            'nama_admin' => ucwords(strtolower($nama)),
-                            'email' => $email,
-                            'no_hp' => $no_hp,
-                            'alamat' => $alamat,
-                            'kelamin' => $kelamin,
-                            'img_admin' => 'profil-default.jpg',
-                            'status' => 'Aktif',
-                            'created_at' => now(),
-                            'updated_at' => now(),
-                        ]);
-
-                        Log::info("Baris $baris berhasil diimport: NIP $nip, Nama $nama");
-                        $jumlahBerhasil++;
-                    } catch (\Exception $e) {
-                        Log::error("Baris $baris gagal disimpan: " . $e->getMessage());
-                        $skipped++;
-                        continue;
-                    }
-                }
-
-                if ($jumlahBerhasil > 0) {
-                    $message = "$jumlahBerhasil data admin berhasil diimport";
-                    if ($skipped > 0) {
-                        $message .= ", $skipped data dilewati karena duplikat, data kosong, atau tidak valid.";
-                    }
-
-                    return response()->json([
-                        'status' => true,
-                        'message' => $message
-                    ]);
-                } else {
-                    return response()->json([
-                        'status' => false,
-                        'message' => 'Tidak ada data baru yang berhasil diimport'
-                    ]);
-                }
-            }
-
+        try {
+            $data = IOFactory::createReader('Xlsx')
+                ->setReadDataOnly(true)
+                ->load($request->file('file_admin')->getRealPath())
+                ->getActiveSheet()
+                ->toArray(null, false, true, true);
+        } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
-                'message' => 'File Excel kosong atau format tidak sesuai'
+                'message' => 'Gagal membaca file Excel: ' . $e->getMessage()
             ]);
         }
 
-        return redirect('/');
+        $jumlahBerhasil = 0;
+        $skipped = 0;
+
+        foreach ($data as $baris => $row) {
+            if ($baris == 1) {
+                continue;
+            } // Skip header
+
+            // Skip baris jika semua kolom kosong
+            if (
+                !trim($row['A'] ?? '') &&
+                !trim($row['B'] ?? '') &&
+                !trim($row['C'] ?? '') &&
+                !trim($row['D'] ?? '') &&
+                !trim($row['E'] ?? '') &&
+                !trim($row['F'] ?? '')
+            ) {
+                continue;
+            }
+
+            $nip     = trim($row['A'] ?? '');
+            $nama    = trim($row['B'] ?? '');
+            $email   = trim($row['C'] ?? '');
+            $no_hp   = trim($row['D'] ?? '');
+            $alamat  = trim($row['E'] ?? '');
+            $kelamin = in_array(trim($row['F'] ?? ''), ['L', 'P']) ? trim($row['F']) : 'Belum diisi';
+
+            // Jika NIP atau Nama kosong, lewati
+            if (!$nip || !$nama) {
+                $skipped++;
+                continue;
+            }
+
+            // Cek duplikat
+            if (
+                UsersModel::where('username', $nip)->exists() ||
+                ($email && AdminModel::where('email', $email)->exists()) ||
+                ($no_hp && AdminModel::where('no_hp', $no_hp)->exists())
+            ) {
+                $skipped++;
+                continue;
+            }
+
+            try {
+                $user = UsersModel::create([
+                    'username' => $nip,
+                    'password' => Hash::make($nip),
+                    'role' => 'Admin',
+                    'phrase' => $nip,
+                ]);
+
+                AdminModel::create([
+                    'user_id' => $user->user_id,
+                    'nip_admin' => $nip,
+                    'nama_admin' => ucwords(strtolower($nama)),
+                    'email' => $email,
+                    'no_hp' => $no_hp,
+                    'alamat' => $alamat,
+                    'kelamin' => $kelamin,
+                    'img_admin' => 'profil-default.jpg',
+                    'status' => 'Aktif',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+
+                $jumlahBerhasil++;
+            } catch (\Exception $e) {
+                Log::error("Baris $baris gagal disimpan: " . $e->getMessage());
+                $skipped++;
+            }
+        }
+
+        return response()->json([
+            'status' => $jumlahBerhasil > 0,
+            'message' => $jumlahBerhasil > 0
+                ? "$jumlahBerhasil admin berhasil diimport" . ($skipped ? ", $skipped dilewati." : '')
+                : 'Tidak ada data baru yang berhasil diimport'
+        ]);
     }
 
 
