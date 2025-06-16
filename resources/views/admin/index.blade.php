@@ -7,6 +7,28 @@
 @section('page-description', 'Hai, selamat datang kembali di COMPASS!')
 
 @section('content')
+    <div class="row mb-3">
+        <div class="col-6">
+        </div>
+        <div class="col-6 text-right">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-file-export"></i>
+                    <strong>Laporan Statistik</strong>
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="{{ route('admin.dashboard.export') }}">
+                        Ekspor Data ke XLSX
+                    </a>
+                    <a class="dropdown-item" href="{{ route('admin.dashboard.export.pdf') }}">
+                        Ekspor Data ke PDF
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-lg-4 col-sm-6">
             <div class="card gradient-1">
