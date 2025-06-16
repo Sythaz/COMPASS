@@ -149,7 +149,7 @@
                 <label for="alasan_tolak" class="col-form-label mt-2">Alasan Penolakan <span class="text-danger"
                         style="color: red;">*</span></label>
                 <div class="custom-validation">
-                    <textarea name="alasan_tolak" id="alasan_tolak" class="form-control" required readonly>{{ old('alasan_tolak', $lomba->alasan_tolak) }}</textarea>
+                    <textarea name="alasan_tolak" id="alasan_tolak" class="form-control" readonly>{{ old('alasan_tolak', $lomba->alasan_tolak) }}</textarea>
                 </div>
             </div>
         </div>

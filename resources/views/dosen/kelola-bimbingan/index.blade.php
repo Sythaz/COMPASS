@@ -109,7 +109,6 @@
                 },
 
                 // Bisa di Kustomisasi dengan data
-                serverSide: true,
                 autoWidth: true,
                 order: [
                     [4, "desc"]
@@ -133,24 +132,29 @@
                     },
                     {
                         data: 'nama_lomba',
-                        name: 'lomba_id',
+                        name: 'nama_lomba',
+                        searchable: true,
                     },
                     {
                         data: 'juara_prestasi',
                         name: 'juara_prestasi',
+                        searchable: true,
                     },
                     {
                         data: 'nama_peserta',
                         name: 'nama_peserta',
                         orderable: false,
+                        searchable: true,
                     },
                     {
                         data: 'tanggal_prestasi',
                         name: 'tanggal_prestasi',
+                        searchable: true,
                     },
                     {
                         data: 'status_verifikasi',
                         name: 'status_verifikasi',
+                        searchable: true,
                     },
                     {
                         data: 'aksi',

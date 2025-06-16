@@ -194,7 +194,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="col-form-label font-weight-bold">Nama Peserta <span class="text-danger">*</span></label>
-                            <div class="input-group">
+                            <div class="input-group custom-validation">
                                 <select name="user_id" id="user_id" class="form-control select2" required>
                                     <option value="">-- Pilih Peserta --</option>
                                     @foreach ($daftarMahasiswa as $m)
@@ -204,11 +204,6 @@
                                         </option>
                                     @endforeach
                                 </select>
-                                <div class="input-group-append">
-                                    <span class="input-group-text bg-primary text-white">
-                                        <i class="fas fa-user-graduate"></i>
-                                    </span>
-                                </div>
                             </div>
                             <div class="error-text" id="error-user_id"></div>
                         </div>
@@ -226,11 +221,6 @@
                                         </option>
                                     @endforeach
                                 </select>
-                                <div class="input-group-append">
-                                    <span class="input-group-text bg-info text-white">
-                                        <i class="fas fa-chalkboard-teacher"></i>
-                                    </span>
-                                </div>
                             </div>
                         </div>
                     </div>

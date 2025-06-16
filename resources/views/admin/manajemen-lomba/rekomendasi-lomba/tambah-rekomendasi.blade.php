@@ -297,7 +297,10 @@
             },
             lomba_id: {
                 required: true,
-            }
+            },
+            dosen_id: {
+                required: false, // Dosen tidak wajib diisi
+            },
         }, {
             // Pesan validasi untuk setiap field saat tidak valid
             user_id: {
@@ -305,6 +308,9 @@
             },
             lomba_id: {
                 required: "Lomba wajib diisi",
+            },
+            dosen_id: {
+                required: "Nama dosen wajib diisi", // Dosen tidak wajib diisi
             }
         },
 
