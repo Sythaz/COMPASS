@@ -33,12 +33,12 @@
         <div class="col-lg-4 col-sm-6">
             <div class="card gradient-1">
                 <div class="card-body">
-                    <h3 class="card-title text-white">Prestasi Mahasiswa</h3>
+                    <h3 class="card-title text-white">Total Prestasi Mahasiswa</h3>
                     <div class="d-inline-block mt-auto">
-                        <h1 class="text-white my-3">{{ $persentasePrestasiMahasiswa }}%</h1>
+                        <h1 class="text-white my-3">{{ $totalPrestasiMahasiswa }}</h1>
                     </div>
                     <span class="float-right display-5 opacity-5"><i class="fa fa-users"></i></span>
-                    <p class="text-white mb-0">Dalam 1 tahun ini</p>
+                    <p class="text-white mb-0">Yang terverifikasi</p>
                 </div>
             </div>
         </div>

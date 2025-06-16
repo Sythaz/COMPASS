@@ -158,14 +158,14 @@
         <h3>Ringkasan</h3>
         <p>
             Bagian ini memberikan gambaran umum mengenai kondisi prestasi mahasiswa secara keseluruhan. Dengan melihat
-            indikator seperti persentase mahasiswa yang aktif dalam kegiatan lomba dan prestasi, jumlah lomba yang masih
+            indikator seperti total prestasi yang didapatkan oleh mahasiswa, jumlah lomba yang masih
             berlangsung saat ini, serta jumlah mahasiswa yang berhasil meraih prestasi dalam sebulan terakhir, pihak
             institusi dapat mengevaluasi seberapa efektif program pembinaan dan pendampingan yang telah berjalan.
         </p>
         <table>
             <tr>
-                <th>Persentase Mahasiswa Berprestasi</th>
-                <td>{{ $persentase }}%</td>
+                <th>Total Berprestasi Mahasiswa</th>
+                <td>{{ $totalPrestasiMahasiswa }}</td>
             </tr>
             <tr>
                 <th>Jumlah Lomba Aktif</th>
