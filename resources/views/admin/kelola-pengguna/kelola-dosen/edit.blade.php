@@ -145,7 +145,7 @@
                     <label for="kategori_id" class="col-form-label font-weight-bold">
                         Bidang Dosen <span class="text-danger">*</span>
                     </label>
-                    <div class="input-group">
+                    <div class="input-group d-none">
                         <select name="kategori_id[]" id="kategori_id" class="form-control multiselect-dropdown-kategori"
                             multiple="multiple" required>
                             <option value="">-- Pilih Kategori --</option>
@@ -155,13 +155,16 @@
                                 </option>
                             @endforeach
                         </select>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="kategori_display"
+                            value="{{ $dosen->kategoris->pluck('nama_kategori')->implode(', ') }}" disabled>
                         <div class="input-group-append">
                             <span class="input-group-text bg-purple text-white">
                                 <i class="fas fa-tags"></i>
                             </span>
                         </div>
                     </div>
-                </div>
             </div>
         </div>
 

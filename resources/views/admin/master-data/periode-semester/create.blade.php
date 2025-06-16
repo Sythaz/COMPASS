@@ -19,13 +19,13 @@
                         <div class="form-section bg-light rounded p-3 mb-3">
                             <div class="form-group mb-0">
                                 <label for="semester_periode" class="col-form-label font-weight-bold">
-                                    <i class="fas fa-tag mr-2"></i>Periode Semester 
+                                    <i class="fas fa-tag mr-2"></i>Periode Semester
                                     <span class="text-danger" style="color: red;">*</span>
                                 </label>
                                 <div class="custom-validation">
                                     <div class="input-group">
-                                        <input type="text" class="form-control" name="semester_periode" 
-                                               id="semester_periode" placeholder="Contoh: 2024/2025 Ganjil" required>
+                                        <input type="text" class="form-control" name="semester_periode"
+                                            id="semester_periode" placeholder="Contoh: 2024/2025 Ganjil" required>
                                         <div class="input-group-append">
                                             <span class="input-group-text bg-primary text-white">
                                                 <i class="fas fa-graduation-cap"></i>
@@ -45,13 +45,13 @@
                         <div class="form-section bg-light rounded p-3">
                             <div class="form-group mb-0">
                                 <label for="tanggal_mulai" class="col-form-label font-weight-bold">
-                                    <i class="fas fa-play mr-2 text-success"></i>Tanggal Mulai 
+                                    <i class="fas fa-play mr-2 text-success"></i>Tanggal Mulai
                                     <span class="text-danger" style="color: red;">*</span>
                                 </label>
                                 <div class="custom-validation">
                                     <div class="input-group">
-                                        <input type="date" class="form-control" name="tanggal_mulai" 
-                                               id="tanggal_mulai" required>
+                                        <input type="date" class="form-control" name="tanggal_mulai"
+                                            id="tanggal_mulai" required>
                                         <div class="input-group-append">
                                             <span class="input-group-text bg-success text-white">
                                                 <i class="fas fa-calendar-plus"></i>
@@ -68,13 +68,13 @@
                         <div class="form-section bg-light rounded p-3">
                             <div class="form-group mb-0">
                                 <label for="tanggal_akhir" class="col-form-label font-weight-bold">
-                                    <i class="fas fa-stop mr-2 text-danger"></i>Tanggal Akhir 
+                                    <i class="fas fa-stop mr-2 text-danger"></i>Tanggal Akhir
                                     <span class="text-danger" style="color: red;">*</span>
                                 </label>
                                 <div class="custom-validation">
                                     <div class="input-group">
-                                        <input type="date" class="form-control" name="tanggal_akhir" 
-                                               id="tanggal_akhir" required>
+                                        <input type="date" class="form-control" name="tanggal_akhir"
+                                            id="tanggal_akhir" required>
                                         <div class="input-group-append">
                                             <span class="input-group-text bg-danger text-white">
                                                 <i class="fas fa-calendar-minus"></i>
@@ -116,20 +116,22 @@
                             <div class="mb-2">
                                 <i class="fas fa-lightbulb mr-2 text-warning"></i>
                                 <small class="text-muted">
-                                    <strong>Format Periode:</strong> Gunakan format "YYYY/YYYY Semester" 
+                                    <strong>Format Periode:</strong> Gunakan format "YYYY/YYYY Semester"
                                     <br>Contoh: "2024/2025 Ganjil" atau "2024/2025 Genap"
                                 </small>
                             </div>
                             <div class="mb-2">
                                 <i class="fas fa-calendar-check mr-2 text-info"></i>
                                 <small class="text-muted">
-                                    <strong>Rentang Tanggal:</strong> Pastikan tanggal akhir lebih besar dari tanggal mulai
+                                    <strong>Rentang Tanggal:</strong> Pastikan tanggal akhir lebih besar dari tanggal
+                                    mulai
                                 </small>
                             </div>
                             <div>
                                 <i class="fas fa-exclamation-triangle mr-2 text-warning"></i>
                                 <small class="text-muted">
-                                    <strong>Perhatian:</strong> Periode semester yang sudah dibuat tidak dapat diubah jika sudah ada data terkait
+                                    <strong>Perhatian:</strong> Periode semester yang sudah dibuat tidak dapat diubah
+                                    jika sudah ada data terkait
                                 </small>
                             </div>
                         </div>
@@ -213,8 +215,15 @@
     }
 
     @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 </style>
 
@@ -222,10 +231,10 @@
     // Animasi saat modal dibuka
     $(document).ready(function() {
         $('.card').hide().fadeIn(600);
-        
+
         // Focus pada input pertama
         $('#semester_periode').focus();
-        
+
         // Tooltip untuk info
         $('[data-toggle="tooltip"]').tooltip();
     });
@@ -234,23 +243,23 @@
     function calculateDuration() {
         const startDate = $('#tanggal_mulai').val();
         const endDate = $('#tanggal_akhir').val();
-        
+
         if (startDate && endDate) {
             const start = new Date(startDate);
             const end = new Date(endDate);
-            
+
             if (end > start) {
                 const diffTime = Math.abs(end - start);
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                 const diffMonths = Math.round(diffDays / 30);
-                
+
                 let durationText = '';
                 if (diffMonths > 0) {
                     durationText = `${diffMonths} Bulan (${diffDays} Hari)`;
                 } else {
                     durationText = `${diffDays} Hari`;
                 }
-                
+
                 $('#durasi-text').text(durationText);
                 $('#durasi-info').fadeIn().addClass('animate-fade-in');
             } else {
@@ -272,7 +281,17 @@
             semester_periode: {
                 required: true,
                 minlength: 5,
-                maxlength: 50
+                maxlength: 50,
+                remote: {
+                    url: "{{ route('periode-semester.check-semester-periode') }}",
+                    type: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        semester_periode: function() {
+                            return $('#semester_periode').val();
+                        }
+                    }
+                }
             },
             tanggal_mulai: {
                 required: true,
@@ -287,7 +306,8 @@
             semester_periode: {
                 required: "Semester periode wajib diisi",
                 minlength: "Semester periode minimal 5 karakter",
-                maxlength: "Semester periode maksimal 50 karakter"
+                maxlength: "Semester periode maksimal 50 karakter",
+                remote: "Semester periode sudah ada, silakan gunakan yang lain"
             },
             tanggal_mulai: {
                 required: "Tanggal mulai wajib diisi",
@@ -333,9 +353,11 @@
 
     // Validasi tanggal custom
     $('#form-create').on('submit', function(e) {
+        e.preventDefault(); // cegah submit default dulu
+
         const startDate = new Date($('#tanggal_mulai').val());
         const endDate = new Date($('#tanggal_akhir').val());
-        
+
         if (endDate <= startDate) {
             e.preventDefault();
             Swal.fire({

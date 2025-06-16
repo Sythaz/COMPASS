@@ -67,13 +67,13 @@ class PeriodeSemesterController extends Controller
 
     public function store(Request $request)
     {
-        try {
-            $request->validate([
-                'semester_periode' => 'required|unique:t_periode,semester_periode',
-                'tanggal_mulai' => 'required|date',
-                'tanggal_akhir' => 'required|date|after_or_equal:tanggal_mulai',
-            ]);
+        $request->validate([
+            'semester_periode' => 'required|unique:t_periode,semester_periode',
+            'tanggal_mulai' => 'required|date',
+            'tanggal_akhir' => 'required|date|after_or_equal:tanggal_mulai',
+        ]);
 
+        try {
             PeriodeModel::create([
                 'semester_periode' => $request->semester_periode,
                 'tanggal_mulai' => $request->tanggal_mulai,
@@ -92,6 +92,13 @@ class PeriodeSemesterController extends Controller
             ], 500);
         }
     }
+
+    public function checkSemesterPeriode(Request $request)
+    {
+        $exists = PeriodeModel::where('semester_periode', $request->semester_periode)->exists();
+        return $exists ? 'false' : 'true';
+    }
+
 
     public function update(Request $request, $id)
     {
