@@ -8,6 +8,7 @@ use Yajra\DataTables\Facades\DataTables;
 use App\Models\PendaftaranLombaModel;
 use App\Models\LombaModel;
 use App\Models\MahasiswaModel;
+use App\Models\NotifikasiModel;
 
 class VerifikasiPendaftaranController extends Controller
 {
@@ -112,7 +113,7 @@ class VerifikasiPendaftaranController extends Controller
             ->addColumn('aksi', function ($row) {
                 $btn = '<div class="d-flex justify-content-center">';
                 $btn .= '<button onclick="modalAction(\'' . route('verifikasi-pendaftaran.show', $row->pendaftaran_id) . '\')" class="btn btn-info btn-sm">Detail</button>';
-                $btn .= '<button onclick="modalAction(\'' . route('verifikasi-pendaftaran.edit', $row->pendaftaran_id) . '\')" class="btn btn-warning btn-sm mx-2">Edit</button>';
+                $btn .= '<button onclick="modalAction(\'' . route('verifikasi-pendaftaran.edit', $row->pendaftaran_id) . '\')" class="btn btn-warning btn-sm mx-2">Ubah status</button>';
                 $btn .= '<button onclick="modalAction(\'' . route('verifikasi-pendaftaran.hapus', $row->pendaftaran_id) . '\')" class="btn btn-danger btn-sm">Hapus</button>';
                 $btn .= '</div>';
                 return $btn;
@@ -148,6 +149,21 @@ class VerifikasiPendaftaranController extends Controller
         $pendaftaran->status_pendaftaran = 'Terverifikasi';
         $pendaftaran->save();
 
+        NotifikasiModel::create([
+            'user_id' => $pendaftaran->mahasiswa->user_id, // user yang menerima notifikasi
+            'pengirim_id' => auth()->id(), // admin login
+            'pengirim_role' => 'Admin',
+            'jenis_notifikasi' => 'Verifikasi Pendaftaran',
+            'pesan_notifikasi' => 'Selamat! Pendaftaran lomba Anda telah <strong>diterima</strong>.',
+            'lomba_id' => $pendaftaran->lomba_id ?? null, // kalau ada
+            'prestasi_id' => null,
+            'pendaftaran_id' => $pendaftaran->pendaftaran_id,
+            'status_notifikasi' => 'Belum Dibaca',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+
         return response()->json(['message' => 'Pendaftaran berhasil diterima.']);
     }
 
@@ -161,6 +177,21 @@ class VerifikasiPendaftaranController extends Controller
         $pendaftaran->status_pendaftaran = 'Ditolak';
         $pendaftaran->alasan_tolak = $request->alasan_tolak;
         $pendaftaran->save();
+
+        NotifikasiModel::create([
+            'user_id' => $pendaftaran->mahasiswa->user_id,
+            'pengirim_id' => auth()->id(),
+            'pengirim_role' => 'Admin',
+            'jenis_notifikasi' => 'Verifikasi Pendaftaran',
+            'pesan_notifikasi' => 'Pendaftaran lomba Anda telah <strong>ditolak</strong>. Alasan: <em>' . $request->alasan_tolak . '</em>',
+            'lomba_id' => $pendaftaran->lomba_id ?? null,
+            'prestasi_id' => null,
+            'pendaftaran_id' => $pendaftaran->pendaftaran_id,
+            'status_notifikasi' => 'Belum Dibaca',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
 
         return response()->json(['message' => 'Pendaftaran berhasil ditolak.']);
     }

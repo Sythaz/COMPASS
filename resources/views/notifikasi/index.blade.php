@@ -71,6 +71,13 @@
                                             for="filter-jenis-verifikasi-prestasi">Verifikasi
                                             Prestasi</label>
                                     </div>
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input"
+                                            id="filter-jenis-verifikasi-prestasi" checked>
+                                        <label class="custom-control-label"
+                                            for="filter-jenis-verifikasi-prestasi">Verifikasi
+                                            Pendaftaran</label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -169,6 +176,9 @@
                                                 @elseif ($notif->jenis_notifikasi == 'Verifikasi Prestasi')
                                                     <i class="fas fa-check-circle mr-1"></i>
                                                     Verifikasi Prestasi
+                                                @elseif ($notif->jenis_notifikasi == 'Verifikasi Pendaftaran')
+                                                    <i class="fas fa-check-circle mr-1"></i>
+                                                    Verifikasi Pendaftaran
                                                 @else
                                                     <i class="fas fa-info-circle mr-1"></i>
                                                     {{ $notif->jenis_notifikasi }}
@@ -177,7 +187,7 @@
                                         </td>
                                         <td>
                                             <div class="notification-message mr-2">
-                                                <p class="mb-1">{{ $notif->pesan_notifikasi }}</p>
+                                                <p class="mb-1">{{!! $notif->pesan_notifikasi !!}}</p>
                                             </div>
                                         </td>
                                         <td>
