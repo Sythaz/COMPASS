@@ -50,7 +50,7 @@
                     <div class="form-group">
                         <label class="col-form-label font-weight-bold">Jenis Kelamin</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" value="{{ $mahasiswa->kelamin ?? '-' }}" disabled>
+                            <input type="text" class="form-control" value="{{ $mahasiswa->kelamin === 'L' ? 'Laki-laki' : ($mahasiswa->kelamin === 'P' ? 'Perempuan' : '-') }}" disabled>
                             <div class="input-group-append">
                                 @if (($mahasiswa->kelamin ?? '') === 'Laki-laki' || ($mahasiswa->kelamin ?? '') === 'L')
                                 <span class="input-group-text bg-primary text-white"><i class="fas fa-mars"></i></span>

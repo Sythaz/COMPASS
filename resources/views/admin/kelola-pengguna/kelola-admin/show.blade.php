@@ -48,7 +48,7 @@
                     <div class="form-group">
                         <label class="col-form-label font-weight-bold">Jenis Kelamin</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" value="{{ $admin->kelamin ?? '-' }}" disabled>
+                            <input type="text" class="form-control" value="{{ $admin->kelamin === 'L' ? 'Laki-laki' : ($admin->kelamin === 'P' ? ('Perempuan') : '-') }}" disabled>
                             <div class="input-group-append">
                                 @if (($admin->kelamin ?? '') === 'Laki-laki' || ($admin->kelamin ?? '') === 'L')
                                     <span class="input-group-text bg-primary text-white">
