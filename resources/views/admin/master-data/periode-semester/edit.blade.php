@@ -155,11 +155,6 @@
             if (tanggalMulai && tanggalAkhir) {
                 const mulai = new Date(tanggalMulai);
                 const akhir = new Date(tanggalAkhir);
-                
-                if (akhir >= mulai) {
-                    const diffTime = Math.abs(akhir - mulai);
-                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-                    const diffMonths = Math.round(diffDays / 30);
                     
                     let durasiText = `${diffDays} hari`;
                     if (diffMonths > 0) {
