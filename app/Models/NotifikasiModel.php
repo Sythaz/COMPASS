@@ -18,6 +18,7 @@ class NotifikasiModel extends Model
         'pesan_notifikasi',
         'lomba_id',
         'prestasi_id',
+        'pendaftaran_id',
         'status_notifikasi',
         'created_at',
         'updated_at',
@@ -26,6 +27,11 @@ class NotifikasiModel extends Model
     public function user()
     {
         return $this->belongsTo(UsersModel::class, 'user_id', 'user_id');
+    }
+
+    public function pendaftaran()
+    {
+        return $this->belongsTo(PendaftaranLombaModel::class, 'pendaftaran_id', 'pendaftaran_id');
     }
 
     public function getPengirimNama()

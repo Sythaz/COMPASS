@@ -16,10 +16,11 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->index();
             $table->unsignedBigInteger('pengirim_id')->index()->nullable();
             $table->enum('pengirim_role', ['Admin', 'Dosen', 'Sistem']);
-            $table->enum('jenis_notifikasi', ['Rekomendasi', 'Verifikasi Lomba', 'Verifikasi Prestasi']);
+            $table->enum('jenis_notifikasi', ['Rekomendasi', 'Verifikasi Lomba', 'Verifikasi Prestasi', 'Verifikasi Pendaftaran']);
             $table->text('pesan_notifikasi');
             $table->unsignedBigInteger('lomba_id')->index()->nullable();
             $table->unsignedBigInteger('prestasi_id')->index()->nullable();
+            $table->unsignedBigInteger('pendaftaran_id')->index()->nullable();
             $table->enum('status_notifikasi', ['Belum Dibaca', 'Sudah Dibaca'])->default('Belum Dibaca');
             $table->timestamps();
 
@@ -28,6 +29,7 @@ return new class extends Migration
             $table->foreign('pengirim_id')->references('user_id')->on('t_users')->onDelete('set null');
             $table->foreign('lomba_id')->references('lomba_id')->on('t_lomba')->onDelete('set null');
             $table->foreign('prestasi_id')->references('prestasi_id')->on('t_prestasi')->onDelete('set null');
+            $table->foreign('pendaftaran_id')->references('pendaftaran_id')->on('t_pendaftaran_lomba')->onDelete('set null');
         });
     }
 
