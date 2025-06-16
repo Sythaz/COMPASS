@@ -62,6 +62,9 @@ class VerifikasiBimbinganController extends Controller
             ->addColumn('dosen_pembimbing', function ($row) {
                 return $row->dosen->nama_dosen ?? '<span class="text-muted">Belum ada</span>';
             })
+            ->addColumn('tanggal_prestasi', function ($row) {
+                return $row->tanggal_prestasi ? date('d M Y', strtotime($row->tanggal_prestasi)) : '-';
+            })
             ->editColumn('status_verifikasi', function ($prestasi) {
                 $status = $prestasi->status_verifikasi ?? 'menunggu';
                 return $this->getStatusBadge($status); // Tetap gunakan method privat di controller
