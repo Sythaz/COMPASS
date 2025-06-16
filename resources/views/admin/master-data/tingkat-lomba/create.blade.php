@@ -168,13 +168,12 @@
                         // Close modal with animation
                         $('#myModal').modal('hide');
                         
+                        // Reload DataTable
+                        $('#tabel-tingkat-lomba').DataTable().ajax.reload();
+                        
                         // Reset form
                         form[0].reset();
                         
-                        // Reload DataTable
-                        if ($.fn.DataTable.isDataTable('#tabel-tingkat-lomba')) {
-                            $('#tabel-tingkat-lomba').DataTable().ajax.reload(null, false);
-                        }
                         
                         // Show success toast
                         toastr.success('Data tingkat lomba berhasil ditambahkan!', 'Sukses');
