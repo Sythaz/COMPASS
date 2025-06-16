@@ -1,7 +1,8 @@
-<form id="form-edit-mahasiswa" method="POST" action="{{ url('admin/kelola-pengguna/mahasiswa/' . $mahasiswa->mahasiswa_id) }}">
+<form id="form-edit-mahasiswa" method="POST"
+    action="{{ url('admin/kelola-pengguna/mahasiswa/' . $mahasiswa->mahasiswa_id) }}">
     @csrf
     @method('PUT')
-    
+
     <!-- Modal Header -->
     <div class="modal-header bg-primary rounded">
         <h5 class="modal-title text-white"><i class="fas fa-edit mr-2"></i>Edit Mahasiswa</h5>
@@ -25,9 +26,9 @@
                                 NIM <span class="text-danger">*</span>
                             </label>
                             <div class="input-group">
-                                <input type="text" class="form-control" name="nim_mahasiswa" id="nim_mahasiswa" 
-                                       value="{{ old('nim_mahasiswa', $mahasiswa->nim_mahasiswa ?? '') ?? $mahasiswa->nim_mahasiswa }}" 
-                                       required placeholder="Masukkan NIM">
+                                <input type="text" class="form-control" name="nim_mahasiswa" id="nim_mahasiswa"
+                                    value="{{ old('nim_mahasiswa', $mahasiswa->nim_mahasiswa ?? '') ?? $mahasiswa->nim_mahasiswa }}"
+                                    required placeholder="Masukkan NIM">
                                 <div class="input-group-append">
                                     <span class="input-group-text bg-primary text-white">
                                         <i class="fas fa-id-badge"></i>
@@ -42,9 +43,9 @@
                                 Nama Lengkap <span class="text-danger">*</span>
                             </label>
                             <div class="input-group">
-                                <input type="text" class="form-control" name="nama_mahasiswa" id="nama_mahasiswa" 
-                                       value="{{ old('nama_mahasiswa', $mahasiswa->nama_mahasiswa) }}" 
-                                       required placeholder="Masukkan nama lengkap">
+                                <input type="text" class="form-control" name="nama_mahasiswa" id="nama_mahasiswa"
+                                    value="{{ old('nama_mahasiswa', $mahasiswa->nama_mahasiswa) }}" required
+                                    placeholder="Masukkan nama lengkap">
                                 <div class="input-group-append">
                                     <span class="input-group-text bg-info text-white">
                                         <i class="fas fa-user"></i>
@@ -54,7 +55,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="kelamin" class="col-form-label font-weight-bold">
                         Jenis Kelamin <span class="text-danger">*</span>
@@ -62,8 +63,12 @@
                     <div class="input-group">
                         <select name="kelamin" id="kelamin" class="form-control" required>
                             <option value="">-- Pilih Jenis Kelamin --</option>
-                            <option value="L" {{ old('kelamin', $mahasiswa->kelamin ?? '') == 'L' ? 'selected' : '' }}>Laki-laki</option>
-                            <option value="P" {{ old('kelamin', $mahasiswa->kelamin ?? '') == 'P' ? 'selected' : '' }}>Perempuan</option>
+                            <option value="L"
+                                {{ old('kelamin', $mahasiswa->kelamin ?? '') == 'L' ? 'selected' : '' }}>Laki-laki
+                            </option>
+                            <option value="P"
+                                {{ old('kelamin', $mahasiswa->kelamin ?? '') == 'P' ? 'selected' : '' }}>Perempuan
+                            </option>
                         </select>
                         <div class="input-group-append">
                             <span class="input-group-text bg-secondary text-white">
@@ -92,7 +97,8 @@
                                 <select name="prodi_id" id="prodi_id" class="form-control" required>
                                     <option value="">-- Pilih Program Studi --</option>
                                     @foreach ($list_prodi as $prodi)
-                                        <option value="{{ $prodi->prodi_id }}" {{ old('prodi_id', $mahasiswa->prodi_id ?? '') == $prodi->prodi_id ? 'selected' : '' }}>
+                                        <option value="{{ $prodi->prodi_id }}"
+                                            {{ old('prodi_id', $mahasiswa->prodi_id ?? '') == $prodi->prodi_id ? 'selected' : '' }}>
                                             {{ $prodi->nama_prodi }}
                                         </option>
                                     @endforeach
@@ -114,7 +120,8 @@
                                 <select name="periode_id" id="periode_id" class="form-control" required>
                                     <option value="">-- Pilih Periode --</option>
                                     @foreach ($list_periode as $periode)
-                                        <option value="{{ $periode->periode_id }}" {{ old('periode_id', $mahasiswa->periode_id ?? '') == $periode->periode_id ? 'selected' : '' }}>
+                                        <option value="{{ $periode->periode_id }}"
+                                            {{ old('periode_id', $mahasiswa->periode_id ?? '') == $periode->periode_id ? 'selected' : '' }}>
                                             {{ $periode->semester_periode }}
                                         </option>
                                     @endforeach
@@ -137,8 +144,9 @@
                                 <small class="text-muted font-weight-normal">(boleh dikosongkan)</small>
                             </label>
                             <div class="input-group">
-                                <input type="number" class="form-control" name="angkatan" id="angkatan" 
-                                       value="{{ old('angkatan', $mahasiswa->angkatan ?? '') }}" placeholder="Contoh: 2024">
+                                <input type="number" class="form-control" name="angkatan" id="angkatan"
+                                    value="{{ old('angkatan', $mahasiswa->angkatan ?? '') }}"
+                                    placeholder="Contoh: 2024">
                                 <div class="input-group-append">
                                     <span class="input-group-text bg-dark text-white">
                                         <i class="fas fa-hashtag"></i>
@@ -152,15 +160,22 @@
                             <label for="kategori_id" class="col-form-label font-weight-bold">
                                 Bidang Minat <span class="text-danger">*</span>
                             </label>
-                            <div class="input-group">
-                                <select name="kategori_id[]" id="kategori_id" class="form-control multiselect-dropdown-kategori" multiple="multiple">
+                            <div class="input-group d-none">
+                                <select name="kategori_id[]" id="kategori_id"
+                                    class="form-control multiselect-dropdown-kategori" multiple="multiple">
                                     <option value="">-- Pilih Kategori --</option>
                                     @foreach ($kategoris as $kategori)
-                                        <option value="{{ $kategori->kategori_id }}" {{ in_array($kategori->kategori_id, $mahasiswa->kategoris->pluck('kategori_id')->toArray()) ? 'selected' : '' }}>
+                                        <option value="{{ $kategori->kategori_id }}"
+                                            {{ in_array($kategori->kategori_id, $mahasiswa->kategoris->pluck('kategori_id')->toArray()) ? 'selected' : '' }}>
                                             {{ $kategori->nama_kategori }}
                                         </option>
                                     @endforeach
-                                </select>
+                                </select>Z
+                            </div>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="kategori_display"
+                                    value="{{ $mahasiswa->kategoris->pluck('nama_kategori')->implode(', ') }}"
+                                    disabled>
                                 <div class="input-group-append">
                                     <span class="input-group-text bg-purple text-white">
                                         <i class="fas fa-tags"></i>
@@ -187,8 +202,9 @@
                                 <small class="text-muted font-weight-normal">(boleh dikosongkan)</small>
                             </label>
                             <div class="input-group">
-                                <input type="email" class="form-control" name="email" id="email" 
-                                       value="{{ old('email', $mahasiswa->email) }}" placeholder="contoh: mahasiswa@example.com">
+                                <input type="email" class="form-control" name="email" id="email"
+                                    value="{{ old('email', $mahasiswa->email) }}"
+                                    placeholder="contoh: mahasiswa@example.com">
                                 <div class="input-group-append">
                                     <span class="input-group-text bg-warning text-dark">
                                         <i class="fas fa-envelope"></i>
@@ -204,8 +220,8 @@
                                 <small class="text-muted font-weight-normal">(boleh dikosongkan)</small>
                             </label>
                             <div class="input-group">
-                                <input type="text" class="form-control" name="no_hp" id="no_hp" 
-                                       value="{{ old('no_hp', $mahasiswa->no_hp) }}" placeholder="08xxxxxxxxxx">
+                                <input type="text" class="form-control" name="no_hp" id="no_hp"
+                                    value="{{ old('no_hp', $mahasiswa->no_hp) }}" placeholder="08xxxxxxxxxx">
                                 <div class="input-group-append">
                                     <span class="input-group-text bg-success text-white">
                                         <i class="fas fa-phone"></i>
@@ -222,8 +238,7 @@
                         <small class="text-muted font-weight-normal">(boleh dikosongkan)</small>
                     </label>
                     <div class="input-group">
-                        <textarea class="form-control" name="alamat" id="alamat" rows="2" 
-                                  placeholder="Masukkan alamat lengkap">{{ old('alamat', $mahasiswa->alamat) }}</textarea>
+                        <textarea class="form-control" name="alamat" id="alamat" rows="2" placeholder="Masukkan alamat lengkap">{{ old('alamat', $mahasiswa->alamat) }}</textarea>
                         <div class="input-group-append">
                             <span class="input-group-text bg-info text-white">
                                 <i class="fas fa-map-marker-alt"></i>
@@ -247,8 +262,9 @@
                                 Username <span class="text-danger">*</span>
                             </label>
                             <div class="input-group">
-                                <input type="text" class="form-control" name="username" id="username" 
-                                       value="{{ $mahasiswa->users->username ?? '' }}" required placeholder="Masukkan username">
+                                <input type="text" class="form-control" name="username" id="username"
+                                    value="{{ $mahasiswa->users->username ?? '' }}" required
+                                    placeholder="Masukkan username">
                                 <div class="input-group-append">
                                     <span class="input-group-text bg-secondary text-white">
                                         <i class="fas fa-user-tag"></i>
@@ -261,11 +277,12 @@
                         <div class="form-group">
                             <label for="password" class="col-form-label font-weight-bold">
                                 Password
-                                <small class="text-muted font-weight-normal">(kosongkan jika tidak ingin diubah)</small>
+                                <small class="text-muted font-weight-normal">(kosongkan jika tidak ingin
+                                    diubah)</small>
                             </label>
                             <div class="input-group">
-                                <input type="password" class="form-control" name="password" id="password" 
-                                       placeholder="Masukkan password baru">
+                                <input type="password" class="form-control" name="password" id="password"
+                                    placeholder="Masukkan password baru">
                                 <div class="input-group-append">
                                     <span class="input-group-text bg-danger text-white">
                                         <i class="fas fa-lock"></i>
@@ -282,9 +299,9 @@
                         <small class="text-muted font-weight-normal">(biarkan jika tidak ingin diubah)</small>
                     </label>
                     <div class="input-group">
-                        <input type="text" class="form-control" name="phrase" id="phrase" 
-                               value="{{ old('phrase', $mahasiswa->users->phrase ?? $mahasiswa->users->username) }}" 
-                               placeholder="Phrase untuk pemulihan password">
+                        <input type="text" class="form-control" name="phrase" id="phrase"
+                            value="{{ old('phrase', $mahasiswa->users->phrase ?? $mahasiswa->users->username) }}"
+                            placeholder="Phrase untuk pemulihan password">
                         <div class="input-group-append">
                             <span class="input-group-text bg-dark text-white">
                                 <i class="fas fa-key"></i>
@@ -299,7 +316,7 @@
 
                 <!-- Role Hidden Input -->
                 <input type="hidden" name="role" value="mahasiswa">
-                
+
                 <!-- Role Display (Read-only) -->
                 <div class="form-group">
                     <label class="col-form-label font-weight-bold">Role</label>
@@ -347,7 +364,7 @@
 
     .card {
         border: none;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .card-header {
@@ -371,7 +388,7 @@
         resize: vertical;
         min-height: 60px;
     }
-    
+
     /* Custom purple color for bg-purple */
     .bg-purple {
         background-color: #7571F9 !important;
@@ -407,13 +424,13 @@
     .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
         background-color: #7571F9;
     }
-    
+
     /* Fix for select2 with input-group */
     .input-group .select2-container {
         flex: 1 1 auto;
         width: auto !important;
     }
-    
+
     .input-group .select2-container .select2-selection {
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
@@ -425,7 +442,7 @@
     // Animasi saat modal dibuka
     $(document).ready(function() {
         $('.card').hide().fadeIn(600);
-        
+
         // Inisialisasi Select2
         $('.multiselect-dropdown-kategori').select2({
             width: '100%',
@@ -434,7 +451,7 @@
     });
 
     // Submit form edit mahasiswa dengan AJAX
-    $(document).on('submit', '#form-edit-mahasiswa', function (e) {
+    $(document).on('submit', '#form-edit-mahasiswa', function(e) {
         e.preventDefault();
         let form = $(this);
         let url = form.attr('action');
@@ -449,7 +466,7 @@
             url: url,
             type: 'PUT',
             data: data,
-            success: function (response) {
+            success: function(response) {
                 if (response.success) {
                     Swal.fire({
                         title: 'Berhasil!',
@@ -476,21 +493,21 @@
                     });
                 }
             },
-            error: function (xhr) {
+            error: function(xhr) {
                 // Reset button state
                 submitBtn.html(originalText).prop('disabled', false);
-                
+
                 // Tampilkan pesan error validasi atau lainnya
                 let errors = xhr.responseJSON?.errors;
                 let message = '';
                 if (errors) {
-                    $.each(errors, function (key, val) {
+                    $.each(errors, function(key, val) {
                         message += val + '<br>';
                     });
                 } else {
                     message = xhr.responseJSON?.message || 'Terjadi kesalahan.';
                 }
-                
+
                 Swal.fire({
                     title: 'Error!',
                     html: message,

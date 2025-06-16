@@ -190,6 +190,7 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
             Route::post('periode-semester/store', [PeriodeSemesterController::class, 'store'])->name('periode-semester.store');
             Route::put('periode-semester/{id}', [PeriodeSemesterController::class, 'update'])->name('periode-semester.update');
             Route::delete('periode-semester/{id}', [PeriodeSemesterController::class, 'destroy'])->name('periode-semester.destroy');
+            Route::post('periode-semester/cek-semester-periode', [PeriodeSemesterController::class, 'checkSemesterPeriode'])->name('periode-semester.check-semester-periode');
 
             // Rute Program Studi
             Route::get('program-studi', [ProgramStudiController::class, 'index'])->name('program-studi.index');
