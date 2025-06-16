@@ -13,7 +13,7 @@ class VerifikasiBimbinganController extends Controller
     public function index()
     {
         $breadcrumb = (object) [
-            'list' => ['Manajemen Mahasiswa Bimbingan']
+            'list' => ['Verifikasi Bimbingan', 'Manajemen Mahasiswa Bimbingan']
         ];
 
         return view('dosen.verifikasi-bimbingan.index', compact('breadcrumb'));
