@@ -18,24 +18,19 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="lomba_id" class="col-form-label font-weight-bold">Nama Lomba <span class="text-danger">*</span></label>
+                            <label for="lomba_id" class="col-form-label font-weight-bold">Nama Lomba <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group">
-                                <select name="lomba_id" id="lomba_id" class="form-control select2" required>
+                                <select id="lomba_id_disabled" class="form-control select2" disabled>
                                     <option value="">-- Pilih Lomba --</option>
                                     @foreach ($daftarLomba as $lomba)
                                         <option value="{{ $lomba->lomba_id }}"
-                                            data-tingkat="{{ $lomba->tingkat_lomba->nama_tingkat ?? '' }}"
-                                            data-tingkat-id="{{ $lomba->tingkat_lomba->tingkat_lomba_id ?? '' }}"
-                                            data-kategori="{{ optional($lomba->kategori)->pluck('nama_kategori')->implode(', ') }}"
-                                            data-kategori-json='@json(
-                                                $lomba->kategori->map(function ($k) {
-                                                    return ['id' => $k->kategori_id, 'text' => $k->nama_kategori];
-                                                }))' data-tipe="{{ $lomba->tipe_lomba }}"
                                             {{ $prestasi->lomba_id == $lomba->lomba_id ? 'selected' : '' }}>
                                             {{ $lomba->nama_lomba }}
                                         </option>
                                     @endforeach
-                                    <option value="lainnya" {{ is_null($prestasi->lomba_id) ? 'selected' : '' }}>Lainnya</option>
+                                    <option value="lainnya" {{ is_null($prestasi->lomba_id) ? 'selected' : '' }}>Lainnya
+                                    </option>
                                 </select>
                                 <div class="input-group-append">
                                     <span class="input-group-text bg-primary text-white">
@@ -43,15 +38,21 @@
                                     </span>
                                 </div>
                             </div>
+
+                            <!-- Input tersembunyi agar value tetap dikirim -->
+                            <input type="hidden" name="lomba_id" value="{{ $prestasi->lomba_id }}">
                         </div>
+
                     </div>
                 </div>
 
                 <!-- Tingkat dan Kategori (Readonly jika pilih dari DB) -->
                 <div class="row">
                     <div class="col-md-6">
-                        <div id="form-tingkat-lomba" class="form-group" style="{{ is_null($prestasi->lomba_id) ? 'display:none;' : '' }}">
-                            <label for="nama_tingkat_lomba" class="col-form-label font-weight-bold">Tingkat Lomba</label>
+                        <div id="form-tingkat-lomba" class="form-group"
+                            style="{{ is_null($prestasi->lomba_id) ? 'display:none;' : '' }}">
+                            <label for="nama_tingkat_lomba" class="col-form-label font-weight-bold">Tingkat
+                                Lomba</label>
                             <div class="input-group">
                                 <input type="text" id="nama_tingkat_lomba" class="form-control"
                                     value="{{ $prestasi->lomba_id ? $prestasi->lomba->tingkat_lomba->nama_tingkat ?? '' : '' }}"
@@ -67,8 +68,10 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div id="form-kategori-lomba" class="form-group" style="{{ is_null($prestasi->lomba_id) ? 'display:none;' : '' }}">
-                            <label for="kategori_id" class="col-form-label font-weight-bold">Kategori Lomba <span class="text-danger">*</span></label>
+                        <div id="form-kategori-lomba" class="form-group"
+                            style="{{ is_null($prestasi->lomba_id) ? 'display:none;' : '' }}">
+                            <label for="kategori_id" class="col-form-label font-weight-bold">Kategori Lomba <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group">
                                 <select name="kategori_id" id="kategori_id" class="form-control select2" required>
                                     @if ($prestasi->lomba_id)
@@ -91,11 +94,13 @@
                 </div>
 
                 <!-- Input Manual (Jika "Lainnya") -->
-                <div id="input-lomba-lainnya" class="lomba-manual-section" style="{{ !is_null($prestasi->lomba_id) ? 'display:none;' : '' }}">
+                <div id="input-lomba-lainnya" class="lomba-manual-section"
+                    style="{{ !is_null($prestasi->lomba_id) ? 'display:none;' : '' }}">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label for="lomba_lainnya" class="col-form-label font-weight-bold">Nama Lomba (Lainnya) <span class="text-danger">*</span></label>
+                                <label for="lomba_lainnya" class="col-form-label font-weight-bold">Nama Lomba (Lainnya)
+                                    <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <input type="text" name="lomba_lainnya" id="lomba_lainnya" class="form-control"
                                         value="{{ $prestasi->lomba_lainnya }}">
@@ -111,7 +116,8 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="tingkat_lomba_id" class="col-form-label font-weight-bold">Tingkat Lomba <span class="text-danger">*</span></label>
+                                <label for="tingkat_lomba_id" class="col-form-label font-weight-bold">Tingkat Lomba
+                                    <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <select name="tingkat_lomba_id" id="tingkat_lomba_id" class="form-control select2">
                                         <option value="">-- Pilih Tingkat Lomba --</option>
@@ -131,10 +137,13 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div id="kategori-lomba-manual" class="form-group" style="{{ !is_null($prestasi->lomba_id) ? 'display:none;' : '' }}">
-                                <label for="kategori_id_manual" class="col-form-label font-weight-bold">Kategori Lomba <span class="text-danger">*</span></label>
+                            <div id="kategori-lomba-manual" class="form-group"
+                                style="{{ !is_null($prestasi->lomba_id) ? 'display:none;' : '' }}">
+                                <label for="kategori_id_manual" class="col-form-label font-weight-bold">Kategori Lomba
+                                    <span class="text-danger">*</span></label>
                                 <div class="input-group">
-                                    <select name="kategori_id" id="kategori_id_manual" class="form-control select2" required>
+                                    <select name="kategori_id" id="kategori_id_manual" class="form-control select2"
+                                        required>
                                         <option value="">-- Pilih Kategori --</option>
                                         @foreach ($daftarKategori as $kategori)
                                             <option value="{{ $kategori->kategori_id }}"
@@ -165,9 +174,11 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="col-form-label font-weight-bold">Tipe Prestasi <span class="text-danger">*</span></label>
+                            <label class="col-form-label font-weight-bold">Tipe Prestasi <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group">
-                                <select name="jenis_prestasi" id="jenis_prestasi" class="form-control select2" required>
+                                <select name="jenis_prestasi" id="jenis_prestasi" class="form-control select2"
+                                    required>
                                     <option value="">-- Pilih Tipe --</option>
                                     <option value="individu"
                                         {{ strtolower(old('jenis_prestasi', $prestasi->jenis_prestasi ?? '')) == 'individu' ? 'selected' : '' }}>
@@ -208,7 +219,8 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="juara_prestasi" class="col-form-label font-weight-bold">Juara Prestasi <span class="text-danger">*</span></label>
+                            <label for="juara_prestasi" class="col-form-label font-weight-bold">Juara Prestasi <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group">
                                 <input type="text" class="form-control" name="juara_prestasi"
                                     value="{{ $prestasi->juara_prestasi }}" required>
@@ -222,10 +234,12 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="tanggal_prestasi" class="col-form-label font-weight-bold">Tanggal Prestasi <span class="text-danger">*</span></label>
+                            <label for="tanggal_prestasi" class="col-form-label font-weight-bold">Tanggal Prestasi
+                                <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <input type="date" class="form-control" name="tanggal_prestasi"
-                                    value="{{ \Carbon\Carbon::parse($prestasi->tanggal_prestasi)->format('Y-m-d') }}" required>
+                                    value="{{ \Carbon\Carbon::parse($prestasi->tanggal_prestasi)->format('Y-m-d') }}"
+                                    required>
                                 <div class="input-group-append">
                                     <span class="input-group-text bg-success text-white">
                                         <i class="fas fa-calendar-alt"></i>
@@ -239,7 +253,8 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="periode_id" class="col-form-label font-weight-bold">Periode <span class="text-danger">*</span></label>
+                            <label for="periode_id" class="col-form-label font-weight-bold">Periode <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group">
                                 <select name="periode_id" id="periode_id" class="form-control select2" required>
                                     @foreach ($daftarPeriode as $periode)
@@ -283,18 +298,23 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label class="col-form-label font-weight-bold">Status Verifikasi <span class="text-danger">*</span></label>
+                            <label class="col-form-label font-weight-bold">Status Verifikasi <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group">
-                                <select name="status_verifikasi" id="status_verifikasi" class="form-control select2" required>
+                                <select name="status_verifikasi" id="status_verifikasi" class="form-control select2"
+                                    required>
                                     <option value="">-- Pilih Status --</option>
                                     <option value="Ditolak"
-                                        {{ strcasecmp($prestasi->status_verifikasi ?? '', 'Ditolak') === 0 ? 'selected' : '' }}>Ditolak
+                                        {{ strcasecmp($prestasi->status_verifikasi ?? '', 'Ditolak') === 0 ? 'selected' : '' }}>
+                                        Ditolak
                                     </option>
                                     <option value="Valid"
-                                        {{ strcasecmp($prestasi->status_verifikasi ?? '', 'Valid') === 0 ? 'selected' : '' }}>Valid
+                                        {{ strcasecmp($prestasi->status_verifikasi ?? '', 'Valid') === 0 ? 'selected' : '' }}>
+                                        Valid
                                     </option>
                                     <option value="Menunggu"
-                                        {{ strcasecmp($prestasi->status_verifikasi ?? '', 'Menunggu') === 0 ? 'selected' : '' }}>Menunggu
+                                        {{ strcasecmp($prestasi->status_verifikasi ?? '', 'Menunggu') === 0 ? 'selected' : '' }}>
+                                        Menunggu
                                     </option>
                                     <option value="Terverifikasi"
                                         {{ strcasecmp($prestasi->status_verifikasi ?? '', 'Terverifikasi') === 0 ? 'selected' : '' }}>
@@ -328,14 +348,16 @@
                         <div class="form-group anggota-item">
                             <div class="anggota-section bg-light rounded p-3 mb-2">
                                 <label class="col-form-label font-weight-bold">
-                                    <i class="fas fa-{{ $index === 0 ? 'crown' : 'user' }} mr-2 {{ $index === 0 ? 'text-warning' : '' }}"></i>
+                                    <i
+                                        class="fas fa-{{ $index === 0 ? 'crown' : 'user' }} mr-2 {{ $index === 0 ? 'text-warning' : '' }}"></i>
                                     {{ $index === 0 ? 'Ketua Tim' : 'Anggota ' . $index }}
                                     <span class="text-danger">*</span>
                                 </label>
                                 <div class="input-group">
                                     <select name="mahasiswa_id[]" class="form-control anggota-select"
                                         {{ $index === 0 ? 'required' : '' }}>
-                                        <option value="">-- Pilih {{ $index === 0 ? 'Ketua Tim' : 'Anggota ' . $index }} --
+                                        <option value="">-- Pilih
+                                            {{ $index === 0 ? 'Ketua Tim' : 'Anggota ' . $index }} --
                                         </option>
                                         @foreach ($daftarMahasiswa as $mhs)
                                             <option value="{{ $mhs->mahasiswa_id }}"
@@ -345,7 +367,8 @@
                                         @endforeach
                                     </select>
                                     <div class="input-group-append">
-                                        <span class="input-group-text bg-{{ $index === 0 ? 'warning text-dark' : 'info text-white' }}">
+                                        <span
+                                            class="input-group-text bg-{{ $index === 0 ? 'warning text-dark' : 'info text-white' }}">
                                             <i class="fas fa-{{ $index === 0 ? 'crown' : 'user-check' }}"></i>
                                         </span>
                                     </div>
@@ -372,23 +395,28 @@
                             </div>
                             <div class="card-body">
                                 <div class="form-group">
-                                    <label for="img_kegiatan" class="col-form-label font-weight-bold">Upload Gambar <small>(Maksimal 2MB)</small></label>
+                                    <label for="img_kegiatan" class="col-form-label font-weight-bold">Upload Gambar
+                                        <small>(Maksimal 2MB)</small></label>
                                     <div class="input-group">
                                         <div class="custom-file">
-                                            <input type="file" class="custom-file-input" name="img_kegiatan" accept=".png, .jpg, .jpeg"
+                                            <input type="file" class="custom-file-input" name="img_kegiatan"
+                                                accept=".png, .jpg, .jpeg"
                                                 onchange="$('#img_kegiatan_label').text(this.files[0] ? this.files[0].name : '{{ $prestasi->img_kegiatan ? basename($prestasi->img_kegiatan) : 'Pilih File' }}')">
-                                            <label class="custom-file-label" id="img_kegiatan_label" for="img_kegiatan">
+                                            <label class="custom-file-label" id="img_kegiatan_label"
+                                                for="img_kegiatan">
                                                 {{ $prestasi->img_kegiatan ? basename($prestasi->img_kegiatan) : 'Pilih File' }}
                                             </label>
                                         </div>
                                     </div>
                                     @if ($prestasi->img_kegiatan)
-                                        <small class="text-muted mt-2 d-block">File saat ini: 
-                                            <a href="{{ asset($prestasi->img_kegiatan) }}" target="_blank" class="text-primary">
+                                        <small class="text-muted mt-2 d-block">File saat ini:
+                                            <a href="{{ asset('storage/prestasi/img/' . $prestasi->img_kegiatan) }}"
+                                                target="_blank" class="text-primary d-block">
                                                 <i class="fas fa-eye mr-1"></i>{{ basename($prestasi->img_kegiatan) }}
                                             </a>
                                         </small>
                                     @endif
+
                                 </div>
                             </div>
                         </div>
@@ -402,20 +430,25 @@
                             </div>
                             <div class="card-body">
                                 <div class="form-group">
-                                    <label for="bukti_prestasi" class="col-form-label font-weight-bold">Upload Bukti <small>(Maksimal 2MB)</small></label>
+                                    <label for="bukti_prestasi" class="col-form-label font-weight-bold">Upload Bukti
+                                        <small>(Maksimal 2MB)</small></label>
                                     <div class="input-group">
                                         <div class="custom-file">
-                                            <input type="file" class="custom-file-input" name="bukti_prestasi" accept=".png, .jpg, .jpeg"
+                                            <input type="file" class="custom-file-input" name="bukti_prestasi"
+                                                accept=".png, .jpg, .jpeg, .pdf"
                                                 onchange="$('#bukti_prestasi_label').text(this.files[0] ? this.files[0].name : '{{ $prestasi->bukti_prestasi ? basename($prestasi->bukti_prestasi) : 'Pilih File' }}')">
-                                            <label class="custom-file-label" id="bukti_prestasi_label" for="bukti_prestasi">
+                                            <label class="custom-file-label" id="bukti_prestasi_label"
+                                                for="bukti_prestasi">
                                                 {{ $prestasi->bukti_prestasi ? basename($prestasi->bukti_prestasi) : 'Pilih File' }}
                                             </label>
                                         </div>
                                     </div>
                                     @if ($prestasi->bukti_prestasi)
-                                        <small class="text-muted mt-2 d-block">File saat ini: 
-                                            <a href="{{ asset($prestasi->bukti_prestasi) }}" target="_blank" class="text-success">
-                                                <i class="fas fa-eye mr-1"></i>{{ basename($prestasi->bukti_prestasi) }}
+                                        <small class="text-muted mt-2 d-block">File saat ini:
+                                            <a href="{{ asset('storage/prestasi/bukti/' . $prestasi->bukti_prestasi) }}"
+                                                target="_blank" class="text-success d-block">
+                                                <i
+                                                    class="fas fa-eye mr-1"></i>{{ basename($prestasi->bukti_prestasi) }}
                                             </a>
                                         </small>
                                     @endif
@@ -432,25 +465,28 @@
                             </div>
                             <div class="card-body">
                                 <div class="form-group">
-                                    <label for="surat_tugas_prestasi" class="col-form-label font-weight-bold">Upload Surat <small>(Maksimal 2MB)</small></label>
+                                    <label for="surat_tugas_prestasi" class="col-form-label font-weight-bold">Upload
+                                        Surat <small>(Maksimal 2MB)</small></label>
                                     <div class="input-group">
                                         <div class="custom-file">
-                                            <input type="file" class="custom-file-input" name="surat_tugas_prestasi"
-                                                accept=".png, .jpg, .jpeg"
+                                            <input type="file" class="custom-file-input"
+                                                name="surat_tugas_prestasi" accept=".png, .jpg, .jpeg, .pdf"
                                                 onchange="$('#surat_tugas_prestasi_label').text(this.files[0] ? this.files[0].name : '{{ $prestasi->surat_tugas_prestasi ? basename($prestasi->surat_tugas_prestasi) : 'Pilih File' }}')">
-                                            <label class="custom-file-label" id="surat_tugas_prestasi_label" for="surat_tugas_prestasi">
+                                            <label class="custom-file-label" id="surat_tugas_prestasi_label"
+                                                for="surat_tugas_prestasi">
                                                 {{ $prestasi->surat_tugas_prestasi ? basename($prestasi->surat_tugas_prestasi) : 'Pilih File' }}
                                             </label>
                                         </div>
                                     </div>
-                                    @if ($prestasi->surat_tugas_prestasi)
-                                        <small class="text-muted mt-2 d-block">File saat ini: 
-                                            <a href="{{ asset($prestasi->surat_tugas_prestasi) }}" target="_blank" class="text-warning">
-                                                <i class="fas fa-eye mr-1"></i>{{ basename($prestasi->surat_tugas_prestasi) }}
-                                            </a>
-                                        </small>
-                                    @endif
                                 </div>
+                                @if ($prestasi->surat_tugas_prestasi)
+                                    <small class="text-muted mt-2 d-block">File saat ini:
+                                        <a href="{{ asset('storage/prestasi/surat/' . $prestasi->surat_tugas_prestasi) }}"
+                                            target="_blank" class="text-warning d-block">
+                                            <i class="fas fa-eye mr-1"></i>{{ basename($prestasi->surat_tugas_prestasi) }}
+                                        </a>
+                                    </small>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -474,11 +510,11 @@
     .anggota-section {
         border-left: 4px solid #7571F9;
     }
-    
+
     .anggota-section:first-child {
         border-left-color: #ffc107 !important;
     }
-    
+
     .lomba-manual-section {
         background-color: rgba(255, 193, 7, 0.1);
         border-radius: 8px;
@@ -486,43 +522,43 @@
         padding: 15px;
         margin: 10px 0;
     }
-    
+
     .card-header h6 {
         color: #495057;
         font-weight: 600;
     }
-    
+
     .badge-lg {
         font-size: 1rem;
         padding: 0.5rem 0.75rem;
     }
-    
+
     .file-preview {
         padding: 20px;
         border: 2px dashed #dee2e6;
         border-radius: 8px;
         background-color: #f8f9fa;
     }
-    
+
     .input-group-text {
         border: 1px solid #ced4da;
     }
-    
+
     .btn-outline-secondary {
         border: 1px solid #6c757d;
     }
-    
+
     .custom-file-label::after {
         content: "Browse";
     }
-    
+
     .anggota-item .anggota-section {
         transition: all 0.3s ease;
     }
-    
+
     .anggota-item .anggota-section:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 </style>
 
@@ -814,4 +850,3 @@
         });
     });
 </script>
-
