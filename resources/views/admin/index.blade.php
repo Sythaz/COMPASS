@@ -31,40 +31,46 @@
 
     <div class="row">
         <div class="col-lg-4 col-sm-6">
-            <div class="card gradient-1">
-                <div class="card-body">
-                    <h3 class="card-title text-white">Total Prestasi Mahasiswa</h3>
-                    <div class="d-inline-block mt-auto">
-                        <h1 class="text-white my-3">{{ $totalPrestasiMahasiswa }}</h1>
+            <a href="{{ route('kelola-prestasi.index') }}" style="text-decoration: none; color: inherit;">
+                <div class="card gradient-1">
+                    <div class="card-body">
+                        <h3 class="card-title text-white">Total Prestasi Mahasiswa</h3>
+                        <div class="d-inline-block mt-auto">
+                            <h1 class="text-white my-3">{{ $totalPrestasiMahasiswa }}</h1>
+                        </div>
+                        <span class="float-right display-5 opacity-5"><i class="fa fa-users"></i></span>
+                        <p class="text-white mb-0">Yang terverifikasi</p>
                     </div>
-                    <span class="float-right display-5 opacity-5"><i class="fa fa-users"></i></span>
-                    <p class="text-white mb-0">Yang terverifikasi</p>
                 </div>
-            </div>
+            </a>
         </div>
         <div class="col-lg-4 col-sm-6">
-            <div class="card gradient-1">
-                <div class="card-body">
-                    <h3 class="card-title text-white">Lomba Aktif</h3>
-                    <div class="d-inline-block">
-                        <h1 class="text-white my-3">{{ $jumlahLombaAktif }}</h1>
+            <a href="{{ route('kelola-lomba.index') }}" style="text-decoration: none; color: inherit;">
+                <div class="card gradient-1">
+                    <div class="card-body">
+                        <h3 class="card-title text-white">Lomba Aktif</h3>
+                        <div class="d-inline-block">
+                            <h1 class="text-white my-3">{{ $jumlahLombaAktif }}</h1>
+                        </div>
+                        <span class="float-right display-5 opacity-5"><i class="fas fa-flag-checkered"></i></span>
+                        <p class="text-white mb-0">Sedang berlangsung</p>
                     </div>
-                    <span class="float-right display-5 opacity-5"><i class="fas fa-flag-checkered"></i></span>
-                    <p class="text-white mb-0">Sedang berlangsung</p>
                 </div>
-            </div>
+            </a>
         </div>
         <div class="col-lg-4 col-sm-6">
-            <div class="card gradient-1">
-                <div class="card-body">
-                    <h3 class="card-title text-white">Prestasi Sebulan Terakhir</h3>
-                    <div class="d-inline-block">
-                        <h1 class="text-white my-3">{{ $jmlPrestasiSebulanTerakhir }}</h1>
+            <a href="{{ route('kelola-prestasi.index') }}" style="text-decoration: none; color: inherit;">
+                <div class="card gradient-1">
+                    <div class="card-body">
+                        <h3 class="card-title text-white">Prestasi Sebulan Terakhir</h3>
+                        <div class="d-inline-block">
+                            <h1 class="text-white my-3">{{ $jmlPrestasiSebulanTerakhir }}</h1>
+                        </div>
+                        <span class="float-right display-5 opacity-5"><i class="fa fa-calendar-alt"></i></span>
+                        <p class="text-white mb-0">Mahasiswa yang berprestasi</p>
                     </div>
-                    <span class="float-right display-5 opacity-5"><i class="fa fa-calendar-alt"></i></span>
-                    <p class="text-white mb-0">Mahasiswa yang berprestasi</p>
                 </div>
-            </div>
+            </a>
         </div>
     </div>
     <div class="row">
@@ -107,7 +113,7 @@
                                         <td class="pl-0 col-8 font-weight-bold">{{ $upcomingLomba->nama_lomba }}</td>
                                         <td class="text-center col">{{ $upcomingLomba->akhir_registrasi_lomba }}</td>
                                         <th class="text-center col" style="cursor: pointer;">
-                                            <i onclick="location.href='{{ route('mahasiswa.informasi-lomba.index') }}'"
+                                            <i onclick="location.href='{{ route('kelola-lomba.index') }}'"
                                                 class="fa fa-solid fa-angle-right fa-2x"></i>
                                         </th>
                                     </tr>
