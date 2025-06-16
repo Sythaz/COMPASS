@@ -12,6 +12,7 @@ use App\Models\PeriodeModel;
 use App\Models\PrestasiModel;
 use App\Models\TingkatLombaModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\DataTables;
 
 class KelolaPrestasiController extends Controller
@@ -75,7 +76,7 @@ class KelolaPrestasiController extends Controller
             ->addColumn('tanggal_prestasi', function ($row) {
                 return $row->tanggal_prestasi ? date('d M Y', strtotime($row->tanggal_prestasi)) : '-';
             })
-            ->addColumn('jenis_prestasi', fn ($row) => $row->jenis_prestasi ?? '-')
+            ->addColumn('jenis_prestasi', fn($row) => $row->jenis_prestasi ?? '-')
             ->editColumn('status_verifikasi', function ($prestasi) {
                 $status = $prestasi->status_verifikasi ?? 'menunggu';
                 return $this->getStatusBadge($status);
@@ -85,7 +86,7 @@ class KelolaPrestasiController extends Controller
                     '<button onclick="modalAction(\'' . route('kelola-prestasi.showAjax', $row->prestasi_id) . '\')" class="btn btn-info btn-sm">Detail</button>' .
                     '<button onclick="modalAction(\'' . route('kelola-prestasi.editAjax', $row->prestasi_id) . '\')" class="btn btn-warning btn-sm">Edit</button>' .
                     '<button onclick="modalAction(\'' . route('kelola-prestasi.deleteAjax', $row->prestasi_id) . '\')" class="btn btn-danger btn-sm">Hapus</button>' .
-                '</div>';
+                    '</div>';
             })
             ->rawColumns(['dosen_pembimbing', 'status_verifikasi', 'aksi'])
             ->make(true);
@@ -138,6 +139,7 @@ class KelolaPrestasiController extends Controller
             'daftarMahasiswa'
         ));
     }
+
     public function update(Request $request, $id)
     {
         $prestasi = PrestasiModel::findOrFail($id);
@@ -158,6 +160,10 @@ class KelolaPrestasiController extends Controller
             'tingkat_lomba_id' => 'nullable|exists:t_tingkat_lomba,tingkat_lomba_id',
             'status_verifikasi' => 'required|string|in:Ditolak,Valid,Menunggu,Terverifikasi',
             'alasan_tolak' => 'nullable|string|max:1000',
+
+            'img_kegiatan' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'bukti_prestasi' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'surat_tugas_prestasi' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
 
         if (!empty($validated['lomba_id'])) {
@@ -175,7 +181,51 @@ class KelolaPrestasiController extends Controller
             $validated['lomba_id'] = null;
         }
 
-        $prestasi->update($validated);
+        // Proses file upload
+        if ($request->hasFile('img_kegiatan')) {
+            $file = $request->file('img_kegiatan');
+            $filename = 'img_' . $prestasi->prestasi_id . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('public/prestasi/img', $filename);
+
+            if ($prestasi->img_kegiatan && Storage::exists('public/prestasi/img/' . $prestasi->img_kegiatan)) {
+                Storage::delete('public/prestasi/img/' . $prestasi->img_kegiatan);
+            }
+
+            $prestasi->img_kegiatan = $filename;
+        }
+
+        if ($request->hasFile('bukti_prestasi')) {
+            $file = $request->file('bukti_prestasi');
+            $filename = 'bukti_' . $prestasi->prestasi_id . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('public/prestasi/bukti', $filename);
+
+            if ($prestasi->bukti_prestasi && Storage::exists('public/prestasi/bukti/' . $prestasi->bukti_prestasi)) {
+                Storage::delete('public/prestasi/bukti/' . $prestasi->bukti_prestasi);
+            }
+
+            $prestasi->bukti_prestasi = $filename;
+        }
+
+        if ($request->hasFile('surat_tugas_prestasi')) {
+            $file = $request->file('surat_tugas_prestasi');
+            $filename = 'surat_' . $prestasi->prestasi_id . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('public/prestasi/surat', $filename);
+
+            if ($prestasi->surat_tugas_prestasi && Storage::exists('public/prestasi/surat/' . $prestasi->surat_tugas_prestasi)) {
+                Storage::delete('public/prestasi/surat/' . $prestasi->surat_tugas_prestasi);
+            }
+
+            $prestasi->surat_tugas_prestasi = $filename;
+        }
+
+        // Buang field upload dari validated sebelum update
+        $cleanValidated = collect($validated)->except([
+            'img_kegiatan',
+            'bukti_prestasi',
+            'surat_tugas_prestasi',
+        ])->toArray();
+
+        $prestasi->update($cleanValidated);
 
         if ($request->filled('mahasiswa_id')) {
             $mahasiswaIds = $request->input('mahasiswa_id');
@@ -227,18 +277,19 @@ class KelolaPrestasiController extends Controller
         // Validasi input utama
         $validated = $request->validate(
             [
-            'lomba_id' => 'nullable|required_without:lomba_lainnya|exists:t_lomba,lomba_id',
-            'lomba_lainnya' => 'nullable|required_without:lomba_id|string|max:255',
-            'dosen_id' => 'nullable|exists:t_dosen,dosen_id',
-            'kategori_id' => 'required|exists:t_kategori,kategori_id',
-            'periode_id' => 'required|exists:t_periode,periode_id',
-            'tanggal_prestasi' => 'required|date',
-            'jenis_prestasi' => 'nullable|string|max:255',
-            'juara_prestasi' => 'required|string|max:255',
-            'tingkat_lomba_id' => 'nullable|exists:t_tingkat_lomba,tingkat_lomba_id',
-            'img_kegiatan' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'bukti_prestasi' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:4096',
-            'surat_tugas_prestasi' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:4096',],
+                'lomba_id' => 'nullable|required_without:lomba_lainnya|exists:t_lomba,lomba_id',
+                'lomba_lainnya' => 'nullable|required_without:lomba_id|string|max:255',
+                'dosen_id' => 'nullable|exists:t_dosen,dosen_id',
+                'kategori_id' => 'required|exists:t_kategori,kategori_id',
+                'periode_id' => 'required|exists:t_periode,periode_id',
+                'tanggal_prestasi' => 'required|date',
+                'jenis_prestasi' => 'nullable|string|max:255',
+                'juara_prestasi' => 'required|string|max:255',
+                'tingkat_lomba_id' => 'nullable|exists:t_tingkat_lomba,tingkat_lomba_id',
+                'img_kegiatan' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+                'bukti_prestasi' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:4096',
+                'surat_tugas_prestasi' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:4096',
+            ],
             ['tanggal_prestasi.before_or_equal' => 'Tanggal prestasi tidak boleh lebih dari hari ini.',]
         );
 
@@ -326,5 +377,4 @@ class KelolaPrestasiController extends Controller
             ], 500);
         }
     }
-
 }

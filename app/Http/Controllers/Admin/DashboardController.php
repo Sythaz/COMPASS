@@ -39,11 +39,6 @@ class DashboardController extends Controller
             ->distinct()
             ->count();
 
-        $persentasePrestasiMahasiswa = 0;
-        if ($totalMhs > 0) {
-            $persentasePrestasiMahasiswa = floor($totalPrestasiMahasiswa / $totalMhs * 100);
-        }
-
         // Menghitung lomba yang sedang aktif pendaftaran
         $jumlahLombaAktif = DB::table('t_lomba')
             ->where('status_lomba', 'Aktif')
@@ -112,7 +107,7 @@ class DashboardController extends Controller
 
         return view('admin.index', compact(
             'breadcrumb',
-            'persentasePrestasiMahasiswa',
+            'totalPrestasiMahasiswa',
             'jumlahLombaAktif',
             'jmlPrestasiSebulanTerakhir',
             'topMahasiswa',
@@ -230,15 +225,12 @@ class DashboardController extends Controller
         $endYear = $current->copy()->endOfYear();
         $sebulanTerakhir = $current->copy()->subMonth();
 
-        $totalMhs = DB::table('t_mahasiswa')->count();
         $totalPrestasi = DB::table('t_prestasi')
-            ->join('t_prestasi_mahasiswa', 't_prestasi.prestasi_id', '=', 't_prestasi_mahasiswa.prestasi_id')
-            ->where('t_prestasi.status_verifikasi', 'Terverifikasi')
-            ->whereBetween('t_prestasi.tanggal_prestasi', [$startYear, $endYear])
-            ->distinct('t_prestasi_mahasiswa.mahasiswa_id')
-            ->count('t_prestasi_mahasiswa.mahasiswa_id');
-
-        $persentase = $totalMhs > 0 ? floor($totalPrestasi / $totalMhs * 100) : 0;
+            ->select('mahasiswa_id')
+            ->where('status_verifikasi', 'Terverifikasi')
+            ->whereBetween('tanggal_prestasi', [$startYear, $endYear])
+            ->distinct()
+            ->count();
 
         $jumlahLombaAktif = DB::table('t_lomba')
             ->where('status_lomba', 'Aktif')
@@ -306,8 +298,8 @@ class DashboardController extends Controller
         // HEADER
         $bold = ['font' => ['bold' => true]];
         $sheet->setCellValue('A1', '--- RINGKASAN ---');
-        $sheet->setCellValue('A2', 'Persentase Mahasiswa Berprestasi');
-        $sheet->setCellValue('B2', $persentase . '%');
+        $sheet->setCellValue('A2', 'Total Prestasi Mahasiswa ');
+        $sheet->setCellValue('B2', $totalPrestasi );
         $sheet->setCellValue('A3', 'Jumlah Lomba Aktif');
         $sheet->setCellValue('B3', $jumlahLombaAktif);
         $sheet->setCellValue('A4', 'Mahasiswa Berprestasi Sebulan Terakhir');
@@ -461,15 +453,12 @@ class DashboardController extends Controller
         $endYear = $current->copy()->endOfYear();
         $sebulanTerakhir = $current->copy()->subMonth();
 
-        $totalMhs = DB::table('t_mahasiswa')->count();
-        $totalPrestasi = DB::table('t_prestasi')
-            ->join('t_prestasi_mahasiswa', 't_prestasi.prestasi_id', '=', 't_prestasi_mahasiswa.prestasi_id')
-            ->where('t_prestasi.status_verifikasi', 'Terverifikasi')
-            ->whereBetween('t_prestasi.tanggal_prestasi', [$startYear, $endYear])
-            ->distinct('t_prestasi_mahasiswa.mahasiswa_id')
-            ->count('t_prestasi_mahasiswa.mahasiswa_id');
-
-        $persentase = $totalMhs > 0 ? floor($totalPrestasi / $totalMhs * 100) : 0;
+        $totalPrestasiMahasiswa = DB::table('t_prestasi')
+            ->select('mahasiswa_id')
+            ->where('status_verifikasi', 'Terverifikasi')
+            ->whereBetween('tanggal_prestasi', [$startYear, $endYear])
+            ->distinct()
+            ->count();
 
         $jumlahLombaAktif = DB::table('t_lomba')
             ->where('status_lomba', 'Aktif')
@@ -519,7 +508,7 @@ class DashboardController extends Controller
         }
 
         $data = [
-            'persentase' => $persentase,
+            'totalPrestasiMahasiswa' => $totalPrestasiMahasiswa,
             'jumlahLombaAktif' => $jumlahLombaAktif,
             'prestasiSebulan' => $prestasiSebulan,
             'topMahasiswa' => $topMahasiswa,

@@ -289,8 +289,9 @@
                         }
                         // Reload datatable if exists
                         if (typeof table !== 'undefined' && table.ajax) {
-                            table.ajax.reload();
+                            table.ajax.reload(null, false);
                         }
+                        $('#tabel-admin').DataTable().ajax.reload();
                     });
                 } else {
                     Swal.fire({

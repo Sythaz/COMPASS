@@ -226,12 +226,12 @@
                             <h6 class="font-weight-bold mb-2">
                                 <i class="fas fa-image mr-2"></i>Gambar Kegiatan
                             </h6>
-                            @if ($prestasi->img_kegiatan && Storage::disk('public')->exists('img/prestasi/' . $prestasi->img_kegiatan))
+                            @if ($prestasi->img_kegiatan && Storage::disk('public')->exists('prestasi/img/' . $prestasi->img_kegiatan))
                                 <div class="text-center">
                                     <div class="file-preview mb-2">
-                                        <a href="{{ Storage::url('img/prestasi/' . $prestasi->img_kegiatan) }}"
+                                        <a href="{{ asset('storage/prestasi/img/' . $prestasi->img_kegiatan) }}"
                                             data-lightbox="prestasi" data-title="Gambar Kegiatan">
-                                            <img src="{{ Storage::url('img/prestasi/' . $prestasi->img_kegiatan) }}"
+                                            <img src="{{ asset('storage/prestasi/img/' . $prestasi->img_kegiatan) }}"
                                                 width="100" class="img-thumbnail" style="cursor: zoom-in;"
                                                 alt="Gambar Kegiatan" />
                                         </a>
@@ -255,13 +255,13 @@
                             <h6 class="font-weight-bold mb-2">
                                 <i class="fas fa-certificate mr-2"></i>Bukti Prestasi
                             </h6>
-                            @if ($prestasi->bukti_prestasi && Storage::disk('public')->exists('img/prestasi/' . $prestasi->bukti_prestasi))
+                            @if ($prestasi->bukti_prestasi && Storage::disk('public')->exists('prestasi/bukti/' . $prestasi->bukti_prestasi))
                                 <div class="text-center">
                                     <div class="file-preview mb-2">
                                         <i class="fas fa-file-alt fa-3x text-primary mb-2"></i>
                                         <p class="small mb-2">File berhasil diunggah</p>
                                     </div>
-                                    <a href="{{ Storage::url('img/prestasi/' . $prestasi->bukti_prestasi) }}"
+                                    <a href="{{ asset('storage/prestasi/bukti/' . $prestasi->bukti_prestasi) }}"
                                         target="_blank" class="btn btn-sm btn-outline-primary">
                                         <i class="fas fa-eye mr-1"></i> Lihat
                                     </a>
@@ -283,13 +283,13 @@
                             </h6>
                             @if (
                                 $prestasi->surat_tugas_prestasi &&
-                                    Storage::disk('public')->exists('img/prestasi/' . $prestasi->surat_tugas_prestasi))
+                                    Storage::disk('public')->exists('prestasi/surat/' . $prestasi->surat_tugas_prestasi))
                                 <div class="text-center">
                                     <div class="file-preview mb-2">
                                         <i class="fas fa-file-contract fa-3x text-success mb-2"></i>
                                         <p class="small mb-2">File berhasil diunggah</p>
                                     </div>
-                                    <a href="{{ Storage::url('img/prestasi/' . $prestasi->surat_tugas_prestasi) }}"
+                                    <a href="{{ asset('storage/prestasi/surat/' . $prestasi->surat_tugas_prestasi) }}"
                                         target="_blank" class="btn btn-sm btn-outline-success">
                                         <i class="fas fa-download mr-1"></i> Lihat
                                     </a>
@@ -404,3 +404,6 @@
         });
     });
 </script>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>

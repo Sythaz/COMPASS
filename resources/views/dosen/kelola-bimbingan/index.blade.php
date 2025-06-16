@@ -42,8 +42,7 @@
 
                     {{-- Tambahkan Tabel DataTables di sini --}}
                     <div class="table-responsive">
-                        <table class="w-100 table table-striped table-bordered custom-datatable" id="bimbinganTable"
-                            style="width:100%">
+                        <table class="w-100 table table-striped table-bordered custom-datatable" id="bimbinganTable">
                             <thead>
                                 <tr>
                                     <th style="width: 1px; white-space: nowrap;">No</th>
