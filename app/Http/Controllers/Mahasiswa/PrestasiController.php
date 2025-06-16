@@ -166,7 +166,7 @@ class PrestasiController extends Controller
             $validated['lomba_id'] = null;
         }
 
-        $validated['status_verifikasi'] = $request->filled('dosen_id') ? 'menunggu' : 'valid';
+        $validated['status_verifikasi'] = $request->filled('dosen_id') ? 'menunggu' : 'menunggu';
 
         // Simpan data prestasi
         $prestasi = PrestasiModel::create($validated);

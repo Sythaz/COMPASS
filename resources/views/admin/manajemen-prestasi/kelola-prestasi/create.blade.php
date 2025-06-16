@@ -712,44 +712,36 @@
 {{-- Submit Handler --}}
 <script>
     $(document).ready(function() {
-        // Submit form dengan validasi duplikat mahasiswa
-        $('#form-prestasi').on('submit', function(e) {
-            e.preventDefault(); // Cegah submit default
+        // === Validasi saat memilih anggota ===
+        $(document).on('change', '.anggota-select', function() {
+            const currentVal = $(this).val();
 
-            const selectedValues = [];
-            let isDuplicate = false;
+            const selectedVals = $('.anggota-select').map(function() {
+                return $(this).val();
+            }).get();
 
-            $('.anggota-select').each(function() {
-                const val = $(this).val();
-                if (val) {
-                    if (selectedValues.includes(val)) {
-                        isDuplicate = true;
-                        return false; // keluar dari each
-                    }
-                    selectedValues.push(val);
-                }
-            });
+            const countSame = selectedVals.filter(val => val === currentVal).length;
 
-            if (isDuplicate) {
+            // Cek duplikat
+            if (currentVal && countSame > 1) {
                 Swal.fire({
-                    icon: 'warning',
-                    title: 'Anggota Duplikat',
-                    text: 'Setiap anggota tim harus berbeda. Harap pilih nama yang berbeda.'
+                    icon: 'error',
+                    title: 'Duplikat Terdeteksi',
+                    text: 'Mahasiswa yang sama tidak boleh dipilih lebih dari sekali.'
                 });
-                return;
-            }
 
-            // Lolos validasi, lanjut submit via AJAX
-            submitPrestasiForm();
+                $(this).val('').trigger('change');
+            }
         });
 
-        // Submit data ke controller via AJAX
-        function submitPrestasiForm() {
-            var form = $('#form-prestasi')[0];
-            var formData = new FormData(form);
-            var submitBtn = $('#form-prestasi button[type="submit"]');
+        // === Submit via AJAX ===
+        $('#form-prestasi').on('submit', function(e) {
+            e.preventDefault();
 
-            submitBtn.prop('disabled', true); // Disable tombol submit
+            const form = this;
+            const formData = new FormData(form);
+            const submitBtn = $(form).find('button[type="submit"]');
+            submitBtn.prop('disabled', true);
 
             $.ajax({
                 url: $(form).attr('action'),
@@ -761,47 +753,23 @@
                     Swal.fire({
                         icon: 'success',
                         title: 'Berhasil',
-                        text: response.message || 'Prestasi berhasil disimpan!',
-                        confirmButtonColor: '#3085d6',
+                        text: response.message || 'Prestasi berhasil disimpan!'
                     }).then(() => {
                         $('#myModal').modal('hide');
                         location.reload();
                     });
                 },
                 error: function(xhr) {
-                    let msg = 'Terjadi kesalahan. Silakan coba lagi.';
-                    if (xhr.responseJSON && xhr.responseJSON.message) {
-                        msg = xhr.responseJSON.message;
-                    }
+                    const msg = xhr.responseJSON?.message ??
+                        'Terjadi kesalahan. Silakan coba lagi.';
                     Swal.fire({
                         icon: 'error',
                         title: 'Gagal',
-                        text: msg,
-                        confirmButtonColor: '#d33',
+                        text: msg
                     });
-                    submitBtn.prop('disabled', false); // Enable kembali tombol submit jika error
+                    submitBtn.prop('disabled', false);
                 }
             });
-        }
-
-        // Cegah pilihan mahasiswa yang sama secara langsung
-        $(document).on('change', '.anggota-select', function() {
-            const selectedVals = $('.anggota-select').map(function() {
-                return $(this).val();
-            }).get();
-
-            const duplicates = selectedVals.filter((item, index) => selectedVals.indexOf(item) !==
-                index);
-
-            if (duplicates.length > 0) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Duplikat Terdeteksi',
-                    text: 'Mahasiswa yang sama tidak boleh dipilih lebih dari sekali.'
-                });
-
-                $(this).val('').trigger('change'); // kosongkan input duplikat
-            }
         });
     });
 </script>

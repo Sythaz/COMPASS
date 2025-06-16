@@ -423,6 +423,10 @@
     }
 </style>
 
+<script>
+    const loggedInMahasiswaId = {{ Auth::user()->mahasiswa->mahasiswa_id ?? 'null' }};
+</script>
+
 {{-- Validasi Inputan --}}
 <script>
     // Fungsi untuk update label file
@@ -712,44 +716,103 @@
 {{-- Submit Handler --}}
 <script>
     $(document).ready(function() {
-        // Submit form dengan validasi duplikat mahasiswa
-        $('#form-prestasi').on('submit', function(e) {
-            e.preventDefault(); // Cegah submit default
 
-            const selectedValues = [];
-            let isDuplicate = false;
+        // === Cek apakah mahasiswa login dipilih sebagai ketua atau anggota ===
+        function cekMahasiswaLoginDipilih() {
+            const ketuaId = $('select[name="mahasiswa_id"]').val();
+            const anggotaIds = $('.anggota-select').map(function() {
+                return $(this).val();
+            }).get();
 
+            const semuaAnggota = [ketuaId, ...anggotaIds];
+            return semuaAnggota.includes(String(loggedInMahasiswaId));
+        }
+
+        // === Cek apakah semua input ketua dan anggota sudah terisi ===
+        function semuaInputTerisi() {
+            const ketuaId = $('select[name="mahasiswa_id"]').val();
+            if (!ketuaId) return false;
+
+            let semuaTerisi = true;
             $('.anggota-select').each(function() {
-                const val = $(this).val();
-                if (val) {
-                    if (selectedValues.includes(val)) {
-                        isDuplicate = true;
-                        return false; // keluar dari each
-                    }
-                    selectedValues.push(val);
+                if (!$(this).val()) {
+                    semuaTerisi = false;
                 }
             });
 
-            if (isDuplicate) {
+            return semuaTerisi;
+        }
+
+        // === Tampilkan peringatan dan reset input terakhir jika login user tidak dipilih ===
+        function validasiLoginUserDipilih(elYangBaruDipilih) {
+            if (semuaInputTerisi() && !cekMahasiswaLoginDipilih()) {
                 Swal.fire({
                     icon: 'warning',
-                    title: 'Anggota Duplikat',
-                    text: 'Setiap anggota tim harus berbeda. Harap pilih nama yang berbeda.'
+                    title: 'Anda Belum Dipilih',
+                    text: 'Mahasiswa yang login harus menjadi Ketua atau salah satu Anggota.',
+                    confirmButtonText: 'Oke'
+                });
+
+                // Reset input terakhir yang menyebabkan pelanggaran
+                $(elYangBaruDipilih).val('').trigger('change');
+            }
+        }
+
+        // === Validasi saat memilih ketua ===
+        $('select[name="mahasiswa_id"]').on('change', function() {
+            validasiLoginUserDipilih(this);
+        });
+
+        // === Validasi saat memilih anggota ===
+        $(document).on('change', '.anggota-select', function() {
+            const currentVal = $(this).val();
+
+            const selectedVals = $('.anggota-select').map(function() {
+                return $(this).val();
+            }).get();
+
+            const countSame = selectedVals.filter(val => val === currentVal).length;
+
+            // Cek duplikat
+            if (currentVal && countSame > 1) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Duplikat Terdeteksi',
+                    text: 'Mahasiswa yang sama tidak boleh dipilih lebih dari sekali.'
+                });
+
+                $(this).val('').trigger('change');
+                return;
+            }
+
+            validasiLoginUserDipilih(this);
+        });
+
+        // === Submit via AJAX ===
+        $('#form-prestasi').on('submit', function(e) {
+            e.preventDefault();
+
+            const ketuaId = $('select[name="mahasiswa_id"]').val();
+            const anggotaIds = $('.anggota-select').map(function() {
+                return $(this).val();
+            }).get();
+
+            const semuaAnggota = [ketuaId, ...anggotaIds];
+
+            if (!semuaAnggota.includes(String(loggedInMahasiswaId))) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Validasi Gagal',
+                    text: 'Anda harus menjadi Ketua atau salah satu Anggota dalam tim ini.',
+                    confirmButtonText: 'Oke'
                 });
                 return;
             }
 
-            // Lolos validasi, lanjut submit via AJAX
-            submitPrestasiForm();
-        });
-
-        // Submit data ke controller via AJAX
-        function submitPrestasiForm() {
-            var form = $('#form-prestasi')[0];
-            var formData = new FormData(form);
-            var submitBtn = $('#form-prestasi button[type="submit"]');
-
-            submitBtn.prop('disabled', true); // Disable tombol submit
+            const form = this;
+            const formData = new FormData(form);
+            const submitBtn = $(form).find('button[type="submit"]');
+            submitBtn.prop('disabled', true);
 
             $.ajax({
                 url: $(form).attr('action'),
@@ -761,47 +824,23 @@
                     Swal.fire({
                         icon: 'success',
                         title: 'Berhasil',
-                        text: response.message || 'Prestasi berhasil disimpan!',
-                        confirmButtonColor: '#3085d6',
+                        text: response.message || 'Prestasi berhasil disimpan!'
                     }).then(() => {
                         $('#myModal').modal('hide');
                         location.reload();
                     });
                 },
                 error: function(xhr) {
-                    let msg = 'Terjadi kesalahan. Silakan coba lagi.';
-                    if (xhr.responseJSON && xhr.responseJSON.message) {
-                        msg = xhr.responseJSON.message;
-                    }
+                    const msg = xhr.responseJSON?.message ??
+                        'Terjadi kesalahan. Silakan coba lagi.';
                     Swal.fire({
                         icon: 'error',
                         title: 'Gagal',
-                        text: msg,
-                        confirmButtonColor: '#d33',
+                        text: msg
                     });
-                    submitBtn.prop('disabled', false); // Enable kembali tombol submit jika error
+                    submitBtn.prop('disabled', false);
                 }
             });
-        }
-
-        // Cegah pilihan mahasiswa yang sama secara langsung
-        $(document).on('change', '.anggota-select', function() {
-            const selectedVals = $('.anggota-select').map(function() {
-                return $(this).val();
-            }).get();
-
-            const duplicates = selectedVals.filter((item, index) => selectedVals.indexOf(item) !==
-                index);
-
-            if (duplicates.length > 0) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Duplikat Terdeteksi',
-                    text: 'Mahasiswa yang sama tidak boleh dipilih lebih dari sekali.'
-                });
-
-                $(this).val('').trigger('change'); // kosongkan input duplikat
-            }
         });
     });
 </script>
