@@ -217,7 +217,7 @@
                                                     'Mahasiswa' => route('mahasiswa.informasi-lomba.index'),
                                                 ],
                                                 'Verifikasi Prestasi' => [
-                                                    'Dosen' => route('dosen.kelola-bimbingan.index'),
+                                                    'Dosen' => route('dosen.verifikasi-bimbingan.index'),
                                                     'Mahasiswa' => route('mhs.prestasi.index'),
                                                 ],
                                             ];
