@@ -4,8 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\PrestasiModel;
+use App\Models\PrestasiMahasiswaModel;
+use App\Models\MahasiswaModel;
+use App\Models\NotifikasiModel;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Auth;
+
 
 class VerifikasiPrestasiController extends Controller
 {
@@ -110,31 +115,64 @@ class VerifikasiPrestasiController extends Controller
 
     public function terimaPrestasi($id)
     {
-        $prestasi = PrestasiModel::findOrFail($id);
+        $prestasi = PrestasiModel::with(['mahasiswa.users', 'dosen.users'])->findOrFail($id);
 
         try {
-            // Update status_verifikasi menjadi Terverifikasi
             $prestasi->update(['status_verifikasi' => 'Terverifikasi']);
+            $ketua = $prestasi->mahasiswa->first(function ($mhs) {
+                return strtolower($mhs->pivot->peran) === 'ketua';
+            });
+
+            // Notifikasi ke mahasiswa
+            if ($ketua && $ketua->users) {
+                NotifikasiModel::create([
+                    'user_id' => $ketua->users->user_id,
+                    'pengirim_id' => auth()->id(), // Admin yg login
+                    'pengirim_role' => 'Admin',
+                    'jenis_notifikasi' => 'Verifikasi Prestasi',
+                    'pesan_notifikasi' => 'Prestasi yang Anda ajukan telah diterima dan diverifikasi oleh admin.',
+                    'lomba_id' => $prestasi->lomba_id,
+                    'prestasi_id' => $prestasi->prestasi_id,
+                    'pendaftaran_id'=> null,
+                    'status_notifikasi' => 'Belum Dibaca',
+                ]);
+            } 
+            // notif ke dosen
+            if ($prestasi->dosen && $prestasi->dosen->users) {
+                NotifikasiModel::create([
+                    'user_id' => $prestasi->dosen->users->user_id, // diasumsikan fieldnya dosen_id
+                    'pengirim_id' => auth()->id(),
+                    'pengirim_role' => 'Admin',
+                    'jenis_notifikasi' => 'Verifikasi Prestasi',
+                    'pesan_notifikasi' => 'Prestasi dari mahasiswa bimbingan Anda telah diterima oleh admin.',
+                    'lomba_id' => $prestasi->lomba_id,
+                    'prestasi_id' => $prestasi->prestasi_id,
+                    'pendaftaran_id'=> null,
+                    'status_notifikasi' => 'Belum Dibaca',
+                ]);
+            }
 
             return response()->json([
                 'success' => true,
-                'message' => 'Prestasi berhasil diterima dan diverifikasi.'
+                'message' => 'Prestasi berhasil diterima dan notifikasi dikirim.'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal memperbarui status: ' . $e->getMessage()
-            ], 500);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal memperbarui status: ' . $e->getMessage()
+                ], 500);
         }
     }
 
-    public function tolakPrestasi(Request $request, $id)
-    {
+    public function tolakPrestasi(Request $request, $id) {
         $request->validate([
             'alasan_tolak' => 'required|string|max:255'
         ]);
 
-        $prestasi = PrestasiModel::findOrFail($id);
+        $prestasi = PrestasiModel::with(['mahasiswa.users', 'dosen.users'])->findOrFail($id);
+        $ketua = $prestasi->mahasiswa->first(function ($mhs) {
+            return strtolower($mhs->pivot->peran) === 'ketua';
+        });
 
         try {
             $prestasi->update([
@@ -142,9 +180,38 @@ class VerifikasiPrestasiController extends Controller
                 'alasan_tolak' => $request->alasan_tolak
             ]);
 
+            // Notifikasi ke mahasiswa
+            if ($ketua && $ketua->users) {
+                NotifikasiModel::create([
+                    'user_id' => $ketua->users->user_id,
+                    'pengirim_id' => auth()->id(),
+                    'pengirim_role' => 'Admin',
+                    'jenis_notifikasi' => 'Verifikasi Prestasi',
+                    'pesan_notifikasi' => 'Prestasi Anda ditolak oleh admin. Alasan: ' . $request->alasan_tolak,
+                    'lomba_id' => $prestasi->lomba_id,
+                    'prestasi_id' => $prestasi->prestasi_id,
+                    'pendaftaran_id'=> null,
+                    'status_notifikasi' => 'Belum Dibaca',
+                ]);
+            }
+            // notif ke dosen 
+            if ($prestasi->dosen && $prestasi->dosen->users) {
+                NotifikasiModel::create([
+                    'user_id' => $prestasi->dosen->users->user_id,
+                    'pengirim_id' => auth()->id(),
+                    'pengirim_role' => 'Admin',
+                    'jenis_notifikasi' => 'Verifikasi Prestasi',
+                    'pesan_notifikasi' => 'Prestasi dari mahasiswa bimbingan Anda ditolak oleh admin. Alasan: ' . $request->alasan_tolak,
+                    'lomba_id' => $prestasi->lomba_id,
+                    'prestasi_id' => $prestasi->prestasi_id,
+                    'pendaftaran_id'=> null,
+                    'status_notifikasi' => 'Belum Dibaca',
+                ]);
+            }
+
             return response()->json([
                 'success' => true,
-                'message' => 'Prestasi berhasil ditolak.'
+                'message' => 'Prestasi berhasil ditolak dan notifikasi dikirim.'
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -152,6 +219,6 @@ class VerifikasiPrestasiController extends Controller
                 'message' => 'Gagal memperbarui status: ' . $e->getMessage()
             ], 500);
         }
-    }
 
+    }
 }

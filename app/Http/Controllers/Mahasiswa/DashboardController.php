@@ -92,16 +92,19 @@ class DashboardController extends Controller
 
         // Hitung ranking dalam konteks semester aktif
         $rankingData = DB::table('t_prestasi_mahasiswa')
-            ->select(
-                't_prestasi_mahasiswa.mahasiswa_id',
-                DB::raw('COUNT(*) as total_partisipasi')
-            )
             ->join('t_prestasi', 't_prestasi_mahasiswa.prestasi_id', '=', 't_prestasi.prestasi_id')
             ->where('t_prestasi.status_verifikasi', 'Terverifikasi')
             ->whereBetween('t_prestasi.tanggal_prestasi', [$startSemester, $endSemester])
+            ->select(
+                't_prestasi_mahasiswa.mahasiswa_id',
+                DB::raw('COUNT(*) as total_partisipasi'),
+                DB::raw('MAX(CASE WHEN t_prestasi_mahasiswa.peran = "Ketua" THEN 1 ELSE 0 END) as ketua')
+            )
             ->groupBy('t_prestasi_mahasiswa.mahasiswa_id')
             ->orderByDesc('total_partisipasi')
+            ->orderByDesc('ketua')
             ->get();
+
 
         // Temukan rank pengguna dalam konteks semester aktif
         foreach ($rankingData as $index => $data) {

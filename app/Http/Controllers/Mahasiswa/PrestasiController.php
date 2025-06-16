@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\TingkatLombaModel;
 use Illuminate\Http\Request;
 use App\Models\MahasiswaModel;
+use App\Models\NotifikasiModel;
 use App\Models\LombaModel;
 use App\Models\KategoriModel;
 use App\Models\DosenModel;
@@ -165,6 +166,8 @@ class PrestasiController extends Controller
             $validated['lomba_id'] = null;
         }
 
+        $validated['status_verifikasi'] = $request->filled('dosen_id') ? 'menunggu' : 'valid';
+
         // Simpan data prestasi
         $prestasi = PrestasiModel::create($validated);
 
@@ -199,6 +202,24 @@ class PrestasiController extends Controller
                 ];
             }
             $prestasi->mahasiswa()->sync($pivotData);
+        }
+
+        // notifikasi 
+        if ($request->filled('dosen_id')) {
+            $dosen = DosenModel::with('users')->find($request->dosen_id);
+            if ($dosen && $dosen->users) {
+                NotifikasiModel::create([
+                    'user_id' => $dosen->users->user_id,
+                    'pengirim_id' => auth()->id(),
+                    'pengirim_role' => 'Sistem',
+                    'jenis_notifikasi' => 'Verifikasi Prestasi',
+                    'pesan_notifikasi' => 'Anda memiliki data prestasi dari mahasiswa untuk divalidasi.',
+                    'lomba_id' => $prestasi->lomba_id,
+                    'prestasi_id' => $prestasi->prestasi_id,
+                    'pendaftaran_id' => null,
+                    'status_notifikasi' => 'Belum Dibaca',
+                ]);
+            }
         }
 
         return redirect()->back()->with('success', 'Data prestasi berhasil disimpan.');
