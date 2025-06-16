@@ -20,6 +20,7 @@ use PhpOffice\PhpSpreadsheet\Chart\Layout;
 use PhpOffice\PhpSpreadsheet\Chart\Legend;
 use PhpOffice\PhpSpreadsheet\Chart\PlotArea;
 use PhpOffice\PhpSpreadsheet\Chart\Title;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DashboardController extends Controller
 {
@@ -452,4 +453,83 @@ class DashboardController extends Controller
             return [Carbon::create($now->year, 1, 1), Carbon::create($now->year, 7, 31)];
         }
     }
+
+    public function exportPdf()
+    {
+        $current = Carbon::now();
+        $startYear = $current->copy()->startOfYear();
+        $endYear = $current->copy()->endOfYear();
+        $sebulanTerakhir = $current->copy()->subMonth();
+
+        $totalMhs = DB::table('t_mahasiswa')->count();
+        $totalPrestasi = DB::table('t_prestasi')
+            ->join('t_prestasi_mahasiswa', 't_prestasi.prestasi_id', '=', 't_prestasi_mahasiswa.prestasi_id')
+            ->where('t_prestasi.status_verifikasi', 'Terverifikasi')
+            ->whereBetween('t_prestasi.tanggal_prestasi', [$startYear, $endYear])
+            ->distinct('t_prestasi_mahasiswa.mahasiswa_id')
+            ->count('t_prestasi_mahasiswa.mahasiswa_id');
+
+        $persentase = $totalMhs > 0 ? floor($totalPrestasi / $totalMhs * 100) : 0;
+
+        $jumlahLombaAktif = DB::table('t_lomba')
+            ->where('status_lomba', 'Aktif')
+            ->where('status_verifikasi', 'Terverifikasi')
+            ->where('akhir_registrasi_lomba', '>=', Carbon::today())
+            ->count();
+
+        $prestasiSebulan = DB::table('t_prestasi')
+            ->join('t_prestasi_mahasiswa', 't_prestasi.prestasi_id', '=', 't_prestasi_mahasiswa.prestasi_id')
+            ->where('t_prestasi.status_verifikasi', 'Terverifikasi')
+            ->whereBetween('t_prestasi.tanggal_prestasi', [$sebulanTerakhir, $current])
+            ->distinct('t_prestasi_mahasiswa.mahasiswa_id')
+            ->count('t_prestasi_mahasiswa.mahasiswa_id');
+
+        [$startSemester, $endSemester] = $this->getSemesterDate();
+        $topMahasiswa = DB::table('t_mahasiswa')
+            ->join('t_prestasi_mahasiswa', 't_mahasiswa.mahasiswa_id', '=', 't_prestasi_mahasiswa.mahasiswa_id')
+            ->join('t_prestasi', 't_prestasi_mahasiswa.prestasi_id', '=', 't_prestasi.prestasi_id')
+            ->where('t_prestasi.status_verifikasi', 'Terverifikasi')
+            ->whereBetween('t_prestasi.tanggal_prestasi', [$startSemester, $endSemester])
+            ->select('t_mahasiswa.nama_mahasiswa', DB::raw('COUNT(t_prestasi.prestasi_id) as total'))
+            ->groupBy('t_mahasiswa.nama_mahasiswa')
+            ->orderByDesc('total')
+            ->limit(5)
+            ->get();
+
+        $kategori = DB::table('t_kategori')
+            ->leftJoin('t_prestasi', 't_kategori.kategori_id', '=', 't_prestasi.kategori_id')
+            ->where('t_prestasi.status_verifikasi', 'Terverifikasi')
+            ->select('t_kategori.nama_kategori', DB::raw('COUNT(t_prestasi.prestasi_id) as jumlah'))
+            ->groupBy('t_kategori.nama_kategori')
+            ->get();
+
+        $periode = DB::table('t_periode')
+            ->orderBy('tanggal_mulai', 'desc')
+            ->limit(6)
+            ->get()
+            ->reverse();
+
+        $perkembangan = [];
+        foreach ($periode as $p) {
+            $jumlah = DB::table('t_prestasi')
+                ->where('periode_id', $p->periode_id)
+                ->where('status_verifikasi', 'Terverifikasi')
+                ->count();
+            $perkembangan[] = ['semester' => $p->semester_periode, 'jumlah' => $jumlah];
+        }
+
+        $data = [
+            'persentase' => $persentase,
+            'jumlahLombaAktif' => $jumlahLombaAktif,
+            'prestasiSebulan' => $prestasiSebulan,
+            'topMahasiswa' => $topMahasiswa,
+            'kategori' => $kategori,
+            'perkembangan' => $perkembangan,
+            'tanggalCetak' => now()->translatedFormat('d F Y H:i')
+        ];
+
+        $pdf = Pdf::loadView('admin.laporan_statistik_pdf', $data)->setPaper('A4', 'portrait');
+        return $pdf->stream('Laporan_Statistik_' . now()->format('Ymd_His') . '.pdf');
+    }
+
 }

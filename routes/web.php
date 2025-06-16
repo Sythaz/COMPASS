@@ -89,6 +89,8 @@ Route::middleware(['auth'])->group(function () { // Masukkan semua route didalam
         // Dashboard admin, hanya untuk role admin
         Route::get('/admin', [DashboardAdminController::class, 'index'])->name('admin.dashboard');
         Route::get('/admin/dashboard/export', [DashboardAdminController::class, 'export'])->name('admin.dashboard.export');
+        // Export ke PDF
+        Route::get('/admin/dashboard/export-pdf', [DashboardAdminController::class, 'exportPdf'])->name('admin.dashboard.export.pdf');
 
         // PROFILE ADMIN
         Route::prefix('admin/profile-admin')->group(function () {
