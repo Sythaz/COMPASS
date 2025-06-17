@@ -224,6 +224,16 @@
         return endDate >= startDate;
     }, "Tanggal akhir harus lebih besar atau sama dengan tanggal awal.");
 
+    // Validasi Ukuran File maks 2MB
+    $.validator.addMethod("maxFileSize", function(value, element, param) {
+        if (!element.files || element.files.length === 0) {
+            return true;
+        }
+
+        var fileSize = element.files[0].size;
+        return fileSize <= 2 * 1024 * 1024;
+    }, "Ukuran file maksimal 2MB");
+
     customFormValidation(
         // Validasi form
         // ID form untuk validasi
@@ -270,6 +280,7 @@
             img_lomba: {
                 // Menggunakan custom validasi untuk gambar
                 validImageExtension: true,
+                maxFileSize: true,
             }
         }, {
             // Pesan validasi untuk setiap field saat tidak valid
@@ -313,6 +324,8 @@
             },
             img_lomba: {
                 extension: 'Ekstensi file harus .png, .jpg, .jpeg',
+                validImageExtension: "Ekstensi file harus .png, .jpg, .jpeg",
+                maxFileSize: "Ukuran file maksimal 2MB",
             }
         },
 
