@@ -167,6 +167,9 @@ class VerifikasiLombaController extends Controller
     {
         $lomba = LombaModel::findOrFail($id);
 
+        // Tambahkan eager loading setelah ambil model
+        $lomba = LombaModel::with(['kategori', 'tingkat_lomba'])->find($id);
+
         try {
             // Update status_verifikasi menjadi Terverifikasi
             $lomba->update(['status_verifikasi' => 'Terverifikasi']);
@@ -199,6 +202,7 @@ class VerifikasiLombaController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Lomba berhasil diterima dan diverifikasi.',
+                'results' => $results
             ]);
         } catch (\Exception $e) {
             return response()->json([

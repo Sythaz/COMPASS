@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\KategoriModel;
 use App\Models\TingkatLombaModel;
 use App\Models\KategoriLombaModel;
+use App\Models\NotifikasiModel;
 use App\Models\PreferensiUserModel;
 use Illuminate\Support\Facades\Log;
 
@@ -265,6 +266,9 @@ class LombaMahasiswaController extends Controller
                 ]);
             }
 
+            // $lomba->load(['kategori', 'tingkat_lomba']);
+            $lomba = LombaModel::with(['kategori', 'tingkat_lomba'])->find($lomba->lomba_id);
+
             // Jika ada gambar, upload ke storage
             if ($request->hasFile('img_lomba')) {
                 $file = $request->file('img_lomba');
@@ -284,6 +288,22 @@ class LombaMahasiswaController extends Controller
                 foreach ($userIds as $userId) {
                     $prometheeController = new PrometheeRekomendasiController();
                     $result = $prometheeController->calculateNetFlowForSingleLomba($lomba, $userId);
+
+                    $pesanNotifikasi = sprintf(
+                        "Anda direkomendasikan oleh Sistem untuk mengikuti lomba '%s'. Silakan periksa informasi lomba lebih lanjut jika berminat.",
+                        $lomba->nama_lomba
+                    );
+
+                    if ($result['meets_threshold']) {
+                        NotifikasiModel::create([
+                            'user_id' => $userId,
+                            'pengirim_role' => 'Sistem',
+                            'lomba_id' => $lomba->lomba_id,
+                            'jenis_notifikasi' => 'Rekomendasi',
+                            'pesan_notifikasi' => $pesanNotifikasi
+                        ]);
+                    }
+
                     $results[] = $result;
                 }
             }
@@ -320,11 +340,11 @@ class LombaMahasiswaController extends Controller
 
         return DataTables::of($dataKelolaLomba)
             ->addIndexColumn()
-            ->addColumn('nama_lomba', fn ($row) => $row->nama_lomba ?? '-')
-            ->addColumn('kategori', fn ($row) => $row->kategori->pluck('nama_kategori')->join(', ') ?: 'Tidak Diketahui')
-            ->addColumn('tingkat_lomba', fn ($row) => $row->tingkat_lomba->nama_tingkat ?? '-')
-            ->addColumn('awal_registrasi_lomba', fn ($row) => date('d M Y', strtotime($row->awal_registrasi_lomba)))
-            ->addColumn('akhir_registrasi_lomba', fn ($row) => date('d M Y', strtotime($row->akhir_registrasi_lomba)))
+            ->addColumn('nama_lomba', fn($row) => $row->nama_lomba ?? '-')
+            ->addColumn('kategori', fn($row) => $row->kategori->pluck('nama_kategori')->join(', ') ?: 'Tidak Diketahui')
+            ->addColumn('tingkat_lomba', fn($row) => $row->tingkat_lomba->nama_tingkat ?? '-')
+            ->addColumn('awal_registrasi_lomba', fn($row) => date('d M Y', strtotime($row->awal_registrasi_lomba)))
+            ->addColumn('akhir_registrasi_lomba', fn($row) => date('d M Y', strtotime($row->akhir_registrasi_lomba)))
             ->addColumn('status_verifikasi', function ($row) {
                 return $this->getStatusBadge($row->status_verifikasi);
             })
@@ -372,14 +392,14 @@ class LombaMahasiswaController extends Controller
 
         return DataTables::of($pendaftaran)
             ->addIndexColumn()
-            ->addColumn('nama_lomba', fn ($row) => $row->lomba->nama_lomba ?? '-')
-            ->addColumn('tingkat_lomba', fn ($row) => $row->lomba->tingkat_lomba->nama_tingkat ?? '-')
+            ->addColumn('nama_lomba', fn($row) => $row->lomba->nama_lomba ?? '-')
+            ->addColumn('tingkat_lomba', fn($row) => $row->lomba->tingkat_lomba->nama_tingkat ?? '-')
             ->addColumn('kategori', function ($row) {
                 // kalau relasi kategori many-to-many, pluck dan implode, kalau one-to-many bisa langsung akses
                 return $row->lomba->kategori ? ($row->lomba->kategori->pluck('nama_kategori')->implode(', ') ?: '-') : '-';
             })
 
-            ->addColumn('tipe_lomba', fn ($row) => $row->lomba->tipe_lomba ?? '-')
+            ->addColumn('tipe_lomba', fn($row) => $row->lomba->tipe_lomba ?? '-')
 
             ->addColumn('status', function ($row) {
                 return $this->getStatusPendaftaran($row->status_pendaftaran);
