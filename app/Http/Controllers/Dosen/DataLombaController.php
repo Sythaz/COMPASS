@@ -11,6 +11,7 @@ use App\Models\LombaModel;
 use App\Models\KategoriModel;
 use App\Models\TingkatLombaModel;
 use App\Models\KategoriLombaModel;
+use App\Models\NotifikasiModel;
 use App\Models\PreferensiUserModel;
 
 class DataLombaController extends Controller
@@ -34,11 +35,11 @@ class DataLombaController extends Controller
 
         return DataTables::of($dataKelolaLomba)
             ->addIndexColumn()
-            ->addColumn('nama_lomba', fn ($row) => $row->nama_lomba ?? '-')
-            ->addColumn('kategori', fn ($row) => $row->kategori->pluck('nama_kategori')->join(', ') ?: 'Tidak Diketahui')
-            ->addColumn('tingkat_lomba', fn ($row) => $row->tingkat_lomba->nama_tingkat ?? '-')
-            ->addColumn('awal_registrasi_lomba', fn ($row) => date('d M Y', strtotime($row->awal_registrasi_lomba)))
-            ->addColumn('akhir_registrasi_lomba', fn ($row) => date('d M Y', strtotime($row->akhir_registrasi_lomba)))
+            ->addColumn('nama_lomba', fn($row) => $row->nama_lomba ?? '-')
+            ->addColumn('kategori', fn($row) => $row->kategori->pluck('nama_kategori')->join(', ') ?: 'Tidak Diketahui')
+            ->addColumn('tingkat_lomba', fn($row) => $row->tingkat_lomba->nama_tingkat ?? '-')
+            ->addColumn('awal_registrasi_lomba', fn($row) => date('d M Y', strtotime($row->awal_registrasi_lomba)))
+            ->addColumn('akhir_registrasi_lomba', fn($row) => date('d M Y', strtotime($row->akhir_registrasi_lomba)))
             ->addColumn('status_verifikasi', function ($row) {
                 $statusLomba = $row->status_verifikasi;
                 switch ($statusLomba) {
@@ -119,6 +120,8 @@ class DataLombaController extends Controller
                 ]);
             }
 
+            $lomba = LombaModel::with(['kategori', 'tingkat_lomba'])->find($lomba->lomba_id);
+
             // Jika ada gambar, upload ke storage
             if ($request->hasFile('img_lomba')) {
                 $file = $request->file('img_lomba');
@@ -138,6 +141,22 @@ class DataLombaController extends Controller
                 foreach ($userIds as $userId) {
                     $prometheeController = new PrometheeRekomendasiController();
                     $result = $prometheeController->calculateNetFlowForSingleLomba($lomba, $userId);
+
+                    $pesanNotifikasi = sprintf(
+                        "Anda direkomendasikan oleh Sistem untuk mengikuti lomba '%s'. Silakan periksa informasi lomba lebih lanjut jika berminat.",
+                        $lomba->nama_lomba
+                    );
+
+                    if ($result['meets_threshold']) {
+                        NotifikasiModel::create([
+                            'user_id' => $userId,
+                            'pengirim_role' => 'Sistem',
+                            'lomba_id' => $lomba->lomba_id,
+                            'jenis_notifikasi' => 'Rekomendasi',
+                            'pesan_notifikasi' => $pesanNotifikasi
+                        ]);
+                    }
+
                     $results[] = $result;
                 }
             }
@@ -154,5 +173,4 @@ class DataLombaController extends Controller
             ]);
         }
     }
-
 }

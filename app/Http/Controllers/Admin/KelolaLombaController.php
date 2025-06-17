@@ -11,6 +11,7 @@ use App\Models\DosenModel;
 use App\Models\KategoriLombaModel;
 use App\Models\KategoriModel;
 use App\Models\MahasiswaModel;
+use App\Models\NotifikasiModel;
 use App\Models\PreferensiUserModel;
 use App\Models\TingkatLombaModel;
 use App\Models\UsersModel;
@@ -223,6 +224,8 @@ class KelolaLombaController extends Controller
                 ]);
             }
 
+            $lomba = LombaModel::with(['kategori', 'tingkat_lomba'])->find($lomba->lomba_id);
+
             // Jika ada gambar, upload ke storage
             if ($request->hasFile('img_lomba')) {
                 $file = $request->file('img_lomba');
@@ -242,6 +245,22 @@ class KelolaLombaController extends Controller
                 foreach ($userIds as $userId) {
                     $prometheeController = new PrometheeRekomendasiController();
                     $result = $prometheeController->calculateNetFlowForSingleLomba($lomba, $userId);
+
+                    $pesanNotifikasi = sprintf(
+                        "Anda direkomendasikan oleh Sistem untuk mengikuti lomba '%s'. Silakan periksa informasi lomba lebih lanjut jika berminat.",
+                        $lomba->nama_lomba
+                    );
+
+                    if ($result['meets_threshold']) {
+                        NotifikasiModel::create([
+                            'user_id' => $userId,
+                            'pengirim_role' => 'Sistem',
+                            'lomba_id' => $lomba->lomba_id,
+                            'jenis_notifikasi' => 'Rekomendasi',
+                            'pesan_notifikasi' => $pesanNotifikasi
+                        ]);
+                    }
+
                     $results[] = $result;
                 }
             }
@@ -293,6 +312,8 @@ class KelolaLombaController extends Controller
                 ]);
             }
 
+            $lomba = LombaModel::with(['kategori', 'tingkat_lomba'])->find($id);
+
             // Jika ada gambar, upload ke storage
             if ($request->hasFile('img_lomba')) {
                 $file = $request->file('img_lomba');
@@ -305,7 +326,7 @@ class KelolaLombaController extends Controller
                 $lomba->update(['img_lomba' => $filename]);
             }
 
-            $results = null; // inisialisasi dulu supaya tidak undefined
+            $results = []; // inisialisasi dulu supaya tidak undefined
 
             if ($request->input('status_verifikasi') === 'Terverifikasi') {
                 // Ambil semua user_id yang sudah mengisi preferensi
@@ -315,6 +336,22 @@ class KelolaLombaController extends Controller
                 foreach ($userIds as $userId) {
                     $prometheeController = new PrometheeRekomendasiController();
                     $result = $prometheeController->calculateNetFlowForSingleLomba($lomba, $userId);
+
+                    $pesanNotifikasi = sprintf(
+                        "Anda direkomendasikan oleh Sistem untuk mengikuti lomba '%s'. Silakan periksa informasi lomba lebih lanjut jika berminat.",
+                        $lomba->nama_lomba
+                    );
+
+                    if ($result['meets_threshold']) {
+                        NotifikasiModel::create([
+                            'user_id' => $userId,
+                            'pengirim_role' => 'Sistem',
+                            'lomba_id' => $lomba->lomba_id,
+                            'jenis_notifikasi' => 'Rekomendasi',
+                            'pesan_notifikasi' => $pesanNotifikasi
+                        ]);
+                    }
+
                     $results[] = $result;
                 }
             }
