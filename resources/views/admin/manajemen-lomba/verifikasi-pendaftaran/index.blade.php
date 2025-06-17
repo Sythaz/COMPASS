@@ -16,7 +16,7 @@
                             <div class="btn-group" role="group">
                                 <a href="{{ route('riwayat-pendaftaran.index') }}" class="ml-2 btn btn-primary text-white">
                                     <i class="fa fa-clock-rotate-left"></i>
-                                    <strong> Riwayat</strong>
+                                    <strong> Histori</strong>
                                 </a>
                             </div>
                         </div>

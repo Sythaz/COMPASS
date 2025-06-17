@@ -1,8 +1,8 @@
 @extends('layouts.template')
 
-@section('title', 'Riwayat Kelola Admin | COMPASS')
-@section('page-title', 'Riwayat Kelola Admin')
-@section('page-description', 'Halaman riwayat kelola admin yang telah dinonaktifkan.')
+@section('title', 'Histori Kelola Admin | COMPASS')
+@section('page-title', 'Histori Kelola Admin')
+@section('page-description', 'Halaman Histori kelola admin yang telah dinonaktifkan.')
 
 @section('content')
     <div class="row">
