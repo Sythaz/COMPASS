@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
+use Carbon\Carbon;
 
 class KelolaLombaController extends Controller
 {
@@ -113,11 +114,16 @@ class KelolaLombaController extends Controller
                 break;
         }
 
+        // Hitung sisa hari
+        $deadline = Carbon::parse($lomba->akhir_registrasi_lomba);
+        $today = Carbon::today();
+        $sisaHari = $today->diffInDays($deadline, false);
+
         $breadcrumb = (object) [
             'list' => ['Informasi Lomba', 'Detail Lomba']
         ];
 
-        return view('admin.manajemen-lomba.kelola-lomba.show', compact('lomba', 'namaPengusul', 'tipeLomba', 'breadcrumb'));
+        return view('admin.manajemen-lomba.kelola-lomba.show', compact('lomba', 'namaPengusul', 'tipeLomba', 'breadcrumb', 'sisaHari'));
     }
 
     public function editAjax($id)

@@ -48,8 +48,49 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label class="col-form-label font-weight-bold">Penyelenggara</label>
+                        <label class="col-form-label font-weight-bold">Lokasi</label>
+                        <input type="text" class="form-control" value="{{ $lomba->lokasi_lomba }}" disabled>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-form-label font-weight-bold">Biaya</label>
+                        <input type="text" class="form-control" value="{{ $lomba->biaya_lomba }}" disabled>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-form-label font-weight-bold">Jenis Penyelenggara</label>
+                        <input type="text" class="form-control" value="{{ $lomba->jenis_penyelenggara_lomba }}"
+                            disabled>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-form-label font-weight-bold">Nama Penyelenggara</label>
                         <input type="text" class="form-control" value="{{ $lomba->penyelenggara_lomba }}" disabled>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-form-label font-weight-bold">Deadline Pendaftaran</label>
+                        <input type="text" class="form-control mb-2" value="{{ $lomba->akhir_registrasi_lomba }}"
+                            disabled>
+
+                        @if ($sisaHari > 0)
+                            <small class="text-success">Sisa {{ $sisaHari }} hari lagi</small>
+                        @elseif ($sisaHari === 0)
+                            <small class="text-warning">Hari terakhir pendaftaran!</small>
+                        @else
+                            <small class="text-danger">Pendaftaran sudah ditutup ({{ abs($sisaHari) }} hari yang
+                                lalu)</small>
+                        @endif
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -121,7 +162,7 @@
                     <div class="form-group">
                         <label class="col-form-label font-weight-bold">Awal Registrasi</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($lomba->awal_registrasi_lomba)->format('d F Y') }}"
+                            <input type="text" class="form-control" value="{{ $lomba->awal_registrasi_lomba }}"
                                 disabled>
                             <div class="input-group-append">
                                 <span class="input-group-text bg-success text-white">
@@ -135,7 +176,7 @@
                     <div class="form-group">
                         <label class="col-form-label font-weight-bold">Akhir Registrasi</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($lomba->akhir_registrasi_lomba)->format('d F Y') }}"
+                            <input type="text" class="form-control" value="{{ $lomba->akhir_registrasi_lomba }}"
                                 disabled>
                             <div class="input-group-append">
                                 <span class="input-group-text bg-danger text-white">
@@ -150,7 +191,8 @@
             <div class="form-group">
                 <label class="col-form-label font-weight-bold">Link Pendaftaran</label>
                 <div class="input-group">
-                    <input type="text" class="form-control" value="{{ $lomba->link_pendaftaran_lomba }}" disabled>
+                    <input type="text" class="form-control" value="{{ $lomba->link_pendaftaran_lomba }}"
+                        disabled>
                     <div class="input-group-append">
                         <a href="{{ $lomba->link_pendaftaran_lomba }}" target="_blank" class="btn btn-primary">
                             <i class="fas fa-external-link-alt"></i>

@@ -13,6 +13,7 @@ use App\Models\MahasiswaModel;
 use App\Models\NotifikasiModel;
 use App\Models\TingkatLombaModel;
 use App\Models\UsersModel;
+use Carbon\Carbon;
 
 class InfoLombaController extends Controller
 {
@@ -86,13 +87,17 @@ class InfoLombaController extends Controller
                 break;
         }
 
+        // Hitung sisa hari
+        $deadline = Carbon::parse($lomba->akhir_registrasi_lomba);
+        $today = Carbon::today();
+        $sisaHari = $today->diffInDays($deadline, false);
         $badgeStatus = $this->getStatusBadge($lomba->status_verifikasi);
 
         $breadcrumb = (object) [
             'list' => ['Informasi Lomba', 'Detail Lomba']
         ];
 
-        return view('dosen.info-lomba.show', compact('lomba', 'namaPengusul', 'breadcrumb', 'badgeStatus'));
+        return view('dosen.info-lomba.show', compact('lomba', 'namaPengusul', 'breadcrumb', 'badgeStatus', 'sisaHari'));
     }
 
     public function tambahRekomendasiAjax()

@@ -20,6 +20,7 @@ use App\Models\KategoriLombaModel;
 use App\Models\NotifikasiModel;
 use App\Models\PreferensiUserModel;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class LombaMahasiswaController extends Controller
 {
@@ -130,13 +131,25 @@ class LombaMahasiswaController extends Controller
                 break;
         }
 
+        // Hitung sisa hari
+        $deadline = Carbon::parse($lomba->akhir_registrasi_lomba);
+        $today = Carbon::today();
+        $sisaHari = $today->diffInDays($deadline, false); // bisa negatif jika sudah lewat
+
         $badgeStatus = $this->getStatusBadge($lomba->status_verifikasi);
 
         $breadcrumb = (object) [
             'list' => ['Informasi Lomba', 'Detail Lomba']
         ];
 
-        return view('mahasiswa.informasi-lomba.show', compact('lomba', 'namaPengusul', 'breadcrumb', 'badgeStatus', 'tipeLomba'));
+        return view('mahasiswa.informasi-lomba.show', compact(
+            'lomba',
+            'namaPengusul',
+            'breadcrumb',
+            'badgeStatus',
+            'tipeLomba',
+            'sisaHari'
+        ));
     }
 
     public function form_daftar($id)
@@ -340,11 +353,11 @@ class LombaMahasiswaController extends Controller
 
         return DataTables::of($dataKelolaLomba)
             ->addIndexColumn()
-            ->addColumn('nama_lomba', fn($row) => $row->nama_lomba ?? '-')
-            ->addColumn('kategori', fn($row) => $row->kategori->pluck('nama_kategori')->join(', ') ?: 'Tidak Diketahui')
-            ->addColumn('tingkat_lomba', fn($row) => $row->tingkat_lomba->nama_tingkat ?? '-')
-            ->addColumn('awal_registrasi_lomba', fn($row) => date('d M Y', strtotime($row->awal_registrasi_lomba)))
-            ->addColumn('akhir_registrasi_lomba', fn($row) => date('d M Y', strtotime($row->akhir_registrasi_lomba)))
+            ->addColumn('nama_lomba', fn ($row) => $row->nama_lomba ?? '-')
+            ->addColumn('kategori', fn ($row) => $row->kategori->pluck('nama_kategori')->join(', ') ?: 'Tidak Diketahui')
+            ->addColumn('tingkat_lomba', fn ($row) => $row->tingkat_lomba->nama_tingkat ?? '-')
+            ->addColumn('awal_registrasi_lomba', fn ($row) => date('d M Y', strtotime($row->awal_registrasi_lomba)))
+            ->addColumn('akhir_registrasi_lomba', fn ($row) => date('d M Y', strtotime($row->akhir_registrasi_lomba)))
             ->addColumn('status_verifikasi', function ($row) {
                 return $this->getStatusBadge($row->status_verifikasi);
             })
@@ -392,14 +405,14 @@ class LombaMahasiswaController extends Controller
 
         return DataTables::of($pendaftaran)
             ->addIndexColumn()
-            ->addColumn('nama_lomba', fn($row) => $row->lomba->nama_lomba ?? '-')
-            ->addColumn('tingkat_lomba', fn($row) => $row->lomba->tingkat_lomba->nama_tingkat ?? '-')
+            ->addColumn('nama_lomba', fn ($row) => $row->lomba->nama_lomba ?? '-')
+            ->addColumn('tingkat_lomba', fn ($row) => $row->lomba->tingkat_lomba->nama_tingkat ?? '-')
             ->addColumn('kategori', function ($row) {
                 // kalau relasi kategori many-to-many, pluck dan implode, kalau one-to-many bisa langsung akses
                 return $row->lomba->kategori ? ($row->lomba->kategori->pluck('nama_kategori')->implode(', ') ?: '-') : '-';
             })
 
-            ->addColumn('tipe_lomba', fn($row) => $row->lomba->tipe_lomba ?? '-')
+            ->addColumn('tipe_lomba', fn ($row) => $row->lomba->tipe_lomba ?? '-')
 
             ->addColumn('status', function ($row) {
                 return $this->getStatusPendaftaran($row->status_pendaftaran);
