@@ -187,7 +187,7 @@
                                         </td>
                                         <td>
                                             <div class="notification-message mr-2">
-                                                <p class="mb-1">{{!! $notif->pesan_notifikasi !!}}</p>
+                                                <p class="mb-1">{{!! $notif->pesan_notifikasi}}</p>
                                             </div>
                                         </td>
                                         <td>
