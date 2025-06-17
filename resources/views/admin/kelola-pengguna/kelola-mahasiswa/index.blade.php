@@ -40,7 +40,7 @@
                             {{-- Menu History --}}
                             <a href="{{ route('mahasiswa.history') }}" class="ml-2 btn btn-primary text-white">
                                 <i class="fa-solid fa-clock-rotate-left"></i>
-                                <strong> History</strong>
+                                <strong> Histori</strong>
                             </a>
                         </div>
                     </div>

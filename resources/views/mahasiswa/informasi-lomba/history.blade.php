@@ -1,8 +1,8 @@
 @extends('layouts.template')
 
-@section('title', 'Riwayat Pengajuan Lomba | COMPASS')
-@section('page-title', 'Riwayat Pengajuan Lomba')
-@section('page-description', 'Halaman Daftar Riwayat Lomba yang pernah Diajukan')
+@section('title', 'Histori Pengajuan Lomba | COMPASS')
+@section('page-title', 'Histori Pengajuan Lomba')
+@section('page-description', 'Halaman Daftar Histori Lomba yang pernah Diajukan')
 
 @section('content')
     <div class="row">
