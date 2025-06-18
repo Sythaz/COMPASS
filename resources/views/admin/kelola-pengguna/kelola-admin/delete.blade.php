@@ -4,7 +4,7 @@
 
     <div class="modal-header bg-danger rounded">
         <h5 class="modal-title text-white">
-            <i class="fas fa-trash-alt mr-2"></i>Hapus Admin
+            <i class="fas fa-trash-alt mr-2"></i>Nonaktifkan Admin
         </h5>
         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
@@ -133,7 +133,7 @@
 
     <div class="modal-footer">
         <button type="submit" class="btn btn-danger">
-            <i class="fas fa-trash-alt mr-2"></i>Hapus
+            <i class="fas fa-trash-alt mr-2"></i>Nonaktifkan
         </button>
         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
             <i class="fas fa-times mr-2"></i>Batal

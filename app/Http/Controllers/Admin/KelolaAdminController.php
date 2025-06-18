@@ -92,7 +92,7 @@ class KelolaAdminController extends Controller
 
             ->addColumn('aksi', function ($row) {
                 $btn = '<span style="padding-right:10px;"><button onclick="modalAction(\'' . route('admin.history.aktivasi.konfirmasi', $row->admin_id) . '\')" class="btn btn-success btn-sm">Aktifkan</button></span>';
-                $btn .= '<button onclick="modalAction(\'' . route('admin.history.delete', $row->admin_id) . '\')" class="btn btn-danger btn-sm">Hapus</button>';
+                $btn .= '<button onclick="modalAction(\'' . route('admin.history.delete', $row->admin_id) . '\')" class="btn btn-danger btn-sm">Nonaktifkan</button>';
                 return $btn;
             })
 
