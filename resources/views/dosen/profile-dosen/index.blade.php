@@ -362,7 +362,6 @@
                 $(`#bidang${i}_id`).select2({
                     placeholder: `-- Pilih Bidang Minat #${i} --`,
                     width: '80%',
-                    allowClear: true
                 });
             }
 
