@@ -306,7 +306,7 @@
 
                                                     <!-- Tombol Hapus -->
                                                     <button type="button" class="btn btn-danger btn ml-2 remove-select"
-                                                        data-target="bidang{{ $i }}_id">
+                                                        data-target="tingkat_lomba{{ $i }}_id">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </div>
@@ -344,7 +344,7 @@
 
                                                     <!-- Tombol Hapus -->
                                                     <button type="button" class="btn btn-danger btn ml-2 remove-select"
-                                                        data-target="bidang{{ $i }}_id">
+                                                        data-target="jenis_penyelenggara{{ $i }}_id">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </div>
@@ -380,7 +380,7 @@
 
                                                     <!-- Tombol Hapus -->
                                                     <button type="button" class="btn btn-danger btn ml-2 remove-select"
-                                                        data-target="bidang{{ $i }}_id">
+                                                        data-target="lokasi{{ $i }}_id">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </div>
@@ -412,7 +412,7 @@
 
                                                     <!-- Tombol Hapus -->
                                                     <button type="button" class="btn btn-danger btn ml-2 remove-select"
-                                                        data-target="bidang{{ $i }}_id">
+                                                        data-target="biaya{{ $i }}_id">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </div>
@@ -557,7 +557,7 @@
                 $(`#bidang${i}_id`).select2({
                     placeholder: `-- Pilih Bidang Minat #${i} --`,
                     width: '80%',
-                    allowClear: true
+                    allowClear: false
                 });
             }
 
