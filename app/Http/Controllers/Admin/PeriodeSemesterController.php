@@ -35,7 +35,7 @@ class PeriodeSemesterController extends Controller
                 $btn = '<div class="d-flex justify-content-center">';
                 $btn .= '<button style="white-space:nowrap" onclick="modalAction(\'' . url('/admin/master-data/periode-semester/' . $row->periode_id . '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button>';
                 $btn .= '<button style="white-space:nowrap" onclick="modalAction(\'' . url('/admin/master-data/periode-semester/' . $row->periode_id . '/edit_ajax') . '\')" class="btn btn-warning btn-sm mx-2">Edit</button>';
-                $btn .= '<button style="white-space:nowrap" onclick="modalAction(\'' . url('/admin/master-data/periode-semester/' . $row->periode_id . '/delete_ajax') . '\')" class="btn btn-danger btn-sm">Hapus</button>';
+                $btn .= '<button style="white-space:nowrap" onclick="modalAction(\'' . url('/admin/master-data/periode-semester/' . $row->periode_id . '/delete_ajax') . '\')" class="btn btn-danger btn-sm">Nonaktif</button>';
                 $btn .= '</div>';
                 return $btn;
             })
@@ -148,7 +148,7 @@ class PeriodeSemesterController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Data berhasil dihapus.',
+                'message' => 'Data berhasil dinonaktifkan.',
             ]);
         } catch (\Exception $e) {
             return response()->json([
