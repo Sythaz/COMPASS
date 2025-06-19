@@ -154,7 +154,7 @@ class VerifikasiPendaftaranController extends Controller
             'pengirim_id' => auth()->id(), // admin login
             'pengirim_role' => 'Admin',
             'jenis_notifikasi' => 'Verifikasi Pendaftaran',
-            'pesan_notifikasi' => 'Selamat! Pendaftaran lomba Anda telah <strong>diterima</strong>.',
+            'pesan_notifikasi' => 'Selamat! Pendaftaran lomba Anda telah diterima.',
             'lomba_id' => $pendaftaran->lomba_id ?? null, // kalau ada
             'prestasi_id' => null,
             'pendaftaran_id' => $pendaftaran->pendaftaran_id,
@@ -183,7 +183,7 @@ class VerifikasiPendaftaranController extends Controller
             'pengirim_id' => auth()->id(),
             'pengirim_role' => 'Admin',
             'jenis_notifikasi' => 'Verifikasi Pendaftaran',
-            'pesan_notifikasi' => 'Pendaftaran lomba Anda telah <strong>ditolak</strong>. Alasan: <em>' . $request->alasan_tolak . '</em>',
+            'pesan_notifikasi' => 'Pendaftaran lomba Anda telah ditolak. Alasan: ' . $request->alasan_tolak . '',
             'lomba_id' => $pendaftaran->lomba_id ?? null,
             'prestasi_id' => null,
             'pendaftaran_id' => $pendaftaran->pendaftaran_id,
